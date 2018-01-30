@@ -31,15 +31,6 @@ subroutine initGauss (psi,pot,excp,f2,f4,wgt2,wk0)
   real (PREC), dimension(:,:), allocatable :: bf
   integer :: it, jt
 
-  !     evaluate overlap matrix over gaussian basis functions
-
-  igauss=0
-  if (idbg(562).ne.0) igauss=1
-  if (igauss.ne.0) then
-!!!     call gauss_ovlap (psi,pot,excp,f2,f4,wgt2,wk0)
-     stop
-  endif
-
   !     Initialization of molecular orbitals
   if (ini.eq.4.) then
      norbt=1
@@ -51,17 +42,19 @@ subroutine initGauss (psi,pot,excp,f2,f4,wgt2,wk0)
   allocate(bf(nni*mxnmu,npbasis))
   call evaluate(bf)
 
-  ! Compute basis function overlap
-  if(.false.) then
+  ! Evaluate overlap matrix over gaussian basis functions
+  igauss=0
+  if (idbg(562).ne.0) igauss=1
+  if (igauss.ne.0) then
+     write (*,*) 'Test finite basis function overlaps on grid'
      do it=1,npbasis
         !        do jt=1,it
         do jt=it,it
            xnorm=0.0
-           do i=1,ngrid
+           do i=1,nni*mxnmu
               xnorm=xnorm+bf(i,it)*bf(i,jt)*wgt2(i)*f4(i)
            end do
-           !call norm94 (Ztest,bf,f4,wgt2,wk0,xnorm)
-           write (*,*) 'S(',it,',',jt,') = ',xnorm
+           write (*,'(A,I3,A,I3,A,ES14.7)') 'S(',it,',',jt,') = ',xnorm
         end do
      end do
   end if
