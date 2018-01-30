@@ -1,0 +1,15 @@
+
+autoreconf -ifv
+
+./configure F77=gfortran FFLAGS='-ffixed-line-length-none -O6 -malign-double -fforce-addr -fstrength-reduce -funroll-loops' 
+
+
+
+
+File needed by automake
+
+  aclocal.m4 .
+  config.h.in .
+  install-sh .
+  Makefile.am .
+

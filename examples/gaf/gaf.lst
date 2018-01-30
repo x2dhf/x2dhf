@@ -1,0 +1,280 @@
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+                         FINITE DIFFERENCE 2D HARTREE-FOCK  (version 2.0)
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+   ... start of input data ...
+  title GaF  R = 3.353                                                            
+  method hf                                                                       
+  nuclei  31.0 9.0  3.353                                                         
+  config  0                                                                       
+  1 delta                                                                         
+                    0
+  4 pi                                                                            
+                    0
+  10 sigma end                                                                    
+                    0
+  grid 295 40.0                                                                   
+  orbpot hydrogen                                                                 
+  lcao                                                                            
+  1.0   3 2 13.0   0.0   3 2   13.0 0 10                                          
+  0.5   4 1  8.0   0.5   4 1    8.0 0 10                                          
+  1.0   3 2 13.0   0.0   3 2   13.0 0 10                                          
+  1.0   3 1 19.0   0.0   3 1   19.0 0 10                                          
+  1.0   2 1 26.0   0.0   2 1   19.0 0 10                                          
+  0.0   2 1  4.0   1.0   2 1    4.0 0 10                                          
+  0.0   2 0  6.0   1.0   2 0    6.0 0 10                                          
+  1.0   4 1  7.0   0.0   4 1    7.0 0 10                                          
+  0.0   1 0  9.0   1.0   1 0    9.0 0 10                                          
+  1.0   4 0 10.0   0.0   4 0   10.0 0 10                                          
+  1.0   3 1 19.0   0.0   3 1   19.0 0 10                                          
+  1.0   3 0 21.0   0.0   3 0   21.0 0 10                                          
+  1.0   2 1 26.0   0.0   2 1   26.0 0 10                                          
+  1.0   2 0 28.0   0.0   2 0   28.0 0 10                                          
+  1.0   1 0 30.4   0.0   1 0   20.4 0 10                                          
+  scf  1 10 12 12 1                                                               
+  omega 1.82 -1.80                                                                
+  stop                                                                            
+   ... end of input data  ...
+         
+
+   molecular system: 
+
+          Ga(31.00)   F  ( 9.00)   R =  3.35300 bohr = 1.77433 angstroms
+
+   method: HF
+
+   electronic configuration:
+
+           1  delta      + - + - 
+           4  pi         + - + - 
+           3  pi         + - + - 
+           2  pi         + - + - 
+           1  pi         + - + - 
+          10  sigma      + - 
+           9  sigma      + - 
+           8  sigma      + - 
+           7  sigma      + - 
+           6  sigma      + - 
+           5  sigma      + - 
+           4  sigma      + - 
+           3  sigma      + - 
+           2  sigma      + - 
+           1  sigma      + - 
+
+
+          total charge            =   0
+          number of
+              electrons           =  40
+              orbitals            =  15
+              Coulomb potentials  =  15
+              exchange potentials = 120
+
+   LCAO via hydrogenic functions:
+
+           orbital           n1 l1   Z1    c1       n2 l2   Z2    c2 
+
+           1  delta           3  2 13.00  1.00       3  2 13.00  0.00
+           4  pi              4  1  8.00  0.50       4  1  8.00  0.50
+           3  pi              3  2 13.00  1.00       3  2 13.00  0.00
+           2  pi              3  1 19.00  1.00       3  1 19.00  0.00
+           1  pi              2  1 26.00  1.00       2  1 19.00  0.00
+          10  sigma           2  1  4.00  0.00       2  1  4.00  1.00
+           9  sigma           2  0  6.00  0.00       2  0  6.00  1.00
+           8  sigma           4  1  7.00  1.00       4  1  7.00  0.00
+           7  sigma           1  0  9.00  0.00       1  0  9.00  1.00
+           6  sigma           4  0 10.00  1.00       4  0 10.00  0.00
+           5  sigma           3  1 19.00  1.00       3  1 19.00  0.00
+           4  sigma           3  0 21.00  1.00       3  0 21.00  0.00
+           3  sigma           2  1 26.00  1.00       2  1 26.00  0.00
+           2  sigma           2  0 28.00  1.00       2  0 28.00  0.00
+           1  sigma           1  0 30.40  1.00       1  0 20.40  0.00
+
+   grid:
+          nu (h_nu)  =  295  (0.01069)
+          mu (h_mu)  =  361  (0.01074)
+          R_infinity =   40.00
+
+   scf: 
+          thresholds
+              scf iterations           =      1
+              orbital energy           = 1.00E-12
+              orbital norm             = 1.00E-12
+              multipole moments recalc = 1.15E+00
+
+          orbitals are relaxed
+          Coulomb potentials are relaxed
+          exchange potential for each pair of orbitals is relaxed once per single scf iteration
+
+          multipole expansion coefficients =  4
+
+   (mc)sor:
+          sor method used for relaxing orbitals and potentials
+          ordering: middle 
+
+                            (mc)sor iterations
+                            orbital  potentials
+             1 delta           10        10
+             4 pi              10        10
+             3 pi              10        10
+             2 pi              10        10
+             1 pi              10        10
+            10 sigma           10        10
+             9 sigma           10        10
+             8 sigma           10        10
+             7 sigma           10        10
+             6 sigma           10        10
+             5 sigma           10        10
+             4 sigma           10        10
+             3 sigma           10        10
+             2 sigma           10        10
+             1 sigma           10        10
+
+          overrelaxation parameters:   orbitals       potentials 
+                                        1.820       1.984   1.984
+
+   machine accuracy      =    0.11E-15
+
+   constants: 
+               pi        =    0.3141592653589793E+01
+               bohr      =    0.5291772490000000E+00 angstroms
+
+
+   memory usage:
+          text+data                                      0.9 MB 
+          bss (common block contributions)              97.1 MB
+          dynamical allocation                         168.0 MB 
+              orbitals + Coulomb potentials             24.4 MB
+              exchange potentials                       97.5 MB
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+ ... initializing orbitals from hydrogenic functions ...
+ ... initializing Coulomb potentials ...
+ ... initializing exchange potentials ...
+ ... initializing multipole moment coefficients ...
+ ... initializing Lagrange multipliers ...
+
+ total energy:                 -0.2370042003769187E+04
+ total electronic energy:      -0.2453251070276792E+04
+ virial ratio:                 -0.2271387872265974E+01
+
+   scf  orbital              energy              energy diff        1-norm         overlap
+    1   1 sigma      -.4206698053148693E+03        0.71E+01        0.46E-01        0.00E+00
+    1   2 sigma      -.9889629420085056E+02        0.33E+00        0.97E-01        0.35E-01
+    1   3 sigma      -.7965564001062114E+02        0.72E+00        0.61E-01        0.66E-02
+    1   4 sigma      -.2225761781664636E+02       -0.23E+01        0.27E-01        0.28E-01
+    1   5 sigma      -.2143282209509602E+02       -0.53E+00        0.45E-01        0.11E-01
+    1   6 sigma      -.1664686803790239E+01       -0.51E+00       -0.24E+00        0.16E-01
+    1   7 sigma      -.3292442338457782E+02       -0.18E+00       -0.73E-02        0.83E-02
+    1   8 sigma      -.2305140609551673E+01       -0.80E+00        0.51E-01        0.99E-03
+    1   9 sigma      -.5077776762896075E+01       -0.38E+00        0.36E-01        0.47E-03
+    1  10 sigma      -.4131755117454388E+01       -0.18E+00        0.16E-01        0.27E-02
+    1   1 pi         -.8443594324450393E+02        0.48E+01        0.77E-01        0.00E+00
+    1   2 pi         -.1858861182352955E+02        0.41E+00        0.10E+00        0.65E-01
+    1   3 pi         -.1665939879627845E+02       -0.67E+00        0.85E-01        0.67E-01
+    1   4 pi         -.1773595979503080E+01       -0.33E+00       -0.84E-02        0.12E-01
+    1   1 delta      -.1516110522293032E+02       -0.13E+01        0.14E+00        0.00E+00
+           
+ ... scf iteration limit reached ... 
+ ... writing functions to disk (current precision) ...
+
+ total energy:                 -0.2378564696664478E+04
+ total electronic energy:      -0.2461773763172083E+04
+ virial ratio:                 -0.2214454207034925E+01
+
+ total energy contributions: 
+     nuclear-electron attraction energy =   -4852.427438281857
+     kinetic energy                     =    1958.546220093013
+     one electron energy                =   -2893.881218188843
+     coulomb energy                     =     467.951571226726
+     exchange energy                    =     -35.844116209797
+     coulomb energy (DFT)               =     496.129709525807
+     exchange energy (DFT)              =     -64.022254508878
+     correlation energy (DFT)           =       0.000000000000
+
+       orbital               energy                     1-norm
+   1 delta          -0.1516110522293032E+02            0.14E+00
+   4 pi             -0.1773595979503080E+01           -0.84E-02
+   3 pi             -0.1665939879627845E+02            0.85E-01
+   2 pi             -0.1858861182352955E+02            0.10E+00
+   1 pi             -0.8443594324450393E+02            0.77E-01
+  10 sigma          -0.4131755117454388E+01            0.16E-01
+   9 sigma          -0.5077776762896075E+01            0.36E-01
+   8 sigma          -0.2305140609551673E+01            0.51E-01
+   7 sigma          -0.3292442338457782E+02           -0.73E-02
+   6 sigma          -0.1664686803790239E+01           -0.24E+00
+   5 sigma          -0.2143282209509602E+02            0.45E-01
+   4 sigma          -0.2225761781664636E+02            0.27E-01
+   3 sigma          -0.7965564001062114E+02            0.61E-01
+   2 sigma          -0.9889629420085056E+02            0.97E-01
+   1 sigma          -0.4206698053148693E+03            0.46E-01
+
+
+ total energy uncertainty due to orbital norms not being equal 1:
+     absolute = +/-0.14E+03,  relative = +/-0.64E+01%
+
+ multipole moments relative to geometrical centre:
+
+                                    electronic (au/Debye-Ang^k)   total (au/Debye-Ang^k)
+     dipole (Mu_z, k=1)                0.4109220821429305E+02      0.4209208214293042E+01
+                                       0.1044467366118026E+03      0.1069881811680255E+02
+
+     quadrupole (Theta_zz, k=2)       -0.1130934980253035E+03     -0.6674080253034411E+00
+                                      -0.1521157547420161E+03     -0.8976933003451426E+00
+
+     octopole (Omega_zzz, k=3)         0.1598941030782877E+03      0.5622881614153768E+02
+                                       0.1138073132862021E+03      0.4002180425127384E+02
+
+     hexadecapole (Phi_zzzz, k=4)     -0.4238215302976000E+03     -0.1078308874803972E+03
+                                      -0.1596327161143119E+03     -0.4061458944151718E+02
+
+
+ multipole moments relative to centre of mass:
+
+      centre     atomic weight       z
+        Ga       68.92558000      -1.6765
+        F        18.99840322       1.6765
+  centre-of-mass                  -0.9520
+
+
+                                    electronic (au/Debye-Ang^k)   total (au/Debye-Ang^k)
+     dipole (Mu_z, k=1)                0.3515859017670365E+01      0.4712531392035753E+01
+                                       0.8936487396048916E+01      0.1197814735367776E+02
+
+     quadrupole (Theta_zz, k=2)       -0.6686496690421852E+02      0.1158803149007074E+02
+                                      -0.8993633660672010E+02      0.1558641466454570E+02
+
+     octopole (Omega_zzz, k=3)        -0.8697130021414817E+02      0.6468082317185710E+02
+                                      -0.6190328360973778E+02      0.4603766220649673E+02
+
+     hexadecapole (Phi_zzzz, k=4)     -0.2910983817436829E+03      0.1470478305942245E+03
+                                      -0.1096424367624631E+03      0.5538568222334175E+02
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+ cpu summary (sec):
+    Lagrange multipliers                       0.48
+    normalization+orthogonalization            0.10
+    multipole moments                          0.00
+    relaxation of orb. and pot.                7.21
+    total energy                               0.00
+    all SCF iterations                         7.79
+    single SCF iteration                       7.79
+
+
+ start: 2011/05/05  23:04:47.13 
+ stop:  2011/05/05  23:04:59.83 
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+Linux wieslaw16.fizyka.umk.pl 2.6.18-prep x86_64 x86_64 GNU/Linux
+ Quad-Core AMD Opteron(tm) Processor 8380
+
+////////////////////////////////////////////////////////////////////////////////////////////////

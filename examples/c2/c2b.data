@@ -1,0 +1,18 @@
+TITLE C2     R = 2.358 
+METHOD HF
+NUCLEI  6.0 6.0 2.358 
+homo
+!break
+CONFIG  0
+ 1 pi    u 
+ 1 sigma u
+ 1 sigma g
+ 1 sigma u 
+ 1 sigma g end
+GRID  169 40.0 
+orbpot old
+SCF 500 10 10 10 1
+! try a negative value for the second overrelaxation parameter to get
+  its more or less optimal value
+omega 1.75 -1.85
+STOP

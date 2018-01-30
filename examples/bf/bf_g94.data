@@ -1,0 +1,16 @@
+TITLE BF: R = 2.386 bohr  
+METHOD HF
+NUCLEI  5.0  9.0  2.386    
+CONFIG  0
+ 1 pi       
+ 5 sigma     end
+! initial orbitals are taken from GAUSSIAN94 output (see bf.inp)
+! bf_g94.out and bf_g94.pun files must be copied into a working
+! directory as gauss94.out and gauss94.pun files, respectively
+GRID 169 35.0 
+orbpot gauss
+SCF 200 20 8 
+omega 1.85 1.97
+multipol -1
+fix 1 0 2        ! orbitals are not relaxed   
+STOP

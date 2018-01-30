@@ -1,0 +1,113 @@
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+                         FINITE DIFFERENCE 2D HARTREE-FOCK  (version 2.0)
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+   ... start of input data ...
+  title C2     R = 2.358                                                          
+  method hf                                                                       
+  nuclei  6.0 6.0 2.358                                                           
+  homo                                                                            
+  config  0                                                                       
+  1 pi    u                                                                       
+  1 sigma u                                                                       
+  1 sigma g                                                                       
+  1 sigma u                                                                       
+  1 sigma g end                                                                   
+  grid  169 40.0                                                                  
+  orbpot gauss                                                                    
+  scf 50 10 10 10 1                                                               
+  omega 1.25 1.85                                                                 
+  stop                                                                            
+   ... end of input data  ...
+         
+
+   molecular system: 
+
+          C ( 6.00)   C  ( 6.00)   R =  2.35800 bohr = 1.24780 angstroms
+
+   method: HF
+
+   electronic configuration:
+
+           1  pi      u  + - + - 
+           4  sigma   u  + - 
+           3  sigma   g  + - 
+           2  sigma   u  + - 
+           1  sigma   g  + - 
+
+
+          total charge            =   0
+          number of
+              electrons           =  12
+              orbitals            =   5
+              Coulomb potentials  =   5
+              exchange potentials =  11
+
+   grid:
+          nu (h_nu)  =  169  (0.01870)
+          mu (h_mu)  =  223  (0.01900)
+          R_infinity =   40.00
+
+   scf: 
+          thresholds
+              scf iterations           =     50
+              orbital energy           = 1.00E-10
+              orbital norm             = 1.00E-10
+              multipole moments recalc = 1.15E+00
+
+          orbitals are relaxed
+          Coulomb potentials are relaxed
+          exchange potential for each pair of orbitals is relaxed once per single scf iteration
+
+          multipole expansion coefficients =  4
+
+   (mc)sor:
+          sor method used for relaxing orbitals and potentials
+          ordering: middle 
+
+                            (mc)sor iterations
+                            orbital  potentials
+             1 pi      u       10        10
+             2 sigma   u       10        10
+             2 sigma   g       10        10
+             1 sigma   u       10        10
+             1 sigma   g       10        10
+
+          overrelaxation parameters:   orbitals       potentials 
+                                        1.250       1.850   1.850
+
+   machine accuracy      =    0.11E-15
+
+   constants: 
+               pi        =    0.3141592653589793E+01
+               bohr      =    0.5291772490000000E+00 angstroms
+
+
+   memory usage:
+          text+data                                      0.9 MB 
+          bss (common block contributions)              96.9 MB
+          dynamical allocation                          17.2 MB 
+              orbitals + Coulomb potentials              2.9 MB
+              exchange potentials                        3.2 MB
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+ Initializing orbitals using GAUSSIAN output
+
+                 60 exponents 
+                 86 primitive basis functions 
+                 43 primitives on centre 1
+                  0 primitives on centre 2
+                 43 primitives on centre 3
+
+Linux scobie 2.6.35.13-92.fc14.i686.PAE i686 i386 GNU/Linux
+ GenuineIntell(R) CPU           T2400  @ 1.83GHz
+
+////////////////////////////////////////////////////////////////////////////////////////////////

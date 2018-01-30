@@ -1,0 +1,13 @@
+TITLE Th+89  point/finite  nucleus R = 2.5  
+METHOD OED
+NUCLEI  90.0 0.0  2.0
+CONFIG 89
+  1 sigma +  end
+GRID 169 2.5 
+orbpot hydrogen
+lcao
+ 1.0 1 0 90.0   0.0   1 0  1.0  0 
+SCF  30 10 8
+omega 1.80 1.80  
+! fermi 232.0 0.0
+STOP

@@ -1,0 +1,17 @@
+TITLE XeC
+METHOD HF
+NUCLEI  54.0  6.0  1.6542
+CONFIG  0
+        2 delta 
+        1 pi + . + .
+        6 pi
+	13 sigma end
+GRID 169 35.0 
+!orbpot qrhf ! gauss
+orbpot gauss
+SCF 100 20 8 8 1
+!omega 1.85 1.97
+multipol -1
+fixorb
+STOP
+

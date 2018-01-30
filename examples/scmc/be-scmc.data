@@ -1,0 +1,13 @@
+TITLE  Be SCMC R_inf=35.0 bohr  R = 2.3860 bohr 
+METHOD  scmc 
+NUCLEI  4.0  0.0  2.386  
+CONFIG  0
+        2 sigma  end
+GRID   91 35.0  
+orbpot hydrogen
+lcao
+ 1.0   2 0 4.0     0.0   1 0 9.0  0  
+ 1.0   1 0 4.0     0.0   1 0 9.0  0  
+SCF 1000 10 8 8 1
+omega 1.82  -1.82
+stop

@@ -1,0 +1,19 @@
+TITLE C2     R = 2.358 
+METHOD HF
+NUCLEI  6.0 6.0 2.358 
+homo
+!break
+CONFIG  0
+ 1 pi    u 
+ 1 sigma u
+ 1 sigma g
+ 1 sigma u 
+ 1 sigma g end
+GRID  169 40.0 
+orbpot gauss 
+! just a couple of dozen iterations to start with
+SCF 50 10 10 10 1
+! note the small value of overrelaxation parameter for orbitals
+! often initial scf/sor iterations require slower convergence rates
+omega 1.25 1.85
+STOP

@@ -1,0 +1,19 @@
+TITLE BeF     R = 1.3610A        
+METHOD HF
+NUCLEI  4.0 9.0 1.3610 angstroms              
+CONFIG  0
+ 1 pi    
+ 1 sigma +
+ 4 sigma  end
+GRID  169 40.0  
+orbpot hydrogen
+lcao
+ 0.5   2 1 2.0     0.5   2 1 5.0   0
+ 0.5   2 1 2.0     0.5   2 1 5.0   0
+ 0.5   2 0 4.0    -0.5   2 0 9.0   0
+ 0.5   2 0 4.0     0.5   2 0 9.0   0 
+ 0.5   1 0 4.0     0.5   1 0 9.0   0
+ 0.5   1 0 4.0    -0.5   1 0 9.0   0  
+SCF 200 20 8 8 
+! note that omega for orbitals and potentials is set automatically
+STOP

@@ -1,0 +1,14 @@
+$ RunGauss
+%mem=4000000
+
+#p rhf/6-311G test gfprint punch=mo gfinput scf=tight
+
+BF 
+
+0,1 
+ B   .000000     .000000    -.631308
+ F   .000000     .000000     .631308
+
+
+
+
