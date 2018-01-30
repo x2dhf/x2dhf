@@ -60,6 +60,7 @@ OBJS = x2dhf.o \
      etotalGauss.o \
      etotalOrb.o \
      etotalDFT.o \
+     evalGauss.o \
      exbe88.o \
      exbe88sup.o \
      exchAsympt.o \
@@ -300,6 +301,7 @@ es.f90.o : es.f90   params.mod
 etotal.f90.o : etotal.f90   params.mod  commons8.mod
 etotalDFT.f90.o : etotalDFT.f90   params.mod  commons8.mod  params.mod  commons8.mod
 etotalGauss.f90.o : etotalGauss.f90   params.mod  commons8.mod
+evalGauss.f90.o : initGauss.f90   params.mod  commons8.mod
 exbe88.f90.o : exbe88.f90   params.mod  commons8.mod
 exbe88sup.f90.o : exbe88sup.f90   params.mod  commons8.mod
 exchAsympt.f90.o : exchAsympt.f90   params.mod  commons8.mod
