@@ -1,0 +1,1258 @@
+% 
+\documentclass[12pt,a4paper]{article}
+%\input ijmpc.sty
+\hoffset -1.0cm
+%\voffset -1.5in
+\textwidth 16.0cm
+\textheight 20.0cm
+\newcommand{\beq}{\begin{equation}}
+\newcommand{\eeq}{\end{equation}}
+\newcommand{\cl} {\centerline}
+\newcommand{\bde}{\begin{description}}
+\newcommand{\ede}{\end{description}}
+\newcommand{\bit}{\begin{itemize}}
+\newcommand{\eit}{\end{itemize}}
+\newcommand{\noi}{\noindent}
+\newcommand{\ph}{\phantom}
+%\newcommand{\date}{}
+%
+%\usepackage{amsfonts,amsmath,amssymb}
+\usepackage{amsmath,amssymb}
+\usepackage{moreverb}
+\newcommand{\clearemptydoublepage}{\newpage{\pagestyle{empty}\cleardoublepage}}
+\parindent 0cm
+
+\newcommand{\llarge}[1]{\Large{#1}}
+\newcommand{\lnormal}[1]{\normalsize{#1}}
+\newcommand{\lsmall}[1]{\small{#1}}
+\newcommand{\lfoot}[1]{\footnotesize{#1}}
+\newcommand{\ft}[1]{\texttt{#1}}
+\newcommand{\fb}[1]{\textbf{#1}}
+
+\begin{document}
+
+\thispagestyle{empty} 
+\begin{center}
+
+{\Large\bf Jacek Kobus\\[20pt]}
+ 
+{\LARGE\bf 2 Dimensional Finite Difference \\[10pt]
+Hartree-Fock Program}
+
+\vskip 1cm
+
+{\Large User's Guide} 
+
+\vskip 0.5cm
+
+{\large version 2.2 }
+\end{center}
+
+\clearemptydoublepage
+\tableofcontents
+\thispagestyle{empty} 
+\clearemptydoublepage
+
+%% ***************************************************************************
+%% *                                                                         *
+%% *   Copyright (C) 1996-2008 Jacek Kobus <jkob@fizyka.umk.pl>              *
+%% *                                                                         *     
+%% *   This program is free software; you can redistribute it and/or modify  *
+%% *   it under the terms of the GNU General Public License version 2 as     *
+%% *   published by the Free Software Foundation.                            *
+%% *                                                                         *
+%% *   This program is distributed in the hope that it will be useful,       *
+%% *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+%% *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+%% *   GNU General Public License for more details.                          *
+%% *                                                                         *
+%% *   You should have received a copy of the GNU General Public License     *
+%% *   along with this program; if not, write to the                         *
+%% *   Free Software Foundation, Inc.,                                       *
+%% *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
+%% ***************************************************************************
+
+
+\section{Description of input data}
+
+x2dhf program accepts input data that consist of separate lines which contain
+\begin{itemize}
+\item[--] a label 
+\item[--] a label followed by a string of characters, integer(s)
+  and/or real number(s)
+\item[--] a string of characters, integer(s) and/or real number(s) 
+\end{itemize}
+Real numbers can be written in a fixed-point or scientific notation. 
+\noindent
+Note that
+\begin{itemize}
+\item[--] labels and strings can be in upper or lower case,
+        
+%% \item[--] compulsory labels, i.e. these that must be included in the
+%%   input data file, are marked ``$\bullet$'' and the optional ones
+%%   ``$\circ$'',
+
+\item[--] the compulsory labels must follow the order given below; the
+  optional ones can be~inserted anywhere between the \textbf{title}
+  and \textbf{stop} labels,
+
+\item[--] optional parameters are enclosed in square brackets,
+
+\item[--] $r$ denotes a real number, $i$ -- an integer, $c$ -- a string
+          of characters,
+
+\item[--] an exclamation mark or a hash placed anywhere in an input
+  line starts a comment and what follows ``!'' or ``\#'' is ignored.
+
+\end{itemize}
+
+\noindent
+\subsection{Mandatory labels}
+
+The following labels must be specified in the specified order:
+\begin{description}
+%\item[$\bullet$] \textbf{TITLE} 
+\item \textbf{TITLE} 
+\begin{description} 
+\item[Format:] \textbf{title} $c$ \\ $c$ is any string of up to 74 characters describing
+  the current case. This string is added as a header to a text file with extension dat
+  that contains basic data identifying a given case, i.e. atomic numbers of nuclei, grid
+  size and the number of electrons and orbital and exchange functions.
+\end{description} 
+
+%\item[$\bullet$] \textbf{NUCLEI}
+\item \textbf{NUCLEI} 
+\begin{description} 
+\item[Format:] \textbf{nuclei} $Z_A \;\;Z_B\;\; R \;\;[\; c\;]$ \\ 
+  Set the nuclei charges and the bond length.
+
+%% FIXME Konstatnty format of nuclear charges
+\begin{itemize} 
+\item[$Z_A$:] nuclear charge of centre A (real)
+\item[$Z_B$:] nuclear charge of centre B (real) 
+\item[$R$:] bond length (real)
+\item[$c$:] $angstrom$ -- the internuclear separation can be given in
+  angstrom units if~this string is included (the conversion factor
+  0.529177249 is used)
+\end{itemize} 
+  If $|Z_A-Z_B|<10^{-6}$ then the molecule is considered to be a
+  homonuclear one (see \ft{setDefaults}).
+%  and the inversion symmetry of the orbitals is enforced.
+\end{description} 
+ 
+%\item[$\bullet$] \textbf{CONFIG}  
+\item \textbf{CONFIG}  
+\begin{description} 
+\item[Format:] \textbf{config} $i$ 
+\begin{itemize} 
+\item[$i$:] the total charge of a system
+\end{itemize} 
+\end{description} 
+
+The following cards define molecular orbitals and their occupation.
+\textbf{Note that the last orbital description card must contain the
+  $end$ label.}
+
+The possible formats are:
+\begin{description} 
+\item[Format:] $i\;\;\;c$ 
+\begin{itemize} 
+\item[$i$:] number of fully occupied orbitals of a given irreducible
+     representation (irrep) of the $C_{\infty\,v}$ group;
+	two electrons make $\sigma$~orbitals fully occupied
+     and four electrons -- orbitals of other symmetries
+\item[$c$:] symbol of the $C_{\infty\,v}$ irrep to which the orbitals
+     belong ({\it sigma, pi, delta} or~{\it phi}) 
+\end{itemize} 
+\end{description} 
+
+
+\begin{description} 
+\item[Format:] $i\;\;\;c_1 \;\;c_2$ 
+\begin{itemize} 
+\item[$i$:] number of fully occupied orbitals of a given irrep of the
+$D_{\infty\,h}$ group
+\item[$c_1$:] symbol of the $C_{\infty\,v}$ irrep to which the orbitals belong
+       ({\it sigma, pi, delta} or~{\it phi}) 
+\item[$c_2$:] symbol for the inversion symmetry of the $D_{\infty\,h}$ irreps 
+       ({\it u} or {\it g})
+\end{itemize} 
+Use this format for a homonuclear molecule unless \textbf{break} card
+is~included.
+\end{description} 
+
+
+\begin{description} 
+\item[Format:]
+$i\;\;\;c_1\;\;c_2\;\;[c_3\;\;[\;c_4\;\;[\;c_5\;]\;]\;]$
+\begin{itemize} 
+\item[$i$:] number of orbitals of a given irrep of the $C_{\infty\,v}$  group
+\item[$c_1$:] symbol for the $C_{\infty\,v}$ irreps to which the
+orbitals belong ({\it sigma, pi, delta, phi})
+\item[$c_2$-$c_5$:] $+,\;-$ or . (a dot); $+/-$ denotes spin up/down
+electron and . denotes an unoccupied spin orbital
+\end{itemize} 
+\end{description} 
+
+\begin{description} 
+\item[Format:] $i\;\;\;c_1\;\;c_2\;\;c_3\;\;[\;c_4\;\;[\;c_5\;\;[\;c_6\;]\;]\;]$
+\begin{itemize} 
+\item[$i$:]  number of orbitals of a given irrep of the
+$D_{\infty\,h}$ group
+\item[$c_1$:] symbol for the $C_{\infty\,v}$ irrep to which the
+orbitals belong ({\it sigma, pi, delta, phi}) 
+\item[$c_2$:] symbol for the inversion symmetry of the $D_{\infty\,h}$
+irrep ({\it u} or {\it g}) 
+\item[$c_3$-$c_6$:] $+,\;-$ or . (a dot); $+/-$ denotes spin up/down
+electron and . denotes an unoccupied spin orbital
+\end{itemize} 
+\end{description} 
+
+
+%\item[$\bullet$] \textbf{GRID} 
+\item \textbf{GRID} 
+
+\begin{description} 
+\item[Format:] \textbf{grid} $N_{\nu}$ $R_{\infty}$ \\
+An integer and a real define a single two-dimensional grid.
+\begin{itemize} 
+\item[$N_{\nu}$:] the number of grid points in $\nu$ variable
+\item[$R_{\infty}$:] the practical infinity 
+\end{itemize}
+$N_{\mu}$ is calculated so as to make the step size in $\mu$ variable equal to the
+stepsize in $\nu$ variable. $N_{\nu}$ and $N_{\mu}$ have to~meet special conditions and if
+they are not fulfilled the nearest (but smaller) appropriate values are used.
+\end{description} 
+
+\begin{description} 
+\item[Format:] \textbf{grid} $N_{\nu}$ $N_{\mu}$ $R_{\infty}$ \\
+Two integers and one real define a single two-dimensional grid.
+\begin{itemize} 
+\item[$N_{\nu}$:] the number of grid points in $\nu$ variable
+\item[$N_{\mu}$:] the number of grid points in $\mu$ variable
+\item[$R_{\infty}$:] the practical infinity 
+\end{itemize}
+This format may be needed when interpolation between grids is attempted.
+\end{description} 
+
+
+
+%\newpage
+%\item[$\bullet$] \textbf{ORBPOT}
+\item \textbf{ORBPOT}
+\begin{description} 
+\item[Format:] \textbf{orbpot} $c$\\
+  where $c$ a character string determining the initial source of
+  orbitals and potentials. Its allowed values are:
+\begin{itemize}
+\item $hydrogen$ -- molecular orbitals are formed as a linear combination of hydrogenic
+  functions on centres $A$ and $B$ as defined via the \textbf{lcao} label. In the case of
+  HF or HFS calculations Coulomb (exchange) potentials are approximated as a~linear
+  combination of Thomas-Fermi ($1/r$) potentials at the two centres. If the OED method
+  is~chosen the potential function is~approximated as a linear combination of $Z_A/r_1$
+  and $Z_B/r_2$ terms and the exchange potentials are set to zero.
+
+\item $gauss$ -- a~Gaussian output is used to retrieve exponents and expansion
+  coefficients of (uncontracted) molecular orbitals (it is assumed that the output is
+  contained in gaussian.out and gaussian.pun files\footnote{The program has been tested on
+    output files produced by the 94 and 03 versions of the Gaussian system of programs.})
+  and Coulomb and exchange potentials are initialized as in the \textsl{hydrogen} case;
+  see \ft{prepGauss} for more details.
+
+\item $gauss$-$c$ -- GAUSSIAN customized output is used to~retrieve exponents
+  and expansion coefficients of molecular orbitals (it is assumed that the output is
+  contained in gaussianc.out file) and Coulomb and exchange potentials are initialized as
+  in the \textsl{hydrogen} case; see \ft{prepGaussCust} for details.
+
+\item $old$ -- initial orbitals, Coulomb and exchange potentials are retrieved from disk
+  files (2dhf\_\-input.\-orb, 2dhf\_\-input.\-coul and 2dhf\_input.exch, respectively) created in
+  a previous run. Data defining the case are retrieved from a 2dhf\_input.\-dat textfile.
+
+\item $qrhf$ -- radial Hartree-Fock orbitals for the centre A and B obtained from the qrhf
+  program\footnote{J.Kobus and Ch. Froese Fischer, \textsl{Quasi-Relativistic Hartree-Fock
+      program for Atoms}, to be published.}  are retrieved from disk files
+  1dhf\-\_centreA.\-orb and 1dhf\-\_centreB.\-orb, respectively, and Coulomb and exchange
+  potentials are initialized as in the \textsl{hydrogen} case (see routine \ft{initHF} for
+  details).
+
+\item $noexch$ -- orbitals and Coulomb potentials are retrieved from disk files and
+  exchange potentials are initialized as in $hydrogen$ case; this is useful when going
+  from DFT/HFS to HF calculations.
+
+\item $nodat$ -- initial orbitals and potentials are retrieved from disk files but the
+  content of a 2dhf\_input.dat file is retrieved from a 2dhf\_input.orb (binary) file. Use
+  this value when reading binary data generated by the ealier than 2.0 versions of the
+  program.
+
+\end{itemize} 
+\end{description}
+
+
+
+%\item[$\bullet$] \textbf{STOP}
+\item \textbf{STOP}
+\begin{description} 
+\item[Format:] \textbf{stop}\\
+This label indicates the end of input data.
+\end{description} 
+
+\end{description}
+ 
+
+\newpage 
+
+\subsection{Optional labels}
+% FIXME        
+%\item[$\bullet$] \textbf{METHOD} 
+
+The following additional labels can be specified in any order:
+\begin{description}
+
+
+\item \textbf{BREAK} 
+\begin{description} 
+\item[Format:] \textbf{break} \\ When this label is present homonuclear molecules are
+  calculated in $C_{\infty\,v}$ symmetry and the $D_{\infty\,h}$ symmetry labels ({\it u}
+  or {\it g}) are redundant.
+
+\end{description} 
+
+
+\item \textbf{CONV}
+\begin{description} 
+\item[Format:] \textbf{conv} $[\;i_1\;[\;i_2\;[\;i_3\;]\;]\;]$\\ Sometimes the requested
+  accuracy of a solution is set too high and cannot be satisfied on a~selected grid. As
+  a~result SCF/SOR iteration process may continue in vain. To save CPU time the iterations
+  are stopped if orbital energies or orbital norms display no improvment over the $i_2$
+  and $i_3$ most recent iterations, respectively (20 by default). This mechanism is
+  activated after $i_1$~initial iterations (600 by default).
+\end{description}  
+
+\item \textbf{DEBUG} 
+\begin{description} 
+\item[Format:] \textbf{debug} $[\; i_1 \; [\;i_2 \ldots \;] \;i_{40}\;]$ \\ 
+  Up to 40 different debug flags can be set at a time.
+%% \footnote{The maximum number of flags can be changed by adjusting the parameter
+%% \texttt{maxflags} (see \ft{inputData}).}.  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  If the integer $i_k$ is present the debug flag $i_k$ is set, i.e. idbg$(i_k)=1$ $(1 \leq
+  i_k<999)$. These are used to generate additional debugging information by adding the
+  lines of the form
+  \begin{verbatim} 
+       if (idbg(ik).eq.1) then
+           print *, ``debugging something ...''
+           ...
+      endif
+    \end{verbatim} 
+%These are used to generate debug information.
+%If a debug flag is set to 500 an additional card is read in with
+%$incrni$ and $incrmu$ variables which are 
+%parameters of PMTX routine used to print matrices (every $incrni$ row
+%and every $incrmu$ column is printed.
+\end{description} 
+
+
+\item \textbf{DFT}
+\begin{description} 
+\item[Format:] \textbf{dft}  $[\;c_1\;]\;\; [\;c_2\;]$ \\
+\begin{itemize}
+\item[$c_1:$] specifies the type of DFT exchange potential to be used in
+  Fock equations 
+\begin{itemize}
+\item $c_1=lda$ -- the local density approximation with the potential 
+\begin{equation*} 
+         V_X(\alpha)=-\frac{3}{2} \alpha \left(\frac{3}{\pi}\right)^{1/3} 2^{-2/3} 
+                \sum_{\sigma} \rho_{\sigma}^{1/3}
+\end{equation*}
+where $\alpha$ is by default set to 2/3 (the Slater exchange
+potential). To change this value use the \textbf{xalpha} label. 
+
+\item $c_1=b88$ -- the Becke exchange potential
+
+\end{itemize} 
+
+\item[$c_2:$] selects the type of correlation potential to be used in
+  Fock equations
+
+\begin{itemize} 
+\item $c_2=lyp$ -- the correlation potential of Lee, Yang and Parr 
+
+\item $c_2=vwn$ -- the correlation potential of Vosko, Wilk and Nusair
+\end{itemize} 
+\end{itemize} 
+\end{description} 
+When the bare label is present and the method selected is HF then the
+exchange contributions (LDA, B88, PW86 and PW91) and the correlation
+contributions (LYP and VWN) to the total energy are calculated upon
+completion of the SCF iterations.
+
+\item \textbf{EXCHIO} 
+\begin{description} 
+\item[Format:] \textbf{exchio} $c_1$ $c_2$\\ These parameters specify how exchange
+  potentials are to be read/written and manipulated (stored in random access memory). The
+  program always keeps all orbitals and Coulomb potentials in the memory. If computer
+  resources are adequate all exchange potentials can also be kept there. However, during
+  the relaxation of a particular orbital only a fraction of~exchange potentials
+  is~needed. Thus all exchange potentials can be kept on disk as separate files (named
+  fort.31, fort.32, $\ldots$ during a run) and only relevant ones are being retrieved when
+  necessary.
+
+The possible values of $c_1$ and $c_2$ are \textsl{in-one},
+\textsl{in-many}, \textsl{out-one} and \textsl{out-many}. Possible
+combinations are
+\begin{itemize} 
+\item \verb+exchio in-many out-many+ -- read exchange potentials as separate files and
+  write them back as separate files
+
+\item \verb+exchio in-one out-many+ -- read all exchange potentials in one file but write
+  them out as separate files
+
+\item \verb+exchio in-many out-one+ -- read all exchange potentials separately but write
+  them out as a single file
+
+\item \verb+exchio in-one out-one+ -- read and write exchange potentials in the form of a
+  single file (same as $i_2=3$); this is the default
+\end{itemize} 
+
+\end{description} 
+
+
+\item \textbf{FEFIELD} 
+\begin{description} 
+\item[Format:] \textbf{fefield} $r$  
+\begin{itemize}
+\item[$r$:] a strength of an external static electric field directed along
+  the internuclear axis (in atomic units)
+\end{itemize} 
+\end{description} 
+
+
+
+\item \textbf{FERMI} 
+\begin{description} 
+\item[Format:] \textbf{fermi} $r_A$ $r_B$ \\ When this label is present the Fermi nuclear
+  charge distribution is used. Optional parameters $r_A$ and $r_B$ define the atomic
+  masses (in amu) of nuclei A and B. If omitted the corresponding values are taken from
+  the table of atomic masses compiled by Wapstra and Audi (see \ft{blk\_data}).
+\end{description} 
+
+
+\item \textbf{FIXORB}
+\begin{description} 
+\item[Format:] \textbf{fixorb} $[\; i_1 \; [\;i_2 \ldots \;] \;i_{40}\;]$ \\ This label is
+  used to specify orbitals to be kept frozen during SCF/SOR process (they are not being
+  renormalized nor orthogonalized during the process). $i_1$, $i_2$, $\ldots$ are the
+  numbers of these orbitals as they appear on the program's listing, i.e. their order is
+  reversed to that used when defining the electronic configuration (see the \fb{config}
+  card). Up to 40 different orbitals can be set at a~time. Use the bare label to keep all
+  orbitals frozen.
+
+\end{description}  
+
+\item \textbf{FIXCOUL}
+\begin{description} 
+\item[Format:] \textbf{fixcoul}\\ If this label is present then all
+  Coulomb potentials are kept frozen during the SCF/SOR process.
+\end{description}  
+
+\item \textbf{FIXEXCH}
+\begin{description} 
+\item[Format:] \textbf{fixexch}\\ If this label is present then all
+  exchange potentials are kept frozen during the SCF/SOR process.
+\end{description}  
+
+
+\item \textbf{GAUSS} 
+\begin{description} 
+\item[Format:] \textbf{gauss} $r_A$ $r_B$ \\ When this label is present the Gauss nuclear
+  charge distribution is used. Optional parameters $r_A$ and $r_B$ define the atomic
+  masses (in amu) of nuclei A and B. If omitted, the corresponding values are taken from
+  the table of atomic masses compiled by Wapstra and Audi (see \ft{blk\_data}).
+\end{description} 
+
+\item \textbf{HOMO} 
+\begin{description} 
+\item[Format:] \textbf{homo}  \\
+This label is used to impose explicitly $D_{\infty\,h}$ symmetry upon orbitals
+of homonuclear molecules in order to improve SCF/SOR convergence.
+\end{description} 
+
+
+\item \textbf{INOUT} 
+\begin{description} 
+\item[Format:] \textbf{inout} $c_1$ $c_2$\\ The x2dhf program can be compiled to support
+  calculation using three different combinations of integer/real data types: i32 (4-byte
+  integers, 8-byte reals), i64 (8-byte integers, 8-byte reals) and r128 (8-byte integers,
+  16-byte reals); see src/Makefile.am for details.  Strings $c_1$ and $c_2$ determine the
+  combination appropriate for the format of~input and output data, respectively, and each
+  string can be i32, i64 or r128.
+
+  In order to facilitate exchange of binary data generated on machines of~different
+  architectures or using different compilers additional formats are available, namely
+  i32f, i64f or r128f which allow to export/import data in formatted instead of
+  unformatted form.
+\end{description} 
+                
+
+\item \textbf{INTERP}
+\begin{description} 
+\item[Format:] \textbf{interp} \\ Use this label to change the grid between separate runs
+  of the program.  Note that only a number of grid points in one of the variables or
+  $R_{\infty}$ can be changed at a time.
+\end{description} 
+
+
+
+
+\item \textbf{LCAO}
+\begin{description} 
+\item[Format:] \textbf{lcao} $[\;i\;]$\\ If the source of orbitals is declared as
+  \textsl{hydrogen} then this card must be present. In such a case the initialization of
+  each of the orbitals has to be defined in~terms of the linear combination of atom
+  centred hydrogen-like functions. For each orbital include a card of the following format
+  (make sure that the order of orbitals should match the order specified under the
+  \textbf{config} label):
+
+\begin{description} 
+\item[Format:] $c_A\;\;n_A \;\;l_A \;\;\zeta_A \;\;\;\;c_B\;\;n_B\;\;l_B\;\;
+  \zeta_B\;\;\;\;i_1\;\;\;\;[\;i_2\;]$ \\
+where
+\begin{itemize}
+\item[] $c_A$ -- relative mixing coefficient for a hydrogenic orbital on the
+                    $Z_A$ centre (real),
+\item[] $n_A$ -- its principle quantum number (integer) 
+\item[] $l_A$ -- its orbital quantum number (integer) 
+\item[] $\zeta_A$ -- the effective nuclear charge if $i=1$ (default) or
+a screening parameter if $i=2$ (real)
+\item[] $c_B$  -- relative mixing coefficient for a hydrogenic orbital on the
+                    $Z_B$ centre (real),
+\item[] $n_B$ -- its principle quantum number (integer)  
+\item[] $l_B$ -- its orbital quantum number (integer) 
+\item[] $\zeta_B$ -- the effective nuclear charge if $i=1$ (default) or
+a screening parameter if $i=2$ (real)
+\item[] $i_1$ -- set to 1 to indicate that this orbital should be initialized as a linear
+  combination of hydrogenic functions and not taken from a disk orbital file (integer). When 
+  the source of orbitals is declared as \textsl{hydrogen} these flags are ignored.
+  When the source of orbitals is declared as \textsl{old} and
+  the orbital and Coulomb potential data files contain fewer functions than defined by
+  \textsl{config} card this flag can be used to indicate which orbitals are missing in
+  orbital data files and require initialization. This can be useful when generating
+  virtual orbitals for a potential formed from already given set of converged orbitals. 
+
+  In case when the source of orbitals is declared as \textsl{old} and all orbitals are
+  already defined this flag can be used in DFT calculations to generate virtual orbitals
+  for some sort of a local potential build from a given subset of orbitals that are kept
+  frozen during the SCF process (see \fb{fixorb} label)
+
+\item[] $i_2$ -- a number of successive over-relaxations for a given orbital
+(integer); if omitted is set to 10
+\end{itemize}
+The mixing coefficients are normalized so that $|c_A|+|c_B|=1$
+
+\end{description}
+\end{description}
+
+
+\item \textbf{MCSOR} 
+\begin{description} 
+\item[Format:] \textbf{mcsor} $[\;i_1\;[\;i_2\;]\;]$\\
+Selects the MCSOR method for solving the Poisson equations for orbitals and potentials
+(default) and changes the value of the MCSOR relaxation sweeps during a single SCF
+cycle for orbitals ($i_1$) and potentials ($i_2$); by default $i_1=i_2=10$.
+
+\end{description} 
+\item \textbf{METHOD} 
+\begin{description} 
+\item[Format:] \textbf{method} $c$\\
+Select the type of calculation.
+\begin{itemize} 
+\item[$c$:] HF -- the Hartree-Fock method
+\item[$c$:] DFT -- the Hartree-Fock method with the $X\alpha$ exchange
+  potential ($\alpha=2/3$); see the \fb{dft} label to choose
+  another exchange or correlation potential
+
+\item[$c$:] HFS -- the Hartree-Fock-Slater method (Hartree-Fock with the
+  $X\alpha$ exchange potential) with an optimum value of the $\alpha$
+  parameter (see \ft{blk-\-data.\-inc} for details)
+
+\item[$c$:] OED -- One Electron Diatomic ground and excited states
+  can be calculated for the Coulomb potential in the prolate
+  spheroidal coordinates (default). It is also possible to specify 
+the Coulomb and Kram\-mers-Henneberger potentials in cylindrical
+coordinates (see the \fb{poth3}, \fb{potkh}, \fb{potharm2}, \fb{potharm3}  labels,
+respectively). When more than one orbital is specified calculations
+are carried out as if in the case of a multielectron
+system.\footnote{In this type of calculations convergence rates differ
+  greatly between orbitals. Therefore, if for a given orbital the
+  orbital energy threshold is reached it is being frozen.} 
+
+\item[$c$:] SCMC -- the Hartree-Fock method with $X\alpha$ exchange where the $\alpha$
+  parameter is calculated according to the self-consistent multiplicative constant
+  method\footnote{V.V.Karasiev and E.V.Ludenia, \textsl{Self-consistent multiplicative
+      constant method for the exchange energy in density functional theory},
+    Phys. Rev. A~\textbf{65} (2002) 062510.}
+
+\end{itemize} 
+\end{description} 
+
+
+\item \textbf{MULTIPOL} 
+\begin{description} 
+\item[Format:] \textbf{multipol} $r$ [ $i$ ] 
+\begin{itemize}
+\item[$r$:] if $r>0$ multipole moment expansion coefficients are recalculated when the
+  maximum error in orbital energy is changed by $r$ (the default value is 1.15; see
+  \ft{setDefaults}). When the maximum error is less than $r$ the coefficients are
+  recalculated at least every $i_2$ SCF iterations as defined by the SCF label. To
+  suppress recalculation of the coefficients set $r$ to a negative real number. This is
+  useful when generating potentials from a set of fixed orbitals, e.g. from GAUSSIAN
+  orbitals.
+
+\item[$i$:] number of terms in the multipole expansion used to calculate
+  boundary value for potentials ($2 \le i\le 8$ and the default is 4).
+\end{itemize} 
+\end{description} 
+
+
+\item \textbf{OMEGA}
+\begin{description} 
+\item[Format:] \textbf{omega} $\omega_{orb}$ [ $\omega_{pot}$ ] \\ One or two real numbers
+  setting overrelaxation parameters for relaxation of orbitals and potentials. The
+  negative value of $\omega_{orb}$/$\omega_{pot}$ indicates that its value should be
+  set to a~near optimum value obtained from a~semiempirical formula (see \ft{initCBlocks}
+  and \ft{setomega} for details). 
+\end{description}
+
+\item \textbf{OMEGAOPT}
+\begin{description} 
+\item[Format:] \textbf{omegaopt} [ i [ $r_{orb}$ [ $r_{pot}$ ] ] ] \\ Optional integer
+  parameter can be set to 1 (default) or 2. In the former case rather conservative (safe)
+  $\omega$ values are chosen (this is equivalent to using the omega card with the negative
+  values of the parameters). In the latter case somewhat better values are chosen but
+  faster convergence is to be expected only when good initial estimates of orbitals and
+  potentials are available or when calculations with fixed orbitals or~potentials are
+  performed. The near-optimal $\omega$ values obtained from a semi-empirical formula are
+  scaled down to~produce final values used by the program. The default values of the
+  scaling factors for the orbital and potential overrelaxation parameters (0.986 and
+  0.997, respectively) can be changed by setting $r_{orb}$ and $r_{pot}$ to their desired
+  values.
+\end{description}
+
+\item \textbf{ORDER}
+\begin{description} 
+\item[Format:] \textbf{order} $[\;i\;]$\\ An integer defining the ordering of mesh points:
+  1 -- natural column-wise, 2 -- 'middle' type of sweep (default), 3 -- natural
+  row-wise, 4 -- reversed natural column-wise (see \ft{mesh} routine for details)
+\end{description}
+
+
+
+\item \textbf{POTGSZ}
+\begin{description} 
+\item[Format:] \textbf{potgsz} \\ When the OED method is chosen then this label selects a
+  model potential due to Green, Sellin and Zachor.\footnote{A.E.S.Green, D.L.Sellin and
+    A.S.Zachor, \textsl{Analytic Independent-Particle Model for Atoms},
+    Phys. Rev. \textbf{184} (1969) 1-9.}  For a given atom this potential produces HF-like
+  orbitals but it was found useful in finding decent starting orbitals for any molecular
+  system.
+\end{description} 
+
+
+\item \textbf{POTGSZG}
+\begin{description} 
+\item[Format:] \textbf{potgszg} \\ When the OED method is chosen then this label selects
+  a~model potential due to Green, Sellin and Zachor and the Gauss nuclear charge
+  distribution. For a~given atom this potential produces HF-like orbitals but it was found
+  useful in finding decent starting orbitals for any molecular system.
+\end{description} 
+
+
+\item \textbf{POTHARM2}
+\begin{description} 
+\item[Format:] \textbf{potharm2} $\omega$ \\ When the OED method is chosen then this
+  label selects a~two-dimensional model potential of the form $-\omega^2(x^2+y^2)$, where
+  $\omega$ is a strength of the potential (real).%
+  \footnote{This parameter $\omega$ should not be confused with the
+    overrelaxation parameter of the SOR method.}.
+\end{description}
+
+
+\item \textbf{POTHARM3}
+\begin{description} 
+\item[Format:] \textbf{potharm3} $\omega$ \\ When the OED method is chosen then this label
+  selects a~three-dimensional model potential of the form $-\omega^2(x^2+y^2+z^2)$, where
+  $\omega$ is a strength of the potential (real).
+\end{description}
+
+
+
+\item \textbf{POTH3}
+\begin{description} 
+\item[Format:] \textbf{poth3} $m\;\;a\;\;V_0$ \\ When the OED method is chosen then this
+  label selects a~two-dimensional model potential of the form $ -V_0/\sqrt{a^2+r^2}$ (see
+  \ft{kh.c} for details). The following parameters can be set
+
+\begin{itemize} 
+\item [$m:$] magnatic quantum number of a state (integer)
+\item [$a:$] width of the model potential (real)
+\item [$V_0:$] depth of the model potential (real)
+\end{itemize} 
+In order to get the hydrogen Coulomb potential set $a=0.0$ and
+$V_0=1.0$. Set $a>0$ and $V>0$ to choose its smoothed variant.
+
+\end{description}
+
+
+\item \textbf{POTKH}
+\begin{description} 
+\item[Format:] \textbf{potkh}
+  $m\;\;\varepsilon\;\;\omega\;\;\;[\;a\;[\;V_0\;[\;N\;]\;]\;]$ \\ When the OED method is
+  chosen then this label selects the Krammers-Henneberger potential (see routine \ft{kh.c} for
+  details). The following parameters can be set
+\begin{itemize} 
+\item [$m:$] magnatic quantum number of a state being calculated (integer)
+\item [$\varepsilon:$] laser intensity (real)
+\item [$\omega:$] laser cycle frequency (real)
+\item [$a:$] original (before averaging over one laser cycle)
+  soft-core potential width (a positive real number, by default $a=1.0$)
+\item [$V_0:$] original soft-core potential depth (by default $V_0=1.0$)
+\item [$N:$] number of intervals in the Simpson quadrature (an
+  integer, $N=1000$ by default)
+\end{itemize} 
+\end{description} 
+
+
+\item \textbf{PRINT} 
+\begin{description} 
+\item[Format:] \textbf{print} $[\; i_1 \; [\;i_2 \ldots \;] \;i_{40}\;]$ \\ Up to 40
+  different printing flags can be set at a~time. If the integer $i_k$ is encountered the
+  printing flag $i_k$ is set, i.e. iprint$(i_k)=1$ $(1 \leq i_k<999)$. These are used
+  to~generate additional printouts by adding the lines of~the form
+  \begin{verbatim} 
+       if (iprint(ik).eq.1) then
+           print *, ``printing something ...''
+           ...
+      endif
+    \end{verbatim} 
+
+Set
+\begin{itemize} 
+\item $i_1=110$ to print a total radial density relative to the
+  centre~A along the internuclear axis ($-R_{\infty}\le z\le -R/2$)
+
+\item $i_2=111$ to print a total radial density relative to the
+  centre~B along the internuclear axis ($R/2\le z\le R_{\infty}$)
+\end{itemize} 
+See \ft{inputData} for a~list of available flags.
+
+\end{description} 
+
+
+\item \textbf{PRTEVERY} 
+\begin{description} 
+\item[Format:] \textbf{prtevery} $i_1$ $i_2$ \\ Routine \ft{pmtx} can be used to output
+  two-dimensional arrays in a~tabular row-wise form with every $i_1$-th row and $i_2$-th
+  column being printed (by default every 10th row and column is selected)
+\end{description} 
+
+
+\item \textbf{SCF}
+\begin{description} 
+\item[Format:] \textbf{scf}
+$[\;i_1\;[\;i_2\;[\;i_3\;[\;i_4\;[i_5]\;]\;]\;]\;]$ 
+\begin{itemize} 
+\item[$i_1$:] maximum number of scf iterations (default 1000); to skip the scf step set
+  $i_1$ to a negative integer,
+\item[$i_2$:] every $i_2$ SCF iterations orbitals and potentials are saved to~disk
+  (default 20).
+  If $i_2=0$ functions are saved on disk upon completion of the SCF
+  process. If~$i_2<0$ functions are never written to disk,
+\item[$i_3$:] if the maximum error in orbital energy is less than $10^{-i_3}$ than the SCF
+  process is terminated (10 by default),
+\item[$i_4$:] if the maximum error in orbital norm is less than $10^{-i_4}$ than SCF
+  process is terminated (10 by default),
+\item[$i_5$:] the level of output during SCF process
+\begin{itemize} 
+\item $i_5=1$ -- the orbital energy, the difference between its current and previous
+  value, the normalization error and the (absolute) value of~the largest overlap integral
+  between the current orbital and all the lower lying ones of the same symmetry (the value
+  is zero for the lowest orbitals of each symmetry) is~printed for every orbital in every
+  SCF iteration
+\item $i_5=2$ -- the orbital energy, the difference between its current and previous value
+  and the normalization error is~printed for the worst converged orbital in energy (first
+  line) and norm (second line) in every SCF iteration (default)
+\item $i_5=3$ -- the orbital energy, the difference between its current and previous values
+  and the normalization error is~printed for the worst converged orbital in energy (first
+  line) and norm (second line) every $i_2$ iterations. Printing of ``... multipole moment
+  expansion coefficients (re)calculated ...''  communique is suppressed
+\end{itemize} 
+\end{itemize} 
+Total energy is printed every $i_2$ iterations.
+\end{description} 
+
+
+\item \textbf{SOR} 
+\begin{description} 
+\item[Format:] \textbf{sor} $[\;i_1\;[\;i_2\;]\;]$\\
+Selects the SOR method for solving the Poisson equations for orbitals and potentials
+(default) and changes the value of the SOR relaxation sweeps during a single SCF
+cycle for orbitals ($i_1$) and potentials ($i_2$); by default $i_1=i_2=10$.
+
+\end{description} 
+
+\item \textbf{XALPHA}
+\begin{description} 
+\item[Format:] \textbf{xalpha} $\alpha$ \\ This label allows to change the $\alpha$
+  parameter of the LDA potential (see the HFS/DFT method); by default $\alpha$ is set
+  to 2/3.
+\end{description} 
+
+\end{description} 
+
+
+\subsection{Deprecated labels}
+
+The following labels have been replaced by others but are supported for backward
+compatibility with the previous version of the input data:
+
+\begin{description} 
+\item \textbf{INITIAL} (deprecated, use \textbf{ORBPOT and LCAO} instead)
+\begin{description} 
+\item[Format:] \textbf{initial} $i_1\;[\;i_2\;[\;i_3\;]\;]$  
+\begin{itemize} 
+\item[$i_1$:] determine the initial source of orbitals and potentials:
+\begin{itemize}
+\item $i_1=1$ --   molecular orbitals are formed as a linear
+  combination of hydrogenic functions on centres $A$ and $B$ (see
+  the description of $i_3$ for further details); 
+  in the case of HF or HFS calculations Coulomb
+  (exchange) potentials are approximated as a linear combination of 
+  Thomas-Fermi ($1/r$) potentials at the two centres; if method OED is
+  chosen the potential function is approximated as a linear
+  combination of $Z_A/r_1$ and $Z_B/r_2$ terms and the exchange
+  potentials are set to zero
+
+\item $i_1=2$ -- GAUSSIAN output is used to retrieve exponents and expansion coefficients
+  of (uncontracted) molecular orbitals (it is assumed that the output is contained in
+  gaussian.out and gaussian.pun files) and Coulomb and exchange potentials are initialized
+  as in $i_1=1$ case; see \ft{prepGauss} for more details
+
+\item $i_1=3$ -- GAUSSIAN customized output is used to retrieve exponents and expansion
+  coefficients of molecular orbitals (it is assumed that the output is contained in
+  gaussianc.out file) and Coulomb and exchange potentials are initialized as in $i_1=1$
+  case; see \ft{prepGaussCust} for details
+
+\item $i_1=5$ -- initial orbitals, Coulomb and exchange potentials are retrieved from disk
+  files (2dhf\_input.orb, 2dhf\_input.coul and 2dhf\_input.exch, respectively) created in
+  a previous run. Data defining the case are retrieved from a 2dhf\_input.\-dat textfile.
+
+\item $i_1=6$ -- orbitals and Coulomb potentials are retrieved from disk files and
+  exchange potentials are initialized as in $i_1=1$ case (convenient when going from HFS
+  to HF calculations)
+
+\item $i_1=11$ -- radial Hartree-Fock orbitals for the centre A and~B are retrieved from
+  disk files 1dhf\_inputA.orb and 1dhf\_inputB.orb, respectively, and Coulomb and exchange
+  potentials are initialized as in the \textsl{hydrogen} case (see routine \ft{initHF} for
+  details).
+
+\item $i_1=55$ -- initial orbitals and potentials are retrieved from disk files but the
+  content of a 2dhf\_input.dat file is retrieved from a 2dhf\_input.orb (binary) file. Use
+  this value when reading binary data generated by older versions of the program.
+
+\end{itemize}
+
+\item[$i_2$:] specifies how exchange potentials are to be read/written and manipulated
+  (stored in random access memory). The program always keeps all orbitals and Coulomb
+  potentials in the memory. If computer resources are adequate all exchange potentials can
+  also be kept there. However, during the relaxation of a particular orbital only a
+  fraction of~exchange potentials is~needed. Thus all exchange potentials can be kept on
+  disk as separate files (named fort.31, fort.32, $\ldots$ during a run) and only relevant
+  ones are being retrieved when necessary.
+\begin{itemize} 
+\item $i_2=0$ -- read exchange potentials as separate files and
+                      write them back as~separate files
+\item $i_2=1$ -- read all exchange potentials in a file but write
+                       them out as~separate files
+\item $i_2=2$ -- read all exchange potentials separately but write
+                    them out as a~single file
+\item $i_2=3$ -- read and write exchange potentials in the form of
+                    a~single file (default)
+\end{itemize} 
+
+\item[$i_3$:] if $i_1=1$ then this parameter must be set to 1 or 2 (if
+  omitted it is set to 1). In such a case the initialization of
+  each of the orbitals has to be defined in terms of the linear
+  combination of atom centered hydrogen-like functions
+  For each orbital include a card of the
+  following format (make sure that the order of orbitals should match
+  the order specified under the \textbf{config} label):
+\begin{description} 
+\item[Format:] $c_A\;\;n_A \;\;l_A \;\;\zeta_A \;\;\;\;c_B\;\;n_B\;\;l_B\;\;
+  \zeta_B\;\;\;\;i_1\;\;\;\;[\;i_2\;]$ \\
+where
+\begin{itemize}
+\item[] $c_A$ -- relative mixing coefficient for a hydrogenic orbital on the
+                    $Z_A$ centre (real),
+\item[] $n_A$ -- its principle quantum number (integer) 
+\item[] $l_A$ -- its orbital quantum number (integer) 
+\item[] $\zeta_A$ -- the effective nuclear charge if $i_3=1$ or
+a screening parameter if $i_3=2$ (real)
+\item[] $c_B$  -- relative mixing coefficient for a hydrogenic orbital on the
+                    $Z_B$ centre (real),
+\item[] $n_B$ -- its principle quantum number (integer)  
+\item[] $l_B$ -- its orbital quantum number (integer) 
+\item[] $\zeta_B$ -- the effective nuclear charge if $i_3=1$ or
+a screening parameter if $i_3=2$ (real)
+\item[] $i_1$ -- set to 1 to freeze the orbital during SCF; otherwise
+  set to 0 (integer) 
+\item[] $i_2$ -- a number of successive over-relaxations for a given orbital
+(integer); if omitted is set to 10
+\end{itemize}
+
+For other values of $i_1$ than 1 the orbital cards can be omitted but
+then the $i_3$ parameter must be set to 0. 
+
+\end{description}
+\end{itemize}  
+\end{description} 
+
+\item \textbf{FIX} 
+\begin{description} 
+\item[Format:] \textbf{fix}  $[\;i_1\;[\;i_2\;[\;i_3\;]\;]\;]$\\
+  If $i_1$, $i_2$ or $i_3$ are set to 1 then orbitals, Coulomb
+  potentials or~exchange potentials, respectively, are kept frozen during the
+  SCF/SOR process (the respective default values are 0, 0 and 2).
+  If $i_3=2$ then exchange potentials are relaxed only once during an
+  SCF cycle.  $i_2$~and $i_3$~cannot be set to 1 if hydrogenic
+    orbitals are used to initiate the orbitals.
+\end{description}  
+
+
+\item \textbf{OMEGA}
+\begin{description} 
+\item[Format:] \textbf{omega} \\
+\hspace*{0.9cm}$\omega_{orb}$ \\ 
+\hspace*{0.9cm}$\omega_{pot}$ \\ Two real numbers setting over-relaxation
+parameters for relaxation of orbitals and potentials. 
+The negative value of a given
+parameter indicates that its value should be set to a near optimum value obtained from a
+semiempirical formula (see \ft{initCBlocks} and \ft{setomega} for details). 
+\end{description}
+
+\end{description}
+
+
+\newpage
+
+\section{Examples of input data}
+
+\begin{enumerate}
+
+\item $^2$S ground state of the Th$^{+89}$ one-electron system (see
+  {examples/\-oed/\-th+89/\-th+89\-\_1s.\-lst}).
+
+\verbatiminput{../examples/oed/th+89/th+89_1s.data} 
+
+
+
+\item First excited $^2$S state of the Th$^{+89}$ one-electron
+  system (see {examples/\-oed/\-th+89/\-th+89\-\_2s.\-lst}).
+
+\verbatiminput{../examples/oed/th+89/th+89_2s.data} 
+
+\newpage
+
+\item \label{example-be} Hartree-Fock ground state of the beryllium atom calculated in
+  two consecutive steps (see examples/\-be/\-be.lst and examples/\-be/\-be-1.lst). 
+
+\verbatiminput{../examples/be/be.data} 
+
+
+\verbatiminput{../examples/be/be-1.data}
+
+ 
+\newpage
+
+
+\item Hartree-Fock ground state energy of the hydrogen molecule (see
+  examples/h2/h2.lst). 
+
+\verbatiminput{../examples/h2/h2.data} 
+
+\item \label{example-bf} Hartree-Fock ground state of the BF molecule (see
+  examples/bf/bf\_init2.lst).
+
+\verbatiminput{../examples/bf/bf_init2.data}
+ 
+\newpage
+\item HF calculations for the lowest $^3P$ state of the carbon atom
+  (see examples/c/c.lst).
+
+\verbatiminput{../examples/c/c.data}
+
+\item HF calculations for the lowest $^2P$ state of the $C^+$ ion (see
+  examples/c+/c+.lst).
+
+\verbatiminput{../examples/c+/c+.data}
+
+\newpage
+\item \label{example-c2a} HF calculations for the lowest state of the $C_2$ molecule (see
+  examples/c2/c2a.lst and examples/c2/c2b.lst).
+
+\verbatiminput{../examples/c2/c2a.data}
+
+\verbatiminput{../examples/c2/c2b.data}
+
+\item HF calculations for the lowest state of the $N_2$ molecule (see
+  examples/n2/n2.lst).
+
+
+\verbatiminput{../examples/n2/n2.data}
+
+\newpage
+\item HF calculations for the lowest state of the $F_2$ molecule (see
+  examples/f2/f2.lst).
+
+\verbatiminput{../examples/f2/f2.data}
+
+\newpage
+\item A series of HF calculations for the the $FH$ in external static
+  electric field. 
+
+\begin{enumerate} 
+\item no external field (see examples/fh/fh-0.lst)
+
+\verbatiminput{../examples/fh/fh-0.data}
+
+
+\newpage
+
+\item field strength -0.0001 a.u. (see examples/fh/fh-m1.lst)
+
+\verbatiminput{../examples/fh/fh-m1.data}
+
+\item field strength -0.0002 a.u. (see examples/fh/fh-m2.lst)
+
+\verbatiminput{../examples/fh/fh-m2.data}
+
+\newpage
+
+\item field strength +0.0001 a.u. (see examples/fh/fh-p1.lst)
+
+\verbatiminput{../examples/fh/fh-p1.data}
+
+\item field strength 0.0002 a.u. (see examples/fh/fh-p2.lst)
+
+\verbatiminput{../examples/fh/fh-p2.data}
+\end{enumerate}
+
+\newpage
+
+\item DFT calculations with LDA and LYP functionals (see
+  examples/\-dft/\-be-1.\-lst and examples/\-dft/\-be-2.\-lst).
+
+\verbatiminput{../examples/dft/be-1.data}
+
+\verbatiminput{../examples/dft/be-2.data}
+
+
+\newpage
+
+\item Two lowest states of the 2D hydrogenic harmonic potential (see
+  examples/\-oed/\-h3/\-h3-1.lst and examples/\-oed/\-h3/\-h3-2.lst).
+
+\verbatiminput{../examples/oed/h3/h3-1.data}
+
+\verbatiminput{../examples/oed/h3/h3-2.data}
+
+
+\newpage
+
+\item Lowest state of the Krammers-Henneberger potential (see
+  examples/\-oed/\-kh/\-kh.lst).
+
+\verbatiminput{../examples/oed/kh/kh.data}
+
+\item SCMC ground state calculations for the beryllium atom (see
+  examples/\-scmc/\-be-scmc.lst).
+
+\verbatiminput{../examples/scmc/be-scmc.data}
+
+\end{enumerate}
+
+\newpage
+
+\section{Program's data files} 
+
+There are several standard names used by the program to keep track of its input and output
+disk files. Normally the program writes out the data in the course of computations and
+upon its completion into the following disk files:
+\begin{description} 
+
+\item \texttt{2dhf\_output.dat} (a text (ASCII) file) containing the title of a case, the
+  time and date of its commencement, the number of mesh points, the internuclear distance,
+  the charges of nuclei and the number of orbitals, electrons and exchange potentials (see
+  \texttt{writeDisk} for details),
+
+\item \texttt{2dhf\_output.orb} (a binary file) containing molecular orbitals (in the
+  order specified by the input data following \textbf{config} label) followed by their
+  normalization factors, orbital energies, Lagrange multipliers and multipole moment
+  expansion coefficients (see \texttt{write\*}),
+
+\item \texttt{2dhf\_output.coul} (a binary file) containing
+  corresponding Coulomb potentials and
+
+\item \texttt{2dhf\_output.exch} (a binary file) containing all exchange potentials if the
+  \textbf{exchio [in-one$|$in-many] out-one} card is present
+
+\item \texttt{fort.31, fort.32, \ldots} (binary files) each containing the exchange
+  potential required for a particular pair of orbitals if the \textbf{exchio in-many
+    [out-one$|$out-many]} or \textbf{exchio [in-one$|$in-many] out-many} card is present
+\end{description}
+
+These files can be used to restart a given case or run another with slightly modified
+parameters. If \textbf{orbpot old} card is present orbitals are retrieved from
+\texttt{2dhf\-\_in\-put\-.orb} file, Coulomb potentials from \texttt{2dhf\_input.coul} and
+exchange potentials from \texttt{2dhf\_input.exch} file (or \texttt{fort.31}, \texttt{fort
+  32}, \ldots files, if \textbf{exchio in-many [out-one$|$out-many]}). Note that there
+is~only one set of \texttt{fort} files.
+
+\bigskip
+
+\section{How to run the program?} 
+
+\noindent
+In order to simplify the usage of the program, the xhf script (see tests/xhf) is~provided
+to~facilitate handling of the disk files.  The command xhf can be envoked with one, two or
+three parameters. There are two basic modes of its usage:
+
+
+
+\begin{description} 
+\item \hspace*{0.5cm} \texttt{./xhf file1 file2}\\ runs x2dhf reading
+  input data from \texttt{file1.data} file and writing text data
+  describing the case into \texttt{file2.dat} file and binary data
+  with orbitals and potentials into \texttt{file2.orb},
+  \texttt{file2.coul} and \texttt{file2.exch} files.
+\end{description} 
+
+
+\begin{description} 
+\item \hspace*{0.5cm} \texttt{./xhf file1 fil2 file3}\\ runs x2dhf
+  reading input data from \texttt{file1.data} and initial orbitals and
+  potentials from \texttt{file2.dat}, \texttt{file2.orb},
+  \texttt{file2.coul} and \texttt{file2.exch} files and writing
+  resulting data into \texttt{file3.dat}, \texttt{file3.orb},
+  \texttt{file3.coul} and \texttt{file3.exch} files.
+\end{description} 
+
+If, for example, \texttt{be.data} file contains input data for
+the beryllium atom (see Example~\ref{example-be}) then 
+\begin{description} 
+\item \hspace*{0.5cm} \texttt{./xhf be be-1}
+\end{description} 
+starts and performs the first 300 SCF iterations. Type
+\begin{description} 
+\item \hspace*{0.5cm} \texttt{./xhf be-1 be-1 be-2}
+\end{description}  
+to continue calculations. In order to converge the SCF process
+even better increase the convergence parameters (see the \textbf{scf}
+label) and use the following
+command
+\begin{description} 
+\item \hspace*{0.5cm} \texttt{./xhf be-1 be-2 be-1}
+\end{description}  
+
+
+
+In addition, the xhf script can be used to perform the following
+tasks:
+
+\begin{description} 
+\item \hspace*{0.5cm} \texttt{./xhf stop}\\ creats
+  \texttt{stop\_x2dhf} file in a current directory to stop a running
+  program% (see Section~\ref{section:hints})
+\end{description} 
+
+\begin{description} 
+\item \hspace*{0.5cm} \texttt{./xhf mkgauss filename}\\ creates
+  symbolic links \texttt{gaussian.out} and \texttt{gaussian.pun} to
+  files \texttt{filename.\-out} and \texttt{filename.pun},
+  respectively (see e.g. Example~\ref{example-bf}).
+\end{description} 
+
+\begin{description} 
+\item \hspace*{0.5cm} \texttt{./xhf rmgauss}\\ removes
+  \texttt{gaussian.out} and \texttt{gaussian.pun} files from a current
+  directory
+\end{description} 
+
+\begin{description} 
+\item \hspace*{0.5cm} \texttt{./xhf clean} \\ removes
+  \texttt{*.[dat|orb|coul|exch]} files
+\end{description} 
+
+Use \ft{./xhf -h|help} to get the complete list of available options.
+%\newpage 
+
+\section{Useful hints}
+
+\begin{enumerate} 
+\item The program should be easy to use provided you can start a calculation for a
+  specific system. You should not encounter any serious problems when the system contains
+  atoms from the first two rows of the Periodic Table. Then even the rough hydrogenic
+  estimates of the orbitals should prove adequate and after the initial couple of dozen of
+  iterations a smooth convergence should set in.
+
+  If, however, a system contains more than 15-20 electrons the initial estimates of the
+  orbitals have to be good enough to avoid divergences. Then, you have to choose the
+  parameters of the hydrogenic orbitals carefully or perform the finite basis set
+  calculations using the Gaussian program to provide the initialization data for orbitals
+  (see Example~\ref{example-bf}).
+
+  One can also use HFS method to produce initial estimates of orbitals and Coulomb
+  potentials. For example, to start calculations for the neon atom one can use the
+  following input data:
+
+  \verbatiminput{../examples/ne/ne-hfs.data}
+
+  This input produces good enough HFS initial estimates so that the calculations can be
+  continued at the HF level with the corresponding input:
+
+  \verbatiminput{../examples/ne/ne-hf.data}
+
+  One can also use HF method with some model potential, e.g. the model potential of Green,
+  Sellin, Zachor (label POTGSZ).
+
+\item At the very beginning set the maximum number of SCF iterations to something between
+  20 and 50 and/or impose crude convergence criteria for the orbital energy and
+  normalization.
+
+\item In case of convergence problems try to perform calculations on a sparser grid.
+%  
+% Do not start calculations on too dense a grid.  
+%  
+  For example, the $[61\times 79/30]$ grid is sufficient to check the quality of the
+  initial data for the Ne$_2$ system.
+
+\item Choose smaller values of the relaxation parameters ($1.7\leq \omega\leq 1.85$) to
+  avoid divergences in the first few dozens of SCF iterations (rarely the values as small
+  as 1.2 may be needed).  Subsequently the parameters should be increased to their (near)
+  optimum value (see the \textbf{omega} label and Example~\ref{example-c2a}).
+
+It is possible to set $\omega_{pot}$ to its near-optimal value by calculating it from
+a~semiempirical formula; 
+see the \ft{omega} label. As a rule of thumb the optimal value of the orbital
+relaxation parameter is somewhat smaller and, by~default, is~obtained by scaling the
+$\omega_{pot}$ value by 0.98 (see \ft{setDefaults}).
+
+\item \label{section:hints} How to stop the program gracefully during a lengthy calculation
+  without killing the process and interrupting disk read/write operations?
+  All you have to do is to create a (zero length) file named \texttt{stop\_x2dhf} in a working
+  directory by typing \texttt{./xhf stop} (you can also use the Unix \texttt{touch}
+  command to~this end). The program stops whenever this file is detected upon the
+  completion of a~current orbital/potential relaxation.
+
+
+
+\end{enumerate} 
+\end{document}
