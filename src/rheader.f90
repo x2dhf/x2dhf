@@ -206,7 +206,7 @@ subroutine rheader(norb_p)
   
 1000 continue
   write(iout6,1070)
-  stop	
+  stop
 
 1050 format(/1x,'... retrieving data from disk ...')	
 1060 format( 1x,'    file with heading: ',80a1)
