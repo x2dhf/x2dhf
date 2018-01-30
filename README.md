@@ -1,8 +1,5 @@
-                                                                              
-         2-Dimensional Finite Difference Hartree-Fock program                 
-                 for diatomic molecules (version 2.0)                              
+# 2-Dimensional Finite Difference Hartree-Fock program for diatomic molecules
                                                                             
-
 This program finds virtually exact solutions of the Hartree-Fock and density functional
 theory equations for diatomic molecules and atoms (the quality of a solution depends on
 grid size and arithmetic precision used). The lowest energy eigenstates of a given
@@ -26,30 +23,15 @@ depends mainly on the grid and the system under consideration.
 See the following articles for the detailed description of the program and examples of its
 usage and accuracy:
 
-  L.Laaksonen, P.Pyykko, and D. Sundholm, Comp. Phys. Reports 4 (1986) 219.
-
-  L.Laaksonen, D.Sundholm, and P.Pyykk\"o, in "Scientific Computing in Finland,",
-  Eds. K. Kankaala and R. Nieminen, Research Report R1/89, Centre for Scientific
-  Computing, (1989) p. 183.
-
-  P.Pyykk\"o, in Numerical Determination of the Electronic Structure of Atoms, Diatomic
-  and Polyatomic Molecules (NATO ASI Series C271) Eds. M.Defranceschi and J Delhalle,
-  p.161
-
-  J.Kobus, Chem. Phys. Lett. 202 (1993) 7
-
-  J.Kobus, Comput. Phys. Commun. 78 (1994) 247
-
-  J.Kobus, L.Laaksonen, D.Sundholm, Comp. Phys.Commun. 98 (1996) 346-358 
-
-  J.Kobus, Numerical Hartree-Fock methods for diatomic molecules, Handbook of Molecular
-  Physics and Quantum Chemistry (Chichester), ed. S.Wilson (Wiley, 2002)
-
-  J.Kobus, Hartree-Fock-limit values of multipole moments, polarizabilities and
-  hyperpolarizabilities for atoms and diatomic molecules, Comp. Lett. 3 (2007) 71-113
-
-  J.Kobus, A finite difference Hartree-Fock program for atoms and diatomic molecules, 
-  Comp. Phys. Commun. http://dx.doi.org/10.1016/j.cpc.2012.09.033
+* L. Laaksonen, P. Pyykko, and D. Sundholm, Comp. Phys. Reports 4 (1986) 219.
+* L. Laaksonen, D. Sundholm, and P. Pyykk\"o, in "Scientific Computing in Finland,", Eds. K. Kankaala and R. Nieminen, Research Report R1/89, Centre for Scientific Computing, (1989) p. 183.
+* P. Pyykk\"o, in Numerical Determination of the Electronic Structure of Atoms, Diatomic and Polyatomic Molecules (NATO ASI Series C271) Eds. M.Defranceschi and J Delhalle, p.161
+* J. Kobus, Chem. Phys. Lett. 202 (1993) 7
+* J. Kobus, Comput. Phys. Commun. 78 (1994) 247
+* J. Kobus, L. Laaksonen, D. Sundholm, Comp. Phys.Commun. 98 (1996) 346-358 
+* J. Kobus, Numerical Hartree-Fock methods for diatomic molecules, Handbook of Molecular Physics and Quantum Chemistry (Chichester), ed. S.Wilson (Wiley, 2002)
+* J. Kobus, Hartree-Fock-limit values of multipole moments, polarizabilities and hyperpolarizabilities for atoms and diatomic molecules, Comp. Lett. 3 (2007) 71-113
+* J. Kobus, A finite difference Hartree-Fock program for atoms and diatomic molecules, Comp. Phys. Commun. http://dx.doi.org/10.1016/j.cpc.2012.09.033
 
 See also docs/2dhf.pdf for a detailed description of the HF method for diatomic molecules
 and the present version of the program.  
@@ -59,10 +41,6 @@ allocating and deallocating memory) and kh (with some model potentials) are writ
 C. The program makes use of several BLAS (Basic Linear Algebra System) routines. If the
 library is not available blas.f contains their equivalents. When possible these routines
 should be replaced by their library equivalents (see INSTALL).
-
-The current version of the program can be downloaded from
-http://fizyka.umk.pl/~jkob/software/2dhf/. Its original version (from 1996) can be
-obtained from CPC Program Library, Queen's University of Belfast, N. Ireland.
 
 See INSTALL to configure, compile and run the program. The file doc/users-guide.pdf
 contains the description of the program's input data and examples of its usage.
