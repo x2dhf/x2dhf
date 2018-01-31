@@ -8,14 +8,14 @@ contains
   subroutine evaluate(bf)
 
     integer :: ic1, icen1, icen2, icen3, igp, imu, in, inioff, ipb, l1, m1
-    real (PREC) :: costh1, d1, expt, fnorm, r1, z, psi1, offset
+    real (PREC) :: costh1, d1, expt, fnorm, r1, z, psi1
     real (PREC), dimension(:,:) :: bf
     real (PREC), external :: plegendg
 
-    ! Centers
-    icen1=1
+    ! Center indices. Gaussian appears to flip these.
+    icen1=3
     icen2=2
-    icen3=3
+    icen3=1
 
     ! Sanity check
     if(size(bf,1) .ne. nni*mxnmu .or. size(bf,2) .ne. npbasis) then
@@ -57,15 +57,17 @@ contains
              if (ic1.eq.icen1) then
                 ! Center on Z1
                 r1=(r/2.0_PREC)*(vxi(imu)+veta(in))
-                offset=r/2.0_PREC
+                z=z+r/2.0_PREC
+
              elseif (ic1.eq.icen3) then
                 ! Center on Z2
                 r1=(r/2.0_PREC)*(vxi(imu)-veta(in))
-                offset=-r/2.0_PREC
+                z=z-r/2.0_PREC
+
              elseif (ic1.eq.icen2) then
                 ! Bond center
                 r1=sqrt(vxisq(imu)+vetasq(in)-1.0_PREC)*r/2.0_PREC
-                offset=0
+
              else
                 write (*,*) 'invalid center ',ic1
                 stop
@@ -74,13 +76,13 @@ contains
              if (r1.lt.precis) then
                 costh1=0.0_PREC
              else
-                costh1=(z+offset)/r1
+                costh1=z/r1
                 ! Sanity check
-                if(costh1 < -1.0) costh1 = -1.0
-                if(costh1 > 1.0) costh1 = 1.0
+                if(costh1 < -1.0_PREC) costh1 = -1.0_PREC
+                if(costh1 > 1.0_PREC) costh1 = 1.0_PREC
              endif
 
-             ! Calculate exponential. Argument is
+             ! Calculate exponential
              expt=exp(-d1*r1*r1)
 
              ! Value of basis function is
@@ -93,7 +95,8 @@ contains
              else
                 psi1=fnorm*r1**l1*expt*plegendg(l1,m1,costh1)
              endif
-!             write (*,*) 'bf(',igp,',',ipb,',)=',psi1
+
+             ! Store value
              bf(igp,ipb)=psi1
           enddo
        enddo
