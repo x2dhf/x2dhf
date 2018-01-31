@@ -53,16 +53,15 @@ subroutine prepGauss
   if (iprint(554).ne.0) iprint1=1
   if (iprint(555).ne.0) iprint2=1
 
-  !  opening a file with the corresponding GAUSSSIANxy output
-
+  ! Open the GaussianXY output file
   open(7,file='gaussian.out', status='old',form='formatted')
 
   do ilines=1,1000
      read(7,1001,end=990,err=910) matchstr
      ! Gaussian 94
-     if (matchstr.eq.' Basis set in the form of general basis input:'.or. &
+     if (matchstr.eq.' Basis set in the form of general basis input:') goto 900
      ! Gaussian 03
-         matchstr.eq.' AO basis set in the form of general basis inp') goto 900
+     if (matchstr.eq.' AO basis set in the form of general basis inp') goto 900
   enddo
   write(*,*) 'prepGauss: '
   write(*,*) ' "AO basis set in the form of general basis input not found in GAUSSIANxy output file'
@@ -140,15 +139,10 @@ subroutine prepGauss
   endif
 
   do ifbo=1,nfborb
-     !     read(7,1011,end=991,err=992) oe
-          read(7,1011,end=991,err=992)
-!     read(7,*,end=991,err=992) matchstr,matchstr,matchstr,matchstr
-!     print *,matchstr
+     ! Read the MO coefficients
+     read(7,1011,end=991,err=992)
      do ibc=1,nexpon,5
-        !        read(7,*,end=991,err=992) (ccoeff(ibc+i),i=0,4)
-        !        read(7,*,end=991,err=992) (ccoeff(ibc+i),i=0,4)
         read(7,1012) (ccoeff(ibc+i),i=0,4)
-!        write(*,1012) (ccoeff(ibc+i),i=0,4)
      enddo
 
      ! Transform expansion coefficients of the contracted gaussians
@@ -156,8 +150,6 @@ subroutine prepGauss
      do ibp=1,npbasis
         ibc=ixref(ibp)
         excoeff(ifbo,ibp)=ccoeff(ibc)*coeff(ibp)
-!        write(*,'(3i5,3e16.6,i5)') ifbo,ibp,ibc,ccoeff(ibc),&
-!             coeff(ibp),excoeff(ifbo,ibp),mprim(ibp)
      enddo
   enddo
 
@@ -168,10 +160,10 @@ subroutine prepGauss
      if (ib.gt.n1prim.and.ib.le.(n1prim+n2prim)) icent=2
      if (ib.gt.(n1prim+n2prim).and.ib.le.(n1prim+n2prim+n3prim)) icent=3
      icgau(ib)=icent
-!     write(*,1050) ib,ixref(ib),lprim(ib),mprim(ib),icgau(ib),primexp(ib)
+     !     write(*,1050) ib,ixref(ib),lprim(ib),mprim(ib),icgau(ib),primexp(ib)
   end do
 
-  ! determine symmetry of GAUSSIANxy molecular orbitals
+  ! Determine symmetry of GAUSSIANxy molecular orbitals
   do ifbo=1,nfborb
      ! Reset orbital character
      ochar = 0.0
@@ -192,19 +184,20 @@ subroutine prepGauss
      ! write (*,*) 'fb orbital ',ifbo,' symmetry is ',icharmax
   end do
 
-  ! Associate finite basis orbitals with the corresponding fd ones
+  ! Initialize memory
   do iorb=1,norb
      do ib=1,npbasis
         primcoef(iorb,ib)=0.0_PREC
      end do
   end do
 
+  ! Associate finite basis orbitals with the corresponding fd ones
   do iorb=1,norb
      do ifbo=1,nfborb
         icount=0
         ! Check if orbital characters match
         if (ifdord(iorb).eq.ifbord(ifbo)) then
-!           write (*,'(A,I3,A,I3)') 'Orbital ',iorb,' corresponds to Gaussian orbital ',ifbo
+           !           write (*,'(A,I3,A,I3)') 'Orbital ',iorb,' corresponds to Gaussian orbital ',ifbo
            do ib=1,npbasis
               primcoef(iorb,ib)=excoeff(ifbo,ib)
            enddo
@@ -224,20 +217,16 @@ subroutine prepGauss
      enddo
   enddo
 
-
-  !     normalization factor for a spherical harmonic Gaussian-type functions
-
+  ! Calculate normalization factors
   do ib=1,npbasis
      d1=primexp(ib)
      l1=lprim  (ib)
      m1=mprim  (ib)
      m1abs=abs(m1)
-     fngau2(ib)=( d1**dble(2*l1+3) * 2.0_PREC**dble(4*l1+7)/pii/(factor2(2*l1+1))**2)**0.250_PREC
-
-     !        normalization factor for spherical harmonics
-
-     shngau(ib)=(-1.0_PREC)**dble((m1+m1abs)/2) /sqrt(4.0_PREC*pii)* &
-          sqrt((2*l1+1)*factor(l1-m1abs)/factor(l1+m1abs))
+     ! Normalization for the radial part
+     fngau2(ib)=( d1**(2*l1+3) * 2.0_PREC**(4*l1+7)/pii/(factor2(2*l1+1))**2)**0.250_PREC
+     ! Normalization for the angular part (spherical harmonic)
+     shngau(ib)=(-1)**m1 * sqrt( ((2*l1+1)*factor(l1-m1abs)) / (4.0_PREC*pii*factor(l1+m1abs)) )
   enddo
 
   return
@@ -253,9 +242,9 @@ subroutine prepGauss
 01012 format(5e15.8)
 01050 format(5i5,e15.8)
 01140 format(/15x,i4,' exponents ',                         &
-                /15x,i4,' primitive basis functions ',      &
-                /15x,i4,' primitives on centre 1'           &
-                /15x,i4,' primitives on centre 2'           &
-                /15x,i4,' primitives on centre 3'/)
+       /15x,i4,' primitive basis functions ',      &
+       /15x,i4,' primitives on centre 1'           &
+       /15x,i4,' primitives on centre 2'           &
+       /15x,i4,' primitives on centre 3'/)
 01142 format(15x,i4,' finite difference orbitals',/15x,i4,' finite basis set orbitals'/)
 end subroutine prepGauss
