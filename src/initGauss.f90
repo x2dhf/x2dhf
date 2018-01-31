@@ -31,6 +31,13 @@ subroutine initGauss (psi,pot,excp,f2,f4,wgt2,wk0)
   real (PREC), dimension(:,:), allocatable :: bf
   integer :: it, jt
 
+  ! Values of contracted basis functions
+  real (PREC), dimension(:,:), allocatable :: cbf
+  ! m values of contracted basis functions
+  integer, dimension(:), allocatable :: cm
+  ! Contracted basis function overlap
+  real (PREC), dimension(:,:), allocatable :: cS
+
   !     Initialization of molecular orbitals
   if (ini.eq.4.) then
      norbt=1
@@ -46,17 +53,60 @@ subroutine initGauss (psi,pot,excp,f2,f4,wgt2,wk0)
   igauss=0
   if (idbg(562).ne.0) igauss=1
   if (igauss.ne.0) then
-     write (*,*) 'Test finite basis function overlaps on grid'
+     write (*,*) 'Test finite basis primitive function overlaps on grid'
      do it=1,npbasis
-        !        do jt=1,it
-        do jt=it,it
+        do jt=1,it
+           ! Skip different m values
+           if(mprim(it) .ne. mprim(jt)) cycle
            xnorm=0.0
            do i=1,nni*mxnmu
               xnorm=xnorm+bf(i,it)*bf(i,jt)*wgt2(i)*f4(i)
            end do
-           write (*,'(A,I3,A,I3,A,ES14.7)') 'S(',it,',',jt,') = ',xnorm
+!           if(abs(xnorm) .ge. 1e-6) then
+              write (*,'(A,I3,A,I3,A,ES14.7)') 'S(',it,',',jt,') = ',xnorm
+!           end if
         end do
      end do
+
+     write (*,*) 'Test finite basis contracted function overlaps on grid'
+     ! Evaluate contracted basis function values on grid
+     allocate(cbf(nni*mxnmu,ixref(npbasis)))
+     allocate(cm(ixref(npbasis)))
+     allocate(cS(ixref(npbasis),ixref(npbasis)))
+     do it=1,ixref(npbasis)
+        do i=1,nni*mxnmu
+           cbf(i,it)=0.0
+        end do
+        do igp=1,npbasis
+           if(ixref(igp).eq.it) then
+              ! m value
+              cm(it)=mprim(igp)
+              do i=1,nni*mxnmu
+                 cbf(i,it)=cbf(i,it) + coeff(igp)*bf(i,igp)
+              end do
+           end if
+        end do
+     end do
+     do it=1,ixref(npbasis)
+        do jt=1,it
+           ! Skip different m blocks since those are ignored in code
+           xnorm=0.0
+           if(cm(it) .eq. cm(jt)) then
+              ! Calculate norm
+              do i=1,nni*mxnmu
+                 xnorm=xnorm+cbf(i,it)*cbf(i,jt)*wgt2(i)*f4(i)
+              end do
+           end if
+           if(abs(xnorm) <= 1e-10) xnorm=0.0
+           cS(it,jt)=xnorm
+           cS(jt,it)=xnorm
+           write (*,'(1X,E12.6)',advance='no') cS(it,jt)
+        end do
+        write (*,*) ''
+     end do
+     deallocate(cbf)
+     deallocate(cm)
+     deallocate(cS)
   end if
 
   write(*,1114)
@@ -87,6 +137,7 @@ subroutine initGauss (psi,pot,excp,f2,f4,wgt2,wk0)
            end do
         end if
      end do
+!     write (*,*) 'Orbital ',iorb,' overlap'
      call norm94 (iorb,psi,f4,wgt2,wk0,xnorm)
      write (*,1115) iorn(iorb),bond(iorb),gut(iorb),xnorm
   end do
