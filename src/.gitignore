@@ -1,0 +1,4 @@
+.deps/
+*.o
+*.mod
+x2dhf
