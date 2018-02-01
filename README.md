@@ -41,13 +41,8 @@ and examples of its usage and accuracy:
 See also docs/2dhf.pdf for a detailed description of the HF method for
 diatomic molecules and the present version of the program.
 
-The programming language used is Fortran 77 but routines memAlloc and
-memDeAlloc (for allocating and deallocating memory) and kh (with some
-model potentials) are written in C. The program makes use of several
-BLAS (Basic Linear Algebra System) routines. If the library is not
-available blas.f contains their equivalents. When possible these
-routines should be replaced by their library equivalents (see
-INSTALL).
+The programming language used is Fortran 90. Only a Fortran compiler
+is necessary to compile the program.
 
 The program can be installed using the usual autotools setup. Run
 $ ./autoconf.sh

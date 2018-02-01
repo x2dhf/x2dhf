@@ -1,25 +1,25 @@
+bin_PROGRAMS = x2dhf
 
-bin_PROGRAMS = x2dhf 
+x2dhf_SOURCES = x2dhf.f90
 .DEFAULT_GOAL = prog
 
 TARGETDIR=/usr/local/bin/
 
 # Modify the following three lines, if necessary
-MOD_PATH = 
+MOD_PATH =
 ##FFLAGS   = -O -g -fcheck=all $(MOD_PATH)
 ##FFLAGS   = -O -g  -fbounds-check  $(MOD_PATH)
-##FFLAGS   = -O6  -fforce-addr -fstrength-reduce -funroll-loops 
-##FFLAGS   = -O6   -ffpe-trap=underflow
-FFLAGS   = -O6   
+##FFLAGS   = -O2  -fforce-addr -fstrength-reduce -funroll-loops
+##FFLAGS   = -O2   -ffpe-trap=underflow
 FC       = gfortran
+FFLAGS   = -O2 -Wall
 
-CC       = gcc
-AM_FLAGS   = 
+AM_FLAGS   =
 
 #LIBS =-static-libgfortran
-LIBS = 
+LIBS =
 
-MODS = params.o discret.o card.o commons8.o commons16.o  memory.o scf.o scheduler.o solver.o 
+MODS = params.o discret.o card.o commons8.o commons16.o kh.o memory.o scf.o scheduler.o solver.o
 
 OBJS = x2dhf.o \
      blas.o \
@@ -120,7 +120,6 @@ OBJS = x2dhf.o \
      initSuppl.o \
      inputData.o \
      interpolq.o \
-     kh.o \
      lagrpolq.o \
      leexact1.o \
      locenergy.o \
@@ -239,7 +238,7 @@ OBJS = x2dhf.o \
      zgsz1.o\
      zgsz2.o \
      zgsz1g.o \
-     zgsz2g.o 
+     zgsz2g.o
 
 prog : $(MODS) $(OBJS)
 	$(FC) $(FFLAGS) $(MODS) $(OBJS) $(LIBS) -o x2dhf
@@ -256,16 +255,16 @@ help:
 	@echo "     ./configure --enable-comp=yes"
 	@echo ""
 
-params.f90.o : params.f90 
+params.f90.o : params.f90
 discret.f90.o : discret.f90   params.mod
 card.f90.o : card.f90   params.mod
 commons8.f90.o : commons8.f90   params.mod
 commons16.f90.o : commons16.f90   params.mod
-memory.f90.o : memory.f90 
+memory.f90.o : memory.f90
 scf.f90.o : scf.f90   params.mod
 scheduler.f90.o : scheduler.f90   params.mod
 solver.f90.o : solver.f90   params.mod
-blas.f90.o : blas.f90   params.mod  
+blas.f90.o : blas.f90   params.mod
 checkOrbSym.f90.o : checkOrbSym.f90   params.mod  commons8.mod
 checkOrtho.f90.o : checkOrtho.f90   params.mod  commons8.mod
 checkOrb.f90.o : checkOrb.f90   params.mod  discret.mod commons8.mod
@@ -279,9 +278,9 @@ contrib.f90.o : contrib.f90   params.mod  commons8.mod
 contriborb.f90.o : contriborb.f90   params.mod  scf.mod  commons8.mod
 contriborbDFT.f90.o : contriborbDFT.f90   params.mod  commons8.mod
 coulSOR.f90.o : coulSOR.f90   params.mod  discret.mod  scf.mod  commons8.mod
-dftauxfun.f90.o : dftauxfun.f90   params.mod  commons8.mod  
-diffmu.f90.o : diffmu.f90   params.mod  discret.mod  commons8.mod 
-diffnu.f90.o : diffnu.f90   params.mod  discret.mod  commons8.mod 
+dftauxfun.f90.o : dftauxfun.f90   params.mod  commons8.mod
+diffmu.f90.o : diffmu.f90   params.mod  discret.mod  commons8.mod
+diffnu.f90.o : diffnu.f90   params.mod  discret.mod  commons8.mod
 dointerp.f90.o : dointerp.f90   params.mod  commons8.mod  commons16.mod
 dointerp_mu.f90.o : dointerp_mu.f90   params.mod  commons8.mod  commons16.mod
 dointerp_nu.f90.o : dointerp_nu.f90   params.mod  commons8.mod  commons16.mod
@@ -326,10 +325,10 @@ fdftpot.f90.o : fdftpot.f90   params.mod  commons8.mod
 fermi.f90.o : fermi.f90   params.mod  commons8.mod
 flp.f90.o : flp.f90   params.mod
 flypcs.f90.o : flypcs.f90   params.mod  commons8.mod
-flypsupcs.f90.o : flypsupcs.f90   params.mod  commons8.mod  
-fock.f90.o : fock.f90   params.mod  scf.mod  commons8.mod  
+flypsupcs.f90.o : flypsupcs.f90   params.mod  commons8.mod
+fock.f90.o : fock.f90   params.mod  scf.mod  commons8.mod
 fockDFT.f90.o : fockDFT.f90   params.mod  memory.mod  scf.mod  commons8.mod
-fockform.f90.o : fockform.f90   params.mod  scf.mod  commons8.mod  
+fockform.f90.o : fockform.f90   params.mod  scf.mod  commons8.mod
 fpw86.f90.o : fpw86.f90   params.mod  commons8.mod
 fvwncs.f90.o : fvwncs.f90   params.mod  commons8.mod
 fvwnsupcs.f90.o : fvwnsupcs.f90   params.mod  commons8.mod
@@ -338,7 +337,7 @@ gmtran.f90.o : gmtran.f90   params.mod
 grid_old.f90.o : grid_old.f90   params.mod  discret.mod  scf.mod  commons8.mod
 hydrogenOrbA.f90.o : hydrogenOrbA.f90   params.mod  commons8.mod
 hydrogenOrbB.f90.o : hydrogenOrbB.f90   params.mod  commons8.mod
-inCard.f90.o : inCard.f90   params.mod  card.mod  params.mod  
+inCard.f90.o : inCard.f90   params.mod  card.mod  params.mod
 inFloat.f90.o : inFloat.f90   params.mod  card.mod
 inInt.f90.o : inInt.f90   params.mod  card.mod
 initAddr.f90.o : initAddr.f90   params.mod  memory.mod  commons8.mod
@@ -352,7 +351,7 @@ initHyd.f90.o : initHyd.f90   params.mod  commons8.mod
 initMesh.f90.o : initMesh.f90   params.mod  memory.mod  commons8.mod
 initPot.f90.o : initPot.f90   params.mod  memory.mod  commons8.mod
 initOrbPot.f90.o : initOrbPot.f90   params.mod  commons8.mod
-initSuppl.f90.o : initSuppl.f90   params.mod  discret.mod  scf.mod  commons8.mod
+initSuppl.f90.o : initSuppl.f90   params.mod  discret.mod  kh.mod  scf.mod  commons8.mod
 inputData.f90.o : inputData.f90   params.mod  scf.mod  commons8.mod
 inStr.f90.o : inStr.f90   params.mod  card.mod
 interpolq.f90.o : interpolq.f90   params.mod  card.mod
@@ -374,8 +373,8 @@ nmucalc.f90.o : nmucalc.f90   params.mod  discret.mod  scf.mod  commons8.mod
 nnucalc.f90.o : nnucalc.f90   params.mod  commons8.mod
 norm.f90.o : norm.f90   params.mod  commons8.mod
 norm94.f90.o : norm94.f90     params.mod  commons8.mod
-nuclder.f90.o : nuclder.f90   params.mod  discret.mod  commons8.mod  
-nuclder1.f90.o : nuclder1.f90   params.mod  discret.mod  commons8.mod  
+nuclder.f90.o : nuclder.f90   params.mod  discret.mod  commons8.mod
+nuclder1.f90.o : nuclder1.f90   params.mod  discret.mod  commons8.mod
 ortho.f90.o : ortho.f90   params.mod  commons8.mod
 orbAsymptDet.f90.o : orbAsymptDet.f90   params.mod  commons8.mod
 orbAsymptSet.f90.o : orbAsymptSet.f90    params.mod  commons8.mod
@@ -395,11 +394,11 @@ prtdenA.f90.o : prtdenA.f90   params.mod commons8.mod
 prtdenB.f90.o : prtdenB.f90   params.mod commons8.mod
 prtmat.f90.o : prtmat.f90   params.mod
 prtmatcw.f90.o : prtmatcw.f90   params.mod
-printCase.f90.o : printCase.f90   params.mod  discret.mod  memory.mod  scf.mod  commons8.mod 
-printElConf.f90.o : printElConf.f90   params.mod commons8.mod 
+printCase.f90.o : printCase.f90   params.mod  discret.mod  memory.mod  scf.mod  commons8.mod
+printElConf.f90.o : printElConf.f90   params.mod commons8.mod
 printResults.f90.o : printResults.f90   params.mod  commons8.mod
-propet2.f90.o : propet2.f90   params.mod  scf.mod  commons8.mod  
-propet3.f90.o : propet3.f90   params.mod  scf.mod  commons8.mod  
+propet2.f90.o : propet2.f90   params.mod  scf.mod  commons8.mod
+propet3.f90.o : propet3.f90   params.mod  scf.mod  commons8.mod
 prttoten.f90.o : prttoten.f90   params.mod  commons8.mod
 putin.f90.o : putin.f90   params.mod
 putin2.f90.o : putin2.f90   params.mod  solver.mod
@@ -407,14 +406,14 @@ putin3.f90.o : putin3.f90   params.mod  solver.mod
 putin4.f90.o : putin4.f90   params.mod  solver.mod
 putout.f90.o : putout.f90   params.mod
 putout34.f90.o : putout34.f90   params.mod  commons8.mod
-radialden.f90.o : radialden.f90   params.mod  commons8.mod 
+radialden.f90.o : radialden.f90   params.mod  commons8.mod
 reada8.f90.o : reada8.f90   params.mod
 rexponents.f90.o : rexponents.f90   params.mod  commons8.mod
 reada16.f90.o : reada16.f90   params.mod
 rfdexch.f90.o : rfdexch.f90   params.mod  commons8.mod
-rfun.f90.o : rfun.f90   params.mod  memory.mod  scf.mod  commons8.mod 
-rfunaux.f90.o : rfunaux.f90   params.mod commons8.mod 
-rfunaux16.f90.o : rfunaux16.f90 params.mod commons8.mod 
+rfun.f90.o : rfun.f90   params.mod  memory.mod  scf.mod  commons8.mod
+rfunaux.f90.o : rfunaux.f90   params.mod commons8.mod
+rfunaux16.f90.o : rfunaux16.f90 params.mod commons8.mod
 rfun_int.f90.o : rfun_int.f90   params.mod  scf.mod  commons8.mod
 rheader.f90.o : rheader.f90   params.mod  scf.mod  commons8.mod
 rrec.f90.o : rrec.f90   params.mod  commons8.mod
@@ -449,7 +448,7 @@ writea32f.f90.o : writea32f.f90  params.mod commons8.mod
 writea64.f90.o : writea64.f90  params.mod
 writea64f.f90.o : writea64f.f90  params.mod commons8.mod
 writea128.f90.o : writea128.f90   params.mod  commons8.mod
-writea128f.f90.o : writea128f.f90   params.mod  commons8.mod 
+writea128f.f90.o : writea128f.f90   params.mod  commons8.mod
 writeDisk.f90.o : writeDisk.f90   params.mod  scf.mod  commons8.mod
 writeDisk4dd.f90.o : writeDisk4dd.f90   params.mod  scf.mod  commons8.mod
 wtdexch.f90.o : wtdexch.f90   params.mod  commons8.mod
@@ -476,15 +475,13 @@ mpoleMom.f90.o : mpoleMom.f90   params.mod  commons8.mod
 x2dhf.f90.o : x4dhf.f90   params.mod  memory.mod  scf.mod  commons8.mod
 
 
-dgamit.o : dgamit.f 
-	$(FC) -c $(FFLAGS) $<	  	       
-qsortf.o : qsortf.f 
-	$(FC) -c $(FFLAGS) $<	  	       
+dgamit.o : dgamit.f
+	$(FC) -c $(FFLAGS) $<
+qsortf.o : qsortf.f
+	$(FC) -c $(FFLAGS) $<
 
 setPrecision.o : setPrecision.f90 params.mod commons8.mod
-	$(FC) -c -g -O1 $<	  	       
-kh.o: kh.c
-	$(CC) -c $(CFLAGS) kh.c -o kh.o	
+	$(FC) -c -g -O1 $<
 
 # rfdexch ea eab eadft eabdft etotal etotaldft prttoten
 
@@ -493,14 +490,14 @@ kh.o: kh.c
 clean :
 	\rm -f $(OBJS) $(MODS) *.mod *.gcov *.gcda *.gcno *.out
 
-SUFFIXES = .f90 
+SUFFIXES = .f90
 .f90.o:
 	$(FC) -c $(FFLAGS) $<
 
 
 #################################################################################
 
-.PHONY: cleanall cleanobj cleanprog 
+.PHONY: cleanall cleanobj cleanprog
 
 cleanall : cleanobj cleanprog
 	$(MAKE) cleanobj cleanprog cleanraw
@@ -519,5 +516,3 @@ uninstall:
 	rm -f $(TARGETDIR)/x2dhf
 
 ####################################################################################################
-
-

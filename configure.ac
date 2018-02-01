@@ -2,13 +2,10 @@ AC_INIT([x2dhf], [1.0])
 AM_CONFIG_HEADER(config.h)
 AM_INIT_AUTOMAKE
 
-
-
 AC_LANG_FORTRAN77
 AC_PROG_F77(gfortran)
+#AC_PROG_FC([ifort ifc])
 AC_F77_LIBRARY_LDFLAGS
-
-AC_PROG_CC(gcc)
 
 # Check for presence of pdfLaTeX
 AC_CHECK_PROG(PDFLATEX, pdflatex, pdflatex)
@@ -17,8 +14,6 @@ if test -z "$PDFLATEX"; then
 fi
 
 AM_CONDITIONAL([HAVE_PDFLATEX], test -n "$PDFLATEX")
-
-#AC_PROG_FC([ifort ifc])
 
 #AC_OUTPUT(Makefile src/Makefile)
 

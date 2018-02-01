@@ -10,6 +10,7 @@ subroutine initSuppl (borb,bpot,d,e,f0,f1,f2,f3,f4,g,wjac1,wjac2,wgt1,wgt2)
   use discret
   use scf
   use commons8
+  use kh, only: poth3, potkh
 
   implicit none
 
@@ -24,7 +25,7 @@ subroutine initSuppl (borb,bpot,d,e,f0,f1,f2,f3,f4,g,wjac1,wjac2,wgt1,wgt2)
   real (PREC), dimension(9) :: aa1,aa2,a1,a2
   real (PREC), dimension(9,7,9) :: dc1,dc2
 
-  real (PREC), external :: plegendg,poth3,potkh,zz1,zz2,zz1g,zz2g,zgsz1,zgsz2,zgsz1g,zgsz2g
+  real (PREC), external :: plegendg,zz1,zz2,zz1g,zz2g,zgsz1,zgsz2,zgsz1g,zgsz2g
   
 !     Coefficients of the first and second derivatives taken from from
 !     the 8th-order Stirling interpolation formula
@@ -134,7 +135,7 @@ subroutine initSuppl (borb,bpot,d,e,f0,f1,f2,f3,f4,g,wjac1,wjac2,wgt1,wgt2)
               ! OED - Kramers-Henneberger potential
               z=(r/2.0_PREC)*vxi(i)*veta(j)
               xxplusyy2=(r/2.0_PREC)*vxi1(i)*veta1(j)
-              f0(j,i)=-f1(j,i)*potkh(z,xxplusyy2,mpot,epspot,ompot,v0pot,apot,dble(nsimp),precis1) 
+              f0(j,i)=-f1(j,i)*potkh(z,xxplusyy2,mpot,epspot,ompot,v0pot,apot,nsimp,precis1) 
            elseif (ipot.eq.5) then
               !                 OED - Green, Sellin, Zachor model potential 
               z1t=zgsz1(i,j)

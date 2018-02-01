@@ -140,7 +140,9 @@ module commons8
       real (PREC), dimension(10) :: elect,electDA,total,totalDA
 
       real (PREC) :: enkin,ennucel,encoul,enexch,entot,encouldft,enexchdft,edftex,edftcorr,alegk0,epspot,ompot,apot,&
-           v0pot,mpot,nsimp,hook,r_p,z1_p,z2_p,rinf_p,date_p,time_p  
+           v0pot,hook,r_p,z1_p,z2_p,rinf_p,date_p,time_p
+
+      integer :: mpot, nsimp
 
 
 
