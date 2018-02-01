@@ -23,6 +23,10 @@ subroutine dointerp (ic,nmuall_p,nmuall,fbefore,fafter)
   integer :: i,ic,im,imu,imu_bext,in,nall,nall_p,ninner,ninner_p,nmuall,nmuall_p,nstart,nstart_p
 
   real (PREC), dimension(nni_p,*) ::  fbefore,fafter
+  real (PREC) :: rinftol
+
+  ! Tolerance for change in rinf
+  rinftol = 1e4*precis
 
   !  The previous grid contains nni_p points in \nu (\eta) direction and
   !  nmuall_pt points in \mu (\xi) direction
@@ -32,11 +36,11 @@ subroutine dointerp (ic,nmuall_p,nmuall,fbefore,fafter)
   !      write (*,'(2e30.16)') rinf,rinf_p
 
   if ((nmuall.ne.nmuall_p.or.ngrids.ne.ngrids_p.or. &
-       abs(rinf-rinf_p).gt.1e3*precis).and.nni.eq.nni_p) then
+       abs(rinf-rinf_p).gt.rinftol).and.nni.eq.nni_p) then
 
      ! rinf and rinf_p might differ a bit because of round-off errors
      
-     if (nmuall.ne.nmuall_p.and.abs(rinf/rinf_p-one).gt.1e3*precis) then
+     if (nmuall.ne.nmuall_p.and.abs(rinf/rinf_p-one).gt.rinftol) then
         write(*,'(/,1x,"dointerp: cannot perform interpolation" &
              " since both the number of mu grid points "/11x    &
              "and the value of practical infinity change")')
@@ -127,7 +131,7 @@ subroutine dointerp (ic,nmuall_p,nmuall,fbefore,fafter)
      enddo
      
   elseif (nni.ne.nni_p.and.(nmuall.eq.nmuall_p.and.ngrids.eq.ngrids_p.and. &
-       abs(rinf-rinf_p).lt.1e3*precis)) then
+       abs(rinf-rinf_p).lt.rinftol)) then
      
      !        interpolate in nu variable      
      
