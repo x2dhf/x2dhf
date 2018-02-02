@@ -2,7 +2,6 @@ TITLE C2     R = 2.358
 METHOD HF
 NUCLEI  6.0 6.0 2.358 
 homo
-!break
 CONFIG  0
  1 pi    u 
  1 sigma u

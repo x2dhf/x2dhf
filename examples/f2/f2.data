@@ -1,27 +1,26 @@
-title F2     R = 2.668  (1.4118449A)                                            
-method hf                                                                       
-nuclei  9.0 9.0 2.668                                                           
-homo                                                                            
-config  0                                                                       
-1 pi    g                                                                       
-1 pi    u                                                                       
-1 sigma g                                                                       
-1 sigma u                                                                       
-1 sigma g                                                                       
-1 sigma u                                                                       
-1 sigma g end                                                                   
-grid 169 50.0                                                                  
-!initial   2 3 1                                                                 
-orbpot gauss 
+title F2     R = 2.668  (1.4118449A)
+method hf
+nuclei  9.0 9.0 2.668
+homo
+config  0
+1 pi    g
+1 pi    u
+1 sigma g
+1 sigma u
+1 sigma g
+1 sigma u
+1 sigma g end
+grid 169 50.0
+orbpot gauss
 lcao
-0.5   2 1 5.0     0.5   2 1 5.0   0                                             
-0.5   2 1 5.0    -0.5   2 1 5.0   0                                             
-0.5   2 1 6.0     0.5   2 1 6.0   0                                             
-0.5   2 0 8.0    -0.5   2 0 8.0   0                                             
-0.5   2 0 8.0     0.5   2 0 8.0   0                                             
-0.5   1 0 9.0    -0.5   1 0 9.0   0                                             
-0.5   1 0 9.0     0.5   1 0 9.0   0                                             
-scf 2000 10 10 10 1                                                             
-conv 1000                                                                       
-omega  1.94 -1.95                                                               
-stop                                
+0.5   2 1 5.0     0.5   2 1 5.0   0
+0.5   2 1 5.0    -0.5   2 1 5.0   0
+0.5   2 1 6.0     0.5   2 1 6.0   0
+0.5   2 0 8.0    -0.5   2 0 8.0   0
+0.5   2 0 8.0     0.5   2 0 8.0   0
+0.5   1 0 9.0    -0.5   1 0 9.0   0
+0.5   1 0 9.0     0.5   1 0 9.0   0
+scf 20000 10 10 10 1
+conv 1000
+omega  1.7 1.9
+stop

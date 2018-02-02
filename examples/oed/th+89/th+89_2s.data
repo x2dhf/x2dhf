@@ -11,5 +11,4 @@ lcao
  1.0 1 0 90.0   0.0   1 0  1.0  1 ! 1s orbital must be kept frozen
 SCF  30 10 8 
 omega 1.80 1.80  
-!fermi 232.0 0.0
 STOP

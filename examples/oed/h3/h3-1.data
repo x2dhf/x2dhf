@@ -6,7 +6,6 @@ homo
 config 0
   1 sigma g + end
 grid 269 50.0
-!inout i32 i32f
 orbpot hydrogen
 lcao
   1.0 1 0 1.0   1.0   1 0  1.0  0  

@@ -1,3 +1,5 @@
+! Performs a Hartree-Fock calculation for Ne,
+! starting from a hydrogenic orbital guess
 title Ne   R = 2.0
 method hf
 nuclei  10.0  0.0  2.0

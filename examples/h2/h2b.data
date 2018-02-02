@@ -1,11 +1,9 @@
 title H2: R = 2.0au !!!!!
 method hf
-!nuclei  1.0 1.0  1.4
 nuclei  1.0 1.0  2.0
-!homo
 break 
 config 0
-  1 sigma g end
+  1 sigma end
 grid 169 40.0 
 orbpot hydrogen
 lcao
