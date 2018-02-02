@@ -11,7 +11,7 @@ module discret
       real (PREC), dimension(10) :: hmu,hmu_p
       real (PREC), dimension(5) :: exeven,exodd
       real (PREC), dimension(maxmu) :: vmu,vxi,vxisq,vxi1,vxi2,vmu_p,vxi_p,vxisq_p,vxi1_p,vxi2_p,wmu
-      real (PREC), dimension(maxnu) :: vni,veta,vetasq,veta1,veta2,vni_p,veta_p,vetasq_p,veta1_p,veta2_p,wni	
+      real (PREC), dimension(maxnu) :: vni,veta,vetasq,veta1,veta2,vni_p,veta_p,vetasq_p,veta1_p,veta2_p,wni
       real (PREC) :: r,r2,z1,z2,rinf,cutorb,cutcoul,cutexch
 
 end module discret

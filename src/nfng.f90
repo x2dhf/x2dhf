@@ -1,7 +1,7 @@
 ! ***************************************************************************
 ! *                                                                         *
 ! *   Copyright (C) 2010 Jacek Kobus <jkob@fizyka.umk.pl>                   *
-! *                                                                         *     
+! *                                                                         *
 ! *   This program is free software; you can redistribute it and/or modify  *
 ! *   it under the terms of the GNU General Public License version 2 as     *
 ! *   published by the Free Software Foundation.                            *
@@ -29,29 +29,29 @@ subroutine nfng(f,g,fmu,fni,gmu,gni,wk0,wk1,wk2,wk3)
   call putin   (nni,mxnmu,isym,f,wk3)
   call diff1nu (mxnmu,wk3,wk0,wk1,wk2)
   call putout (nni,mxnmu,fni,wk0)
-  
+
   !    print *,'f: ', (f(i),i=1000,1003)
   !    print *,'fni: ',(fni(i),i=1000,1003)
-  
+
   call diff1mu (mxnmu,wk3,wk2)
   call putout (nni,mxnmu,fmu,wk2)
-  
+
   !    print *,'fmu: ',(fmu(i),i=1000,1003)
-  
+
   !   calculate dg/dmu and dg/dni derivatives
   call putin   (nni,mxnmu,isym,g,wk3)
   call diff1nu (mxnmu,wk3,wk0,wk1,wk2)
   call putout (nni,mxnmu,gni,wk0)
   !    print *,'g: ', (f(i),i=1000,1003)
   !    print *,'gni: ',(gni(i),i=1000,1003)
-  
+
   call diff1mu (mxnmu,wk3,wk2)
   call putout (nni,mxnmu,gmu,wk2)
-  !    print *,'gmu: ',(gmu(i),i=1000,1003)         
-  
+  !    print *,'gmu: ',(gmu(i),i=1000,1003)
+
   !   calculate df/dmu dg/dmu term (wk0)
   call prod2(mxsize,fmu,gmu,wk0)
-  
+
   do i=1,mxnmu
      ii=(i-1)*nni
      if (vxi1(i).lt.precis) then
@@ -65,10 +65,10 @@ subroutine nfng(f,g,fmu,fni,gmu,gni,wk0,wk1,wk2,wk3)
         enddo
      endif
   enddo
-  
+
   !   calculate df/dni dg/dni term (wk1)
   call prod2(mxsize,fni,gni,wk1)
-  
+
   do i=1,mxnmu
      ii=(i-1)*nni
      do j=1,nni
@@ -80,14 +80,14 @@ subroutine nfng(f,g,fmu,fni,gmu,gni,wk0,wk1,wk2,wk3)
         endif
      enddo
   enddo
-  
+
 
   !   calculate df/dmu dg/dni+ df/dni dg/dmu term (wk2)
 
   call prod2(mxsize,fmu,gni,wk2)
   call prod2(mxsize,fni,gmu,wk3)
   call add  (mxsize,wk2,wk3)
-  
+
   do i=1,mxnmu
      ii=(i-1)*nni
      do j=1,nni
@@ -100,10 +100,10 @@ subroutine nfng(f,g,fmu,fni,gmu,gni,wk0,wk1,wk2,wk3)
         endif
      enddo
   enddo
-  
+
   call add  (mxsize,wk0,wk3)
   call add  (mxsize,wk1,wk3)
-  
+
   do i=1,mxnmu
      ii=(i-1)*nni
      do j=1,nni
@@ -116,5 +116,5 @@ subroutine nfng(f,g,fmu,fni,gmu,gni,wk0,wk1,wk2,wk3)
         !          write (*,'(2i4,e15.4)') i,j, wk3(ii+j)
      enddo
   enddo
-  
+
 end subroutine nfng

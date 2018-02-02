@@ -1,6 +1,6 @@
 ! ### vpoly1q ###
-!  
-!     This function uses the Horner scheme to calculate value of the polynomial 
+!
+!     This function uses the Horner scheme to calculate value of the polynomial
 !     stored in array a at a particular point
 !
 function vpoly1q (x,a)

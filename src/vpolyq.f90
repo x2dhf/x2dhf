@@ -1,7 +1,7 @@
 
 ! ### vpolyq ###
 !
-!     This function uses the Horner scheme to calculate value of the polynomial 
+!     This function uses the Horner scheme to calculate value of the polynomial
 !     stored in array a at a particular point
 
 function vpolyq (mup,a)
@@ -14,7 +14,7 @@ function vpolyq (mup,a)
   real (PREC16) :: x
   real (PREC16), dimension(9) :: a
 
-  x=vmuq(mup)  
+  x=vmuq(mup)
   vpolyq=0.0_PREC16
   do i=iord,2,-1
      vpolyq=(vpolyq+a(i))*x

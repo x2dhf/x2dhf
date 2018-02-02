@@ -2,7 +2,7 @@
 ! *                                                                         *
 ! *   Copyright (C) 1996 Leif Laaksonen, Dage Sundholm                      *
 ! *   Copyright (C) 1996-2010 Jacek Kobus <jkob@fizyka.umk.pl>              *
-! *                                                                         *     
+! *                                                                         *
 ! *   This program is free software; you can redistribute it and/or modify  *
 ! *   it under the terms of the GNU General Public License version 2 as     *
 ! *   published by the Free Software Foundation.                            *
@@ -30,7 +30,7 @@ subroutine mpoleMom (cw_orb,cw_suppl,cw_sctch)
   real (PREC), dimension(*) :: cw_orb,cw_suppl,cw_sctch
 
   if (nel.eq.1) return
-  
+
   call getCpuTime(time1)
   call coulMom (cw_orb,cw_suppl(i4b(9)),cw_suppl(i4b(14)),cw_sctch(i5b( 1)),cw_sctch(i5b( 2)),cw_sctch(i5b( 3)),   &
        cw_sctch(i5b( 4)),cw_sctch(i5b( 5)),cw_sctch(i5b( 6)),cw_sctch(i5b( 7)),cw_sctch(i5b( 8)),cw_sctch(i5b( 9)),&
@@ -47,10 +47,10 @@ subroutine mpoleMom (cw_orb,cw_suppl,cw_sctch)
   endif
   call getCpuTime (time2)
   tmomen =tmomen + (time2-time1)
-  if (iprtlev.ne.3) then 
+  if (iprtlev.ne.3) then
      write(iout6,*) '... multipole moment expansion coefficients recalculated ...'
   endif
-  
+
 end subroutine mpoleMom
 
 

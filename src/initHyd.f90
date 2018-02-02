@@ -2,13 +2,13 @@
 ! *                                                                         *
 ! *   Copyright (C) 1996 Leif Laaksonen, Dage Sundholm                      *
 ! *   Copyright (C) 1996-2010 Jacek Kobus <jkob@fizyka.umk.pl>              *
-! *                                                                         *     
+! *                                                                         *
 ! *   This program is free software; you can redistribute it and/or modify  *
 ! *   it under the terms of the GNU General Public License version 2 as     *
 ! *   published by the Free Software Foundation.                            *
 ! *                                                                         *
 ! ***************************************************************************
-! c ### initHyd ###  
+! c ### initHyd ###
 ! c
 ! c     This routine initializes molecular orbitals as linear combinations
 ! c     of hydrogenic functions on centres A and B.  In the case of HF or
@@ -33,12 +33,12 @@ subroutine initHyd (psi,pot,excp,f2,f4,wgt2,wk0)
   real (PREC), dimension(*) :: wk0
 
 
-  !     Initialization of molecular orbitals 
+  !     Initialization of molecular orbitals
 
   print *,'... initializing orbitals from hydrogenic functions ...'
 
 !     loop over orbitals
-      
+
 !      do iorb=1,norbt
       do iorb=1,norb
          if (inhyd(iorb).eq.0) goto 100
@@ -55,22 +55,22 @@ subroutine initHyd (psi,pot,excp,f2,f4,wgt2,wk0)
             call axpy(ngorb,co1(iorb),wk0,ione,psi(i1beg),ione)
          endif
 
-         if (co2(iorb).ne.zero) then	    
+         if (co2(iorb).ne.zero) then
             n2=mgx(4,iorb)
             l2=mgx(5,iorb)
             m2=mgx(6,iorb)
-            ez2=eza2(iorb)	  
+            ez2=eza2(iorb)
             call hydrogenOrbB(wk0,n2,l2,m2,ez2)
             call axpy (ngorb,co2(iorb),wk0,ione,psi(i1beg),ione)
          endif
  100     continue
       enddo
-      
-01114 format(/1x,'  orbital        norm       (# primitive bf)')
-01115 format(1x,i2,1x,a5,e20.12,' (',i4,')')
+
+!01114 format(/1x,'  orbital        norm       (# primitive bf)')
+!01115 format(1x,i2,1x,a5,e20.12,' (',i4,')')
 
 !  initialize Coulomb and exchange potentials
 
-      call initPot(psi,pot,excp,f2,f4,wk0)	
+      call initPot(psi,pot,excp,f2,f4,wk0)
 
     end subroutine initHyd

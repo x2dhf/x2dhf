@@ -1,7 +1,7 @@
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !   Copyright (C) 2008 Tomasz Dziubak <tomek@fizyka.umk.pl> (C version)   !
 !   Copyright (C) 2017 Susi Lehtola (converted to Fortran 90)             !
-!                                                                         !     
+!                                                                         !
 !   This program is free software; you can redistribute it and/or modify  !
 !   it under the terms of the GNU General Public License version 2 as     !
 !   published by the Free Software Foundation.                            !
@@ -28,17 +28,17 @@ contains
 !  V0 - potential depth
 !   a - potential core width
 !	 if a=0, V0=1 -> Coulomb potential
-!	 if a>0, V0>0 -> smoothed Coulomb potential 
+!	 if a>0, V0>0 -> smoothed Coulomb potential
   function poth3(z, s, m, V0, a, precis)
     implicit none
     real (PREC), intent(in) :: z, s, V0, a, precis
     integer, intent(in) :: m
     real (PREC) :: popr_cylind, poth3
 
-    if (s .eq. 0.0_PREC .and. z .eq. 0.0_PREC) then
+    if (abs(s) .lt. precis .and. abs(z) .lt. precis) then
        popr_cylind = (m**2)/(2.0*precis**2)
        poth3 = -V0 / sqrt(a**2 + precis**2) + popr_cylind
-    else 
+    else
        if (s .lt. precis) then
           popr_cylind=(m**2)/(2.0_PREC * precis**2)
        else
@@ -70,10 +70,10 @@ contains
     integer, intent(in) :: m, N
     real (PREC) :: popr_cylind, potkh
 
-    if (s .eq. 0.0_PREC) then
+    if (abs(s) .lt. precis) then
        popr_cylind = (m**2)/(2.0_PREC * precis**2)
        potkh = popr_cylind + AM_HK_ZSimpson(z, precis, 0.0_PREC, eps, w, V0, a, N)
-    else 
+    else
        popr_cylind = (m**2)/(2.0_PREC * s**2);
        potkh = popr_cylind + AM_HK_ZSimpson(z, s, 0.0_PREC, eps, w, V0, a, N)
     end if
@@ -88,11 +88,11 @@ contains
     implicit none
     real (PREC), intent(in) :: t, x, y, z, e0, w, V0, a
     real (PREC) :: alpha0, bx, AM_HK
-    
+
     alpha0 = e0 / w**2
     bx = x + alpha0 + alpha0 * (cos(w*t)-1.0_PREC)
     AM_HK = -V0 / ( (2.0_PREC * pii / w) * sqrt(a**2 + bx**2 + y**2 + z**2) )
-    
+
     return
   end function AM_HK
 
@@ -106,7 +106,7 @@ contains
     real (PREC) :: dT
     ! Result
     real (PREC) :: AM_HK_ZSimpson
-    
+
     ! Calculate interval
     dT = 2*pii/(w*Nt)
 
@@ -121,14 +121,14 @@ contains
   function AM_HK_ZSimpson_itv(x, y, z, e0, w, V0, a, i, dt)
     real (PREC), intent(in) :: x, y, z, e0, w, V0, a, dt
     integer, intent(in) :: i
-    real (PREC) :: t1, t2, t3    
-    real (PREC) :: f1, f2, f3    
+    real (PREC) :: t1, t2, t3
+    real (PREC) :: f1, f2, f3
     real (PREC) :: AM_HK_ZSimpson_itv
 
     t1=(i-1.0_PREC)*dT
     t2=(i-0.5_PREC)*dT
     t3=i*dT
-    
+
     f1=AM_HK(t1, x, y, z, e0, w, V0, a)
     f2=AM_HK(t2, x, y, z, e0, w, V0, a)
     f3=AM_HK(t3, x, y, z, e0, w, V0, a)

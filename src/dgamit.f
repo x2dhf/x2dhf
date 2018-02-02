@@ -1,4 +1,4 @@
-      real*8 function dgamit (a, x) 
+      real*8 function dgamit (a, x)
       implicit integer*4 (i-n)
 
 c     july 1977 edition.  w. fullerton, c3, los alamos scientific lab.
@@ -50,7 +50,7 @@ cc 10   if (x.lt.0.d0) call seteru (21hdgamit  x is negative, 21, 2, 2)
       it21=21
       it32=32
 
- 10   if (x.lt.0.d0)call seteru ("dgamit  x is negative               ", 
+ 10   if (x.lt.0.d0)call seteru ("dgamit  x is negative               ",
      &     it21, it2, it2)
 
 c
@@ -136,7 +136,7 @@ cc      if (n.lt.1) call seteru (28hcsevl   number of terms le 0, 28, 2,2)
       if (n.lt.1) call seteru ("csevl   number of terms le 0        ",
      1     it28, it2,it2)
 cc      if (n.gt.1000) call seteru (31hcsevl   number of terms gt 1000,
-      if (n.gt.1000) call seteru 
+      if (n.gt.1000) call seteru
 c     1     ("csevl   number of terms gt 1000     ", 1  31, 3, 2)
      1     ("csevl   number of terms gt 1000     ", it31,it3,it2)
 
@@ -237,7 +237,7 @@ c
       bot = log (d1mach(it1))
 c
 cc 10   if (x.le.0.d0) call seteru (24hd9gmit  x should be gt 0, 24, 1, 2)
- 10   if (x.le.0.d0) call seteru 
+ 10   if (x.le.0.d0) call seteru
      1     ("d9gmit  x should be gt 0            ",it24,it1,it2)
 c
       ma = a + 0.5d0
@@ -445,7 +445,7 @@ c
       xmax =exp(dmin1(log(d1mach(it2)/12.d0), -log(12.d0*d1mach(it1))))
 c
 C 10   if (x.lt.10.d0) call seteru (23hd9lgmc  x must be ge 10, 23, 1, 2)
- 10   if (x.lt.10.d0) call seteru 
+ 10   if (x.lt.10.d0) call seteru
      1     ("d9lgmc  x must be ge 10             ",it23, it1, it2)
       if (x.ge.xmax) go to 20
 c
@@ -572,7 +572,7 @@ c      if (n.lt.1) call seteru (28hdcsevl  number of terms le 0, 28, 2,2)
       if (n.lt.1) call seteru ("dcsevl  number of terms le 0        ",
      1     it28, it2,it2)
 c      if (n.gt.1000) call seteru (31hdcsevl  number of terms gt 1000,
-      if (n.gt.1000) call seteru 
+      if (n.gt.1000) call seteru
      1   ("dcsevl  number of terms gt 1000       ",it31,it3,it2)
 c     1   ("dcsevl  number of terms gt 1000       ", 1 31,it3,it2)
       if (x.lt.(-1.1d0) .or. x.gt.1.1d0) call seteru (
@@ -699,7 +699,7 @@ c     compute gamma(x) for x .lt. 1.0
 c
       n = -n
 c      if (x.eq.0.d0) call seteru (14hdgamma  x is 0, 14, 4, 2)
-      if (x.eq.0.d0) call seteru 
+      if (x.eq.0.d0) call seteru
 c     1     ("dgamma  x is 0                      ",  1     14, it4, it2)
      1     ("dgamma  x is 0                      ", it14, it4, it2)
 
@@ -732,7 +732,7 @@ c
 c     gamma(x) for abs(x) .gt. 10.0.  recall y = abs(x).
 c
 c 50   if (x.gt.xmax) call seteru (32hdgamma  x so big gamma overflows,
- 50   if (x.gt.xmax) call seteru 
+ 50   if (x.gt.xmax) call seteru
 c     1     ("dgamma  x so big gamma overflows    ", 1  32, 3, 2)
      1     ("dgamma  x so big gamma overflows    ",it32, it3, it2)
 c
@@ -795,7 +795,7 @@ c
 c     dint is the real*8 equivalent of aint.  this portable
 c     version is quite efficient when the argument is reasonably small (a
 c     common case), and so no faster machine-dependent version is needed.
-c     
+c
       real*8 x, xscl, scale, xbig, xmax, part, d1mach, r1mach
       external d1mach,  i1mach, r1mach
       data npart, scale, xbig, xmax / 0, 3*0.0d0 /
@@ -852,7 +852,7 @@ c     july 1977 edition.  w. fullerton, c3, los alamos scientific lab.
 c
 c     evaluate log abs (gamma(x)) and return the sign of gamma(x) in sgngam.
 c     sgngam is either +1.0 or -1.0.
-c     
+c
       real*8 x, dlgam, sgngam, dint, dlngam
       external dint, dlngam
 c
@@ -869,7 +869,7 @@ c
       real*8 function dlngam (x)
       implicit integer*4 (i-n)
 
-     
+
 c     august 1980 edition.   w. fullerton, c3, los alamos scientific lab.
       real*8 x, dxrel, pi, sinpiy, sqpi2l, sq2pil,
      1  y, xmax, dint, dgamma, d9lgmc, d1mach
@@ -1081,7 +1081,7 @@ c
 c
       integer*4 iparam(2)
 c     iparam(1) is the error number and iparam(2) is the recovery switch.
-c     
+c
 c     start execution error free and with recovery turned off.
 c
       data iparam(1) /0/,  iparam(2) /2/
@@ -1237,11 +1237,11 @@ c     this version modified by w. fullerton to dump if iopt = 1 and
 c     not recovering.
 c     seterr sets lerror = nerr, optionally prints the message and dumps
 c     according to the following rules...
-c     
+c
 c     if iopt = 1 and recovering      - just remember the error.
 c     if iopt = 1 and not recovering  - print, dump and stop.
 c     if iopt = 2                     - print, dump and stop.
-c     
+c
 c     input
 c
 c     messg  - the error message.
@@ -1250,19 +1250,19 @@ c     nerr   - the error number. must have nerr non-zero.
 c     iopt   - the option. must have iopt=1 or 2.
 c
 c     error states -
-c     
+c
 c     1 - message length not positive.
 c     2 - cannot have nerr=0.
 c     3 - an unrecovered error followed by another error.
 c     4 - bad value for iopt.
-c     
+c
 c     only the first 72 characters of the message are printed.
 c
 c     the error handler calls a subroutine named fdump to produce a
 c     symbolic dump. to complete the package, a dummy version of fdump
 c     is supplied, but it should be replaced by a locally written version
 c     which at least gives a trace-back.
-c     
+c
 c      parameter (messglength=100)
       parameter (messglength=36)
       character*1 messg(messglength)

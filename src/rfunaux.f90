@@ -2,13 +2,13 @@
 ! *                                                                         *
 ! *   Copyright (C) 1996 Leif Laaksonen, Dage Sundholm                      *
 ! *   Copyright (C) 1996-2010 Jacek Kobus <jkob@fizyka.umk.pl>              *
-! *                                                                         *     
+! *                                                                         *
 ! *   This program is free software; you can redistribute it and/or modify  *
 ! *   it under the terms of the GNU General Public License version 2 as     *
 ! *   published by the Free Software Foundation.                            *
 ! *                                                                         *
 ! ***************************************************************************
-! ### rfunaux ###	
+! ### rfunaux ###
 
 !     Reads functions from a disk file in an unformatted form
 
@@ -30,6 +30,6 @@ subroutine rfunaux (s,t)
      endif
      !         print *,norb,i,ioffset,inhyd(i),t(i),s(i-ioffset)
   enddo
-  
+
 end subroutine rfunaux
 

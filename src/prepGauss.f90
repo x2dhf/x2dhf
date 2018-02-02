@@ -240,7 +240,7 @@ subroutine prepGauss
 01001 format(a46)
 01011 format(15x,e15.8)
 01012 format(5e15.8)
-01050 format(5i5,e15.8)
+!01050 format(5i5,e15.8)
 01140 format(/15x,i4,' exponents ',                         &
        /15x,i4,' primitive basis functions ',      &
        /15x,i4,' primitives on centre 1'           &
