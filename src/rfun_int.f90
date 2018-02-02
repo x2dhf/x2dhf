@@ -2,15 +2,15 @@
 ! *                                                                         *
 ! *   Copyright (C) 1996 Leif Laaksonen, Dage Sundholm                      *
 ! *   Copyright (C) 1996-2010 Jacek Kobus <jkob@fizyka.umk.pl>              *
-! *                                                                         *     
+! *                                                                         *
 ! *   This program is free software; you can redistribute it and/or modify  *
 ! *   it under the terms of the GNU General Public License version 2 as     *
 ! *   published by the Free Software Foundation.                            *
 ! *                                                                         *
 ! ***************************************************************************
-! ### rfun_int ###	
+! ### rfun_int ###
 !
-!     Reads functions from disk in unformatted form and interpolates 
+!     Reads functions from disk in unformatted form and interpolates
 !     to a new grid.
 !
 subroutine rfun_int (norb_p,cw_orb,cw_coul,cw_exch,wk8,wk16,cw_sctch)
@@ -20,43 +20,33 @@ subroutine rfun_int (norb_p,cw_orb,cw_coul,cw_exch,wk8,wk16,cw_sctch)
   use commons8
 
   implicit none
- 
+
 !  integer :: i,ierr,ii,ioffset,iorb1,iorb2,j,k,norbt
   integer :: i,ica,idel,ierr,ioffset,iorb1,iorb2,ipex,isym,j,k,norb_p
-  integer, dimension(9750) :: i4tmp
-  integer*8, dimension(9750) :: i8tmp
 
   integer, dimension(60) :: i1b_p,i2b_p,i1e_p,i2e_p,i1si_p,i2si_p,i1ng_p,i2ng_p,i1mu_p,i2mu_p
   integer, dimension(1830) :: i3b_p,i3e_p,i3si_p,i3ng_p,i3mu_p
 
   real (PREC), dimension(*) :: wk8,cw_orb,cw_coul,cw_exch,cw_sctch
-  real (PREC), dimension(60) :: r8tmp1
-  real (PREC), dimension(1200) :: r8tmp2
-  real (PREC), dimension(3660) :: r8tmp3
 
   real (PREC16), dimension(*) :: wk16
-  real (PREC16), dimension(60) :: r16tmp1
-  real (PREC16), dimension(1200) :: r16tmp2
-  real (PREC16), dimension(3660) :: r16tmp3
-
-
 
   read (iinp11,err=1000) i1b_p,i2b_p,i3b_p,i1e_p,i2e_p,i3e_p, &
-       i1si_p,i2si_p,i3si_p,i1ng_p,i2ng_p,i3ng_p,i1mu_p,i2mu_p,i3mu_p	
-  
+       i1si_p,i2si_p,i3si_p,i1ng_p,i2ng_p,i3ng_p,i1mu_p,i2mu_p,i3mu_p
+
   ioffset=norb-norb_p
   ica=1
-  write(iout6,1100) 
+  write(iout6,1100)
 01100 format('... interpolating orbitals:',/6x,$)
 01110 format(i4,$)
-  
+
   do i=1,norb_p
      write(iout6,1110) i
      ipex=mgx(6,i)
      ipex=ipex-2*(ipex/2)
      if (ipex.eq.0) then
-        isym= 1 
-     else 
+        isym= 1
+     else
         isym=-1
      endif
      if (lengthfp.eq.8) then
@@ -69,7 +59,7 @@ subroutine rfun_int (norb_p,cw_orb,cw_coul,cw_exch,wk8,wk16,cw_sctch)
            cw_sctch(i5b(1)+j-1)=wk8(j)
         enddo
      endif
-     
+
      if (lengthfp.eq.16) then
         call reada16(iinp11,i1si_p(i+ioffset),wk16,ierr)
         if (ierr.ne.0) then
@@ -80,17 +70,17 @@ subroutine rfun_int (norb_p,cw_orb,cw_coul,cw_exch,wk8,wk16,cw_sctch)
            cw_sctch(i5b(1)+j-1)=wk16(j)
         enddo
      endif
-     
+
      call dointerp (ica,i1mu_p(i),i1mu(i),cw_sctch(i5b(1)),cw_orb(i1b(i+ioffset)),cw_sctch(i5b(2)) )
-     
+
      if (ierr.ne.0) then
         write(iout6,*) 'error detected when reading orbital',i
         stop 'inifun'
      endif
   enddo
-  
+
   !     retrieve extra data from the orbital input file
-  
+
   read(iinp11,end=1010,err=1010) area
   read(iinp11,end=1010,err=1010) eng
   read(iinp11,end=1010,err=1010) engo
@@ -103,13 +93,13 @@ subroutine rfun_int (norb_p,cw_orb,cw_coul,cw_exch,wk8,wk16,cw_sctch)
   read(iinp11,end=1010,err=1010) exc6
   read(iinp11,end=1010,err=1010) exc7
   read(iinp11,end=1010,err=1010) exc8
-  
+
   write(iout6,*)
-  rewind iinp11	
-  
+  rewind iinp11
+
   ica=2
   isym=1
-  write(iout6,1102) 
+  write(iout6,1102)
 01102 format('... interpolating Coulomb potentials:',/6x,$)
   do i=1,norb_p
      write(iout6,1110) i
@@ -133,52 +123,52 @@ subroutine rfun_int (norb_p,cw_orb,cw_coul,cw_exch,wk8,wk16,cw_sctch)
            cw_sctch(i5b(1)+j-1)=wk16(j)
         enddo
      endif
-     
+
      call dointerp (ica,i2mu_p(i),i2mu(i),cw_sctch(i5b(1)),cw_coul(i2b(i+ioffset)),cw_sctch(i5b(2)) )
-     
+
      if (ierr.ne.0) then
         write(iout6,*) 'error detected when reading coulomb potential',i
         stop 'rfun_int'
      endif
   enddo
   write(iout6,*)
-  rewind iinp12	
-  
+  rewind iinp12
+
   if (imethod.eq.2) then
      write(*,*) 'rfun_int: disk file without extension retrieved '
      write(*,*) '      '
      rewind iinp13
      return
   endif
-  
+
   if (imethod.eq.1) then
      ica=3
-     
+
      !        to interpolate exchange potentials they have to be read in as a single file
 
      if (iform.eq.0.or.iform.eq.2) then
         write(*,'("rfun_int: cannot interpolate exchange potentials when they are being retrieved as " &
-             "separate files")')
+             & "separate files")')
         stop "rfun_int"
      endif
-     
-     write(iout6,1104) 
+
+     write(iout6,1104)
 01104 format('... interpolating exchange potentials for orbitals:',/6x,$)
      do iorb1=1,norb_p
-        write(iout6,1110) iorb1 
-        
+        write(iout6,1110) iorb1
+
         do iorb2=iorb1,norb_p
            k=iorb1+iorb2*(iorb2-1)/2
-           
+
            idel=abs(mgx(6,iorb1)-mgx(6,iorb2))
            if (iorb1.eq.iorb2) idel=2*mgx(6,iorb1)
            ipex=idel-2*(idel/2)
            if (ipex.eq.0) then
-              isym= 1  
+              isym= 1
            else
               isym=-1
            endif
-           
+
            if (iorb1.eq.iorb2.and.ll(iorb1).eq.0) goto 50
            if (lengthfp.eq.8) then
               call reada8(iinp13,i3si_p(k),wk8,ierr)
@@ -200,10 +190,10 @@ subroutine rfun_int (norb_p,cw_orb,cw_coul,cw_exch,wk8,wk16,cw_sctch)
                  cw_sctch(i5b(1)+j-1)=wk16(j)
               enddo
            endif
-           
-           
+
+
            call dointerp(ica,i3mu_p(k),i3mu(k),cw_sctch(i5b(1)),cw_exch(i3b(k)),cw_sctch(i5b(2)) )
-           
+
            if (ierr.ne.0) then
               write(iout6,*) 'error detected when reading exchange potential',iorb1,iorb2,k
               stop 'rfun_int'
@@ -230,7 +220,7 @@ subroutine rfun_int (norb_p,cw_orb,cw_coul,cw_exch,wk8,wk16,cw_sctch)
                  cw_sctch(i5b(1)+j-1)=wk16(j)
               enddo
            endif
-           
+
            call dointerp (ica,i3mu_p(k),i3mu(k),cw_sctch(i5b(1)),cw_exch(i3b(k)+i3si(k)),cw_sctch(i5b(2)) )
            if (ierr.ne.0) then
               write(iout6,*) 'error detected when reading exchange potential',iorb1,iorb2,k
@@ -243,7 +233,7 @@ subroutine rfun_int (norb_p,cw_orb,cw_coul,cw_exch,wk8,wk16,cw_sctch)
      write(iout6,*)
      rewind iinp13
   endif
-  
+
   return
 01000 continue
   write(*,*) '... error detected when retrieving the disk file ... '
