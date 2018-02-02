@@ -2,7 +2,7 @@
 ! *                                                                         *
 ! *   Copyright (C) 1996 Leif Laaksonen, Dage Sundholm                      *
 ! *   Copyright (C) 1996-2010 Jacek Kobus <jkob@fizyka.umk.pl>              *
-! *                                                                         *     
+! *                                                                         *
 ! *   This program is free software; you can redistribute it and/or modify  *
 ! *   it under the terms of the GNU General Public License version 2 as     *
 ! *   published by the Free Software Foundation.                            *
@@ -16,14 +16,22 @@
 function  dot(n,dx,ix,dy,iy)
   use params
   implicit none
-  integer :: i,ix,iy,n
+  integer :: ix,iy,n
   real (PREC) :: dot
   real (PREC), dimension(*) :: dx,dy
+
+#ifdef HAVE_BLAS
+  DOUBLE PRECISION, EXTERNAL :: ddot
+
+  dot=ddot(n,dx,ix,dy,iy)
+#else
+  integer :: i
 
   dot=0.0_PREC
   do i=1,n
      dot=dot+dx(i)*dy(i)
   enddo
+#endif
 
 end function dot
 
@@ -31,45 +39,61 @@ end function dot
 subroutine  copy(n,dx,ix,dy,iy)
   use params
   implicit none
-
-  integer :: i,ix,iy,n
-
+  integer :: ix,iy,n
   real (PREC), dimension(*) :: dx,dy
+
+#ifdef HAVE_BLAS
+  call dcopy(n,dx,ix,dy,iy)
+#else
+  integer::i
 
   do i=1,n
      dy(i)=dx(i)
   enddo
+#endif
 
 end subroutine copy
 
 subroutine  axpy(n,da,dx,ix,dy,iy)
   use params
   implicit none
-  integer :: i,ix,iy,n
+  integer :: ix,iy,n
   real (PREC) :: da
   real (PREC), dimension(*) :: dx,dy
+
+#ifdef HAVE_BLAS
+  call daxpy(n,da,dx,ix,dy,iy)
+#else
+  integer :: i
 
   do i=1,n
      dy(i)=da*dx(i)+dy(i)
   enddo
+#endif
 end subroutine axpy
 
 subroutine  scal(n,da,dx,ix)
   use params
   implicit none
-  integer :: i,ix,n
+  integer :: ix,n
   real (PREC) :: da
   real (PREC), dimension(*) :: dx
+
+#ifdef HAVE_BLAS
+  call dscal(n,da,dx,ix)
+#else
+  integer :: i
 
   do i=1,n
      dx(i)=da*dx(i)
   enddo
+#endif
 
 end subroutine scal
 
 
-!!     Multiplies the matrix DX(nr,nc) times the vector DV(nc) and stores 
-!!     the result in the vector DY(nr) by means of calling DGEMV 
+!!     Multiplies the matrix DX(nr,nc) times the vector DV(nc) and stores
+!!     the result in the vector DY(nr) by means of calling DGEMV
 !!
 !      subroutine dgemv (trans,nr1,nc,alpha,dx,nr2,dv,incr1,beta,
 !     &     dvr,incr2)
@@ -88,17 +112,22 @@ end subroutine scal
 !      return
 !      end
 
-      
-!     Multiplies the matrix DX(nr,nc) times the vector DV(nc) and stores                                    
-!     the result in the vector DY(nr) (simplified version of DGEMV)                                         
-!                                                                                                           
+
+!     Multiplies the matrix DX(nr,nc) times the vector DV(nc) and stores
+!     the result in the vector DY(nr) (simplified version of DGEMV)
+!
 subroutine gemv (nr1,nc,dx,dv,dvr)
   use params
   implicit none
-  integer :: inr,inc,nc,nr1
-  real (PREC) :: s
+  integer :: nc,nr1
   real (PREC), dimension(nr1,*) :: dx
   real (PREC), dimension(*) :: dv,dvr
+
+#ifdef HAVE_BLAS
+  call dgemv(nr1,nc,dx,dv,dvr)
+#else
+  integer :: inc, inr
+  real (PREC) :: s
 
   do inr=1,nr1
      s=0.0_PREC
@@ -107,20 +136,5 @@ subroutine gemv (nr1,nc,dx,dv,dvr)
      enddo
      dvr(inr)=s
   enddo
+#endif
 end subroutine gemv
-
-
-
-                      
-
-
-
-
-
-
-
-
-
-
-
-

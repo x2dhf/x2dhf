@@ -12,12 +12,13 @@ MOD_PATH =
 ##FFLAGS   = -O2  -fforce-addr -fstrength-reduce -funroll-loops
 ##FFLAGS   = -O2   -ffpe-trap=underflow
 FC       = gfortran
-FFLAGS   = -O2 -Wall
+FFLAGS   = -O2 -g -Wall
+#FFLAGS   = -O2 -g -Wall -DHAVE_BLAS # Not working yet
 
 AM_FLAGS   =
 
 #LIBS =-static-libgfortran
-LIBS =
+#LIBS = -lopenblas
 
 MODS = params.o discret.o card.o commons8.o commons16.o kh.o memory.o scf.o scheduler.o solver.o
 
@@ -264,7 +265,7 @@ memory.f90.o : memory.f90
 scf.f90.o : scf.f90   params.mod
 scheduler.f90.o : scheduler.f90   params.mod
 solver.f90.o : solver.f90   params.mod
-blas.f90.o : blas.f90   params.mod
+blas.F90.o : blas.F90   params.mod
 checkOrbSym.f90.o : checkOrbSym.f90   params.mod  commons8.mod
 checkOrtho.f90.o : checkOrtho.f90   params.mod  commons8.mod
 checkOrb.f90.o : checkOrb.f90   params.mod  discret.mod commons8.mod
@@ -490,8 +491,10 @@ setPrecision.o : setPrecision.f90 params.mod commons8.mod
 clean :
 	\rm -f $(OBJS) $(MODS) *.mod *.gcov *.gcda *.gcno *.out
 
-SUFFIXES = .f90
+SUFFIXES = .f90 .F90
 .f90.o:
+	$(FC) -c $(FFLAGS) $<
+.F90.o:
 	$(FC) -c $(FFLAGS) $<
 
 
