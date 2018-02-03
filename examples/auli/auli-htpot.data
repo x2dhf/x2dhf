@@ -1,0 +1,16 @@
+! In this calculation one produces potentials out of gaussian orbitals
+TITLE AuLi R = 4.303
+METHOD HF
+NUCLEI  79.0 3.0 4.303
+CONFIG  0
+1 phi 
+4 delta
+8 pi
+15 sigma end
+GRID 397 661 200.0
+orbpot gauss
+multipol -1
+fix 1 0 0
+SCF 10000 10 10 8 1 
+omega 1.6 1.8
+STOP
