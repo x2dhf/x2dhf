@@ -26,7 +26,7 @@ subroutine Eab1HF(iorb1,iorb2,psi,pot,excp,e,f0,wgt1,wgt2,wk0,wk1,wk2,wk3)
 
   implicit none
   integer :: i,i1beg,i1beg1,i1beg2,i2beg,i3beg,ihc,iorb,iorb1,iorb2,ipc12,isym,kex,ngex,&
-       ngorb,ngorb1,ngorb2,ngpot,ngpot1,ngpot2,ngrid,ngrid1,ngrid2,norb2,nmut
+       ngorb,ngorb1,ngorb2,ngpot,ngpot1,ngpot2,ngrid,ngrid2,norb2,nmut
 
   real (PREC) :: coo,w,woneel,wtwoel
   real (PREC), dimension(*) :: psi,pot,excp,e,f0,wgt1,wgt2,wk0,wk1,wk2,wk3

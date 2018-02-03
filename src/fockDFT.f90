@@ -21,10 +21,9 @@ subroutine fockDFT(iorb,psi,pot,excp,e,f0,f1,f2,f4,fock1,fock2,wk2,wk3,wk4,wk5,w
   use commons8
 
   implicit none
-  integer :: i,ibexp,iborb,iborb1,ibpot,ibpot1,idexp,iorb,iorb1,ipc,kex,ngexp,ngorb,ngorb1,ngpot,ngpot1,norb2,ngrid, &
-       isiorb1
+  integer :: i,iborb,iborb1,ibpot,ibpot1,iorb,iorb1,ipc,ngorb,ngorb1,ngpot,ngpot1,norb2,isiorb1
 
-  real (PREC) :: const13,coo,coo0,coo1,coo2,ocdown,ocup,tmpf,w
+  real (PREC) :: const13,ocdown,ocup,tmpf,w
   real (PREC),dimension(*) :: psi,pot,excp,e,f0,f1,f2,f4,fock1,fock2,wk2,wk3,wk4,wk5,wk6,wk7,wk8,wk9,wk10,&
        wk11,wk12,wk13
   real (PREC), external :: fdftpot

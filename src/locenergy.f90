@@ -21,7 +21,7 @@ subroutine locenergy (iorb,psi,pot,excp,e,f0,f4,wgt1,wgt2,wk0,wk1,wk2,wk3)
   implicit none
   integer :: i,i1beg1,i1beg,i2beg,i2beg1,i3beg,ibeg,ihc,im,imax,in,iorb,iorb1,ioutmat, &
        ipc,ipe,isym,kex,ngex,ngorb,ngorb1,ngpot,ngpot1,ngrid,ngrid2,nmut
-  real (PREC) :: d1,oc,w,w1,w2,wk2max,wtwoel
+  real (PREC) :: oc,w,w1,w2,wk2max,wtwoel
   real (PREC), dimension(*) :: psi,pot,excp,e,f0,wgt1,wgt2,wk0,wk1,wk2,wk3,f4
 
   character*13 :: fn

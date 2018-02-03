@@ -22,7 +22,6 @@ subroutine doSCF (cw_sor,cw_orb,cw_coul,cw_exch,cw_suppl,cw_sctch)
   real (PREC) :: ddmax,denmax,ddmaxprev,dnmaxprev,dnomax,thren,thrno,time1,time2,tscf
 
   integer, dimension(*) :: cw_sor
-  integer, dimension(7) :: iorborder
 
   real (PREC), dimension(60) :: demaxt
   real (PREC), dimension(*) ::  cw_orb,cw_coul,cw_exch,cw_suppl,cw_sctch

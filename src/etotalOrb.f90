@@ -20,8 +20,8 @@ subroutine etotalOrb (iorb,psi,pot,excp,e,f0,wgt1,wgt2,wk0,wk1,wk2,wk3,wk4,wk5,w
   use commons8
 
   implicit none
-  integer :: ibex,iborb,iborb1,iborb2,ibpot,ibpot1,ibpot2,iex,iex1,iex2,iorb,iorb1,iorb2,ipot1,ipot2,&
-       isiex,isiex1,isiex2,isiorb,isiorb1,isiorb2,isipot,isipot1,isipot2,isym,ngrid,nmut,nmut1,nmut2,norb2
+  integer :: ibex,iborb,iborb1,iborb2,ibpot,ibpot1,ibpot2,iex,iex1,iorb,iorb1,iorb2,&
+       isiex,isiex1,isiorb,isiorb1,isiorb2,isipot,isipot1,isipot2,isym,ngrid,nmut,nmut1,nmut2,norb2
   real (PREC) :: epscharge,oc,oc1,oc2,ocx1,ocx2,w,wdcoul,wex1,wex2,wndc,woneel
 
   real (PREC), dimension(*) :: psi,pot,excp,e,f0,wgt1,wgt2,wk0,wk1,wk2,wk3,wk4,wk5,wk6,wk7,wk8,wk9,wk10,wk11,wk12,wk13
