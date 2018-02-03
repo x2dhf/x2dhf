@@ -12,5 +12,7 @@ orbpot gauss
 multipol -1
 fix 1 0 0
 SCF 10000 10 10 8 1 
+# initial sor/scf iterations should be performed with omega parameter set to a lower value
+# than the optimal one
 omega 1.6 1.8
 STOP
