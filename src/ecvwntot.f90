@@ -22,7 +22,7 @@ function ecvwntot (psi,wgt2,rhot,rhotup,rhotdown, &
   real (PREC) :: ecvwntot
   integer :: i,iborb,iorb,isiorb,nmut
   real (PREC) :: ck1,cl1,cm1,cn1,const16,constx,ocdown,ocup,x
-  real (PREC), dimension(:) :: psi,wgt2,wk0,wk1,wk2,wk3,wk4,wk5,wk6,wk7, &
+  real (PREC), dimension(*) :: psi,wgt2,wk0,wk1,wk2,wk3,wk4,wk5,wk6,wk7, &
        rhot,rhotup,rhotdown,grhot,grhotup,grhotdown
   real (PREC), external :: dot,qvwn
 

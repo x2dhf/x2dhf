@@ -21,7 +21,7 @@ subroutine fvwncs (psi,f4,rhot,rhotup,rhotdown,grhot,grhotup,grhotdown, &
   implicit none
   integer :: i,iborb,iorb,isiorb,nmut
   real (PREC) :: ocdown,ocup
-  real (PREC), dimension(:) :: psi,f4,wk0,wk1,wk2,wk3,wk4,wk5,wk6,wk7, &
+  real (PREC), dimension(*) :: psi,f4,wk0,wk1,wk2,wk3,wk4,wk5,wk6,wk7, &
        rhot,rhotup,rhotdown,grhot,grhotup,grhotdown
 
   do i=1,mxsize
