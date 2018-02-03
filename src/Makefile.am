@@ -12,7 +12,7 @@ MOD_PATH =
 ##FFLAGS   = -O2  -fforce-addr -fstrength-reduce -funroll-loops
 ##FFLAGS   = -O2   -ffpe-trap=underflow
 FC       = gfortran
-FFLAGS   = -O2 -g -Wall
+FFLAGS   = -O2 -g -Wall -Wno-unused-dummy-argument -Wunused-variable
 #FFLAGS   = -O2 -g -Wall -DHAVE_BLAS
 
 AM_FLAGS   =

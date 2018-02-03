@@ -12,11 +12,11 @@ subroutine inputData(ni_t,mu_t,no_t,nons_t)
 
   implicit none
 
-  integer :: i,icompLAdd,icompLEnc,icompLExp,id1,id2,iform_t,ig,ihit,inFloatorm,inpiexit,&
+  integer :: i,icompLAdd,icompLEnc,icompLExp,id1,id2,iform_t,ig,ihit,inpiexit,&
        inzero,iopenshell,iorb,iput,iput1,isum,isum0,isum1,itmp,itmp1,itmp2,itotq,izz1,izz2,j,mgi,mt,n,nbsym,next,&
        nmethods,nmutot,nlabels,no,nonortho,maxflags,ni_t,mu_t,no_t,nons_t
 
-  real (PREC) :: clo,cloe,co12,fmfield,ftmp,ftmp1,ftmp2,tmp,tmp1,tmp2,totchar,totq,z1t,z2t
+  real (PREC) :: clo,cloe,co12,fmfield,ftmp,ftmp1,ftmp2,tmp1,tmp2,totchar,totq,z1t,z2t
 
   integer, external :: nmucalc,nnucalc
 

@@ -17,7 +17,7 @@ subroutine rheader(norb_p)
   use commons8
 
   implicit none
-  character*80 :: datetime,datetime_p,header_p
+  character*80 :: datetime_p,header_p
   integer :: i,ig,imax1,imax2,mismatch,nel_p,nexch_p,norb_p
   real (PREC) :: rd,z1d,z2d
   integer i4tmp1,i4tmp2,i4tmp3

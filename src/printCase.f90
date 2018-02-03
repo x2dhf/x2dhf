@@ -24,7 +24,7 @@ subroutine printCase
 
   implicit none
 
-  integer :: ib,ie,ig,input,ior,iorb,ip,izz1,izz2,isizeint,isizereal
+  integer :: ib,ie,ig,ior,iorb,ip,izz1,izz2,isizeint,isizereal
   integer :: lengtht,length0,maxorb2,mm3,omb
 
   real (PREC) ::  heta,hxibeg,hxiend,rinfig
@@ -286,7 +286,7 @@ subroutine printCase
 1052 format(10x,'orbitals are kept frozen')
 1053 format(10x,'Coulomb potentials are relaxed')
 1054 format(10x,'Coulomb potentials are kept frozen')
-1055 format(10x,'exchange potential for each pair of orbitals isrelaxed twice per single scf iteration')
+1055 format(10x,'exchange potential for each pair of orbitals is relaxed twice per single scf iteration')
 1056 format(10x,'exchange potential for each pair of orbitals is relaxed once per single scf iteration')
 1057 format(10x,'exchange potentials are kept frozen')
 1058 format(/,10x,'multipole expansion coefficients = ',i2)
