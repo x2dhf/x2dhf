@@ -110,30 +110,20 @@ contains
     ! Calculate interval
     dT = 2*pii/(w*Nt)
 
-    AM_HK_ZSimpson = 0.0_PREC
-    do i=1,Nt
-       AM_HK_ZSimpson = AM_HK_ZSimpson + AM_HK_ZSimpson_itv(x,y,z,e0,w,V0,a,i,dT)
+    ! Values at the end points
+    AM_HK_ZSimpson = AM_HK(0.0_PREC, x, y, z, e0, w, V0, a) &
+         + AM_HK(Nt*dT, x, y, z, e0, w, V0, a)
+    ! Values at the intermediate points
+    do i=1,Nt-1
+       AM_HK_ZSimpson = AM_HK_ZSimpson + 2.0_PREC * AM_HK(i*dT,x,y,z,e0,w,V0,a)
     end do
+    ! Values at the mid points
+    do i=0,Nt-1
+       AM_HK_ZSimpson = AM_HK_ZSimpson + 4.0_PREC * AM_HK((i+0.5_PREC)*dT,x,y,z,e0,w,V0,a)
+    end do
+    ! Normalization
+    AM_HK_ZSimpson = AM_HK_ZSimpson * dt / 6.0_PREC
+    
     return
   end function AM_HK_ZSimpson
-
-  ! Calculates a single interval
-  function AM_HK_ZSimpson_itv(x, y, z, e0, w, V0, a, i, dt)
-    real (PREC), intent(in) :: x, y, z, e0, w, V0, a, dt
-    integer, intent(in) :: i
-    real (PREC) :: t1, t2, t3
-    real (PREC) :: f1, f2, f3
-    real (PREC) :: AM_HK_ZSimpson_itv
-
-    t1=(i-1.0_PREC)*dT
-    t2=(i-0.5_PREC)*dT
-    t3=i*dT
-
-    f1=AM_HK(t1, x, y, z, e0, w, V0, a)
-    f2=AM_HK(t2, x, y, z, e0, w, V0, a)
-    f3=AM_HK(t3, x, y, z, e0, w, V0, a)
-
-    AM_HK_ZSimpson_itv = (f1 + 4.0_PREC * f2 + f3) * dt / 6.0_PREC
-    return
-  end function AM_HK_ZSimpson_itv
 end module kh
