@@ -2,27 +2,27 @@ module commons8
   use params
 
 
-  real (PREC) :: bohr2ang,au2Debye,ainfcm  
+  real (PREC) :: bohr2ang,au2Debye,ainfcm
   data au2Debye /2.541765_PREC/
   data bohr2ang /0.529177249_PREC/
   ! ainfcm: bohr radius in cm
   data ainfcm/0.529177249e-08_PREC/
 
-  character*2, dimension(0:100) :: element  
+  character*2, dimension(0:100) :: element
   data element/ &
        ' ','H ','He','Li','Be','B ','C ','N ','O ','F ','Ne','Na','Mg','Al','Si','P ','S ','Cl','Ar','K ','Ca',&
        'Sc','Ti','V ','Cr','Mn','Fe','Co','Ni','Cu','Zn','Ga','Ge','As','Se','Br','Kr','Rb','Sr','Y ','Zr',&
        'Nb','Mo','Tc','Ru','Rh','Pd','Ag','Cd','In','Sn','Sb','Te','I ','Xe','Cs','Ba','La','Ce','Pr','Nd',&
        'Pm','Sm','Eu','Gd','Tb','Dy','Ho','Er','Tm','Yb','Lu','Hf','Ta','W ','Re','Os','Ir','Pt','Au','Hg',&
        'Tl','Pb','Bi','Po','At','Rn','Fr','Ra','Ac','Th','Pa','U ','Np','Pu','Am','Cm','Bk','Cf','Es','Fm'/
-  
-  
+
+
   !   atomic masses of most abundant isotopes extracted from
   !   The 1983 Atomic Mass Evaluation by Wapstra and Audi
 
   real (PREC), dimension(0:100) :: atweight,alphaopt
   real (PREC), dimension(0:103) :: dgsz(0:103)
-      
+
   data atweight/ &
        0.0_PREC, 1.0078250350_PREC,4.002603240_PREC,7.01600300_PREC,9.01218220_PREC,1.10093054e1_PREC,&
        1.2e1_PREC,1.4003074002e1_PREC,1.599491463e1_PREC,1.899840322e1_PREC,1.99924356e1_PREC,&
@@ -44,7 +44,7 @@ module commons8
        2.22017571e2_PREC,2.23019733e2_PREC,2.26025403e2_PREC,2.27027750e2_PREC,2.320380508e2_PREC,&
        2.31035880e2_PREC,2.380507847e2_PREC,2.370481678e2_PREC,2.44064199e2_PREC,2.43061375e2_PREC,&
        2.47070347e2_PREC,2.47070300e2_PREC,2.51079580e2_PREC,2.52082944e2_PREC,2.57095099e2_PREC/
-      
+
   !     recommended alpha values for elements Z=2-41 (see K.Schwarz
   !       Phys. Rev. B 5 (1972) 2466-2468)
   data alphaopt/0.000000_PREC, 0.000000_PREC,0.772980_PREC,0.781470_PREC,0.768230_PREC,0.765310_PREC,&
@@ -62,11 +62,11 @@ module commons8
        0.703830_PREC,0.703830_PREC,0.703830_PREC,0.703830_PREC,0.703830_PREC,0.703830_PREC,0.703830_PREC,&
        0.703830_PREC,0.703830_PREC,0.703830_PREC,0.703830_PREC,0.703830_PREC,0.703830_PREC,0.703830_PREC,&
        0.703830_PREC,0.703830_PREC,0.703830_PREC,0.70383_PREC/
-      
-  
+
+
   !    d parameters for Green, Sellin, Zachor model HF potential
-  !    added values for Z=1 and 2 to get approximate 1s orbital energies 
-  !    for H and He  
+  !    added values for Z=1 and 2 to get approximate 1s orbital energies
+  !    for H and He
   data dgsz/0.0000_PREC, 0.1000_PREC, 1.9901_PREC, 0.5630_PREC, 0.8580_PREC, 0.9790_PREC, &
        0.8800_PREC, 0.7760_PREC, 0.7080_PREC, 0.5750_PREC, 0.5000_PREC, 0.5610_PREC, 0.6210_PREC, &
        0.7290_PREC, 0.8170_PREC, 0.8680_PREC, 0.8850_PREC, 0.8810_PREC, 0.8620_PREC, 1.0060_PREC, &
@@ -82,15 +82,15 @@ module commons8
        0.7260_PREC, 0.7440_PREC, 0.7610_PREC, 0.7770_PREC, 0.8180_PREC, 0.8590_PREC, 0.8990_PREC, &
        0.9270_PREC, 0.8870_PREC, 0.8800_PREC, 0.8720_PREC, 0.8320_PREC, 0.8220_PREC, 0.8420_PREC, &
        0.8300_PREC, 0.7900_PREC, 0.7780_PREC, 0.7660_PREC, 0.7540_PREC, 0.7420_PREC, 0.755_PREC/
-  
-      
+
+
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
       character*8, dimension(60)  :: gut,bond,orbsym
       character*8, dimension(240)  :: spin
       character*8, dimension(300)  :: spn
 
-      integer :: nexchp,norb,nel,nexch          		 
+      integer :: nexchp,norb,nel,nexch
 
 
       integer :: ifefield,iharm2xy,magfield,inclorb,idump,iinterp,imethod,ipot,ienterm,inoterm,iftail,ifermi,iplot
@@ -113,7 +113,7 @@ module commons8
 
       integer, dimension(120) :: lagraon
       integer, dimension(300) :: iqm
-      integer, dimension(1830) :: i3b,i3e,i3si,i3ng,i3mu,ilc	
+      integer, dimension(1830) :: i3b,i3e,i3si,i3ng,i3mu,ilc
       integer, dimension(1860) :: iwexch,i3xrec1,i3xrec2,i3orb1,i3orb2
       integer, dimension(maxbasis) :: lprim,mprim,icgau,ixref
       integer, dimension(4,10) :: ingr1,ingr2
@@ -124,10 +124,10 @@ module commons8
 
       character*4, dimension(10) :: cdftex,cdftcorr
 
-      character*80 :: header  
+      character*80 :: header
 
       ! character*1, dimension(80) ::  dtarr1,dtarr2
-      
+
       ! equivalence(header_p,dtarr1(1))
       ! equivalence(datetime_p,dtarr2(1))
 
@@ -146,7 +146,7 @@ module commons8
 
 
 
-      real (PREC), dimension(12) :: calp 
+      real (PREC), dimension(12) :: calp
       real (PREC), dimension(60) :: eza1,eza2,co1,co2,area,wstorthog,qxm,occ,sign,demax,vk,vn,eng,engi,engt,pnc,div
 
 

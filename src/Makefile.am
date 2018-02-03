@@ -13,7 +13,7 @@ MOD_PATH =
 ##FFLAGS   = -O2   -ffpe-trap=underflow
 FC       = gfortran
 FFLAGS   = -O2 -g -Wall
-#FFLAGS   = -O2 -g -Wall -DHAVE_BLAS # Not working yet
+#FFLAGS   = -O2 -g -Wall -DHAVE_BLAS
 
 AM_FLAGS   =
 

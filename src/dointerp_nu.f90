@@ -1,33 +1,31 @@
 ! ***************************************************************************
 ! *                                                                         *
 ! *   Copyright (C) 1996-2010 Jacek Kobus <jkob@fizyka.umk.pl>              *
-! *                                                                         *     
+! *                                                                         *
 ! *   This program is free software; you can redistribute it and/or modify  *
 ! *   it under the terms of the GNU General Public License version 2 as     *
 ! *   published by the Free Software Foundation.                            *
 ! *                                                                         *
 ! ***************************************************************************
-! ### dointerp_nu ###	
+! ### dointerp_nu ###
 !
 !     Performs interpolations of functions in ni variable.
 !
-subroutine dointerp_nu (nmuall,fbefore,fafter) 
+subroutine dointerp_nu (nmuall,fbefore,fafter)
   use params
   use discret
   use commons8
   use commons16
 
   implicit none
-  integer :: i,idebug1,idebug2,idebug3,imu,ini_first,ini_p,k,nmuall, &
-       nni_first,nni_last
-  real (PREC) :: rerror
+  integer :: i,imu,ini_p,k,nmuall,nni_first,nni_last
 
   real (PREC), dimension(nni_p,*) :: fbefore
   real (PREC), dimension(nni,*) :: fafter
   real (PREC16) xni
   real (PREC16), dimension(9) :: coeffq
   real (PREC16), dimension(9,9) :: coeffq2
-  real (PREC16), external ::  vpoly1q  
+  real (PREC16), external ::  vpoly1q
 
 ! interpolation for the first iord2 points in ni variable
 
@@ -35,17 +33,17 @@ subroutine dointerp_nu (nmuall,fbefore,fafter)
      if(vni(ini).ge.vni_p(iord2)) goto 115
   enddo
 00115 continue
-  nni_first=ini 
-  
+  nni_first=ini
+
   do k=1,kend
      call lpcoeffq(iord2+1,k,coeffq)
      do i=1,kend
         coeffq2(i,k)=coeffq(i)
      enddo
   enddo
-  
+
   do ini=1,nni_first
-     xni=vni(ini)            
+     xni=vni(ini)
      do imu=1,nmuall
         fafter(ini,imu)=0.0_PREC
         do k=1,kend
@@ -56,10 +54,10 @@ subroutine dointerp_nu (nmuall,fbefore,fafter)
         endif
      enddo
   enddo
-  
+
   !  Interpolation for the last iord2 points in ni variable.
   !  Determine the location of the tail region in the new grid
-  
+
   do ini=1,nni
      if(vni(ini).ge.vni_p(nni_p-iord2+1)) goto 120
   enddo
@@ -69,16 +67,16 @@ subroutine dointerp_nu (nmuall,fbefore,fafter)
   else
      nni_last=ini
   endif
-  
+
   do k=1,kend
      call lpcoeffq(nni_p-iord2,k,coeffq)
      do i=1,kend
         coeffq2(i,k)=coeffq(i)
      enddo
   enddo
-  
+
   do ini=nni_last-iord2+1,nni
-     xni=vni(ini)            
+     xni=vni(ini)
      do imu=1,nmuall
         fafter(ini,imu)=0.0_PREC
         do k=1,kend
@@ -89,11 +87,11 @@ subroutine dointerp_nu (nmuall,fbefore,fafter)
         endif
      enddo
   enddo
-  
+
   !     interpolation for the inner points in this region
-  
+
   do ini=nni_first+1,nni_last-iord2
-     xni=vni(ini)            
+     xni=vni(ini)
      do i=1,nni_p
         if(vni_p(i).ge.xni) goto 130
      enddo
@@ -103,14 +101,14 @@ subroutine dointerp_nu (nmuall,fbefore,fafter)
      else
         ini_p=i
      endif
-     
+
      do k=1,kend
         call lpcoeffq(ini_p,k,coeffq)
         do i=1,kend
            coeffq2(i,k)=coeffq(i)
         enddo
      enddo
-     
+
      do imu=1,nmuall
         fafter(ini,imu)=0.0_PREC
         do k=1,kend

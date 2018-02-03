@@ -63,7 +63,6 @@ subroutine rexponents(ibc,ib,istop)
               call inCardG(7,0)
               call inFloat(expon(j))
               call inFloat(dcoef(j,1))
-              !              read(7,1010,end=950,err=904) expon(j),dcoef(j,1)
            enddo
            !              define s-type gaussians
            ibc=ibc+1
@@ -78,7 +77,6 @@ subroutine rexponents(ibc,ib,istop)
            enddo
         elseif (symlab.eq.'sp      ') then
            do j=1,ncf
-!              read(7,1010,end=950,err=904) expon(j),dcoef(j,1),dcoef(j,2)
               call inCardG(7,0)
               call inFloat(expon(j))
               call inFloat(dcoef(j,1))
@@ -112,7 +110,6 @@ subroutine rexponents(ibc,ib,istop)
            enddo
         elseif (symlab.eq.'p       ') then
            do j=1,ncf
-!              read(7,1010,end=950,err=904) expon(j),dcoef(j,2)
               call inCardG(7,0)
               call inFloat(expon(j))
               call inFloat(dcoef(j,2))
@@ -136,7 +133,6 @@ subroutine rexponents(ibc,ib,istop)
            !              define d-type orbitals (d0,d1,d-1,d2,d-2)
         elseif (symlab.eq.'d       ') then
            do j=1,ncf
-!              read(7,1010,end=950,err=904) expon(j),dcoef(j,3)
               call inCardG(7,0)
               call inFloat(expon(j))
               call inFloat(dcoef(j,3))
@@ -161,7 +157,6 @@ subroutine rexponents(ibc,ib,istop)
            !              define f-type orbitals (f0,f1,f-1,f2,f-2,f3,f-3)`
         elseif (symlab.eq.'f       ') then
            do j=1,ncf
-              !              read(7,1010,end=950,err=904) expon(j),dcoef(j,4)
               call inCardG(7,0)
               call inFloat(expon(j))
               call inFloat(dcoef(j,4))
@@ -187,7 +182,6 @@ subroutine rexponents(ibc,ib,istop)
            !              define g-type orbitals (g0,g1,g-1,g2,g-2,g3,g-3,g4,g-4)`
         elseif (symlab.eq.'g       ') then
            do j=1,ncf
-              !              read(7,1010,end=950,err=904) expon(j),dcoef(j,4)
               call inCardG(7,0)
               call inFloat(expon(j))
               call inFloat(dcoef(j,5))
@@ -215,7 +209,6 @@ subroutine rexponents(ibc,ib,istop)
            !              define h-type orbitals (h0,h1,h-1,h2,h-2,h3,h-3,h4,h-4,h5,h-5)`
         elseif (symlab.eq.'h       ') then
            do j=1,ncf
-              !              read(7,1010,end=950,err=904) expon(j),dcoef(j,4)
               call inCardG(7,0)
               call inFloat(expon(j))
               call inFloat(dcoef(j,6))
@@ -245,7 +238,6 @@ subroutine rexponents(ibc,ib,istop)
            !              define i-type orbitals (i0,i1,i-1,i2,i-2,i3,i-3,i4,i-4,i5,i-5,i6,i-6)`
         elseif (symlab.eq.'i       ') then
            do j=1,ncf
-              !              read(7,1010,end=950,err=904) expon(j),dcoef(j,4)
               call inCardG(7,0)
               call inFloat(expon(j))
               call inFloat(dcoef(j,7))
@@ -283,13 +275,11 @@ subroutine rexponents(ibc,ib,istop)
         return
      endif
   enddo
-00900 istop=1
+  istop=1
   return
 
-00904 print *,'r_exponents: error encountered when reading gauss94.out'
-  stop
-00950 stop 'r_exponents: end of gauss94.out file encountered'
+!00904 stop 'r_exponents: error encountered when reading gauss94.out'
+!00950 stop 'r_exponents: end of gauss94.out file encountered'
 00990 stop 'r_exponents: too many basis functions; increase maxbasis'
-01000 format(a3,2x,i2)
-01010 format(2x,e16.10,2x,e16.10,2x,e16.10,2x)
+!01000 format(a3,2x,i2)
 end subroutine rexponents

@@ -6,23 +6,23 @@ subroutine leexact1 (vt,orb)
   use commons8
 
   implicit none
-  integer :: i1beg1,ibeg1,idev2,imu,iorb,ipb,ipoints
+  integer :: idev2,imu,iorb,ipb,ipoints
   real (PREC) :: c1,d1,ddnom,dev1,dev2,dnum,e,r1,r1max,s1,s2,s3,t,w
   real (PREC), dimension(nni,mxnmu) :: orb,vt
 
   iorb=1
   w=eng(iorb)
-  
+
   dev1=zero
   dev2=zero
   idev2=0
   r1max=0.20_PREC
   ipoints=0
   izero=0
-  
+
   do ini=1,nni
      do imu=1,mxnmu
-        r1=(r/2.0_PREC)*(vxi(imu)+veta(ini))            
+        r1=(r/2.0_PREC)*(vxi(imu)+veta(ini))
         dnum=zero
         ddnom=zero
         s1=zero
@@ -42,6 +42,8 @@ subroutine leexact1 (vt,orb)
            if (idbg(497).ne.0.and.abs(ddnom).gt.precis) then
               t=(vt(ini,imu)-dnum/ddnom*orb(ini,imu))**2
               dev1=dev1+(vt(ini,imu)-dnum/ddnom*orb(ini,imu))**2
+           else
+              t=0.0_PREC
            endif
            if (abs(r1).gt.r1max) then
               dev2=dev2+t
@@ -53,5 +55,5 @@ subroutine leexact1 (vt,orb)
   write(*,*) 'deviation from exact local energy',sqrt(dev1)
   write(*,*) 'deviation from exact local energy outside radius'
   write(*,*) idev2,r1max,sqrt(dev2)
-  
+
 end subroutine leexact1

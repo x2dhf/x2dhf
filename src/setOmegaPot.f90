@@ -21,6 +21,6 @@ function setOmegaPot()
 
   rho=0.5*(cos(pii/dble(mxnmu))+cos(pii/dble(nni)))
   setOmegaPot=2.0_PREC*a/(1.0_PREC+sqrt(1.0_PREC-rho*rho))+b
-  
+
 end function setOmegaPot
 

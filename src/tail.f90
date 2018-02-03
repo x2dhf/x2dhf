@@ -1,7 +1,7 @@
 ! ***************************************************************************
 ! *                                                                         *
 ! *   Copyright (C) 2010 Jacek Kobus <jkob@fizyka.umk.pl>                   *
-! *                                                                         *     
+! *                                                                         *
 ! *   This program is free software; you can redistribute it and/or modify  *
 ! *   it under the terms of the GNU General Public License version 2 as     *
 ! *   published by the Free Software Foundation.                            *
@@ -28,7 +28,7 @@
      ibeg=i1b(iorb)-1
      vpmax=-1.e30_PREC
      imaxg =0
-     
+
      vpmax=-1.e30_PREC
      do ini=1,nni
         ijk=(mxnmu-1)*nni+ini
@@ -41,9 +41,7 @@
      write(*,5110) 'tail: ',iorb,inimax,vpmax
   enddo
 
-5000 continue
-  
-5100 format('   orbital     ni    max{psi(ni,mxnmui)}    ')
+!5100 format('   orbital     ni    max{psi(ni,mxnmui)}    ')
 5110 format(1x,a10,2i5,2x,e12.2)
 
 end subroutine tail

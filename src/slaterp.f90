@@ -2,7 +2,7 @@
 ! *                                                                         *
 ! *   Copyright (C) 1996 Leif Laaksonen, Dage Sundholm                      *
 ! *   Copyright (C) 1996-2010 Jacek Kobus <jkob@fizyka.umk.pl>              *
-! *                                                                         *     
+! *                                                                         *
 ! *   This program is free software; you can redistribute it and/or modify  *
 ! *   it under the terms of the GNU General Public License version 2 as     *
 ! *   published by the Free Software Foundation.                            *
@@ -26,29 +26,29 @@ subroutine slaterp(psi,pot,excp,f2,f4,wk0)
   real (PREC), dimension(*) :: psi,pot,excp,f2,f4,wk0
 
 
-  
+
   parameter (const13=1.0_PREC/3.0_PREC)
 
   if (nel.eq.1) return
-  
+
   call zeroArray(mxsize,excp)
-  
+
   !   contributions from the local slater exchange
-  
+
   do iorb1=1,norb
-     iborb1=i1b(iorb1)	   	 
-     ngorb1=i1si(iorb1)	 	 
+     iborb1=i1b(iorb1)
+     ngorb1=i1si(iorb1)
      coo=occ(iorb1)
      call prodas(ngorb1,coo,psi(iorb1),psi(iorb1),excp)
   enddo
-  
+
   !     multiply exchange potential by f4 to make it commensurate with
   !     Coulomb potential
-  
+
   xa=-three/two*alphaf*(three/pii)**const13
-  
+
   do i=1,mxsize
      excp(i)=xa*f4(i)*(excp(i))**const13
   enddo
-  
+
 end subroutine slaterp
