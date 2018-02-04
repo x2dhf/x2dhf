@@ -30,9 +30,9 @@ subroutine dointerp_nu (nmuall,fbefore,fafter)
 ! interpolation for the first iord2 points in ni variable
 
   do ini=1,nni
-     if(vni(ini).ge.vni_p(iord2)) goto 115
+     if(vni(ini).ge.vni_p(iord2)) exit
   enddo
-00115 continue
+
   nni_first=ini
 
   do k=1,kend
@@ -59,9 +59,9 @@ subroutine dointerp_nu (nmuall,fbefore,fafter)
   !  Determine the location of the tail region in the new grid
 
   do ini=1,nni
-     if(vni(ini).ge.vni_p(nni_p-iord2+1)) goto 120
+     if(vni(ini).ge.vni_p(nni_p-iord2+1)) exit
   enddo
-00120 continue
+
   if (ini.gt.nni) then
      nni_last=nni
   else
@@ -93,9 +93,9 @@ subroutine dointerp_nu (nmuall,fbefore,fafter)
   do ini=nni_first+1,nni_last-iord2
      xni=vni(ini)
      do i=1,nni_p
-        if(vni_p(i).ge.xni) goto 130
+        if(vni_p(i).ge.xni) exit
      enddo
-00130 continue
+
      if (i.gt.nni_p) then
         ini_p=nni_p
      else
