@@ -35,9 +35,9 @@ subroutine dointerp_mu (nnit,nmumin_p,nmumax_p,nmumin,nmumax,fbefore,fafter)
   !     interpolation for the first iord2 points in mu variable
 
   do imu=nmumin,nmumax
-     if(vmu(imu).ge.vmu_p((nmumin_p-1)+iord2)) goto 115
+     if(vmu(imu).ge.vmu_p((nmumin_p-1)+iord2)) exit
   enddo
-00115 continue
+
   nmu_first=imu
 
   !     print *,"dointerp_mu: nmumin,nmu_first",nmumin,nmu_first
@@ -68,9 +68,9 @@ subroutine dointerp_mu (nnit,nmumin_p,nmumax_p,nmumin,nmumax,fbefore,fafter)
   !     Determine the location of the tail region in the new grid
 
   do imu=nmumin,nmumax
-     if(vmu(imu).ge.vmu_p(nmumax_p)) goto 120
+     if(vmu(imu).ge.vmu_p(nmumax_p)) exit
   enddo
-00120 continue
+
   nmu_last=imu
   if (nmu_last.gt.nmumax) nmu_last=nmumax
 
@@ -103,9 +103,9 @@ subroutine dointerp_mu (nnit,nmumin_p,nmumax_p,nmumin,nmumax,fbefore,fafter)
   do imu=nmu_first+1,nmu_last-iord2
      xmu=vmu(imu)
      do i=1,nmumax_p
-        if(vmu_p(i).ge.xmu) goto 130
+        if(vmu_p(i).ge.xmu) exit
      enddo
-00130 continue
+
      imu_p=i
      do k=1,kend
         call lpcoeffq(imu_p,k,coeffq)
