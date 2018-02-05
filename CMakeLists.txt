@@ -1,7 +1,6 @@
 # CMake project file for x2dhf
 cmake_minimum_required (VERSION 2.6)
-project (x2dhf)
-enable_language (Fortran)
+project (x2dhf Fortran)
 
 # make sure that the default is a RELEASE
 if (NOT CMAKE_BUILD_TYPE)
