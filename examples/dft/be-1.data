@@ -1,6 +1,6 @@
 title Be DFT R_inf=25.0 bohr  R = 2.3860 bohr
 method  dft
-dft b88 ! lyp
+dft b88
 nuclei  4.0  0.0  2.386  
 config  0
         2 sigma  end

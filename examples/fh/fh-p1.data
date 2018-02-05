@@ -5,7 +5,6 @@ config  0
   1 pi                                                                            
   3 sigma  end                                                                    
 grid  223 150.0
-!interp
 orbpot old
 lcao
 1.0   2 1 7.0    0.0   2 1 5.0   0                                              

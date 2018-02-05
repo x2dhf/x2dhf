@@ -1,11 +1,9 @@
 title H2+
 method hf
 nuclei  1.0 1.0  2.0
-!homo
-!break 
+homo
 config 1
   1 sigma g + end
-!grid 169 193  35.0 
 grid 169  40.0 
 orbpot hydrogen
 lcao

@@ -1,20 +1,20 @@
 
-bin_PROGRAMS = xhf 
+bin_PROGRAMS = xhf
 
-xhf_SOURCES = xhf 
+xhf_SOURCES = xhf
 
 
 .DEFAULT_GOAL = help
 
-XHF = ./xhf 
+XHF = ./xhf
 EXAMPLES_DIR = ../examples
 
 
-clean:	
-	$(MAKE) cleanbin cleandata cleanlst 
+clean:
+	$(MAKE) cleanbin cleandata cleanlst
 
 cleanbin:
-	rm -f *.dat *.orb *.coul *.exch stop_x2dhf  
+	rm -f *.dat *.orb *.coul *.exch stop_x2dhf
 
 cleandata:
 	rm -f *.data *.pun *.out
@@ -29,20 +29,20 @@ help:
 	@echo ""
 	@echo "       Supported values of case are: "
 	@echo "         be bef bf_g94l bf_g94l bo c c1d2 c3p1 c+ c2a c2b c2c dft f2 "
-	@echo "         fh-0 fh-m1 fh-m2 fh-p1 fh-p2 fh-elprop gaf h2 h2a h2b h2+ li2 "
+	@echo "         fh-0 fh-m1 fh-m2 fh-p1 fh-p2 gaf h2 h2+ li2 "
 	@echo "         n2 ne o2 oed-h3 oed-kh oed-th+89 oed-z10-6 scmc xec"
 	@echo ""
 	@echo "Type 'make all' to run all the cases."
 	@echo ""
 
-	bash -c " [[ -L x2dhf ]] ||  ln -s ../tests/x2dhf x2dhf "	
+	bash -c " [[ -L x2dhf ]] ||  ln -s ../tests/x2dhf x2dhf "
 
 stop:
 	$(XHF) stop
 
-all: be bef bf_g94 bf_g94l bo c c1d2 c3p1 c+ c2a c2b c2c dft f2 fh-0 fh-m1 fh-m2 fh-p1 fh-p2 fh-elprop.pl gaf h2 h2a h2b h2+ li2 n2 ne o2 oed-h3 oed-kh oed-th+89 oed-z10-6 scmc 
+all: be bef bf_g94 bf_g94l bo c c1d2 c3p1 c+ c2a c2b c2c dft f2 fh-0 fh-m1 fh-m2 fh-p1 fh-p2 gaf h2 h2+ li2 n2 ne o2 oed-h3 oed-kh oed-th+89 oed-z10-6 scmc
 
-fall: be bef bf_g94 bf_g94l bo c c1d2 c3p1 c+ c2a c2b c2c dft f2 h2 h2a h2b li2 n2 ne o2 oed-h3 oed-kh oed-th+89 oed-z10-6 scmc 
+fall: be bef bf_g94 bf_g94l bo c c1d2 c3p1 c+ c2a c2b c2c dft f2 h2 li2 n2 ne o2 oed-h3 oed-kh oed-th+89 oed-z10-6 scmc
 
 be: ../examples/be/be.data ../examples/be/be-1.data
 	$(XHF) $(EXAMPLES_DIR)/$@/$@   $@-1        | tee $@.lst
@@ -113,21 +113,12 @@ fh-p1: ../examples/fh/fh-p1.data
 fh-p2: ../examples/fh/fh-p2.data
 	$(XHF) $(EXAMPLES_DIR)/fh/$@ fh-p1-1 $@-1 | tee $@.lst
 
-fh-elprop: 
-	cd $(EXAMPLES_DIR)/fh/; ./runElprop.pl; cd - 
-
 gaf: ../examples/gaf/gaf.data
 	$(XHF) $(EXAMPLES_DIR)/$@/$@ $@-1 | tee $@.lst
 
-h2: ../examples/h2/h2.data
-	$(XHF) $(EXAMPLES_DIR)/$@/$@ $@-1 | tee $@.lst
-
-h2a: ../examples/h2/h2a.data
-	$(XHF) $(EXAMPLES_DIR)/h2/$@ $@-1 | tee $@.lst
-
-
-h2b: ../examples/h2/h2b.data
-	$(XHF) $(EXAMPLES_DIR)/h2/$@ $@-1 | tee $@.lst
+h2: ../examples/h2/h2a.data ../examples/h2/h2b.data
+	$(XHF) $(EXAMPLES_DIR)/h2/h2a h2a | tee h2a.lst
+	$(XHF) $(EXAMPLES_DIR)/h2/h2b h2b | tee h2b.lst
 
 h2+: ../examples/h2+/h2+.data
 	$(XHF) $(EXAMPLES_DIR)/$@/$@ $@-1 | tee $@.lst
@@ -140,19 +131,22 @@ li2: ../examples/li2/li2.data
 n2: ../examples/n2/n2.data
 	$(XHF) $(EXAMPLES_DIR)/$@/$@ $@-1 | tee $@.lst
 
-ne: ../examples/ne/ne.data
-	$(XHF) $(EXAMPLES_DIR)/$@/$@ $@-1 | tee $@.lst
+ne: ../examples/ne/ne-a.data ../examples/ne/ne-b.data ../examples/ne/ne-c.data
+	$(XHF) $(EXAMPLES_DIR)/ne/ne-a ne-a | tee ne-a.lst
+	$(XHF) $(EXAMPLES_DIR)/ne/ne-b ne-a ne-b | tee ne-b.lst
+	$(XHF) $(EXAMPLES_DIR)/ne/ne-c ne-c | tee ne-c.lst
 
-o2: ../examples/o2/o2.data
+o2: ../examples/o2/o2-a.data ../examples/o2/o2-b.data
 	cp $(EXAMPLES_DIR)/$@/$@.pun gaussian.pun
 	cp $(EXAMPLES_DIR)/$@/$@.out gaussian.out
-	$(XHF) $(EXAMPLES_DIR)/$@/$@ $@-1 | tee $@.lst
+	$(XHF) $(EXAMPLES_DIR)/o2/o2-a o2-a | tee o2-a.lst
+	$(XHF) $(EXAMPLES_DIR)/o2/o2-b o2-b | tee o2-b.lst
 
-oed-h3: ../examples/oed/h3/h3-1.data  ../examples/oed/h3/h3-2.data 
+oed-h3: ../examples/oed/h3/h3-1.data  ../examples/oed/h3/h3-2.data
 	$(XHF) $(EXAMPLES_DIR)/oed/h3/h3-1 h3-1      | tee h3-1.lst
 	$(XHF) $(EXAMPLES_DIR)/oed/h3/h3-2 h3-1 h3-2 | tee h3-2.lst
 
-oed-kh: ../examples/oed/kh/kh.data 
+oed-kh: ../examples/oed/kh/kh.data
 	$(XHF) $(EXAMPLES_DIR)/oed/kh/kh kh-1  | tee kh.lst
 
 
@@ -160,10 +154,10 @@ oed-th+89: ../examples/oed/th+89/th+89_1s.data ../examples/oed/th+89/th+89_2s.da
 	$(XHF) $(EXAMPLES_DIR)/oed/th+89/th+89_1s th+89_1s-1            | tee th+89_1s.lst
 	$(XHF) $(EXAMPLES_DIR)/oed/th+89/th+89_2s th+89_1s-1 th+89_2s-1 | tee th+89_2s.lst
 
-oed-z10-6: ../examples/oed/z10-6/z10-6.data 
+oed-z10-6: ../examples/oed/z10-6/z10-6.data
 	$(XHF) $(EXAMPLES_DIR)/oed/z10-6/z10-6 z10-6-1 | tee z10-6.lst
 
-scmc: ../examples/scmc/be-scmc.data 
+scmc: ../examples/scmc/be-scmc.data
 	$(XHF) $(EXAMPLES_DIR)/scmc/be-scmc be-scmc-1  | tee be-scmc.lst
 
 xec: ../examples/xec/xe-c-1.data
@@ -175,6 +169,4 @@ xec: ../examples/xec/xe-c-1.data
 
 
 install:
-	@echo ""  	
-
-
+	@echo ""

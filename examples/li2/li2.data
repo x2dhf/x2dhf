@@ -1,9 +1,7 @@
 title Li2  R = 2.673 A
 method hf
-!nuclei  3.0 3.0  2.6728 angstrom
-nuclei  3.0 3.0  5.0456
+nuclei  3.0 3.0  2.6728 angstrom
 homo
-!break
 config 0
   1 sigma g
   1 sigma u
@@ -11,5 +9,5 @@ config 0
 grid 210  50.0
 orbpot gauss
 scf 4000 10 12 14 1
-!omega 1.85  -1.95
+omega 1.85 1.95
 stop
