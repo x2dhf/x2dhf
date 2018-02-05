@@ -18,11 +18,11 @@ module params
   integer, parameter :: maxmu    = 2500
   integer, parameter :: maxbasis = 650
 
-
-! the following values should be left unchanged
+  ! the following values should be left unchanged, since the code
+  ! still has the values hardcoded in some routines!
   integer, parameter :: maxgrids = 1
   integer, parameter :: maxorb   = 60
-  integer, parameter :: maxmpole  = 8
+  integer, parameter :: maxmpole = 8
 
   character*10 :: formint,formfp,formfp64,formfp128
   data formint /'(10i15)  '/

@@ -24,11 +24,13 @@ subroutine prepGauss
   integer :: i,ib,ibc,ibp,icent,icount,ifbo,jfbo,ilines,iorb,ipbasis,iprint0,iprint1,iprint2,istop, &
        l1,m1,m1abs,n1prim,n2prim,n3prim,nexpon,nfborb
 
-  integer, dimension(60) :: ifbord,ifdord
+  integer, dimension(maxorb) :: ifbord,ifdord
 
   real (PREC) :: d1
   real (PREC), dimension(maxbasis) :: ccoeff
-  real (PREC), dimension(0:60,0:maxbasis) :: excoeff
+  ! We can have up to 2x more orbitals in Gaussian than in the 2d
+  ! calculation because non-sigma orbitals appear in twos.
+  real (PREC), dimension(2*maxorb,maxbasis) :: excoeff
   real (PREC), external :: factor,factor2
 
   ! Orbital character

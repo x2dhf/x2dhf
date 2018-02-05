@@ -86,9 +86,9 @@ module commons8
 
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-      character*8, dimension(60)  :: gut,bond,orbsym
-      character*8, dimension(240)  :: spin
-      character*8, dimension(300)  :: spn
+      character*8, dimension(maxorb)  :: gut,bond,orbsym
+      character*8, dimension(4*maxorb)  :: spin
+      character*8, dimension(5*maxorb)  :: spn
 
       integer :: nexchp,norb,nel,nexch
 
@@ -108,7 +108,7 @@ module commons8
       integer, dimension(10) :: nmu,ngsize,inpv,ibmu,iemu,ioffs,iorder,nmu_p,ngsize_p,ibmu_p,iemu_p,ioffs_p
       real (PREC), dimension(10) :: rgrid_p
       integer, dimension(20) :: i4b,i5b,i4e,i5e,i4si,i5si,i4ng,i5ng,iadext,iadnor,iadex1,iadex2,iadex3
-      integer, dimension(60) :: i1b,i2b,i1e,i2e,i1si,i2si,i1ng,i2ng,i1mu,i2mu,i3nexcp,ifix,iorn,inhyd,inhydlcao,&
+      integer, dimension(maxorb) :: i1b,i2b,i1e,i2e,i1si,i2si,i1ng,i2ng,i1mu,i2mu,i3nexcp,ifix,iorn,inhyd,inhydlcao,&
            nn,ll,mm,iocc,isymOrb,lock,ige,ihomo,iscforder,maxsororb,maxsorpot,itouch,iloop
 
       integer, dimension(120) :: lagraon

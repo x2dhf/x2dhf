@@ -28,7 +28,7 @@ subroutine nuclder(psi,e,f0,wgt1,wgt2,dermu,dernu,dznu,wk2,wk3,wk4,wk5)
   real (PREC), dimension(*) :: e,f0,wgt1,wgt2,dznu,wk2,wk3,wk4,wk5
   real (PREC), dimension(nni,*) :: psi,dermu,dernu
   real (PREC), dimension(6) :: dzmu
-  real (PREC), dimension(60) :: tderzorb1,tderzorb2,tderzorb3,tderzorb4
+  real (PREC), dimension(maxorb) :: tderzorb1,tderzorb2,tderzorb3,tderzorb4
   real (PREC), external :: factor
   iprt=0
 
