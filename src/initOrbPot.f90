@@ -36,93 +36,93 @@ subroutine initOrbPot (cw_orb,cw_coul,cw_exch,cw_suppl,cw_sctch)
   !        with data defining the case (*.dat)
 
   !        open separate files for reading and writing data defining a case
-  open(iinp14,file=caseinp, status='old',form='formatted')
-  open(iout24,file=caseout, status='replace',form='formatted')
+  open(iinp14,file=caseinp, status='unknown',form='formatted')
+  open(iout24,file=caseout, status='unknown',form='formatted')
 
   !        open separate files for reading and writing orbitals and potentials
 
   if (iform.eq.0) then
      if (inpform.eq.0) then
-        open(11,file=psiinp, status='old',form='unformatted')
-        open(12,file=coulinp,status='old',form='unformatted')
+        open(11,file=psiinp, status='unknown',form='unformatted')
+        open(12,file=coulinp,status='unknown',form='unformatted')
         iinp13=iout23
      else
-        open(11,file=psiinp, status='old',form='formatted')
-        open(12,file=coulinp,status='old',form='formatted')
+        open(11,file=psiinp, status='unknown',form='formatted')
+        open(12,file=coulinp,status='unknown',form='formatted')
         iinp13=iout23
      endif
 
      if (ioutform.eq.0) then
-        open(21,file=psiout, status='replace',form='unformatted')
-        open(22,file=coulout,status='replace',form='unformatted')
+        open(21,file=psiout, status='unknown',form='unformatted')
+        open(22,file=coulout,status='unknown',form='unformatted')
      else
-        open(21,file=psiout, status='replace',form='formatted')
-        open(22,file=coulout,status='replace',form='formatted')
+        open(21,file=psiout, status='unknown',form='formatted')
+        open(22,file=coulout,status='unknown',form='formatted')
      endif
   elseif (iform.eq.1) then
      if (inpform.eq.0) then
-        open(11,file=psiinp, status='old',form='unformatted')
-        open(12,file=coulinp,status='old',form='unformatted')
-        open(13,file=exchinp,status='old',form='unformatted')
+        open(11,file=psiinp, status='unknown',form='unformatted')
+        open(12,file=coulinp,status='unknown',form='unformatted')
+        open(13,file=exchinp,status='unknown',form='unformatted')
         rewind(13)
      else
-        open(11,file=psiinp, status='old',form='formatted')
-        open(12,file=coulinp,status='old',form='formatted')
-        open(13,file=exchinp,status='old',form='formatted')
+        open(11,file=psiinp, status='unknown',form='formatted')
+        open(12,file=coulinp,status='unknown',form='formatted')
+        open(13,file=exchinp,status='unknown',form='formatted')
         rewind(13)
      endif
 
      if (ioutform.eq.0) then
-        open(21,file=psiout, status='replace',form='unformatted')
-        open(22,file=coulout,status='replace',form='unformatted')
+        open(21,file=psiout, status='unknown',form='unformatted')
+        open(22,file=coulout,status='unknown',form='unformatted')
      else
-        open(21,file=psiout, status='replace',form='formatted')
-        open(22,file=coulout,status='replace',form='formatted')
+        open(21,file=psiout, status='unknown',form='formatted')
+        open(22,file=coulout,status='unknown',form='formatted')
      endif
 
   elseif (iform.eq.2) then
      if (inpform.eq.0) then
-        open(11,file=psiinp, status='old',form='unformatted')
-        open(12,file=coulinp,status='old',form='unformatted')
+        open(11,file=psiinp, status='unknown',form='unformatted')
+        open(12,file=coulinp,status='unknown',form='unformatted')
      else
-        open(11,file=psiinp, status='old',form='formatted')
-        open(12,file=coulinp,status='old',form='formatted')
+        open(11,file=psiinp, status='unknown',form='formatted')
+        open(12,file=coulinp,status='unknown',form='formatted')
      endif
 
      if (ioutform.eq.0) then
-        open(21,file=psiout, status='replace',form='unformatted')
-        open(22,file=coulout,status='replace',form='unformatted')
-        open(23,file=exchout,status='replace',form='unformatted')
+        open(21,file=psiout, status='unknown',form='unformatted')
+        open(22,file=coulout,status='unknown',form='unformatted')
+        open(23,file=exchout,status='unknown',form='unformatted')
         rewind(23)
      else
-        open(21,file=psiout, status='replace',form='formatted')
-        open(22,file=coulout,status='replace',form='formatted')
-        open(23,file=exchout,status='replace',form='formatted')
+        open(21,file=psiout, status='unknown',form='formatted')
+        open(22,file=coulout,status='unknown',form='formatted')
+        open(23,file=exchout,status='unknown',form='formatted')
         rewind(23)
      endif
 
   elseif (iform.eq.3) then
      if (inpform.eq.0) then
-        open(11,file=psiinp, status='old',form='unformatted')
-        open(12,file=coulinp,status='old',form='unformatted')
-        open(13,file=exchinp,status='old',form='unformatted')
+        open(11,file=psiinp, status='unknown',form='unformatted')
+        open(12,file=coulinp,status='unknown',form='unformatted')
+        open(13,file=exchinp,status='unknown',form='unformatted')
         rewind(13)
      else
-        open(11,file=psiinp, status='old',form='formatted')
-        open(12,file=coulinp,status='old',form='formatted')
-        open(13,file=exchinp,status='old',form='formatted')
+        open(11,file=psiinp, status='unknown',form='formatted')
+        open(12,file=coulinp,status='unknown',form='formatted')
+        open(13,file=exchinp,status='unknown',form='formatted')
         rewind(13)
-     end if
+     endif
 
      if (ioutform.eq.0) then
-        open(21,file=psiout, status='replace',form='unformatted')
-        open(22,file=coulout,status='replace',form='unformatted')
-        open(23,file=exchout,status='replace',form='unformatted')
+        open(21,file=psiout, status='unknown',form='unformatted')
+        open(22,file=coulout,status='unknown',form='unformatted')
+        open(23,file=exchout,status='unknown',form='unformatted')
         rewind(23)
      else
-        open(21,file=psiout, status='replace',form='formatted')
-        open(22,file=coulout,status='replace',form='formatted')
-        open(23,file=exchout,status='replace',form='formatted')
+        open(21,file=psiout, status='unknown',form='formatted')
+        open(22,file=coulout,status='unknown',form='formatted')
+        open(23,file=exchout,status='unknown',form='formatted')
         rewind(23)
      endif
   endif
