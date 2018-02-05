@@ -9,12 +9,6 @@ if (NOT CMAKE_BUILD_TYPE)
       FORCE)
 endif (NOT CMAKE_BUILD_TYPE)
 
-# default installation
-get_filename_component (default_prefix ".." ABSOLUTE)
-set (CMAKE_INSTALL_PREFIX ${default_prefix} CACHE STRING
-      "Choose the installation directory; by default it installs in the x2dhf directory."
-      FORCE)
-
 # FFLAGS depend on the compiler
 if (CMAKE_Fortran_COMPILER_ID MATCHES "GNU")
   # gfortran
