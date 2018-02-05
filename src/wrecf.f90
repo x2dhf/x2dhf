@@ -24,10 +24,11 @@ subroutine wrecf(irec,ngrid,axyz)
   if (iunit.gt.maxunit) then
      write(*,910)
      stop "wrecf"
-910  format('wrec: maximum unit number exceeded (see User''s Guide)')
+910  format('wrecf: maximum unit number exceeded (see User''s Guide)')
   endif
 
-  open(iunit,status='replace',form='formatted')
+  ! status = replace doesn't work here
+  open(iunit,status='unknown',form='formatted')
   rewind(iunit)
   write (iunit,formfp,err=900) axyz
   close(iunit)
