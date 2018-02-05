@@ -19,6 +19,7 @@
 %\usepackage{amsfonts,amsmath,amssymb}
 \usepackage{amsmath,amssymb}
 \usepackage{moreverb}
+\usepackage{doi}
 \newcommand{\clearemptydoublepage}{\newpage{\pagestyle{empty}\cleardoublepage}}
 \parindent 0cm
 
@@ -37,7 +38,7 @@
 {\Large\bf Jacek Kobus\\[20pt]}
 
 {\LARGE\bf 2 Dimensional Finite Difference \\[10pt]
-Hartree-Fock Program}
+Hartree--Fock Program}
 
 \vskip 1cm
 
@@ -115,10 +116,11 @@ The following labels must be specified in the specified order:
 %\item[$\bullet$] \textbf{TITLE}
 \item \textbf{TITLE}
 \begin{description}
-\item[Format:] \textbf{title} $c$ \\ $c$ is any string of up to 74 characters describing
-  the current case. This string is added as a header to a text file with extension dat
-  that contains basic data identifying a given case, i.e. atomic numbers of nuclei, grid
-  size and the number of electrons and orbital and exchange functions.
+\item[Format:] \textbf{title} $c$ \\ $c$ is any string of up to 74
+  characters describing the current case. This string is added as a
+  header to a text file with a .dat extension that contains basic data
+  identifying a given case, i.e. atomic numbers of nuclei, grid size
+  and the number of electrons and orbital and exchange functions.
 \end{description}
 
 %\item[$\bullet$] \textbf{NUCLEI}
@@ -133,7 +135,7 @@ The following labels must be specified in the specified order:
 \item[$Z_B$:] nuclear charge of centre B (real)
 \item[$R$:] bond length (real)
 \item[$c$:] $angstrom$ -- the internuclear separation can be given in
-  angstrom units if~this string is included (the conversion factor
+  \AA{}ngstr\"om if this string is included (the conversion factor
   0.529177249 is used)
 \end{itemize}
   If $|Z_A-Z_B|<10^{-6}$ then the molecule is considered to be a
@@ -221,7 +223,7 @@ An integer and a real define a single two-dimensional grid.
 \item[$R_{\infty}$:] the practical infinity
 \end{itemize}
 $N_{\mu}$ is calculated so as to make the step size in $\mu$ variable equal to the
-stepsize in $\nu$ variable. $N_{\nu}$ and $N_{\mu}$ have to~meet special conditions and if
+step size in $\nu$ variable. $N_{\nu}$ and $N_{\mu}$ have to~meet special conditions and if
 they are not fulfilled the nearest (but smaller) appropriate values are used.
 \end{description}
 
@@ -253,15 +255,13 @@ This format may be needed when interpolation between grids is attempted.
   is~chosen the potential function is~approximated as a linear combination of $Z_A/r_1$
   and $Z_B/r_2$ terms and the exchange potentials are set to zero.
 
-\item $gauss$ -- a~GAUSSIAN output is used to retrieve exponents and
-  expansion coefficients of (uncontracted) molecular orbitals (it is
-  assumed that the output is contained in gaussian.out and
-  gaussian.pun files\footnote{The program has been tested on output
-    files produced by the 94, 03, 09 and 16 versions of the Gaussian
-    system of programs.})  and Coulomb and exchange potentials are
-  initialized as in the \textsl{hydrogen} case; see \ft{prepGauss} for
-  more details.
-
+\item $gauss$ -- GAUSSIAN output is used to retrieve the basis set and
+  the molecular orbital expansion coefficients. The GAUSSIAN output is
+  assumed to be contained in gaussian.out and gaussian.pun
+  files.\footnote{The program has been tested on output files produced
+    by the 94, 03, 09 and 16 versions of the GAUSSIAN system of
+    programs.} Coulomb and exchange potentials are initialized as in
+  the \textsl{hydrogen} case; see \ft{prepGauss} for more details.
   To generate the necessary output from GAUSSIAN, you need to specify
   {\bf punch=mo gfinput} in the route section of the GAUSSIAN input
   file. When you've run GAUSSIAN, you should end up with a file {\bf
@@ -284,12 +284,13 @@ This format may be needed when interpolation between grids is attempted.
   files (2dhf\_\-input.\-orb, 2dhf\_\-input.\-coul and 2dhf\_input.exch, respectively) created in
   a previous run. Data defining the case are retrieved from a 2dhf\_input.\-dat textfile.
 
-\item $qrhf$ -- radial Hartree-Fock orbitals for the centre A and B obtained from the qrhf
-  program\footnote{J.Kobus and Ch. Froese Fischer, \textsl{Quasi-Relativistic Hartree-Fock
-      program for Atoms}, to be published.}  are retrieved from disk files
-  1dhf\-\_centreA.\-orb and 1dhf\-\_centreB.\-orb, respectively, and Coulomb and exchange
-  potentials are initialized as in the \textsl{hydrogen} case (see routine \ft{initHF} for
-  details).
+\item $qrhf$ -- radial Hartree--Fock orbitals for the centre A and B
+  obtained from the qrhf program\footnote{J. Kobus and Ch. Froese
+    Fischer, \textsl{Quasi-Relativistic Hartree--Fock program for
+      Atoms}, to be published.}  are retrieved from disk files
+  1dhf\-\_centreA.\-orb and 1dhf\-\_centreB.\-orb, respectively, and
+  Coulomb and exchange potentials are initialized as in the
+  \textsl{hydrogen} case (see routine \ft{initHF} for details).
 
 \item $noexch$ -- orbitals and Coulomb potentials are retrieved from disk files and
   exchange potentials are initialized as in $hydrogen$ case; this is useful when going
@@ -297,7 +298,7 @@ This format may be needed when interpolation between grids is attempted.
 
 \item $nodat$ -- initial orbitals and potentials are retrieved from disk files but the
   content of a 2dhf\_input.dat file is retrieved from a 2dhf\_input.orb (binary) file. Use
-  this value when reading binary data generated by the ealier than 2.0 versions of the
+  this value when reading binary data generated by the earlier than 2.0 versions of the
   program.
 
 \end{itemize}
@@ -314,8 +315,6 @@ This label indicates the end of input data.
 
 \end{description}
 
-
-\newpage
 
 \subsection{Optional labels}
 % FIXME
@@ -339,7 +338,7 @@ The following additional labels can be specified in any order:
 \item[Format:] \textbf{conv} $[\;i_1\;[\;i_2\;[\;i_3\;]\;]\;]$\\ Sometimes the requested
   accuracy of a solution is set too high and cannot be satisfied on a~selected grid. As
   a~result SCF/SOR iteration process may continue in vain. To save CPU time the iterations
-  are stopped if orbital energies or orbital norms display no improvment over the $i_2$
+  are stopped if orbital energies or orbital norms display no improvement over the $i_2$
   and $i_3$ most recent iterations, respectively (20 by default). This mechanism is
   activated after $i_1$~initial iterations (600 by default).
 \end{description}
@@ -445,10 +444,12 @@ combinations are
 
 \item \textbf{FERMI}
 \begin{description}
-\item[Format:] \textbf{fermi} $r_A$ $r_B$ \\ When this label is present the Fermi nuclear
-  charge distribution is used. Optional parameters $r_A$ and $r_B$ define the atomic
-  masses (in amu) of nuclei A and B. If omitted the corresponding values are taken from
-  the table of atomic masses compiled by Wapstra and Audi (see \ft{blk\_data}).
+\item[Format:] \textbf{fermi} $r_A$ $r_B$ \\ When this label is
+  present the Fermi nuclear charge distribution is used. Optional
+  parameters $r_A$ and $r_B$ define the atomic masses (in atomic mass
+  units, amu) of nuclei A and B. If omitted the corresponding values are
+  taken from the table of atomic masses compiled by Wapstra and Audi
+  (see \ft{blk\_data}).
 \end{description}
 
 
@@ -511,9 +512,10 @@ of homonuclear molecules in order to improve SCF/SOR convergence.
 
 \item \textbf{INTERP}
 \begin{description}
-\item[Format:] \textbf{interp} \\ Use this label to change the grid between separate runs
-  of the program.  Note that only a number of grid points in one of the variables or
-  $R_{\infty}$ can be changed at a time.
+\item[Format:] \textbf{interp} \\ Use this label to change the grid
+  between separate runs of the program.  Note that you can only change
+  the grid in one direction at a time: either in the $\nu$ direction
+  ($N_\nu$), or in the $\mu$ direction ($N_\mu$ and/or $R_\infty$).
 \end{description}
 
 
@@ -581,19 +583,19 @@ cycle for orbitals ($i_1$) and potentials ($i_2$); by default $i_1=i_2=10$.
 \item[Format:] \textbf{method} $c$\\
 Select the type of calculation.
 \begin{itemize}
-\item[$c$:] HF -- the Hartree-Fock method
-\item[$c$:] DFT -- the Hartree-Fock method with the $X\alpha$ exchange
+\item[$c$:] HF -- the Hartree--Fock method
+\item[$c$:] DFT -- the Hartree--Fock method with the $X\alpha$ exchange
   potential ($\alpha=2/3$); see the \fb{dft} label to choose
   another exchange or correlation potential
 
-\item[$c$:] HFS -- the Hartree-Fock-Slater method (Hartree-Fock with the
+\item[$c$:] HFS -- the Hartree--Fock-Slater method (Hartree--Fock with the
   $X\alpha$ exchange potential) with an optimum value of the $\alpha$
   parameter (see \ft{blk-\-data.\-inc} for details)
 
 \item[$c$:] OED -- One Electron Diatomic ground and excited states
   can be calculated for the Coulomb potential in the prolate
   spheroidal coordinates (default). It is also possible to specify
-the Coulomb and Kram\-mers-Henneberger potentials in cylindrical
+the Coulomb and Kramers-Henneberger potentials in cylindrical
 coordinates (see the \fb{poth3}, \fb{potkh}, \fb{potharm2}, \fb{potharm3}  labels,
 respectively). When more than one orbital is specified calculations
 are carried out as if in the case of a multielectron
@@ -601,11 +603,14 @@ system.\footnote{In this type of calculations convergence rates differ
   greatly between orbitals. Therefore, if for a given orbital the
   orbital energy threshold is reached it is being frozen.}
 
-\item[$c$:] SCMC -- the Hartree-Fock method with $X\alpha$ exchange where the $\alpha$
-  parameter is calculated according to the self-consistent multiplicative constant
-  method\footnote{V.V.Karasiev and E.V.Ludenia, \textsl{Self-consistent multiplicative
-      constant method for the exchange energy in density functional theory},
-    Phys. Rev. A~\textbf{65} (2002) 062510.}
+\item[$c$:] SCMC -- the Hartree--Fock method with $X\alpha$ exchange
+  where the $\alpha$ parameter is calculated according to the
+  self-consistent multiplicative constant
+  method\footnote{V. V. Karasiev and E. V. Lude\~{n}a,
+    \textsl{Self-consistent multiplicative constant method for the
+      exchange energy in density functional theory},
+    Phys. Rev. A~\textbf{65} (2002)
+    062510. \doi{10.1103/PhysRevA.65.062510}}
 
 \end{itemize}
 \end{description}
@@ -632,7 +637,7 @@ system.\footnote{In this type of calculations convergence rates differ
 \item \textbf{OMEGA}
 \begin{description}
 \item[Format:] \textbf{omega} $\omega_{orb}$ [ $\omega_{pot}$ ] \\ One or two real numbers
-  setting overrelaxation parameters for relaxation of orbitals and potentials. The
+  setting over-relaxation parameters for relaxation of orbitals and potentials. The
   negative value of $\omega_{orb}$/$\omega_{pot}$ indicates that its value should be
   set to a~near optimum value obtained from a~semiempirical formula (see \ft{initCBlocks}
   and \ft{setomega} for details).
@@ -648,7 +653,7 @@ system.\footnote{In this type of calculations convergence rates differ
   potentials are available or when calculations with fixed orbitals or~potentials are
   performed. The near-optimal $\omega$ values obtained from a semi-empirical formula are
   scaled down to~produce final values used by the program. The default values of the
-  scaling factors for the orbital and potential overrelaxation parameters (0.986 and
+  scaling factors for the orbital and potential over-relaxation parameters (0.986 and
   0.997, respectively) can be changed by setting $r_{orb}$ and $r_{pot}$ to their desired
   values.
 \end{description}
@@ -664,21 +669,24 @@ system.\footnote{In this type of calculations convergence rates differ
 
 \item \textbf{POTGSZ}
 \begin{description}
-\item[Format:] \textbf{potgsz} \\ When the OED method is chosen then this label selects a
-  model potential due to Green, Sellin and Zachor.\footnote{A.E.S.Green, D.L.Sellin and
-    A.S.Zachor, \textsl{Analytic Independent-Particle Model for Atoms},
-    Phys. Rev. \textbf{184} (1969) 1-9.}  For a given atom this potential produces HF-like
-  orbitals but it was found useful in finding decent starting orbitals for any molecular
-  system.
+\item[Format:] \textbf{potgsz} \\ When the OED method is chosen then
+  this label selects a model potential due to Green, Sellin and
+  Zachor.\footnote{A. E. S. Green, D. L. Sellin and A. S. Zachor,
+    \textsl{Analytic Independent-Particle Model for Atoms},
+    Phys. Rev. \textbf{184} (1969) 1-9. \doi{10.1103/PhysRev.184.1}}
+  For a given atom this potential produces HF-like orbitals but it has
+  been found useful in finding decent starting orbitals for any
+  molecular system.
 \end{description}
 
 
 \item \textbf{POTGSZG}
 \begin{description}
-\item[Format:] \textbf{potgszg} \\ When the OED method is chosen then this label selects
-  a~model potential due to Green, Sellin and Zachor and the Gauss nuclear charge
-  distribution. For a~given atom this potential produces HF-like orbitals but it was found
-  useful in finding decent starting orbitals for any molecular system.
+\item[Format:] \textbf{potgszg} \\ When the OED method is chosen then
+  this label selects a~model potential due to Green, Sellin and Zachor
+  and the Gauss nuclear charge distribution. For a~given atom this
+  potential produces HF-like orbitals but it has been found useful in
+  finding decent starting orbitals for any molecular system.
 \end{description}
 
 
@@ -688,7 +696,7 @@ system.\footnote{In this type of calculations convergence rates differ
   label selects a~two-dimensional model potential of the form $-\omega^2(x^2+y^2)$, where
   $\omega$ is a strength of the potential (real).%
   \footnote{This parameter $\omega$ should not be confused with the
-    overrelaxation parameter of the SOR method.}.
+    over-relaxation parameter of the SOR method.}.
 \end{description}
 
 
@@ -703,12 +711,13 @@ system.\footnote{In this type of calculations convergence rates differ
 
 \item \textbf{POTH3}
 \begin{description}
-\item[Format:] \textbf{poth3} $m\;\;a\;\;V_0$ \\ When the OED method is chosen then this
-  label selects a~two-dimensional model potential of the form $ -V_0/\sqrt{a^2+r^2}$ (see
-  \ft{kh.c} for details). The following parameters can be set
+\item[Format:] \textbf{poth3} $m\;\;a\;\;V_0$ \\ When the OED method
+  is chosen then this label selects a~two-dimensional model potential
+  of the form $ -V_0/\sqrt{a^2+r^2}$ (see \ft{kh.f90} for
+  details). The following parameters can be set
 
 \begin{itemize}
-\item [$m:$] magnatic quantum number of a state (integer)
+\item [$m:$] magnetic quantum number of a state (integer)
 \item [$a:$] width of the model potential (real)
 \item [$V_0:$] depth of the model potential (real)
 \end{itemize}
@@ -721,11 +730,12 @@ $V_0=1.0$. Set $a>0$ and $V>0$ to choose its smoothed variant.
 \item \textbf{POTKH}
 \begin{description}
 \item[Format:] \textbf{potkh}
-  $m\;\;\varepsilon\;\;\omega\;\;\;[\;a\;[\;V_0\;[\;N\;]\;]\;]$ \\ When the OED method is
-  chosen then this label selects the Krammers-Henneberger potential (see routine \ft{kh.c} for
+  $m\;\;\varepsilon\;\;\omega\;\;\;[\;a\;[\;V_0\;[\;N\;]\;]\;]$
+  \\ When the OED method is chosen then this label selects the
+  Kramers-Henneberger potential (see routine \ft{kh.f90} for
   details). The following parameters can be set
 \begin{itemize}
-\item [$m:$] magnatic quantum number of a state being calculated (integer)
+\item [$m:$] magnetic quantum number of a state being calculated (integer)
 \item [$\varepsilon:$] laser intensity (real)
 \item [$\omega:$] laser cycle frequency (real)
 \item [$a:$] original (before averaging over one laser cycle)
@@ -847,28 +857,31 @@ compatibility with the previous version of the input data:
   combination of $Z_A/r_1$ and $Z_B/r_2$ terms and the exchange
   potentials are set to zero
 
-\item $i_1=2$ -- GAUSSIAN output is used to retrieve exponents and expansion coefficients
-  of (uncontracted) molecular orbitals (it is assumed that the output is contained in
-  gaussian.out and gaussian.pun files) and Coulomb and exchange potentials are initialized
-  as in $i_1=1$ case; see \ft{prepGauss} for more details
+\item $i_1=2$ -- GAUSSIAN output is used to retrieve the basis set and
+  the molecular orbital expansion coefficients. The GAUSSIAN output is
+  assumed to be contained in gaussian.out and gaussian.pun files.
+  Coulomb and exchange potentials are initialized as in $i_1=1$ case;
+  see \ft{prepGauss} for more details.
 
-\item $i_1=3$ -- GAUSSIAN customized output is used to retrieve exponents and expansion
-  coefficients of molecular orbitals (it is assumed that the output is contained in
-  gaussianc.out file) and Coulomb and exchange potentials are initialized as in $i_1=1$
-  case; see \ft{prepGaussCust} for details
+\item $i_1=3$ -- GAUSSIAN customized output is used to retrieve
+  exponents and expansion coefficients of molecular orbitals (it is
+  assumed that the output is contained in gaussianc.out file) and
+  Coulomb and exchange potentials are initialized as in $i_1=1$ case;
+  see \ft{prepGaussCust} for details
 
-\item $i_1=5$ -- initial orbitals, Coulomb and exchange potentials are retrieved from disk
-  files (2dhf\_input.orb, 2dhf\_input.coul and 2dhf\_input.exch, respectively) created in
-  a previous run. Data defining the case are retrieved from a 2dhf\_input.\-dat textfile.
+\item $i_1=5$ -- initial orbitals, Coulomb and exchange potentials are
+  retrieved from disk files (2dhf\_input.orb, 2dhf\_input.coul and
+  2dhf\_input.exch, respectively) created in a previous run. Data
+  defining the case are retrieved from a 2dhf\_input.\-dat text file.
 
-\item $i_1=6$ -- orbitals and Coulomb potentials are retrieved from disk files and
-  exchange potentials are initialized as in $i_1=1$ case (convenient when going from HFS
-  to HF calculations)
+\item $i_1=6$ -- orbitals and Coulomb potentials are retrieved from
+  disk files and exchange potentials are initialized as in $i_1=1$
+  case (convenient when going from HFS to HF calculations)
 
-\item $i_1=11$ -- radial Hartree-Fock orbitals for the centre A and~B are retrieved from
-  disk files 1dhf\_inputA.orb and 1dhf\_inputB.orb, respectively, and Coulomb and exchange
-  potentials are initialized as in the \textsl{hydrogen} case (see routine \ft{initHF} for
-  details).
+\item $i_1=11$ -- radial Hartree--Fock orbitals for the centre A and~B
+  are retrieved from disk files 1dhf\_inputA.orb and 1dhf\_inputB.orb,
+  respectively, and Coulomb and exchange potentials are initialized as
+  in the \textsl{hydrogen} case (see routine \ft{initHF} for details).
 
 \item $i_1=55$ -- initial orbitals and potentials are retrieved from disk files but the
   content of a 2dhf\_input.dat file is retrieved from a 2dhf\_input.orb (binary) file. Use
@@ -897,7 +910,7 @@ compatibility with the previous version of the input data:
 \item[$i_3$:] if $i_1=1$ then this parameter must be set to 1 or 2 (if
   omitted it is set to 1). In such a case the initialization of
   each of the orbitals has to be defined in terms of the linear
-  combination of atom centered hydrogen-like functions
+  combination of atom-centred hydrogen-like functions
   For each orbital include a card of the
   following format (make sure that the order of orbitals should match
   the order specified under the \textbf{config} label):
@@ -947,11 +960,11 @@ then the $i_3$ parameter must be set to 0.
 \begin{description}
 \item[Format:] \textbf{omega} \\
 \hspace*{0.9cm}$\omega_{orb}$ \\
-\hspace*{0.9cm}$\omega_{pot}$ \\ Two real numbers setting over-relaxation
-parameters for relaxation of orbitals and potentials.
-The negative value of a given
-parameter indicates that its value should be set to a near optimum value obtained from a
-semiempirical formula (see \ft{initCBlocks} and \ft{setomega} for details).
+\hspace*{0.9cm}$\omega_{pot}$ \\ Two real numbers setting
+over-relaxation parameters for relaxation of orbitals and potentials.
+The negative value of a given parameter indicates that its value
+should be set to a near optimum value obtained from a semi-empirical
+formula (see \ft{initCBlocks} and \ft{setomega} for details).
 \end{description}
 
 \end{description}
@@ -977,7 +990,7 @@ semiempirical formula (see \ft{initCBlocks} and \ft{setomega} for details).
 
 \newpage
 
-\item \label{example-be} Hartree-Fock ground state of the beryllium atom calculated in
+\item \label{example-be} Hartree--Fock ground state of the beryllium atom calculated in
   two consecutive steps (see examples/\-be/\-be.lst and examples/\-be/\-be-1.lst).
 
 \verbatiminput{../examples/be/be.data}
@@ -989,13 +1002,13 @@ semiempirical formula (see \ft{initCBlocks} and \ft{setomega} for details).
 \newpage
 
 
-\item Hartree-Fock ground state energy of the hydrogen molecule (see
+\item Hartree--Fock ground state energy of the hydrogen molecule (see
   examples/h2/h2a.lst).
 
 \verbatiminput{../examples/h2/h2a.data}
 
-\item \label{example-bf} Hartree-Fock ground state of the BF molecule (see
-  examples/bf/bf\_g94.lst), initialized with orbitals from Gaussian.
+\item \label{example-bf} Hartree--Fock ground state of the BF molecule (see
+  examples/bf/bf\_g94.lst), initialized with orbitals from GAUSSIAN.
 
 \verbatiminput{../examples/bf/bf_g94.data}
 
@@ -1031,8 +1044,8 @@ semiempirical formula (see \ft{initCBlocks} and \ft{setomega} for details).
 \verbatiminput{../examples/f2/f2.data}
 
 \newpage
-\item A series of HF calculations for the the $FH$ in external static
-  electric field.
+\item A series of HF calculations for the FH molecule in an external
+  static electric field.
 
 \begin{enumerate}
 \item no external field (see examples/fh/fh-0.lst)
@@ -1063,7 +1076,7 @@ semiempirical formula (see \ft{initCBlocks} and \ft{setomega} for details).
 
 \newpage
 
-\item DFT calculations with LDA and LYP functionals (see
+\item DFT calculations with B88 and B88-LYP functionals (see
   examples/\-dft/\-be-1.\-lst and examples/\-dft/\-be-2.\-lst).
 
 \verbatiminput{../examples/dft/be-1.data}
@@ -1083,7 +1096,7 @@ semiempirical formula (see \ft{initCBlocks} and \ft{setomega} for details).
 
 \newpage
 
-\item Lowest state of the Krammers-Henneberger potential (see
+\item Lowest state of the Kramers-Henneberger potential (see
   examples/\-oed/\-kh/\-kh.lst).
 
 \verbatiminput{../examples/oed/kh/kh.data}
@@ -1184,9 +1197,9 @@ In addition, the xhf script can be used to perform the following
 tasks:
 
 \begin{description}
-\item \hspace*{0.5cm} \texttt{./xhf stop}\\ creats
+\item \hspace*{0.5cm} \texttt{./xhf stop}\\ creates a
   \texttt{stop\_x2dhf} file in a current directory to stop a running
-  program% (see Section~\ref{section:hints})
+  calculation % (see Section~\ref{section:hints})
 \end{description}
 
 \begin{description}
@@ -1224,7 +1237,7 @@ Use \ft{./xhf -h|help} to get the complete list of available options.
   estimates of the orbitals have to be good enough to avoid
   divergences. Then, you have to choose the parameters of the
   hydrogenic orbitals carefully or perform the finite basis set
-  calculations using the Gaussian program to provide the
+  calculations using the GAUSSIAN program to provide the
   initialization data for orbitals (see Example~\ref{example-bf}).
 
   One can also use HFS method to produce initial estimates of orbitals
@@ -1242,31 +1255,30 @@ Use \ft{./xhf -h|help} to get the complete list of available options.
   One can also use HF method with some model potential, e.g. the model
   potential of Green, Sellin, Zachor (label POTGSZ).
 
-\item At the very beginning set the maximum number of SCF iterations
-  to something between 20 and 50 and/or impose crude convergence
-  criteria for the orbital energy and normalization.
-
-\item In case of convergence problems try to perform calculations on a
-  sparser grid.
-%
-% Do not start calculations on too dense a grid.
-%
-  For example, the $[61\times 79/30]$ grid is sufficient to check the
-  quality of the initial data for the Ne$_2$ system.
-
 \item Choose smaller values of the relaxation parameters ($1.7\leq
   \omega\leq 1.85$) to avoid divergences in the first few dozens of
-  SCF iterations (rarely the values as small as 1.2 may be needed).
-  Subsequently the parameters should be increased to their (near)
-  optimum value (see the \textbf{omega} label and
+  SCF iterations (values as small as 0.2 may be used for very heavy
+  systems). Set the maximum number of SCF iterations to a small value
+  -- between 20 and 500 -- and/or impose crude convergence criteria
+  for the orbital energy and normalization.
+
+\item Once the orbitals and potentials have reached initial
+  convergence, the relaxation parameters should be increased to their
+  (near) optimum value (see the \textbf{omega} label and
   Example~\ref{example-c2a}).
 
   It is possible to set $\omega_{pot}$ to its near-optimal value by
-  calculating it from a~semiempirical formula; see the \ft{omega}
+  calculating it from a~semi-empirical formula; see the \ft{omega}
   label. As a rule of thumb the optimal value of the orbital
   relaxation parameter is somewhat smaller and, by~default,
   is~obtained by scaling the $\omega_{pot}$ value by 0.98 (see
   \ft{setDefaults}).
+
+
+\item In case of convergence problems try to perform calculations on a
+  sparser grid. For example, the $[61\times 79/30]$ grid is
+  sufficient to check the quality of the initial data for the Ne$_2$
+  system.
 
 \item \label{section:hints} How to stop the program gracefully during
   a lengthy calculation without killing the process and interrupting
