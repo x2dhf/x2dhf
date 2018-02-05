@@ -1,7 +1,5 @@
 # Main program
 
-enable_language (Fortran)
-
 add_executable(x2dhf blas.F90 card.f90 checkOrbSym.f90 checkOrtho.f90
 checkPot.f90 checkSym.f90 commons16.f90 commons8.f90 contrib.f90
 contriborbDFT.f90 contriborb.f90 coulAsymptCont.f90 coulAsympt.f90
