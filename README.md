@@ -1,4 +1,4 @@
-# 2-Dimensional Finite Difference Hartree-Fock program for diatomic molecules
+# Two-Dimensional Finite Difference Hartree-Fock program for diatomic molecules
                                                                             
 This program finds virtually exact solutions of the Hartree-Fock and
 density functional theory equations for diatomic molecules and atoms
