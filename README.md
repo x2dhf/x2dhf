@@ -42,16 +42,12 @@ The last paper in the above list has an up-to-date description of the
 operating principles and layout of the program.
 
 The programming language used is Fortran 90. Only a Fortran compiler
-is necessary to compile the program. The program can be built using
-either CMake or autotools.
+is necessary to compile the program.
 
-To build x2dhf with CMake, first create a build directory with `mkdir
-objdir` and go to the build directory `cd objdir`. Configure the build
-with `cmake ..`, after which you can build the program with `make`.
-
-To build x2dhf with autotools, run `./autoconf.sh` to generate the
-configure script, after which run configure `./configure` and make
-the program with `make`.
+The program can be built using CMake. To build x2dhf, first create a
+build directory with `mkdir objdir` and go to the build directory `cd
+objdir`. Configure the build with `cmake ..`, after which you can
+build the program with `make`.
 
 The file doc/users-guide.pdf contains the description of the program's
 input data and examples of its usage. Examples are included in
