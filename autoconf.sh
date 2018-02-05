@@ -1,3 +1,0 @@
-autoreconf -ivf
-aclocal
-autoconf
