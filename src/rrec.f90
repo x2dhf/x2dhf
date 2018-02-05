@@ -26,7 +26,7 @@ subroutine rrec(irec,ngrid,axyz)
      stop "rrec"
 910  format('rrec: maximum unit number exceeded (see User''s Guide)')
   endif
-  open(iunit,status='unknown',form='unformatted')
+  open(iunit,status='old',form='unformatted')
   rewind(iunit)
   read  (iunit) axyz
   close(iunit)

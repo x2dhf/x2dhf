@@ -27,7 +27,7 @@ subroutine writeDisk4dd (psi,pot,f0,f4,wk0,wk1,wk2,wk3)
   real (PREC), allocatable :: r8mxsize(:),r8mxsize1(:)
   real (PREC), dimension(*) :: psi,pot,f0,f4,wk0,wk1,wk2,wk3
 
-  open(9999,file='out4dd.dat', status='unknown',form='formatted')
+  open(9999,file='out4dd.dat', status='replace',form='formatted')
 
 !  call getDateTime(datetime)
   write(9999,'(a80)') header
