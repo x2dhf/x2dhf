@@ -19,8 +19,8 @@ subroutine checkOrtho (iorb1,psi,f4,wgt2,wk0)
   implicit none
   integer :: ibeg1,ibeg3,iorb1,iorb2,iorb3,jor,jor1,ngrid
 
-  integer, dimension(60) :: istp(60)
-  real (PREC), dimension(60) :: ovla,ovla1
+  integer, dimension(maxorb) :: istp
+  real (PREC), dimension(maxorb) :: ovla,ovla1
   real (PREC), dimension(*) :: psi,f4,wgt2,wk0
   real (PREC), external :: dot
 

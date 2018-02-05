@@ -30,13 +30,13 @@ subroutine prepGaussCust
   integer :: i,ib,ibc,ibpt,ibr,ibret,ibrett,ibt,icent,icentre,icount,idavid,ifbo,ilabel,ilines,iorb, &
        ipb,iprint0,iprint1,iprint2,iskip,j,k,l1,m1,m1abs,n1prim,n2prim,n3prim,nexpon,nfborb
 
-  integer, dimension(60) :: ifbord,ifdord
+  integer, dimension(maxorb) :: ifbord,ifdord
 
   character*3, dimension(maxbasis) :: conbt
   real (PREC) :: d1,excoeffm,excoeffp,expon,symthresh
   real (PREC), dimension(maxbasis) :: ibfres
   real (PREC), dimension(3,maxbasis) :: sexpon
-  real (PREC), dimension(0:60,0:maxbasis) :: excoeff
+  real (PREC), dimension(0:maxorb,0:maxbasis) :: excoeff
   real (PREC), external :: factor,factor2
 
   character*2 :: st
@@ -97,7 +97,7 @@ subroutine prepGaussCust
   !     program (one nonsigma finite difference orbital corresponds
   !     to two GAUSSIAN9x ones
 
-  do i=0,60
+  do i=0,maxorb
      do j=1,maxbasis
         excoeff(i,j)=0.0_PREC
      enddo

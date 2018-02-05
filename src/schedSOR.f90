@@ -19,8 +19,8 @@ subroutine schedsor
 
   implicit none
   integer :: i,iorb,inde,indemin,maxlevel,minlevel,nlevels
-  integer, dimension(60) :: index
-  real (PREC), dimension(60) :: endiff
+  integer, dimension(maxorb) :: index
+  real (PREC), dimension(maxorb) :: endiff
 
   if (mod(iscf,iepoch).eq.0) then
      i=iscf/iepoch

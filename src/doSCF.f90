@@ -23,7 +23,7 @@ subroutine doSCF (cw_sor,cw_orb,cw_coul,cw_exch,cw_suppl,cw_sctch)
 
   integer, dimension(*) :: cw_sor
 
-  real (PREC), dimension(60) :: demaxt
+  real (PREC), dimension(maxorb) :: demaxt
   real (PREC), dimension(*) ::  cw_orb,cw_coul,cw_exch,cw_suppl,cw_sctch
 
   logical :: stop_x2dhf
