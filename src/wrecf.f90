@@ -27,7 +27,7 @@ subroutine wrecf(irec,ngrid,axyz)
 910  format('wrec: maximum unit number exceeded (see User''s Guide)')
   endif
 
-  open(iunit,status='old',form='formatted')
+  open(iunit,status='replace',form='formatted')
   rewind(iunit)
   write (iunit,formfp,err=900) axyz
   close(iunit)
