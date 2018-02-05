@@ -44,3 +44,6 @@ wtdexch1.f90 wtdexch1f.f90 wtdexch.f90 wtdisk128.f90 wtdisk128f.f90
 wtdisk32.f90 wtdisk32f.f90 wtdisk64.f90 wtdisk64f.f90 wtdisknat.f90
 x2dhf.f90 zeroArray.f90 zeroArrays.f90 zgsz1.f90 zgsz1g.f90 zgsz2.f90
 zgsz2g.f90 zz1.f90 zz1g.f90 zz2.f90 zz2g.f90 )
+
+# Install
+install (TARGETS x2dhf DESTINATION bin)
