@@ -47,11 +47,11 @@ the either CMake, or autotools.
 
 To build x2dhf with CMake, first create a build directory with `mkdir
 objdir` and go to the build directory `cd objdir`. Configure the build
-with `cmake ..`, after which you can build the program with `$ make`.
+with `cmake ..`, after which you can build the program with `make`.
 
-To build x2dhf with autotools, run `$ ./autoconf.sh` to generate the
-configure script, after which run configure `$ ./configure` and make
-the program with `$ make`.
+To build x2dhf with autotools, run `./autoconf.sh` to generate the
+configure script, after which run configure `./configure` and make
+the program with `make`.
 
 The file doc/users-guide.pdf contains the description of the program's
 input data and examples of its usage. Examples are included in
