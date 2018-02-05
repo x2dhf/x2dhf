@@ -27,6 +27,7 @@ subroutine wrec(irec,ngrid,axyz)
 910  format('wrec: maximum unit number exceeded (see User''s Guide)')
   endif
 
+  ! status=replace doesn't work here
   open(iunit,status='unknown',form='unformatted')
   rewind(iunit)
   write (iunit,err=900) axyz

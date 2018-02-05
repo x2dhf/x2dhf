@@ -29,12 +29,12 @@ subroutine locenergy (iorb,psi,pot,excp,e,f0,f4,wgt1,wgt2,wk0,wk1,wk2,wk3)
 
   ioutmat=30
 
-  open(ioutmat,file='vni',status='unknown',form='formatted')
+  open(ioutmat,file='vni',status='replace',form='formatted')
   write(ioutmat,*) nni
   write(ioutmat,1000) (vni(in),in=1,nni)
   close(ioutmat)
 
-  open(ioutmat,file='vmu',status='unknown',form='formatted')
+  open(ioutmat,file='vmu',status='replace',form='formatted')
   write(ioutmat,*) i1mu(1)
   write(ioutmat,1000) (vmu(im),im=1,i1mu(1))
   close(ioutmat)
@@ -220,7 +220,7 @@ subroutine locenergy (iorb,psi,pot,excp,e,f0,f4,wgt1,wgt2,wk0,wk1,wk2,wk3)
      goto 100
 00016 fn='bf-1s.lenergy'
 00100 continue
-     open(ioutmat,file=fn,status='unknown',form='formatted')
+     open(ioutmat,file=fn,status='replace',form='formatted')
      ibeg=i1b(iorb)
      call prtmat (nni,i1mu(1),wk2,ioutmat)
      close(ioutmat)
