@@ -5,9 +5,13 @@ project (x2dhf Fortran)
 # make sure that the default is a RELEASE
 if (NOT CMAKE_BUILD_TYPE)
   set (CMAKE_BUILD_TYPE RELEASE CACHE STRING
-      "Choose the type of build, options are: None Debug Release."
-      FORCE)
+      "Choose the type of build, options are: None Debug Release." FORCE)
 endif (NOT CMAKE_BUILD_TYPE)
+
+# default installation
+get_filename_component (default_prefix "." ABSOLUTE)
+set (CMAKE_INSTALL_PREFIX ${default_prefix} CACHE STRING
+      "The installation prefix. By default, x2dhf installs in the present directory (under bin/).")
 
 # If flags haven't been defined, set defaults
 if (NOT CMAKE_Fortran_FLAGS_DEBUG)

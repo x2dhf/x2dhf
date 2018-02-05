@@ -13,7 +13,8 @@ $ make -j4
 To install the program run
 $ make install
 
-You can set the installation location with e.g.
+By default the program installs under the bin/ directory in the source
+tree.  You can select the installation location with e.g.
 $ cmake .. -DCMAKE_INSTALL_PREFIX=/path/to/bin
 
 If you want to override the compiler flags used in the build, you can
