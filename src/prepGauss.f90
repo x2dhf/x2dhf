@@ -195,7 +195,7 @@ subroutine prepGauss
 
   ! Associate finite basis orbitals with the corresponding fd ones
   do iorb=1,norb
-     do ifbo=1,nfborb
+     do ifbo=nfborb,1,-1
         icount=0
         ! Check if orbital characters match
         if (ifdord(iorb).eq.ifbord(ifbo)) then
@@ -205,7 +205,7 @@ subroutine prepGauss
            enddo
            ! If this is not a sigma orbital, we need to zero out the degenerate orbital as well.
            if (ifbord(ifbo).gt.0) then
-              do jfbo=ifbo+1,nfborb
+              do jfbo=ifbo-1,1,-1
                  if(ifbord(ifbo) .eq. ifbord(jfbo)) then
                     ifbord(jfbo)=-1
                     exit
