@@ -42,8 +42,9 @@ The last paper in the above list has an up-to-date description of the
 operating principles and layout of the program.
 
 The programming language used is Fortran 90; only a Fortran compiler
-is necessary to compile the program. The program can be built using
-CMake. See the file `INSTALL` for details on installation.
+and CMake are necessary to compile the program. The program can be
+built by running `./compile.sh`. See the file `INSTALL` for more
+details on installation.
 
 The file doc/users-guide.pdf contains the description of the program's
 input data and examples of its usage. Examples are included in

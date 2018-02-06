@@ -1,28 +1,12 @@
-To install x2dhf, you need CMake version 2.6 or greater.
+2018-01-06 Susi Lehtola
 
-The installation is very simple. First, create a build directory
-$ mkdir objdir
-and go there
-$ cd objdir
+To install x2dhf, you need CMake version 2.6 or greater, and a Fortran
+90 compiler.
 
-Next, you can configure x2dhf with
-$ cmake ..
-Once CMake has finished determining the compile options, you can compile
-the program in parallel e.g. on four cores with
-$ make -j4
-To install the program run
-$ make install
+The installation is very simple: just run compile.sh. This will
+compile the program and install it under bin/ in the present
+directory.
 
-By default the program installs under the bin/ directory in the source
-tree.  You can select the installation location with e.g.
-$ cmake .. -DCMAKE_INSTALL_PREFIX=/path/to/bin
-
-If you want to override the compiler flags used in the build, you can
-specify them in the cmake command as e.g.
-$ cmake .. -DCMAKE_Fortran_FLAGS_RELEASE:STRING="-O3 -ffast-math"
-
-If CMake does not detect the Fortran compiler you want to use, you can
-specify it with the FC environment variable, e.g.
-$ export FC=ifort
-To force redetection of the compiler, you just need to remove CMake's cache
-$ rm -rf CMakeCache.txt CMakeFiles/
+By default x2dhf is compiled using gfortran with -O2 -Wall. If you
+want to change the compiler or the flags, edit the first lines of
+compile.sh.
