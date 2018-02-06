@@ -1,4 +1,4 @@
-# 2-Dimensional Finite Difference Hartree-Fock program for diatomic molecules
+# Two-Dimensional Finite Difference Hartree-Fock program for diatomic molecules
                                                                             
 This program finds virtually exact solutions of the Hartree-Fock and
 density functional theory equations for diatomic molecules and atoms
@@ -41,15 +41,10 @@ and examples of its usage and accuracy:
 The last paper in the above list has an up-to-date description of the
 operating principles and layout of the program.
 
-The programming language used is Fortran 90. Only a Fortran compiler
-is necessary to compile the program.
-
-The program can be installed using the usual autotools setup. Run
-$ ./autoconf.sh
-to generate the configure script, after which run configure
-$ ./configure
-and make the program with
-$ make
+The programming language used is Fortran 90; only a Fortran compiler
+and CMake are necessary to compile the program. The program can be
+built by running `./compile.sh`. See the file `INSTALL` for more
+details on installation.
 
 The file doc/users-guide.pdf contains the description of the program's
 input data and examples of its usage. Examples are included in
