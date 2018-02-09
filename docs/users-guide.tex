@@ -270,16 +270,6 @@ This format may be needed when interpolation between grids is attempted.
   the molecular orbitals from {\bf fort.7} as {\bf gaussian.pun},
   which will be parsed by the program.
 
-\item $gauss$-$c$ -- GAUSSIAN customized output is used to~retrieve
-  exponents and expansion coefficients of molecular orbitals (it is
-  assumed that the output is contained in gaussianc.out file) and
-  Coulomb and exchange potentials are initialized as in the
-  \textsl{hydrogen} case; see \ft{prepGaussCust} for details.
-
-  {\bf N.B. This is a deprecated option in the code, as it requires a
-    customized version of GAUSSIAN that the maintainers of x2dhf have
-    no access to. Use the standard GAUSSIAN output option above.}
-
 \item $old$ -- initial orbitals, Coulomb and exchange potentials are retrieved from disk
   files (2dhf\_\-input.\-orb, 2dhf\_\-input.\-coul and 2dhf\_input.exch, respectively) created in
   a previous run. Data defining the case are retrieved from a 2dhf\_input.\-dat textfile.

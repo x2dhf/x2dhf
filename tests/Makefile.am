@@ -28,7 +28,7 @@ help:
 	@echo "       to perform test calculations for a specific system found in ./examples directory."
 	@echo ""
 	@echo "       Supported values of case are: "
-	@echo "         be bef bf_g94l bf_g94l bo c c1d2 c3p1 c+ c2a c2b c2c dft f2 "
+	@echo "         be bef bf_g94 bo c c1d2 c3p1 c+ c2a c2b c2c dft f2 "
 	@echo "         fh-0 fh-m1 fh-m2 fh-p1 fh-p2 gaf h2 h2+ li2 "
 	@echo "         n2 ne o2 oed-h3 oed-kh oed-th+89 oed-z10-6 scmc xec"
 	@echo ""
@@ -40,9 +40,9 @@ help:
 stop:
 	$(XHF) stop
 
-all: be bef bf_g94 bf_g94l bo c c1d2 c3p1 c+ c2a c2b c2c dft f2 fh-0 fh-m1 fh-m2 fh-p1 fh-p2 gaf h2 h2+ li2 n2 ne o2 oed-h3 oed-kh oed-th+89 oed-z10-6 scmc
+all: be bef bf_g94 bo c c1d2 c3p1 c+ c2a c2b c2c dft f2 fh-0 fh-m1 fh-m2 fh-p1 fh-p2 gaf h2 h2+ li2 n2 ne o2 oed-h3 oed-kh oed-th+89 oed-z10-6 scmc
 
-fall: be bef bf_g94 bf_g94l bo c c1d2 c3p1 c+ c2a c2b c2c dft f2 h2 li2 n2 ne o2 oed-h3 oed-kh oed-th+89 oed-z10-6 scmc
+fall: be bef bf_g94 bo c c1d2 c3p1 c+ c2a c2b c2c dft f2 h2 li2 n2 ne o2 oed-h3 oed-kh oed-th+89 oed-z10-6 scmc
 
 be: ../examples/be/be.data ../examples/be/be-1.data
 	$(XHF) $(EXAMPLES_DIR)/$@/$@   $@-1        | tee $@.lst
@@ -54,10 +54,6 @@ bef: ../examples/bef/bef.data
 bf_g94: ../examples/bf/bf_g94.data
 	cp $(EXAMPLES_DIR)/bf/$@.pun gaussian.pun
 	cp $(EXAMPLES_DIR)/bf/$@.out gaussian.out
-	$(XHF) $(EXAMPLES_DIR)/bf/$@ $@-1 | tee $@.lst
-
-bf_g94l: ../examples/bf/bf_g94l.data
-	cp $(EXAMPLES_DIR)/bf/$@.out gaussianc.out
 	$(XHF) $(EXAMPLES_DIR)/bf/$@ $@-1 | tee $@.lst
 
 bo: ../examples/bo/bo.data

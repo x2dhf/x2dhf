@@ -26,25 +26,24 @@ meshsize.f90 mpoleMom.f90 mulex.f90 multf4.f90 n2f.f90 nfng.f90
 nmucalc.f90 nnucalc.f90 norm94.f90 norm.f90 nuclder1.f90 nuclder.f90
 orbAsymptDet.f90 orbAsymptSet.f90 orbMCSOR.f90 orbSOR.f90 ortho.f90
 params.f90 plaguer.f90 plegendg.f90 pmtx.f90 potAsympt.f90 pottf.f90
-prepdiff1.f90 prepGaussCust.f90 prepGauss.f90 prepSCF.f90
-prepwexch.f90 printBanner.f90 printCase.f90 printElConf.f90
-printResults.f90 propet2.f90 propet3.f90 prtdenA.f90 prtdenB.f90
-prtmatcw.f90 prtmat.f90 prttoten.f90 putin2.f90 putin3.f90 putin4.f90
-putin.f90 putout34.f90 putout.f90 qsortf.f radialden.f90 reada16.f90
-reada8.f90 rexponents.f90 rfdexch.f90 rfunaux16.f90 rfunaux.f90
-rfun.f90 rfun_int.f90 rheader.f90 rrec.f90 scf.f90 schedSOR.f90
-scheduler.f90 scmc.f90 separator.f90 setCi.f90 setCiOrb.f90
-setDefaults.f90 setmaxunit.f90 setOmega.f90 setOmegaOrb.f90
-setOmegaPot2.f90 setOmegaPot.f90 setPrecision.f90 slaterp.f90
-solver.f90 sor.f90 sort.f90 swap.f90 tail.f90 tden.f90 testn2f.f90
-testnfng.f90 util.f90 vcoul.f90 vexch.f90 vlpcoeff.f90 vpoly1q.f90
-vpolyq.f90 wrec.f90 wrecf.f90 writea128.f90 writea128f.f90
-writea32.f90 writea32f.f90 writea64.f90 writea64f.f90 writea.f90
-writeDisk4dd.f90 writeDisk.f90 wtdexch1.f90 wtdexch1f.f90 wtdexch.f90
-wtdisk128.f90 wtdisk128f.f90 wtdisk32.f90 wtdisk32f.f90 wtdisk64.f90
-wtdisk64f.f90 wtdisknat.f90 x2dhf.f90 zeroArray.f90 zeroArrays.f90
-zgsz1.f90 zgsz1g.f90 zgsz2.f90 zgsz2g.f90 zz1.f90 zz1g.f90 zz2.f90
-zz2g.f90 )
+prepdiff1.f90 prepGauss.f90 prepSCF.f90 prepwexch.f90 printBanner.f90
+printCase.f90 printElConf.f90 printResults.f90 propet2.f90 propet3.f90
+prtdenA.f90 prtdenB.f90 prtmatcw.f90 prtmat.f90 prttoten.f90
+putin2.f90 putin3.f90 putin4.f90 putin.f90 putout34.f90 putout.f90
+qsortf.f radialden.f90 reada16.f90 reada8.f90 rexponents.f90
+rfdexch.f90 rfunaux16.f90 rfunaux.f90 rfun.f90 rfun_int.f90
+rheader.f90 rrec.f90 scf.f90 schedSOR.f90 scheduler.f90 scmc.f90
+separator.f90 setCi.f90 setCiOrb.f90 setDefaults.f90 setmaxunit.f90
+setOmega.f90 setOmegaOrb.f90 setOmegaPot2.f90 setOmegaPot.f90
+setPrecision.f90 slaterp.f90 solver.f90 sor.f90 sort.f90 swap.f90
+tail.f90 tden.f90 testn2f.f90 testnfng.f90 util.f90 vcoul.f90
+vexch.f90 vlpcoeff.f90 vpoly1q.f90 vpolyq.f90 wrec.f90 wrecf.f90
+writea128.f90 writea128f.f90 writea32.f90 writea32f.f90 writea64.f90
+writea64f.f90 writea.f90 writeDisk4dd.f90 writeDisk.f90 wtdexch1.f90
+wtdexch1f.f90 wtdexch.f90 wtdisk128.f90 wtdisk128f.f90 wtdisk32.f90
+wtdisk32f.f90 wtdisk64.f90 wtdisk64f.f90 wtdisknat.f90 x2dhf.f90
+zeroArray.f90 zeroArrays.f90 zgsz1.f90 zgsz1g.f90 zgsz2.f90 zgsz2g.f90
+zz1.f90 zz1g.f90 zz2.f90 zz2g.f90 )
 
 # Install
 install (TARGETS x2dhf DESTINATION bin)
