@@ -2,8 +2,8 @@ title C 1D (m=+/-2)    R = 2.0
 method hf
 nuclei  6.0  0.0  2.0
 config  0
- 1 pi + -
  1 sigma
+ 1 pi + -
  1 sigma   end
 grid 169 30.0
 orbpot hydrogen

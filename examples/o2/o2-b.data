@@ -3,13 +3,13 @@ method hf
 nuclei  8.0 8.0 1.20752 angstrom
 break
 config  0
-1 sigma
-1 sigma
-1 sigma
-1 sigma
-1 sigma
+1 pi   + . + .
 1 pi
-1 pi   + . + . end
+1 sigma
+1 sigma
+1 sigma
+1 sigma
+1 sigma end
 grid 169 50.0
 orbpot  gauss
 scf 3000 10 5 5 1
