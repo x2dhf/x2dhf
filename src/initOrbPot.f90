@@ -16,8 +16,7 @@ subroutine initOrbPot (cw_orb,cw_coul,cw_exch,cw_suppl,cw_sctch)
   use params
   use discret
   use commons8
-
-
+  use prepGauss
   implicit none
 
   integer :: iorb
@@ -162,7 +161,7 @@ subroutine initOrbPot (cw_orb,cw_coul,cw_exch,cw_suppl,cw_sctch)
      !  initial values of orbitals are provided by the GAUSSIAN program
 
      write(*,*) 'Initializing orbitals using GAUSSIAN output'
-     call prepGauss
+     call prepare_Gaussian
      call initGauss(cw_orb,cw_coul,cw_exch,cw_suppl(i4b(7)),cw_suppl(i4b(9)),cw_suppl(i4b(14)),cw_sctch(i5b(1)))
      idump=1
 

@@ -7,15 +7,10 @@ module evalGauss
 contains
   subroutine evaluate(bf)
 
-    integer :: ic1, icen1, icen2, icen3, igp, imu, in, inioff, ipb, l1, m1
+    integer :: ic1, igp, imu, in, inioff, ipb, l1, m1
     real (PREC) :: costh1, d1, expt, fnorm, r1, z, psi1
     real (PREC), dimension(:,:) :: bf
     real (PREC), external :: plegendg
-
-    ! Center indices. Gaussian appears to flip these.
-    icen1=3
-    icen2=2
-    icen3=1
 
     ! Sanity check
     if(size(bf,1) .ne. nni*mxnmu .or. size(bf,2) .ne. npbasis) then
@@ -46,27 +41,25 @@ contains
              igp=inioff+in
 
              ! for each grid point, i.e. for (vmu(imu),vni(ini))
-             ! determine its distance |_r1| from the nuclei Z_1 and Z_2
-             ! and cosine of the polar angles costh1 and costh2 between
-             ! z axis and the vectors _r1 and _r2
-
-             ! rr=(r/2.0_PREC)*sqrt(vxisq(imu)+vetasq(in)-1.0_PREC)
+             ! determine its distance |r_i| from the nucleus Z_i and
+             ! cosine of the polar angle costh_i between the z axis
+             ! and the vector r_i
 
              z=(r/2.0_PREC)*vxi(imu)*veta(in)
 
-             if (ic1.eq.icen1) then
+             if (ic1.eq.1) then
                 ! Center on Z1
                 r1=(r/2.0_PREC)*(vxi(imu)+veta(in))
                 z=z+r/2.0_PREC
 
-             elseif (ic1.eq.icen3) then
+             elseif (ic1.eq.3) then
                 ! Center on Z2
                 r1=(r/2.0_PREC)*(vxi(imu)-veta(in))
                 z=z-r/2.0_PREC
 
-             elseif (ic1.eq.icen2) then
+             elseif (ic1.eq.2) then
                 ! Bond center
-                r1=sqrt(vxisq(imu)+vetasq(in)-1.0_PREC)*r/2.0_PREC
+                r1=(r/2.0_PREC)*sqrt(vxisq(imu)+vetasq(in)-1.0_PREC)
 
              else
                 write (*,*) 'invalid center ',ic1
