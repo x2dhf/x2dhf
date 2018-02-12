@@ -119,11 +119,12 @@ subroutine doSCF (cw_sor,cw_orb,cw_coul,cw_exch,cw_suppl,cw_sctch)
      iend=norb
 
      ! FIXME
-     if (iorder(i).eq.5.and.mod(iscf,itwo).eq.0) then
-        ioo=-1
-     else
-        ioo= 1
-     endif
+     !if (iorder(i).eq.5.and.mod(iscf,itwo).eq.0) then
+     !   ioo=-1
+     !else
+     !   ioo= 1
+     !endif
+     ioo=1
 
      iasympt=norb
 
