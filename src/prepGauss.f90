@@ -77,14 +77,20 @@ contains
        if( g94 ) then
           ! g94 doesn't have atom type
           read (line,*,iostat=stat) icen(i), iZ0(i), x0(i), y0(i), z0(i)
-          if(stat.ne.0) stop 'Parsing error ' // line
+          if(stat.ne.0) then
+             write (*,*) 'Error parsing ', line
+             stop
+          end if
        else
           read (line,*,iostat=stat) icen(i), iZ0(i), itype(i), x0(i), y0(i), z0(i)
           if(stat .ne. 0) then
              ! Try switching to g94 mode
              g94=.true.
              read (line,*,iostat=stat) icen(i), iZ0(i), x0(i), y0(i), z0(i)
-             if(stat.ne.0) stop 'Parsing error ' // line
+             if(stat.ne.0) then
+                write (*,*) 'Error parsing ', line
+                stop
+             end if
           end if
        end if
     end do
