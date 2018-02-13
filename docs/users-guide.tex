@@ -152,9 +152,11 @@ The following labels must be specified in the specified order:
 \end{itemize}
 \end{description}
 
-The following cards define molecular orbitals and their occupation.
-\textbf{Note that the last orbital description card must contain the
-  $end$ label.}
+The following cards define molecular orbitals and their occupation
+{\bf in inverse order - the highest orbitals are on top and the lowest
+  on bottom}. Note that the last orbital description card
+(corresponding to the deepest lying orbital) must contain the $end$
+label.
 
 The possible formats are:
 \begin{description}
@@ -503,9 +505,7 @@ of homonuclear molecules in order to improve SCF/SOR convergence.
 \item \textbf{INTERP}
 \begin{description}
 \item[Format:] \textbf{interp} \\ Use this label to change the grid
-  between separate runs of the program.  Note that you can only change
-  the grid in one direction at a time: either in the $\nu$ direction
-  ($N_\nu$), or in the $\mu$ direction ($N_\mu$ and/or $R_\infty$).
+  between separate runs of the program.
 \end{description}
 
 
