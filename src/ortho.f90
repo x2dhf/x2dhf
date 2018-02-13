@@ -15,6 +15,7 @@
 subroutine ortho (iorb1,psi,f4,wgt2,wk0)
   use params
   use commons8
+  use qsort
 
   implicit none
   integer :: ibeg1,ibeg3,iorb1,iorb2,iorb3,ira,jor,jor1,ngrid
@@ -69,7 +70,7 @@ subroutine ortho (iorb1,psi,f4,wgt2,wk0)
 
   !     determine the worst nonorthogonality for a given orbital
   if (jor1.gt.0) then
-     call qsortf(jor1,ovla1,index)
+     call quicksort(jor1,ovla1,index)
      wstorthog(iorb1)=ovla1(index(1))
   endif
 
