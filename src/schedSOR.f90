@@ -16,6 +16,7 @@ subroutine schedsor
   use params
   use commons8
   use scheduler
+  use qsort
 
   implicit none
   integer :: i,iorb,inde,indemin,maxlevel,minlevel,nlevels
@@ -45,7 +46,7 @@ subroutine schedsor
         endiff(iorb)=abs(orbenergy(i-1,iorb)-orbenergy(i,iorb))
      enddo
 
-     call qsortf(norb,endiff,index)
+     call quicksort(norb,endiff,index)
 
      !      every orbital gets maxsororb number ranging from maxsor2-ibonus
      !      to maxsor2+ibonus according to its position in the index array

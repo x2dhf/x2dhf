@@ -30,7 +30,7 @@ prepdiff1.f90 prepGauss.f90 prepSCF.f90 prepwexch.f90 printBanner.f90
 printCase.f90 printElConf.f90 printResults.f90 propet2.f90 propet3.f90
 prtdenA.f90 prtdenB.f90 prtmatcw.f90 prtmat.f90 prttoten.f90
 putin2.f90 putin3.f90 putin4.f90 putin.f90 putout34.f90 putout.f90
-qsortf.f radialden.f90 reada16.f90 reada8.f90 rexponents.f90
+qsort.f90 radialden.f90 reada16.f90 reada8.f90 rexponents.f90
 rfdexch.f90 rfunaux16.f90 rfunaux.f90 rfun.f90 rfun_int.f90
 rheader.f90 rrec.f90 scf.f90 schedSOR.f90 scheduler.f90 scmc.f90
 separator.f90 setCi.f90 setCiOrb.f90 setDefaults.f90 setmaxunit.f90
