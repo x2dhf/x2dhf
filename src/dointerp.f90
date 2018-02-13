@@ -1,7 +1,8 @@
 ! ***************************************************************************
 ! *                                                                         *
-! *   Copyright (C) 1996 Leif Laaksonen, Dage Sundholm                      *
-! *   Copyright (C) 1996-2010 Jacek Kobus <jkob@fizyka.umk.pl>              *
+! *   Copyright (C) 1996       Leif Laaksonen, Dage Sundholm                *
+! *   Copyright (C) 1996-2010  Jacek Kobus <jkob@fizyka.umk.pl>             *
+! *   Copyright (C) 2018-      Susi Lehtola                                 *
 ! *                                                                         *
 ! *   This program is free software; you can redistribute it and/or modify  *
 ! *   it under the terms of the GNU General Public License version 2 as     *
@@ -22,10 +23,12 @@ subroutine dointerp (ic,nmuall_p,nmuall,fbefore,fafter)
   implicit none
   integer :: i,ic,im,imu,imu_bext,in,nall,nall_p,nstart,nstart_p,nmuall,nmuall_p
 
-  real (PREC), dimension(nni_p,*) ::  fbefore
-  real (PREC), dimension(nni,*)   ::  fafter
+  real (PREC), dimension(nni_p,*)           ::  fbefore
+  real (PREC), dimension(nni,*)             ::  fafter
+  real (PREC), dimension(:,:), allocatable  ::  fmiddle
   real (PREC) :: rinftol
   logical :: muchange, nuchange, gridchange, rinfchange
+  logical :: usemiddle
 
   ! Tolerance for change in rinf
   rinftol = 1e2*precis
@@ -36,13 +39,17 @@ subroutine dointerp (ic,nmuall_p,nmuall,fbefore,fafter)
   gridchange = ngrids .ne. ngrids_p
   rinfchange = abs(rinf-rinf_p).gt.(rinftol*rinf_p)
 
+  ! Allocate helper if necessary
+  if((muchange .or. gridchange .or. rinfchange) .and. nuchange) then
+     usemiddle = .true.
+     allocate(fmiddle(nni_p,nmuall))
+  else
+     usemiddle = .false.
+  end if
+
   ! The previous grid contains nni_p points in \nu (\eta) direction and
   ! nmuall_pt points in \mu (\xi) direction
-
-  !      print *,nmuall,ngrids,rinf,nni
-  !      print *,nmuall_p,ngrids_p,rinf_p,nni_p
-  !      write (*,'(2e30.16)') rinf,rinf_p
-  if ((muchange .or. gridchange .or. rinfchange) .and. .not. nuchange) then
+  if (muchange .or. gridchange .or. rinfchange) then
      ! Prepare data for routines evaluating coefficients of the
      ! Lagrange polynomial
 
@@ -68,7 +75,11 @@ subroutine dointerp (ic,nmuall_p,nmuall,fbefore,fafter)
      nstart  =1
      nall_p=nmuall_p
      nall  =nmuall
-     call dointerp_mu (nni_p,nstart_p,nall_p,nstart,nall,fbefore,fafter)
+     if (usemiddle) then
+        call dointerp_mu (nni_p,nstart_p,nall_p,nstart,nall,fbefore,fmiddle)
+     else
+        call dointerp_mu (nni_p,nstart_p,nall_p,nstart,nall,fbefore,fafter)
+     end if
 
      ! Extrapolation (needed when R_infy is being increased seems to
      ! cause degradation of accuracy. That is why these values are
@@ -84,14 +95,23 @@ subroutine dointerp (ic,nmuall_p,nmuall,fbefore,fafter)
            end if
         end do
 
-        do in=1,nni_p
-           do im=imu_bext,nmuall
-              fafter(in,im)=fbefore(in,nmuall_p)
+        if(usemiddle) then
+           do in=1,nni_p
+              do im=imu_bext,nmuall
+                 fmiddle(in,im)=fbefore(in,nmuall_p)
+              end do
            end do
-        end do
+        else
+           do in=1,nni_p
+              do im=imu_bext,nmuall
+                 fafter(in,im)=fbefore(in,nmuall_p)
+              end do
+           end do
+        end if
      end if
+  end if
 
-  elseif (nuchange .and. (.not. muchange .and. .not. gridchange .and. .not. rinfchange)) then
+  if(nuchange) then
      !        interpolate in nu variable
 
      if (nni_p.gt.maxmu) then
@@ -122,15 +142,12 @@ subroutine dointerp (ic,nmuall_p,nmuall,fbefore,fafter)
      else
         stop "invalid argument ic"
      end if
-     call dointerp_nu (nmuall_p,fbefore,fafter)
-
-  else
-     if (nuchange .and. rinfchange) then
-        write(*,'(/,1x,"dointerp: cannot perform interpolation since both the number of nu grid points " &
-             & /11x "and the value of practical infinity change")')
-        stop "dointerp"
+     if(usemiddle) then
+        call dointerp_nu (nmuall_p,fmiddle,fafter)
+     else
+        call dointerp_nu (nmuall_p,fbefore,fafter)
      end if
-     write(*,'(/1x,"dointerp: no interpolation performed; check input data")')
-     stop "dointerp"
   end if
+
+  if(usemiddle) deallocate(fmiddle)
 end subroutine dointerp
