@@ -53,6 +53,8 @@ contains
 
     ! By default, assume G03 format
     g94 = .false.
+    ! Initialize itype
+    itype = 0
 
     ! Read four lines from input, which contain the separators
     do i=1,4
@@ -66,7 +68,8 @@ contains
        read (7,'(A)') line
        !write (*,*) 'Got line ' // line
        ! Check we haven't gone too far
-       if(line .eq. ' ---------------------------------------------------------------------') then
+       if(line .eq. ' ---------------------------------------------------------------------' .or. &
+          line .eq. ' ----------------------------------------------------------') then
           ncen=i-1
           exit
        end if
@@ -108,9 +111,10 @@ contains
     end do
 
     ! Figure out dummy atom index
+    idum=.false.
     if(g94) then
        do i=1,ncen
-          idum(i)=iZ(i).eq.0
+          idum(i)=iZ0(i).eq.0
        end do
     else
        do i=1,ncen
@@ -128,6 +132,7 @@ contains
     call rsort(y0,y,map)
     call rsort(z0,z,map)
     call isort(iZ0,iZ,map)
+
   end subroutine make_mapping
 
   subroutine read_basis(nprim,nexpon,npbasis)
@@ -238,7 +243,13 @@ contains
     do ilines=1,100000
        read(7,1001,end=990,err=910) matchstr
 
-       ! Gaussian 94 or 03/09/16
+       ! Gaussian 94
+       if (matchstr.eq.'                  Z-Matrix orientation:' .or. &
+            matchstr.eq.'                   Standard orientation:') then
+          call make_mapping(map,invmap,iZ,x,y,z,ncen)
+          atoms_found = .true.
+       end if
+       ! Gaussian 03/09/16
        if (matchstr.eq.'                         Standard orientation:' .or. &
             matchstr.eq.'                          Input orientation:') then
           call make_mapping(map,invmap,iZ,x,y,z,ncen)

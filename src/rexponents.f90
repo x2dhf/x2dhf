@@ -32,6 +32,8 @@ subroutine rexponents(ibc,ib,istop)
   character(80) :: line
   character(2) :: symlab
 
+  integer :: stat
+
   istop=0
 
   ! Read the centre number
@@ -42,7 +44,11 @@ subroutine rexponents(ibc,ib,istop)
      return
   end if
 
-  read (line,*) icent
+  read (line,*,iostat=stat) icent
+  if(stat.ne.0) then
+     istop=0
+     return
+  end if
   if (icent.eq.0) then
      istop=0
      return
