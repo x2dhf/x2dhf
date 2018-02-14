@@ -26,21 +26,29 @@ subroutine dointerp (ic,nmuall_p,nmuall,fbefore,fafter)
   real (PREC), dimension(nni_p,*)           ::  fbefore
   real (PREC), dimension(nni,*)             ::  fafter
   real (PREC), dimension(:,:), allocatable  ::  fmiddle
-  real (PREC) :: rinftol
-  logical :: muchange, nuchange, gridchange, rinfchange
-  logical :: usemiddle
+  real (PREC) :: gtol
 
-  ! Tolerance for change in rinf
-  rinftol = 1e2*precis
+  logical :: muchange, nuchange, gridchange, rinfchange, geomchange
+  logical :: muinterp, nuinterp, usemiddle
+
+  ! Relative tolerance for change in bond length or rinf
+  gtol = 1e2*precis
 
   ! Figure out what has changed
   muchange = nmuall .ne. nmuall_p
   nuchange = nni .ne. nni_p
   gridchange = ngrids .ne. ngrids_p
-  rinfchange = abs(rinf-rinf_p).gt.(rinftol*rinf_p)
+  rinfchange = abs(rinf-rinf_p).gt.(gtol*rinf_p)
+  geomchange = abs(r-r_p).gt.(gtol*r_p)
+
+  ! Do we need to interpolate in mu?
+  muinterp=(muchange .or. gridchange .or. rinfchange .or. geomchange)
+
+  ! For nu, we only do interpolation if the size of the nu grid changes.
+  nuinterp=(nuchange)
 
   ! Allocate helper if necessary
-  if((muchange .or. gridchange .or. rinfchange) .and. nuchange) then
+  if(muinterp .and. nuinterp) then
      usemiddle = .true.
      allocate(fmiddle(nni_p,nmuall))
   else
