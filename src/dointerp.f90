@@ -56,7 +56,7 @@ subroutine dointerp (ic,nmuall_p,nmuall,fbefore,fafter)
 
   ! The previous grid contains nni_p points in \nu (\eta) direction and
   ! nmuall_pt points in \mu (\xi) direction
-  if (muchange .or. gridchange .or. rinfchange) then
+  if (muinterp) then
      ! Prepare data for routines evaluating coefficients of the
      ! Lagrange polynomial
 
@@ -118,7 +118,7 @@ subroutine dointerp (ic,nmuall_p,nmuall,fbefore,fafter)
      end if
   end if
 
-  if(nuchange) then
+  if(nuinterp) then
      !        interpolate in nu variable
 
      if (nni_p.gt.maxmu) then
@@ -157,4 +157,14 @@ subroutine dointerp (ic,nmuall_p,nmuall,fbefore,fafter)
   end if
 
   if(usemiddle) deallocate(fmiddle)
+
+  ! If grids are the same, just use the same values
+  if(.not. muinterp .and. .not. nuinterp) then
+     do in=1,nni
+        do im=1,nmuall
+           fafter(in,im)=fbefore(in,im)
+        end do
+     end do
+  end if
+
 end subroutine dointerp
