@@ -736,11 +736,19 @@ subroutine inputData(ni_t,mu_t,no_t,nons_t)
          enddo
 
          nni=nnucalc(nni)
+         if (nni.lt.7) then
+            write(*,*) 'Error: too few grid points in nu variable: ',nni
+            stop 'inputData'
+         endif
          if (nni.gt.maxnu) then
             write(*,*) 'Error: too many grid points in nu variable: ',nni,' is greater than ',maxnu
             stop 'inputData'
          endif
 
+         if (nmutot.lt.7) then
+            write(*,*) 'Error: too few grid points in mu variable: ',nmutot
+            stop 'inputData'
+         endif
          if (nmutot.gt.maxmu) then
             write(*,*) 'Error: too many grid points in mu variable:',nmutot,' is greater than ',maxmu
             stop 'inputData'
