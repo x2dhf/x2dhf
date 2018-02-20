@@ -67,63 +67,42 @@ subroutine printResults (cw_orb,cw_coul,cw_exch,cw_suppl,cw_sctch)
   etot_final=etot
 
   if (iprint16.eq.0) then
+     write(*,*)
+     write(*,'(" total energy contributions: ")')
+     write(*,'("     nuclear-electron attraction energy = ",f20.12)') ennucel
+     write(*,'("     kinetic energy                     = ",f20.12)') enkin
+     write(*,'("     one electron energy                = ",f20.12)') enkin+ennucel
+
      if (islat.eq.0) then
-
-! FIXME print DFT functional used
-
-        write(*,*)
-        write(*,'(" total energy contributions: ")')
-        write(*,'("     nuclear-electron attraction energy = ",f20.12)') ennucel
-        write(*,'("     kinetic energy                     = ",f20.12)') enkin
-        write(*,'("     one electron energy                = ",f20.12)') enkin+ennucel
+        ! FIXME print DFT functional used
         write(*,'("     coulomb energy                     = ",f20.12)') encoul
         write(*,'("     exchange energy                    = ",f20.12)') enexch
-        write(*,'("     nuclear repulsion energy           = ",f20.12)') z1*z2/r
-        write(*,'("     coulomb energy (DFT)               = ",f20.12)') encouldft
-        write(*,'("     exchange energy (DFT)              = ",f20.12)') enexchdft
-        write(*,'("     correlation energy (DFT)           = ",f20.12)') edftcorr
-     else
+     end if
 
-        ! FIXME print DFT functional used
-
-        write(*,*)
-        write(*,'(" total energy contributions: ")')
-        write(*,'("     nuclear-electron attraction energy = ",f20.12)') ennucel
-        write(*,'("     kinetic energy                     = ",f20.12)') enkin
-        write(*,'("     one electron energy                = ",f20.12)') enkin+ennucel
-        write(*,'("     coulomb energy (DFT)               = ",f20.12)') encouldft
-        write(*,'("     exchange energy (DFT)              = ",f20.12)') enexchdft
-        write(*,'("     correlation energy (DFT)           = ",f20.12)') edftcorr
+     ! FIXME print DFT functional used
+     write(*,'("     nuclear repulsion energy           = ",f20.12)') z1*z2/r
+     write(*,'("     coulomb energy (DFT)               = ",f20.12)') encouldft
+     write(*,'("     exchange energy (DFT)              = ",f20.12)') enexchdft
+     write(*,'("     correlation energy (DFT)           = ",f20.12)') edftcorr
      endif
   else
 
+     write(*,*)
+     write(*,'(" total energy contributions: ")')
+     write(*,'("     nuclear-electron attraction energy = ",f28.22)') ennucel
+     write(*,'("     kinetic energy                     = ",f28.22)') enkin
+     write(*,'("     one electron energy                = ",f28.22)') enkin+ennucel
      if (islat.eq.0) then
-
-! FIXME print DFT functional used
-
-        write(*,*)
-        write(*,'(" total energy contributions: ")')
-        write(*,'("     nuclear-electron attraction energy = ",f28.22)') ennucel
-        write(*,'("     kinetic energy                     = ",f28.22)') enkin
-        write(*,'("     one electron energy                = ",f28.22)') enkin+ennucel
+        ! FIXME print DFT functional used
         write(*,'("     coulomb energy                     = ",f28.22)') encoul
         write(*,'("     exchange energy                    = ",f28.22)') enexch
-        write(*,'("     coulomb energy (DFT)               = ",f28.22)') encouldft
-        write(*,'("     exchange energy (DFT)              = ",f28.22)') enexchdft
-        write(*,'("     correlation energy (DFT)           = ",f28.22)') edftcorr
-     else
+     end if
 
-        ! FIXME print DFT functional used
-
-        write(*,*)
-        write(*,'(" total energy contributions: ")')
-        write(*,'("     nuclear-electron attraction energy = ",f28.22)') ennucel
-        write(*,'("     kinetic energy                     = ",f28.22)') enkin
-        write(*,'("     one electron energy                = ",f28.22)') enkin+ennucel
-        write(*,'("     coulomb energy (DFT)               = ",f28.22)') encouldft
-        write(*,'("     exchange energy (DFT)              = ",f28.22)') enexchdft
-        write(*,'("     correlation energy (DFT)           = ",f28.22)') edftcorr
-     endif
+     ! FIXME print DFT functional used
+     write(*,'("     nuclear repulsion energy           = ",f28.22)') z1*z2/r
+     write(*,'("     coulomb energy (DFT)               = ",f28.22)') encouldft
+     write(*,'("     exchange energy (DFT)              = ",f28.22)') enexchdft
+     write(*,'("     correlation energy (DFT)           = ",f28.22)') edftcorr
   endif
 
 
