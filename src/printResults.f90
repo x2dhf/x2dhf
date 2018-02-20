@@ -84,7 +84,6 @@ subroutine printResults (cw_orb,cw_coul,cw_exch,cw_suppl,cw_sctch)
      write(*,'("     coulomb energy (DFT)               = ",f20.12)') encouldft
      write(*,'("     exchange energy (DFT)              = ",f20.12)') enexchdft
      write(*,'("     correlation energy (DFT)           = ",f20.12)') edftcorr
-     endif
   else
 
      write(*,*)
