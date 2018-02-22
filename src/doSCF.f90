@@ -272,10 +272,10 @@ subroutine doSCF (cw_sor,cw_orb,cw_coul,cw_exch,cw_suppl,cw_sctch)
         !        if (iprtlev.eq.1.and.ifix(iorb).eq.0) then
         if (iprtlev.eq.1) then
            if (iprint16.eq.0) then
-              write(iout6,15100) iscf,iorn(iorb),bond(iorb),gut(iorb),eng(iorb),demaxt(iorb),1.0-area(iorb),wstorthog(iorb)
+              write(iout6,15100) iscf,iorn(iorb),bond(iorb),gut(iorb),eng(iorb),demaxt(iorb),area(iorb)-1.0_PREC,wstorthog(iorb)
               !   &                 nodes(iorb,cw_orb)
            else
-              write(iout6,25100) iscf,iorn(iorb),bond(iorb),gut(iorb),eng(iorb),demaxt(iorb),1.0-area(iorb),wstorthog(iorb)
+              write(iout6,25100) iscf,iorn(iorb),bond(iorb),gut(iorb),eng(iorb),demaxt(iorb),area(iorb)-1.0_PREC,wstorthog(iorb)
               !   &                 nodes(iorb,cw_orb)
            endif
         endif
@@ -340,9 +340,9 @@ subroutine doSCF (cw_sor,cw_orb,cw_coul,cw_exch,cw_suppl,cw_sctch)
 
         do nei=1,norb
            if(ifix(nei).eq.0) then
-              if (abs(1.0_PREC-area(nei)).ge.dnomax) then
-                 dnomax=abs(1.0_PREC-area(nei))
-                 if (dnomax.eq.00_PREC) dnomax=precis
+              if (abs(area(nei)-1.0_PREC).ge.dnomax) then
+                 dnomax=abs(area(nei)-1.0_PREC)
+                 if (dnomax.eq.0.0_PREC) dnomax=precis
                  indn=nei
               endif
            endif
@@ -356,11 +356,11 @@ subroutine doSCF (cw_sor,cw_orb,cw_coul,cw_exch,cw_suppl,cw_sctch)
 
      if (iprtlev.eq.2) then
         if (iprint16.eq.0) then
-           write(iout6,15110) iscf,iorn(inde),bond(inde),gut(inde),eng(inde),denmax,1.0-area(inde)
-           write(iout6,15110) iscf,iorn(indn),bond(indn),gut(indn),eng(indn),demaxt(indn),1.0-area(indn)
+           write(iout6,15110) iscf,iorn(inde),bond(inde),gut(inde),eng(inde),denmax,area(inde)-1.0_PREC
+           write(iout6,15110) iscf,iorn(indn),bond(indn),gut(indn),eng(indn),demaxt(indn),area(indn)-1.0_PREC
         else
-           write(iout6,25100) iscf,iorn(inde),bond(inde),gut(inde),eng(inde),denmax,1.0-area(inde)
-           write(iout6,25100) iscf,iorn(indn),bond(indn),gut(indn),eng(indn),demaxt(indn),1.0-area(indn)
+           write(iout6,25100) iscf,iorn(inde),bond(inde),gut(inde),eng(inde),denmax,area(inde)-1.0_PREC
+           write(iout6,25100) iscf,iorn(indn),bond(indn),gut(indn),eng(indn),demaxt(indn),area(indn)-1.0_PREC
         endif
 
      endif
@@ -370,11 +370,11 @@ subroutine doSCF (cw_sor,cw_orb,cw_coul,cw_exch,cw_suppl,cw_sctch)
      if (modv.eq.0) then
         if (iprtlev.eq.3) then
            if (iprint16.eq.0) then
-              write(iout6,15110) iscf,iorn(inde),bond(inde),gut(inde),eng(inde),denmax,1.0-area(inde)
-              write(iout6,15110) iscf,iorn(indn),bond(indn),gut(indn),eng(indn),demaxt(indn),1.0-area(indn)
+              write(iout6,15110) iscf,iorn(inde),bond(inde),gut(inde),eng(inde),denmax,area(inde)-1.0_PREC
+              write(iout6,15110) iscf,iorn(indn),bond(indn),gut(indn),eng(indn),demaxt(indn),area(indn)-1.0_PREC
            else
-              write(iout6,25100) iscf,iorn(inde),bond(inde),gut(inde),eng(inde),denmax,1.0-area(inde)
-              write(iout6,25100) iscf,iorn(indn),bond(indn),gut(indn),eng(indn),demaxt(indn),1.0-area(indn)
+              write(iout6,25100) iscf,iorn(inde),bond(inde),gut(inde),eng(inde),denmax,area(inde)-1.0_PREC
+              write(iout6,25100) iscf,iorn(indn),bond(indn),gut(indn),eng(indn),demaxt(indn),area(indn)-1.0_PREC
            endif
         endif
      endif
