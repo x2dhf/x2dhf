@@ -20,11 +20,11 @@ subroutine dointerp_nu (nmuall,fbefore,fafter)
   implicit none
   integer :: i,imu,ini_p,k,nmuall,nni_first,nni_last
 
-  real (PREC), dimension(nni_p,*) :: fbefore
-  real (PREC), dimension(nni,*) :: fafter
+  real (PREC), dimension(nni_p,nmuall) :: fbefore
+  real (PREC), dimension(nni,nmuall) :: fafter
   real (PREC16) xni
-  real (PREC16), dimension(9) :: coeffq
-  real (PREC16), dimension(9,9) :: coeffq2
+  real (PREC16), dimension(kend) :: coeffq
+  real (PREC16), dimension(kend,kend) :: coeffq2
   real (PREC16), external ::  vpoly1q
 
 ! interpolation for the first iord2 points in ni variable

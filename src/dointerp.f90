@@ -21,7 +21,7 @@ subroutine dointerp (ic,nmuall_p,nmuall,fbefore,fafter)
   use commons16
 
   implicit none
-  integer :: i,ic,im,imu,imu_bext,in,nall,nall_p,nstart,nstart_p,nmuall,nmuall_p
+  integer :: i,ic,im,imu,imu_bext,in,nall,nall_p,nmuall,nmuall_p
 
   real (PREC), dimension(nni_p,*)           ::  fbefore
   real (PREC), dimension(nni,*)             ::  fafter
@@ -78,14 +78,12 @@ subroutine dointerp (ic,nmuall_p,nmuall,fbefore,fafter)
         vmuq(imu)=vmu_p(imu)
      end do
 
-     nstart_p=1
-     nstart  =1
      nall_p=nmuall_p
      nall  =nmuall
      if (usemiddle) then
-        call dointerp_mu (nni_p,nstart_p,nall_p,nstart,nall,fbefore,fmiddle)
+        call dointerp_mu (nni_p,nall_p,nall,fbefore,fmiddle)
      else
-        call dointerp_mu (nni_p,nstart_p,nall_p,nstart,nall,fbefore,fafter)
+        call dointerp_mu (nni_p,nall_p,nall,fbefore,fafter)
      end if
 
      ! Extrapolation (needed when R_infy is being increased seems to

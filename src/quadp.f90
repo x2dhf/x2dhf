@@ -12,7 +12,7 @@ function vpolyq (mup,a)
   integer :: i,mup
   real (PREC16) :: vpolyq
   real (PREC16) :: x
-  real (PREC16), dimension(9) :: a
+  real (PREC16), dimension(kend) :: a
 
   x=vmuq(mup)
   vpolyq=0.0_PREC16

@@ -11,8 +11,8 @@ subroutine lagrpolq (dc1,dc2)
   integer :: i,ib,ie,ig,imup,k,mup
   real(PREC16) :: vpolyq
 
-  real (PREC16), dimension(9) :: coeffq,coeff1,coeff2
-  real (PREC), dimension(9,7,9) :: dc1,dc2
+  real (PREC16), dimension(kbeg:kend) :: coeffq,coeff1,coeff2
+  real (PREC), dimension(kbeg:kend,7,kbeg:kend) :: dc1,dc2
 
 !      derivative coeff. from 8th-order Lagrange interpolation formula
 !      are stored in dc[1-2](ngbound,imu,k), where ngbound is the number of
