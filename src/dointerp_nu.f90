@@ -27,13 +27,10 @@ subroutine dointerp_nu (nmuall,fbefore,fafter)
   real (PREC16), dimension(kend,kend) :: coeffq2
   real (PREC16), external ::  vpoly1q
 
-! interpolation for the first iord2 points in ni variable
-
-  do ini=1,nni
-     if(vni(ini).ge.vni_p(iord2)) exit
+  ! interpolation for the first iord2 points in ni variable
+  do nni_first=1,nni
+     if(vni(nni_first).ge.vni_p(iord2)) exit
   enddo
-
-  nni_first=ini
 
   do k=1,kend
      call lpcoeffq(iord2+1,k,coeffq)
@@ -58,15 +55,10 @@ subroutine dointerp_nu (nmuall,fbefore,fafter)
   !  Interpolation for the last iord2 points in ni variable.
   !  Determine the location of the tail region in the new grid
 
-  do ini=1,nni
-     if(vni(ini).ge.vni_p(nni_p-iord2+1)) exit
+  do nni_last=1,nni
+     if(vni(nni_last).ge.vni_p(nni_p-iord2+1)) exit
   enddo
-
-  if (ini.gt.nni) then
-     nni_last=nni
-  else
-     nni_last=ini
-  endif
+  if (nni_last.gt.nni) nni_last=nni
 
   do k=1,kend
      call lpcoeffq(nni_p-iord2,k,coeffq)

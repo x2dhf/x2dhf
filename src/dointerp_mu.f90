@@ -100,7 +100,12 @@ subroutine dointerp_mu (nnit,nmuall_p,nmuall,fbefore,fafter)
         if(vmu_p(i).ge.xmu) exit
      enddo
 
-     imu_p=i
+     if (i.gt.nmuall_p) then
+        imu_p=nmuall_p
+     else
+        imu_p=i
+     endif
+
      do k=1,kend
         call lpcoeffq(imu_p,k,coeffq)
         do i=1,kend
