@@ -504,8 +504,15 @@ of homonuclear molecules in order to improve SCF/SOR convergence.
 
 \item \textbf{INTERP}
 \begin{description}
-\item[Format:] \textbf{interp} \\ Use this label to change the grid
-  between separate runs of the program.
+\item[Format:] \textbf{interp} $[\; {\rm iord}_\nu^{\rm orb}$ ${\rm
+    iord}_\mu^{\rm orb}$ ${\rm iord}_\nu^{\rm coul}$ ${\rm
+    iord}_\mu^{\rm coul}$ ${\rm iord}_\nu^{\rm exch}$ ${\rm
+    iord}_\mu^{\rm exch} ]$\\ Use this label to change the grid
+  between separate runs of the program. The interpolation order in the
+  $\nu$ and $\mu$ directions used for the orbitals, Coulomb potential
+  and exchange potentials can be set with the six optional
+  parameters. Supported orders for the interpolation are 2, 4
+  (default), 6, and 8.
 \end{description}
 
 
