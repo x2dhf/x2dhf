@@ -10,7 +10,7 @@ export target=$(pwd) # this installs x2dhf under bin/ in the present directory
 #export target=${HOME}  # this installs x2dhf in ${HOME}/bin
 
 # Number of parallel processes in build
-export npar=1
+export npar=8
 
 # No changes should be necessary hereafter.
 if [[ ! -d objdir ]]; then
