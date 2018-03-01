@@ -31,7 +31,7 @@ subroutine initDisk (cw_orb,cw_coul,cw_exch,cw_sctch)
   lengthfp=lengthfpin
   
   call rheader(norb_p)
-  if (iinterp.eq.0) then
+  if (iinterp.eq.0) then	
      call rfun (norb_p,cw_orb,cw_coul,cw_exch,cw_sctch(i5b( 1)),cw_sctch(i5b( 2)))
   else
      call grid_old

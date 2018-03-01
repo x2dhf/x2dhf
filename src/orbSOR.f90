@@ -127,11 +127,11 @@ subroutine orbSOR (iorb,cw_sor,psi,pot,excp,b,d,e,f0,f1,f2,f4,wgt2, &
               ngrd1 =ingr2(1,ig)
               ngrd6a=ingr2(2,ig)
               ngrd6b=ingr2(3,ig)
-              ngrd7 =ingr2(4,ig)
+              ngrd7 =ingr2(4,ig)	  	  	    
               
               muoffs=iemu(ig-1)-1
               call putin3 (nni,nmu(ig),psi(iborb),wk2)
-              do itr2=1,maxsororb(iorb)
+              do itr2=1,maxsororb(iorb)	  		
                  call sor (wk2,lhs(ioffs1),rhs(ioffs1),b(ioffs1),d(ioffs1),cw_sor(iadext(ig+ngrids)),cw_sor(iadnor(ig+ngrids)), &
                       cw_sor(iadex1(ig+ngrids)),cw_sor(iadex2(ig+ngrids)),cw_sor(iadex3(ig+ngrids)))
               enddo
@@ -160,19 +160,19 @@ subroutine orbSOR (iorb,cw_sor,psi,pot,excp,b,d,e,f0,f1,f2,f4,wgt2, &
               ngrd1 =ingr1(1,ig)
               ngrd6a=ingr1(2,ig)
               ngrd6b=ingr1(3,ig)
-              ngrd7 =ingr1(4,ig)
+              ngrd7 =ingr1(4,ig)	  	  	    
               
               muoffs=iemu(ig-1)-1
               
               call putin4 (nni,nmu(ig),psi(iborb),wk2)
-              do itr2=1,maxsororb(iorb)
+              do itr2=1,maxsororb(iorb)  		
                  call sor (wk2,lhs(ioffs1),rhs(ioffs1),b(ioffs1),d(ioffs1),&
                       cw_sor(iadext(ig)),cw_sor(iadnor(ig)), &
                       cw_sor(iadex1(ig)),cw_sor(iadex2(ig)),cw_sor(iadex3(ig)))
               enddo
               call putout34 (nni,nmu(ig),psi(iborb),wk2)
               !                call asymorb (nmut,psi(iborb),wk0)
-              muoffs=0
+              muoffs=0	    
            endif
         endif
      enddo

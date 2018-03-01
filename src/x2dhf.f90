@@ -15,7 +15,7 @@ PROGRAM  x2dhf
 !      character*80 :: datetimex
 !      equivalence(datetimex,str(1))
 
-      integer :: i4,i8,n,next,error,stat
+      integer :: i4,i8,n,next,inmax,error,stat
       integer :: ni,mu,no,nons,ni8,mu8,ngrid,ngrid8,size
 
       data i4,i8/4,8/

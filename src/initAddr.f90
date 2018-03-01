@@ -164,7 +164,7 @@ subroutine initAddr
             if (k.gt.1830) then
                write(*,*) 'initAddr:'
                write(*,*) 'address array for exchange potentials is too short'
-               stop 'initAddr'
+               stop 'initAddr'	
             endif
 00050       continue
          enddo

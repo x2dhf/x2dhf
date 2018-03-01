@@ -216,7 +216,7 @@ subroutine wtdisk128f (cw_orb,cw_coul,cw_exch,i8tmp,r16l60,r16l1200,r16l3660,r16
             write(iout6,*) 'error detected when writing coulomb potential',i
             stop 'wtdisk128f'
          endif
-      enddo
+      enddo	   
 
       !   write out exchange potentials
 

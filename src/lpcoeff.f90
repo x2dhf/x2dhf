@@ -37,7 +37,7 @@ subroutine lpcoeff(iord,istart,k,r,coeff)
   
   do i=1,12
      a(i)=0.0_PREC
-     b(i)=0.0_PREC
+     b(i)=0.0_PREC	 
   enddo
   
   !     calculate nominator product: 

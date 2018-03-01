@@ -25,7 +25,7 @@ subroutine potAsympt (iorb1,pot,excp)
 !   determine values of Coulomb potentials in the asymptotic region
 !   from the multipole expansion
 
-  if (itouch(iorb1).eq.1) then
+  if (itouch(iorb1).eq.1) then	
      ibeg=i2b(iorb1)
      call coulAsympt(iorb1,pot(ibeg))
   endif
