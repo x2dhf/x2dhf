@@ -129,7 +129,7 @@ subroutine fockDFT(iorb,psi,pot,excp,e,f0,f1,f2,f4,fock1,fock2,wk2,wk3,wk4,wk5,w
      
      do iorb1=1,norb
         if (inhyd(iorb1).eq.1) goto 20
-        iborb1=i1b(iorb1)	 
+        iborb1=i1b(iorb1)
         ngorb1=i1si(iorb1)
         ibpot1=i2b(iorb1)
         ngpot1=i2si(iorb1)

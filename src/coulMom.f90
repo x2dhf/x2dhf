@@ -135,7 +135,7 @@ subroutine coulMom (psi,f4,wgt2,d1,d2,d3,d4,d5,d6,d7,d8,wk1,wk2)
      endif
      
      if (mpole.ge.5) then
-        if (ihomon.ne.0) then	
+        if (ihomon.ne.0) then
            cmulti (iorb+4*norb) = 0.0_PREC
         else
            call prod2 (ngrid,d5,wk1,wk2)

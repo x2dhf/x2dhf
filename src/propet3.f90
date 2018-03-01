@@ -21,7 +21,7 @@ subroutine propet3 (cw_orb,cw_coul,cw_exch,f4,wgt2,wk0,wk1,wk2,wk3,wk4,wk5)
 
   implicit none
 
-  integer :: i1beg,igp,imu,in,inioff,iorb,izz1,izz2,k,mu,ngorb
+  integer :: i1beg,igp,imu,in,inioff,iorb,izz1,izz2,k,ngorb
   real (PREC) :: atw1,atw2,cm2zz,costh,qq,qtot,qktot,qkz1,qkz2,rr,&
        sum1,sum2,sum3,xxplusyy,z,zcm
 

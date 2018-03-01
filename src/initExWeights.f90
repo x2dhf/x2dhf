@@ -139,7 +139,6 @@ subroutine initExWeights
 01102      format(i4,1x,a8,a1,i4,1x,a8,a1,3f7.3)
         endif
      enddo
-10   continue
   enddo
             
   ial=0

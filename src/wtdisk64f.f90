@@ -27,7 +27,6 @@ subroutine wtdisk64f (cw_orb,cw_coul,cw_exch,i8tmp,r8l60,r8l1200,r8l3660,r8mxsiz
   integer*8, dimension(*) :: i8tmp
 
   integer :: i8tmp1
-  real (PREC) :: r8tmp1,r8tmp2
   real (PREC), dimension(*) :: r8l60,r8l1200,r8l3660,r8mxsize
   real (PREC), dimension(*) :: cw_orb,cw_coul,cw_exch
 

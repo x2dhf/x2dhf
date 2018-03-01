@@ -109,7 +109,7 @@ subroutine orbMCSOR (iorb,cw_sor,psi,pot,excp,b,d,e,f0,f1,f2,f4,wgt2,  &
               ngrd1 =ingr2(1,ig)
               ngrd6a=ingr2(2,ig)
               ngrd6b=ingr2(3,ig)
-              ngrd7 =ingr2(4,ig)	    
+              ngrd7 =ingr2(4,ig)
               
               call putin2 (nni,nmu(ig),psi(iborb),wk2)
               do itr2=1,maxsororb(iorb)

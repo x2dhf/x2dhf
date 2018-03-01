@@ -119,7 +119,7 @@ subroutine initMesh (cw_sor)
   ibeg3=i6b(3)
   ibeg4=i6b(4)
   ibeg5=i6b(5)
-  imut=0		
+  imut=0
   init=0
   igs=0
 

@@ -580,24 +580,6 @@ subroutine doSCF (cw_sor,cw_orb,cw_coul,cw_exch,cw_suppl,cw_sctch)
      call writeDisk(cw_orb,cw_coul,cw_exch)
   endif
 
-  if (iout4dd==1) call writeDisk4dd(cw_orb,cw_coul,cw_suppl(i4b(5)),cw_suppl(i4b(9)),&
-       cw_sctch(i5b( 1)),cw_sctch(i5b(2)),cw_sctch(i5b( 3)),cw_sctch(i5b( 4)))
-
-
-!  if (iout4dft==1) call writeDisk4dft(cw_exch)
-  if (iout4dft==1) call writeDisk4dft(cw_orb,cw_coul,cw_exch,             &
-             cw_suppl(i4b( 4)),cw_suppl(i4b( 5)),cw_suppl(i4b( 6)), & 
-             cw_suppl(i4b( 7)),cw_suppl(i4b( 8)),cw_suppl(i4b( 9)), &    
-             cw_sctch(i5b( 1)),cw_sctch(i5b( 2)),cw_sctch(i5b( 3)), &         
-             cw_sctch(i5b( 4)),cw_sctch(i5b( 5)),cw_sctch(i5b( 6)), &
-             cw_sctch(i5b( 7)),cw_sctch(i5b( 8)),cw_sctch(i5b( 9)), &
-             cw_sctch(i5b(10)),cw_sctch(i5b(11)),cw_sctch(i5b(12)), &
-             cw_sctch(i5b(13)),cw_sctch(i5b(14)))                   
-
-
-
-
-
   return
       
 6100  format(1x,'total energy: ',e26.16)

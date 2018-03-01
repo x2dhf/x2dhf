@@ -212,11 +212,11 @@ subroutine printCase
   
   if (lengthfp.eq.8) then
      write(iout6,'("   constants: "/&
-          "               pi        = ",e25.16/&
+          "               pi        = ",e25.16/,&
           "               bohr      = ",e25.16," angstroms")') pii,bohr2ang
   else
      write(iout6,'("   constants: "/ &
-          "               pi        = ",e45.34/ &
+          "               pi        = ",e45.34/,&
           "               bohr      = ",e45.34," angstroms"/)') pii,bohr2ang
   endif
   
