@@ -2,7 +2,7 @@
 ! *                                                                         *
 ! *   Copyright (C) 1996 Leif Laaksonen, Dage Sundholm                      *
 ! *   Copyright (C) 1996-2010 Jacek Kobus <jkob@fizyka.umk.pl>              *
-! *                                                                         *
+! *                                                                         *     
 ! *   This program is free software; you can redistribute it and/or modify  *
 ! *   it under the terms of the GNU General Public License version 2 as     *
 ! *   published by the Free Software Foundation.                            *
@@ -26,16 +26,16 @@ subroutine prepSCF (cw_sor,cw_orb,cw_coul,cw_exch,cw_suppl,cw_sctch)
 
   !     orbital energies and Lagrange multiplies are initialized
   !     or have been retrieved from the disk file
-
-  !     asymptotic values of Coulomb and exchange potentials are
+  
+  !     asymptotic values of Coulomb and exchange potentials are 
   !     calculated or have been retrieved from the disk file
-
+  
   !     see routine initOrbPot for the explanation of the following command
-
+  
   !     check orhogonality of orbitals
   if (iprint(30).ne.0) then
      print *,''
-     print *,'orthogonality of orbitals:'
+     print *,'orthogonality of orbitals:' 
      iprint(20)=1
      do iorb=1,norb
         jorb=norb+1-iorb
@@ -43,31 +43,31 @@ subroutine prepSCF (cw_sor,cw_orb,cw_coul,cw_exch,cw_suppl,cw_sctch)
      enddo
      iprint(20)=0
   endif
-
-
+  
+  
   if (imethod.eq.3.or.imethod.eq.4.or.imethod.eq.5) islat=1
   if (imethod.eq.2.or.ini.eq.4) nel=1
-
+  
   if (idump.ne.0) then
      do iorb=1,norb
         jorb=norb+1-iorb
         call norm (jorb,cw_orb,cw_suppl(i4b(9)),cw_suppl(i4b(14)),cw_sctch(i5b(1)))
         call ortho (jorb,cw_orb,cw_suppl(i4b(9)),cw_suppl(i4b(14)),cw_sctch(i5b(1)))
      enddo
-
+     
      do i=1,norb
         itouch(i)=1
      enddo
-
+     
      !        initialize multipole moments
-     if (imethod.ne.2) then
+     if (imethod.ne.2) then 
         iprtlev0=iprtlev
-        iprtlev=3
+        iprtlev=3 
         call mpoleMom(cw_orb,cw_suppl,cw_sctch)
         write(*,*) '... initializing multipole moment coefficients ...'
         iprtlev=iprtlev0
      endif
-
+     
      !        calculate diagonal and off-diagonal Lagrange multipliers
      do iorb=norb,1,-1
         if (iform.eq.0.or.iform.eq.2) call rfdexch(iorb,cw_exch)
@@ -76,7 +76,7 @@ subroutine prepSCF (cw_sor,cw_orb,cw_coul,cw_exch,cw_suppl,cw_sctch)
                 cw_suppl(i4b(13)),cw_suppl(i4b(14)),cw_sctch(i5b( 1)),cw_sctch(i5b( 2)), &
                 cw_sctch(i5b( 3)),cw_sctch(i5b( 4)))
            engi(iorb)=eng(iorb)
-
+           
            call Eab (iorb,cw_orb,cw_coul,cw_exch,cw_suppl(i4b( 4)),cw_suppl(i4b( 5)),    &
                 cw_suppl(i4b(13)),cw_suppl(i4b(14)),cw_sctch(i5b( 1)),cw_sctch(i5b( 2)), &
                 cw_sctch(i5b( 3)),cw_sctch(i5b( 4)))
@@ -85,18 +85,18 @@ subroutine prepSCF (cw_sor,cw_orb,cw_coul,cw_exch,cw_suppl,cw_sctch)
                 cw_suppl(i4b(13)),cw_suppl(i4b(14)),cw_sctch(i5b( 1)),cw_sctch(i5b( 2)), &
                 cw_sctch(i5b( 3)),cw_sctch(i5b( 4)))
            engi(iorb)=eng(iorb)
-
-           call EabDFT (iorb,cw_orb,cw_coul,cw_exch,cw_suppl(i4b( 4)),cw_suppl(i4b( 5)), &
+           
+           call EabDFT (iorb,cw_orb,cw_coul,cw_exch,cw_suppl(i4b( 4)),cw_suppl(i4b( 5)), & 
                 cw_suppl(i4b(13)),cw_suppl(i4b(14)),cw_sctch(i5b( 1)),cw_sctch(i5b( 2)), &
                 cw_sctch(i5b( 3)),cw_sctch(i5b( 4)))
         endif
      enddo
-
+     
      write(*,*) '... initializing Lagrange multipliers ...'
   endif
-
+  
   write(iout6,*)
-
+  
   if (islat.eq.0) then
      call etotal (cw_orb,cw_coul,cw_exch,cw_suppl(i4b( 4)),cw_suppl(i4b( 5)),cw_suppl(i4b(13)),      &
           cw_suppl(i4b(14)),cw_sctch(i5b( 1)),cw_sctch(i5b( 2)),cw_sctch(i5b( 3)),cw_sctch(i5b( 4)), &
@@ -109,5 +109,5 @@ subroutine prepSCF (cw_sor,cw_orb,cw_coul,cw_exch,cw_suppl,cw_sctch)
           cw_sctch(i5b(10)),cw_sctch(i5b(11)),cw_sctch(i5b(12)),cw_sctch(i5b(13)),cw_sctch(i5b(14)))
   endif
   call prttoten
-
+  
 end subroutine prepSCF

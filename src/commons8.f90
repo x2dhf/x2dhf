@@ -1,7 +1,6 @@
 module commons8
   use params
 
-
   real (PREC) :: bohr2ang,au2Debye,ainfcm
   data au2Debye /2.541765_PREC/
   data bohr2ang /0.529177249_PREC/
@@ -15,7 +14,6 @@ module commons8
        'Nb','Mo','Tc','Ru','Rh','Pd','Ag','Cd','In','Sn','Sb','Te','I ','Xe','Cs','Ba','La','Ce','Pr','Nd',&
        'Pm','Sm','Eu','Gd','Tb','Dy','Ho','Er','Tm','Yb','Lu','Hf','Ta','W ','Re','Os','Ir','Pt','Au','Hg',&
        'Tl','Pb','Bi','Po','At','Rn','Fr','Ra','Ac','Th','Pa','U ','Np','Pu','Am','Cm','Bk','Cf','Es','Fm'/
-
 
   !   atomic masses of most abundant isotopes extracted from
   !   The 1983 Atomic Mass Evaluation by Wapstra and Audi
@@ -93,8 +91,9 @@ module commons8
       integer :: nexchp,norb,nel,nexch
 
 
-      integer :: ifefield,iharm2xy,magfield,inclorb,idump,iinterp,imethod,ipot,ienterm,inoterm,iftail,ifermi,iplot
-      integer :: inout32,inout64,inout128,inpform,ioutform,iout4dd
+      integer :: ifefield,iharm,iharm2,iharm3,iharm2xy,magfield,inclorb,idump,iinterp,imethod,&
+           ipot,ipotdft,ienterm,inoterm,iftail,ifermi,iplot
+      integer :: inout32,inout64,inout128,inpform,ioutform,iout4dd,iout4dft
 
       integer :: io,ir, maxscf,nobckup,islat,idft,idftex,idftcorr,iscmc,ihomon,ibreak,icanon,ilagra, &
            nenlast,nnolast,nscf2skip,maxsor1,maxsor2,maxsor3,lsor,ipoiss,ialtsweeps,isstart,isstop, &
@@ -121,19 +120,18 @@ module commons8
       integer, dimension(9,60) :: mgx
       integer, dimension(240,240) :: imagn
 
-
       character*4, dimension(10) :: cdftex,cdftcorr
 
       character*80 :: header
 
       ! character*1, dimension(80) ::  dtarr1,dtarr2
-
       ! equivalence(header_p,dtarr1(1))
       ! equivalence(datetime_p,dtarr2(1))
-
+      ! adding harm
       real (PREC) :: hni,hni_p
-      real (PREC) :: homolevl,homoallign,ffield,fgrad,zcutoff,harm2xy,gammaf,z1atmass,z2atmass
-
+!      real (PREC) :: homolevl,homoallign,ffield,fgrad,zcutoff,harm,gammaf,z1atmass,z2atmass
+      real (PREC) :: homolevl,homoallign,ffield,fgrad,zcutoff,harm,harm2xy,gammaf,z1atmass,z2atmass
+      
       real (PREC) :: facmul,exlorb,exlcoul,exlexp,alphaf,diver,trelax,tortho,trayl,tmomen,tlagra,ttoten,sflagra,dflagra,&
            vkt,vnt,evt,epott,etot,virrat,etotFN,ictot,iready,hallign
 
@@ -143,8 +141,6 @@ module commons8
            v0pot,hook,r_p,z1_p,z2_p,rinf_p,date_p,time_p
 
       integer :: mpot, nsimp
-
-
 
       real (PREC), dimension(12) :: calp
       real (PREC), dimension(60) :: eza1,eza2,co1,co2,area,wstorthog,qxm,occ,sign,demax,vk,vn,eng,engi,engt,pnc,div

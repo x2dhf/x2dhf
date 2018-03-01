@@ -2,7 +2,7 @@
 ! *                                                                         *
 ! *   Copyright (C) 1996 Leif Laaksonen, Dage Sundholm                      *
 ! *   Copyright (C) 1996-2010 Jacek Kobus <jkob@fizyka.umk.pl>              *
-! *                                                                         *
+! *                                                                         *     
 ! *   This program is free software; you can redistribute it and/or modify  *
 ! *   it under the terms of the GNU General Public License version 2 as     *
 ! *   published by the Free Software Foundation.                            *
@@ -31,12 +31,12 @@ subroutine  doSOR (iorb,cw_sor,psi,pot,excp,borb,bpot,d,e,f0,f1,f2,f3,f4,g,wjac1
      if (ipoiss.eq.1) then
         call coulSOR (iorb,cw_sor,psi,pot,excp,bpot,d,f3,g,lhs,rhs,wk3)
      elseif (ipoiss.eq.2.or.ipoiss.eq.3) then
-        call coulMCSOR (iorb,cw_sor,psi,pot,excp,bpot,d,f3,g,lhs,rhs,wk3)
+        call coulMCSOR (iorb,cw_sor,psi,pot,bpot,d,f3,g,lhs,rhs,wk3)
      endif
   endif
-
+  
   !   process the exchange potentials
-
+  
   if (islat.eq.0) then
      if (exlexp.eq.0.0_PREC.or.exlexp.eq.2.0_PREC) then
         if (ipoiss.eq.1) then
@@ -46,7 +46,7 @@ subroutine  doSOR (iorb,cw_sor,psi,pot,excp,borb,bpot,d,e,f0,f1,f2,f3,f4,g,wjac1
         endif
      endif
   endif
-
+  
   if (islat.eq.1.and.iscmc.eq.1) then
      if (ipoiss.eq.1) then
         call exchSOR (iorb,cw_sor,psi,pot,excp,bpot,d,e,f3,g,lhs,rhs,wk3)
@@ -54,12 +54,12 @@ subroutine  doSOR (iorb,cw_sor,psi,pot,excp,borb,bpot,d,e,f0,f1,f2,f3,f4,g,wjac1
         call exchMCSOR (iorb,cw_sor,psi,pot,excp,bpot,d,e,f3,g,lhs,rhs,wk3)
      endif
   endif
-
+  
   if (exlorb.eq.0.0_PREC) then
      if (iprint(100).ne.0) call tail(psi)
-
+     
      !       if (ifix(iorb).eq.1) return
-
+     
      if (ipoiss.eq.1.or.ipoiss.eq.3) then
         if     (ioo.eq.1) then
            call orbSOR(iorb,cw_sor,psi,pot,excp,borb,d,e,f0,f1,f2,f4,wgt2,lhs,rhs,wk0,wk1,wk2,wk3,wk4, &
@@ -71,11 +71,11 @@ subroutine  doSOR (iorb,cw_sor,psi,pot,excp,borb,bpot,d,e,f0,f1,f2,f3,f4,g,wjac1
            write(*,*) 'Error: wrong ordering of mesh points'
            stop 'doSOR'
         endif
-
+        
      elseif (ipoiss.eq.2) then
         call orbMCSOR(iorb,cw_sor,psi,pot,excp,borb,d,e,f0,f1,f2,f4,wgt2,lhs,rhs,wk0,wk1,wk2,wk3,wk4, &
              wk5,wk6,wk7,wk8,wk9,wk10,wk11)
      endif
   endif
-
+  
 end subroutine doSOR

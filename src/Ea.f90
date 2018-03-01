@@ -2,7 +2,7 @@
 ! *                                                                         *
 ! *   Copyright (C) 1996 Leif Laaksonen, Dage Sundholm                      *
 ! *   Copyright (C) 1996-2010 Jacek Kobus <jkob@fizyka.umk.pl>              *
-! *                                                                         *
+! *                                                                         *     
 ! *   This program is free software; you can redistribute it and/or modify  *
 ! *   it under the terms of the GNU General Public License version 2 as     *
 ! *   published by the Free Software Foundation.                            *
@@ -27,7 +27,7 @@ subroutine Ea(iorb,psi,pot,excp,e,f0,wgt1,wgt2,wk0,wk1,wk2,wk3)
   real (PREC), external :: dot
 
   wtwoel=zero
-
+      
   i1beg=i1b(iorb)
   i2beg=i2b(iorb)
   nmut=i1mu(iorb)

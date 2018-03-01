@@ -17,11 +17,11 @@ subroutine inFloat(buf)
 
   parameter (limit=17)
   data ichar/'0','1','2','3','4','5','6','7','8','9','+','&','^','-','.','e','d'/
-
+  
   jrec = jrec + 1
-  buf=0.0_PREC
+  buf=0.0_PREC 
   if(jrec .gt. jump) return
-  buf = 0.0_PREC
+  buf = 0.0_PREC      
   fact2 = 0.0_PREC
   iexp=0
   n = inumb(jrec)
@@ -34,10 +34,10 @@ subroutine inFloat(buf)
      do j = 1,limit
         if(ichar(j).eq.itemp) goto 5
      enddo
-
+     
      write(iout6,*) 'Error detected in inFloat'
-     stop 'inFloat'
-
+     stop 'inFloat' 
+     
 5    continue
      if (j.eq.16.or.j.eq.17) goto 12
      if (j.lt.11) goto 7
@@ -48,7 +48,7 @@ subroutine inFloat(buf)
         fact2 = dble(i-1)
      endif
      go to 9
-
+     
 12   continue
      if (iexp.eq.0) then
         buf=(0.10_PREC**fact2)*buf
@@ -60,22 +60,22 @@ subroutine inFloat(buf)
         iexpdig=i
      endif
      goto 9
-
+     
      buf = buf + dble(j-1) * fact
      fact=fact*10.0_PREC
      goto 9
-
+     
 6    continue
      !         if(nstrt.ne.ist.and.iexp.eq.0) go to 4
      if(j.eq.14) buf=-buf
      goto 9
-
+     
 7    buf = buf + dble(j-1) * fact
      fact=fact*10.0_PREC
 9    continue
      nstrt = nstrt - 1
   enddo
-
+  
   if (iexp.eq.1) then
      buf=(0.10_PREC**fact2)*buf
      buf=buf*10.0_PREC**exponent

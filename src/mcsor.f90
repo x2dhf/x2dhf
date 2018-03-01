@@ -1,12 +1,12 @@
 ! ***************************************************************************
-! *                                                                         *
-! *   Copyright (C) 1996 Leif Laaksonen, Dage Sundholm                      *
-! *   Copyright (C) 1996-2010 Jacek Kobus <jkob@fizyka.umk.pl>              *
-! *                                                                         *
-! *   This program is free software; you can redistribute it and/or modify  *
-! *   it under the terms of the GNU General Public License version 2 as     *
-! *   published by the Free Software Foundation.                            *
-! *                                                                         *
+! *                                                                                                                     *
+! *   Copyright (C) 1996 Leif Laaksonen, Dage Sundholm                                   *
+! *   Copyright (C) 1996-2010 Jacek Kobus <jkob@fizyka.umk.pl>                     *
+! *                                                                                                                     *     
+! *   This program is free software; you can redistribute it and/or modify            *
+! *   it under the terms of the GNU General Public License version 2 as              *
+! *   published by the Free Software Foundation.                                               *
+! *                                                                                                                     *
 ! ***************************************************************************
 ! ### mcsor ###
 !
@@ -48,115 +48,115 @@ subroutine mcsor (fun,lhs,rhs,b,d,indx1,indx2,indx6a,indx6b,indx7)
   do i=1,ngrd1,5
      ij=indx1(i)
      ik=indx2(i)
-
+     
      ddmi2=dmu2t(1) * ( fun(ij-nni4) + fun(ij+nni4) )+  &
           dmu2t(2) * ( fun(ij-nni3) + fun(ij+nni3) )+   &
           dmu2t(3) * ( fun(ij-nni2) + fun(ij+nni2) )+   &
           dmu2t(4) * ( fun(ij-nni1) + fun(ij+nni1) )
-
+     
      ddmi1=dmu1t(1) * ( fun(ij-nni4) - fun(ij+nni4) )+  &
           dmu1t(2) * ( fun(ij-nni3) - fun(ij+nni3) )+   &
           dmu1t(3) * ( fun(ij-nni2) - fun(ij+nni2) )+   &
           dmu1t(4) * ( fun(ij-nni1) - fun(ij+nni1) )
-
+     
      ddni2=dni2(1) * ( fun(ij-   4) + fun(ij+   4) )+   &
           dni2(2) * ( fun(ij-   3) + fun(ij+   3) )+    &
           dni2(3) * ( fun(ij-   2) + fun(ij+   2) )+    &
           dni2(4) * ( fun(ij-   1) + fun(ij+   1) )
-
+     
      ddni1=dni1(1) * ( fun(ij-   4) - fun(ij+   4) )+   &
           dni1(2) * ( fun(ij-   3) - fun(ij+   3) )+    &
           dni1(3) * ( fun(ij-   2) - fun(ij+   2) )+    &
           dni1(4) * ( fun(ij-   1) - fun(ij+   1) )
-
+     
      cc=ddmi2 + b(ik)*ddmi1 + ddni2 + d(ik)*ddni1
      fun(ij) = omega * (rhs(ik)-cc)/lhs(ik)+ omega1 * fun(ij)
   enddo
-
+  
 !dir$ ivdep
 !$dir	no_recurrence
 
   do i=2,ngrd1,5
      ij=indx1(i)
      ik=indx2(i)
-
+     
      ddmi2=dmu2t(1) * ( fun(ij-nni4) + fun(ij+nni4) )+   &
           dmu2t(2) * ( fun(ij-nni3) + fun(ij+nni3) )+    &
           dmu2t(3) * ( fun(ij-nni2) + fun(ij+nni2) )+    &
           dmu2t(4) * ( fun(ij-nni1) + fun(ij+nni1) )
-
+     
      ddmi1=dmu1t(1) * ( fun(ij-nni4) - fun(ij+nni4) )+   &
           dmu1t(2) * ( fun(ij-nni3) - fun(ij+nni3) )+    &
           dmu1t(3) * ( fun(ij-nni2) - fun(ij+nni2) )+    &
           dmu1t(4) * ( fun(ij-nni1) - fun(ij+nni1) )
-
+     
      ddni2=dni2(1) * ( fun(ij-   4) + fun(ij+   4) )+    &
           dni2(2) * ( fun(ij-   3) + fun(ij+   3) )+     &
           dni2(3) * ( fun(ij-   2) + fun(ij+   2) )+     &
           dni2(4) * ( fun(ij-   1) + fun(ij+   1) )
-
+     
      ddni1=dni1(1) * ( fun(ij-   4) - fun(ij+   4) )+    &
           dni1(2) * ( fun(ij-   3) - fun(ij+   3) )+     &
           dni1(3) * ( fun(ij-   2) - fun(ij+   2) )+     &
           dni1(4) * ( fun(ij-   1) - fun(ij+   1) )
-
+     
      cc=ddmi2 + b(ik)*ddmi1 + ddni2 + d(ik)*ddni1
      fun(ij) = omega * (rhs(ik)-cc)/lhs(ik)+ omega1 * fun(ij)
   enddo
-
+  
 !dir$ ivdep
 !$dir	no_recurrence
 
   do i=3,ngrd1,5
      ij=indx1(i)
      ik=indx2(i)
-
+     
      ddmi2=dmu2t(1) * ( fun(ij-nni4) + fun(ij+nni4) )+   &
           dmu2t(2) * ( fun(ij-nni3) + fun(ij+nni3) )+    &
           dmu2t(3) * ( fun(ij-nni2) + fun(ij+nni2) )+    &
-          dmu2t(4) * ( fun(ij-nni1) + fun(ij+nni1) )
-
+          dmu2t(4) * ( fun(ij-nni1) + fun(ij+nni1) )      
+     
      ddmi1=dmu1t(1) * ( fun(ij-nni4) - fun(ij+nni4) )+   &
           dmu1t(2) * ( fun(ij-nni3) - fun(ij+nni3) )+    &
           dmu1t(3) * ( fun(ij-nni2) - fun(ij+nni2) )+    &
-          dmu1t(4) * ( fun(ij-nni1) - fun(ij+nni1) )
-
+          dmu1t(4) * ( fun(ij-nni1) - fun(ij+nni1) )      
+     
      ddni2=dni2(1) * ( fun(ij-   4) + fun(ij+   4) )+    &
           dni2(2) * ( fun(ij-   3) + fun(ij+   3) )+     &
           dni2(3) * ( fun(ij-   2) + fun(ij+   2) )+     &
-          dni2(4) * ( fun(ij-   1) + fun(ij+   1) )
-
+          dni2(4) * ( fun(ij-   1) + fun(ij+   1) )       
+     
      ddni1=dni1(1) * ( fun(ij-   4) - fun(ij+   4) )+    &
           dni1(2) * ( fun(ij-   3) - fun(ij+   3) )+     &
           dni1(3) * ( fun(ij-   2) - fun(ij+   2) )+     &
           dni1(4) * ( fun(ij-   1) - fun(ij+   1) )
-
+     
      cc=ddmi2 + b(ik)*ddmi1 + ddni2 + d(ik)*ddni1
      fun(ij) = omega * (rhs(ik)-cc)/lhs(ik)+ omega1 * fun(ij)
   enddo
-
+  
 !dir$ ivdep
 !$dir	no_recurrence
 
   do i=4,ngrd1,5
      ij=indx1(i)
      ik=indx2(i)
-
+     
      ddmi2=dmu2t(1) * ( fun(ij-nni4) + fun(ij+nni4) )+    &
               dmu2t(2) * ( fun(ij-nni3) + fun(ij+nni3) )+ &
               dmu2t(3) * ( fun(ij-nni2) + fun(ij+nni2) )+ &
-              dmu2t(4) * ( fun(ij-nni1) + fun(ij+nni1) )
-
+              dmu2t(4) * ( fun(ij-nni1) + fun(ij+nni1) )      
+                                                              
      ddmi1=dmu1t(1) * ( fun(ij-nni4) - fun(ij+nni4) )+    &
           dmu1t(2) * ( fun(ij-nni3) - fun(ij+nni3) )+     &
           dmu1t(3) * ( fun(ij-nni2) - fun(ij+nni2) )+     &
-              dmu1t(4) * ( fun(ij-nni1) - fun(ij+nni1) )
-
+              dmu1t(4) * ( fun(ij-nni1) - fun(ij+nni1) )      
+                                                              
      ddni2=dni2(1) * ( fun(ij-   4) + fun(ij+   4) )+     &
           dni2(2) * ( fun(ij-   3) + fun(ij+   3) )+      &
           dni2(3) * ( fun(ij-   2) + fun(ij+   2) )+      &
-          dni2(4) * ( fun(ij-   1) + fun(ij+   1) )
-
+          dni2(4) * ( fun(ij-   1) + fun(ij+   1) )       
+                                                              
      ddni1=dni1(1) * ( fun(ij-   4) - fun(ij+   4) )+     &
           dni1(2) * ( fun(ij-   3) - fun(ij+   3) )+      &
           dni1(3) * ( fun(ij-   2) - fun(ij+   2) )+      &
@@ -165,41 +165,41 @@ subroutine mcsor (fun,lhs,rhs,b,d,indx1,indx2,indx6a,indx6b,indx7)
      cc=ddmi2 + b(ik)*ddmi1 + ddni2 + d(ik)*ddni1
      fun(ij) = omega * (rhs(ik)-cc)/lhs(ik)+ omega1 * fun(ij)
   enddo
-
+  
   !dir$ ivdep
   !$dir	no_recurrence
-
+  
   do i=5,ngrd1,5
      ij=indx1(i)
      ik=indx2(i)
-
+     
      ddmi2=dmu2t(1) * ( fun(ij-nni4) + fun(ij+nni4) )+   &
           dmu2t(2) * ( fun(ij-nni3) + fun(ij+nni3) )+    &
           dmu2t(3) * ( fun(ij-nni2) + fun(ij+nni2) )+    &
-          dmu2t(4) * ( fun(ij-nni1) + fun(ij+nni1) )
-
+          dmu2t(4) * ( fun(ij-nni1) + fun(ij+nni1) )      
+     
      ddmi1=dmu1t(1) * ( fun(ij-nni4) - fun(ij+nni4) )+   &
           dmu1t(2) * ( fun(ij-nni3) - fun(ij+nni3) )+    &
           dmu1t(3) * ( fun(ij-nni2) - fun(ij+nni2) )+    &
-          dmu1t(4) * ( fun(ij-nni1) - fun(ij+nni1) )
-
+          dmu1t(4) * ( fun(ij-nni1) - fun(ij+nni1) )      
+     
      ddni2=dni2(1) * ( fun(ij-   4) + fun(ij+   4) )+    &
           dni2(2) * ( fun(ij-   3) + fun(ij+   3) )+     &
           dni2(3) * ( fun(ij-   2) + fun(ij+   2) )+     &
-          dni2(4) * ( fun(ij-   1) + fun(ij+   1) )
-
+          dni2(4) * ( fun(ij-   1) + fun(ij+   1) )       
+     
      ddni1=dni1(1) * ( fun(ij-   4) - fun(ij+   4) )+    &
           dni1(2) * ( fun(ij-   3) - fun(ij+   3) )+     &
           dni1(3) * ( fun(ij-   2) - fun(ij+   2) )+     &
           dni1(4) * ( fun(ij-   1) - fun(ij+   1) )
-
+     
      cc=ddmi2 + b(ik)*ddmi1 + ddni2 + d(ik)*ddni1
      fun(ij) = omega * (rhs(ik)-cc)/lhs(ik)+ omega1 * fun(ij)
   enddo
-
+  
   !   determine values at the bondary points from extrapolation
-  !     in version 2.0 single grid implies ifill=1
-
+  !     in version 2.0 single grid implies ifill=1 
+  
   if (isym.eq.1) then
      !         if (ifill.eq.1.or.ifill.eq.2) then
      do i=1,ngrd7
@@ -207,13 +207,13 @@ subroutine mcsor (fun,lhs,rhs,b,d,indx1,indx2,indx6a,indx6b,indx7)
         fun(ij)=exeven(1)*fun(ij+nni1)+exeven(2)*fun(ij+nni2)+ &
              exeven(3)*fun(ij+nni3)+exeven(4)*fun(ij+nni4)+exeven(5)*fun(ij+nni5)
      enddo
-
+     
      do i=1,ngrd6a
         ij=indx6a(i)
         fun(ij)=exeven(1)*fun(ij+1)+exeven(2)*fun(ij+2)+    &
              exeven(3)*fun(ij+3)+exeven(4)*fun(ij+4)+exeven(5)*fun(ij+5)
      enddo
-
+     
      do i=1,ngrd6b
         ij=indx6b(i)
         fun(ij)=exeven(1)*fun(ij-1)+exeven(2)*fun(ij-2)+    &
@@ -225,16 +225,16 @@ subroutine mcsor (fun,lhs,rhs,b,d,indx1,indx2,indx6a,indx6b,indx7)
         ij=indx7(i)
         fun(ij)=0.0_PREC
      enddo
-
+     
      do i=1,ngrd6a
         ij=indx6a(i)
         fun(ij)=0.0_PREC
      enddo
-
+     
      do i=1,ngrd6b
         ij=indx6b(i)
         fun(ij)=0.0_PREC
      enddo
   endif
-
+  
 end subroutine mcsor

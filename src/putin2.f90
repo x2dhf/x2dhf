@@ -2,7 +2,7 @@
 ! *                                                                         *
 ! *   Copyright (C) 1996 Leif Laaksonen, Dage Sundholm                      *
 ! *   Copyright (C) 1996-2010 Jacek Kobus <jkob@fizyka.umk.pl>              *
-! *                                                                         *
+! *                                                                         *     
 ! *   This program is free software; you can redistribute it and/or modify  *
 ! *   it under the terms of the GNU General Public License version 2 as     *
 ! *   published by the Free Software Foundation.                            *
@@ -10,8 +10,8 @@
 ! ***************************************************************************
 ! ### putin2 ###
 
-!     Immerses FUN array into WORK and adds boundary values:
-!     the first subgrid but not the last one.
+!     Immerses FUN array into WORK and adds boundary values: 
+!     the first subgrid but not the last one.   
 subroutine putin2 (nni,nmi,fun,work)
   use params
   use solver
@@ -31,38 +31,38 @@ subroutine putin2 (nni,nmi,fun,work)
         work(j+4,i+4)=fun(j,i)
      enddo
   enddo
-
+  
   !   values over i=nmi bondary are determined from the interpolation formula
   !   mu=nmu+5....nmu+8 from interpolation (coefficients from cint2)
-
+  
   do i=1,4
      call gemv (nni,n9,fun(1,iadint2(i)),nni,cint2(1,i),fint(1,i))
   enddo
-
+  
   do i=1,4
      do j=1,nni
         work(j+4,nmi+4+i)= fint(j,i)
      enddo
   enddo
-
+  
   !   isym = 1 - even symmetry, isym =-1 - odd symmetry
-
+  
   if (isym.eq.1) then
-
-     !  mu=1...4
+     
+     !  mu=1...4	
      do i=2,5
         do j=1,nni
            work(j+4,6-i)= fun(j,i)
         enddo
      enddo
-
+     
      ! ni=1...4
      do i=1,nmi
         do j=2,5
            work(6-j,i+4)= fun(j,i)
         enddo
      enddo
-
+     
      ! ni=ni+4...ni+8
      do i=1,nmi
         jj=0
@@ -77,13 +77,13 @@ subroutine putin2 (nni,nmi,fun,work)
            work(j+4,6-i)=-fun(j,i)
         enddo
      enddo
-
+     
      do i=1,nmi
         do j=2,5
            work(6-j,i+4)=-fun(j,i)
         enddo
      enddo
-
+     
      do i=1,nmi
         jj=0
         do j=nni-4,nni-1
@@ -92,5 +92,5 @@ subroutine putin2 (nni,nmi,fun,work)
         enddo
      enddo
   endif
-
+  
 end subroutine putin2

@@ -2,16 +2,16 @@
 ! *                                                                         *
 ! *   Copyright (C) 1996 Leif Laaksonen, Dage Sundholm                      *
 ! *   Copyright (C) 1996-2010 Jacek Kobus <jkob@fizyka.umk.pl>              *
-! *                                                                         *
+! *                                                                         *     
 ! *   This program is free software; you can redistribute it and/or modify  *
 ! *   it under the terms of the GNU General Public License version 2 as     *
 ! *   published by the Free Software Foundation.                            *
 ! *                                                                         *
 ! ***************************************************************************
-! ### writeDisk4dd ###
+! ### writeDisk4dd ### 
 
-!     Writes orbitals, potenials, Lagrange multipliers (diagonal
-!     and off-diagonal) and multipole expansion coefficients to a disk
+!     Writes orbitals, potenials, Lagrange multipliers (diagonal 
+!     and off-diagonal) and multipole expansion coefficients to a disk 
 !     file in either formatted or unformatted form
 
 subroutine writeDisk4dd (psi,pot,f0,f4,wk0,wk1,wk2,wk3)
@@ -27,20 +27,19 @@ subroutine writeDisk4dd (psi,pot,f0,f4,wk0,wk1,wk2,wk3)
   real (PREC), allocatable :: r8mxsize(:),r8mxsize1(:)
   real (PREC), dimension(*) :: psi,pot,f0,f4,wk0,wk1,wk2,wk3
 
-  open(9999,file='out4dd.dat', status='replace',form='formatted')
-
+  open(9999,file='out4dd.dat', status='unknown',form='formatted')
+  
 !  call getDateTime(datetime)
   write(9999,'(a80)') header
 !  write(9999,'(a80)') datetime
-  write(9999,'(" nnu nmu ")')
+  write(9999,'(" nnu nmu ")') 
   write(9999,formint) nni,nmu(1)
-  write(9999,'(" r  rinf")')
+  write(9999,'(" r  rinf")') 
   write(9999,formfp64) r,rinf
-  write(9999,'(" z1 z2 ")')
+  write(9999,'(" z1 z2 ")') 
   write(9999,formfp64) z1,z2
   write(9999,'(" norb nel  ")')
   write(9999,formint) norb,nel
-
 
   iorb=1
   write(9999,'(" ordering of orbitals ")')
@@ -50,7 +49,7 @@ subroutine writeDisk4dd (psi,pot,f0,f4,wk0,wk1,wk2,wk3)
   do iorb=1,norb
      write(9999,formfp64) eng(iorb)
   enddo
-
+  
   allocate(r8mxsize(nni*mxnmu))
   allocate(r8mxsize1(nni*mxnmu))
 
@@ -70,10 +69,10 @@ subroutine writeDisk4dd (psi,pot,f0,f4,wk0,wk1,wk2,wk3)
 
      ! multiply \tilde{V}_C by 2/(R\xi) to get V_C
 
-     !     isymmetry=isymOrb(iorb)
+     !     isymmetry=isymOrb(iorb) 
      ! orbital 1sigma is even, its derivatives are odd functions
      isymmetry=-1
-
+     
      ig=1
      call pot2pot(r8mxsize,f4)
 
@@ -95,7 +94,7 @@ subroutine writeDisk4dd (psi,pot,f0,f4,wk0,wk1,wk2,wk3)
      call prtmatcw(nni,mxnmu,r8mxsize,9999)
 !     write(6,'(/" orbital=",i3,1x,a8,1x,a1," / Coulomb potential nu derivative" )') iorn(iorb),bond(iorb),gut(iorb)
 !     call prtmatrw(nni,mxnmu,r8mxsize,9999)
-
+     
      call diff1mu (mxnmu,wk3,wk2)
      call putout (nni,mxnmu,r8mxsize,wk2)
 
@@ -120,7 +119,6 @@ subroutine writeDisk4dd (psi,pot,f0,f4,wk0,wk1,wk2,wk3)
         r8mxsize(i4)=psi(i1beg+i4-1)
      enddo
 
-!1000 format(i5,i4,1x,a8,a1)
      write(9999,'(/" orbital=",i3,1x,a8,1x,a1," orbital function")') iorn(iorb),bond(iorb),gut(iorb)
      call prtmatcw(nni,mxnmu,r8mxsize,9999)
 !     write(6,'(/" orbital=",i3,1x,a8,1x,a1," orbital function")') iorn(iorb),bond(iorb),gut(iorb)
@@ -140,7 +138,7 @@ subroutine writeDisk4dd (psi,pot,f0,f4,wk0,wk1,wk2,wk3)
      call prtmatcw(nni,mxnmu,r8mxsize,9999)
 !     write(6,'(/" orbital=",i3,1x,a8,1x,a1," / nu derivative" )') iorn(iorb),bond(iorb),gut(iorb)
 !     call prtmatrw(nni,mxnmu,r8mxsize,9999)
-
+     
      call diff1mu (mxnmu,wk3,wk2)
      call putout (nni,mxnmu,r8mxsize,wk2)
 
@@ -160,12 +158,12 @@ subroutine writeDisk4dd (psi,pot,f0,f4,wk0,wk1,wk2,wk3)
 !     write(6,'(/" orbital=",i3,1x,a8,1x,a1," / nu,mu derivative" )') iorn(iorb),bond(iorb),gut(iorb)
 !     call prtmatrw(nni,mxnmu,r8mxsize,9999)
   enddo
-
+  
   do i4=1,ngrid
      r8mxsize(i4)=f0(i4)
   enddo
 
-  write(9999,'(/" f0=")')
+  write(9999,'(/" f0=")') 
   call prtmatcw(nni,mxnmu,r8mxsize,9999)
   isym4nu=1
   isym4mu=1
@@ -174,7 +172,7 @@ subroutine writeDisk4dd (psi,pot,f0,f4,wk0,wk1,wk2,wk3)
   call putout (nni,mxnmu,r8mxsize,wk0)
   r8mxsize1=r8mxsize
 
-  call checkd1nu(nni,mxnmu,r8mxsize)
+!  call checkd1nu(nni,mxnmu,r8mxsize)
 
   write(9999,'(/" f0=",i3,1x,a8,1x,a1," / nu derivative" )') iorn(iorb),bond(iorb),gut(iorb)
   call prtmatcw(nni,mxnmu,r8mxsize,9999)
@@ -182,8 +180,8 @@ subroutine writeDisk4dd (psi,pot,f0,f4,wk0,wk1,wk2,wk3)
   call diff1mu (mxnmu,wk3,wk2)
   call putout (nni,mxnmu,r8mxsize,wk2)
 
-  call checkd1mu(nni,mxnmu,r8mxsize)
-
+!  call checkd1mu(nni,mxnmu,r8mxsize)
+  
   write(9999,'(/" f0=",i3,1x,a8,1x,a1," / mu derivative" )') iorn(iorb),bond(iorb),gut(iorb)
   call prtmatcw(nni,mxnmu,r8mxsize,9999)
 
@@ -192,10 +190,10 @@ subroutine writeDisk4dd (psi,pot,f0,f4,wk0,wk1,wk2,wk3)
   call putin1 (nni,mxnmu,isym4nu,isym4mu,r8mxsize1,wk3)
   call diff1mu (mxnmu,wk3,wk2)
   call putout (nni,mxnmu,r8mxsize,wk2)
-
+  
   write(9999,'(/" f0=",i3,1x,a8,1x,a1," / nu,mu derivative" )') iorn(iorb),bond(iorb),gut(iorb)
   call prtmatcw(nni,mxnmu,r8mxsize,9999)
-
+  
   close(9999)
 
 end subroutine writeDisk4dd
@@ -205,13 +203,13 @@ end subroutine writeDisk4dd
 ! *                                                                         *
 ! *   Copyright (C) 1996 Leif Laaksonen, Dage Sundholm                      *
 ! *   Copyright (C) 1996-2010 Jacek Kobus <jkob@fizyka.umk.pl>              *
-! *                                                                         *
+! *                                                                         *     
 ! *   This program is free software; you can redistribute it and/or modify  *
 ! *   it under the terms of the GNU General Public License version 2 as     *
 ! *   published by the Free Software Foundation.                            *
 ! *                                                                         *
 ! ***************************************************************************
-! ### writeDisk4dd ###
+! ### writeDisk4dd ### 
 
 !     Transforms \tilde{V}_C into V_C (F4=R\xi/2)
 
@@ -224,7 +222,6 @@ subroutine pot2pot (wk0,f4)
   implicit none
   integer :: inu,imu
   real (PREC),  dimension(nni,mxnmu) :: wk0,f4
-
 
   do inu=1,nni
      do imu=1,mxnmu
@@ -250,7 +247,7 @@ subroutine setBVpot(fun)
   nnu3=nnu2+nnu1
   nnu4=nnu3+nnu1
   nnu5=nnu4+nnu1
-
+ 
   if (isym.eq.1) then
      !       if (ifill.eq.1.or.ifill.eq.2) then
 !      do i=1,ngrd7
@@ -280,7 +277,7 @@ subroutine setBVpot(fun)
 !        write(*,'(" 2",i4,6e15.6)') ij,fun(ij),fun(ij+1),fun(ij+2),fun(ij+3),fun(ij+4),fun(ij+5)
      enddo
 
-
+     
      do j=1,mxnmu
         ij=j*nnu1
         fun1=fun(ij)
@@ -315,7 +312,7 @@ subroutine setBVgen(isym4nu,isym4mu,fun)
   use commons8
 
   implicit none
-  integer :: j,ij,isym4nu,isym4mu,nnu1,nnu2,nnu3,nnu4,nnu5
+  integer :: i,j,ij,isym4nu,isym4mu,nnu1,nnu2,nnu3,nnu4,nnu5
   real (PREC), dimension(*) :: fun
   real (PREC) :: fun1
 
@@ -324,7 +321,7 @@ subroutine setBVgen(isym4nu,isym4mu,fun)
   nnu3=nnu2+nnu1
   nnu4=nnu3+nnu1
   nnu5=nnu4+nnu1
-
+ 
   if (isym4nu.eq.1) then
      do ij=2,nnu1-1
         fun1=fun(ij)
@@ -348,7 +345,7 @@ subroutine setBVgen(isym4nu,isym4mu,fun)
         !        print *,'  2 ',ij,fun1,fun(ij),fun1-fun(ij)
         !        write(*,'(" 2",i4,6e15.6)') ij,fun(ij),fun(ij+1),fun(ij+2),fun(ij+3),fun(ij+4),fun(ij+5)
      enddo
-
+     
      do j=1,mxnmu
         ij=j*nnu1
         fun1=fun(ij)
@@ -361,30 +358,30 @@ subroutine setBVgen(isym4nu,isym4mu,fun)
         ij=(j-1)*nnu1+1
         fun(ij)=0.0_PREC
      enddo
-
+     
      do j=1,mxnmu
         ij=j*nnu1
         fun(ij)=0.0_PREC
      enddo
   endif
-
+ 
 end subroutine setBVgen
 
 
 subroutine checkd1nu (m,n,a)
   use params
   use discret
-
+  
   implicit none
-  integer :: im,in,ioutmat,m,n
+  integer :: im,in,m,n
   integer :: immax,inmax
   real (PREC), dimension(m,n) :: a
   real (PREC) :: diff,vn
-
+  
   diff=0.0_PREC
   immax=0
   inmax=0
-
+  
   do im=1,m
      do in=1,n
         vn=-veta1(im)*(z2-z1)*r
@@ -397,21 +394,22 @@ subroutine checkd1nu (m,n,a)
      enddo
   enddo
 
-  write(ioutmat,'("checkd1nu: ",2i5,e15.6)') immax,inmax,diff
-
+  ! FIXME
+  write(*,'("checkd1nu: ",2i5,e15.6)') immax,inmax,diff
+  
 end subroutine checkd1nu
 
 
 subroutine checkd1mu (m,n,a)
   use params
   use discret
-
+  
   implicit none
   integer :: im,in,ioutmat,m,n
   integer :: immax,inmax
   real (PREC), dimension(m,n) :: a
   real (PREC) :: diff,vn
-
+  
   diff=0.0_PREC
   immax=0
   inmax=0
@@ -422,7 +420,7 @@ subroutine checkd1mu (m,n,a)
 ! !        a(im,in)=0.0_PREC
 !      enddo
 !   enddo
-
+  
   do im=1,m
      do in=1,n
         vn=vxi1(in)*(z1+z2)*r
@@ -436,6 +434,6 @@ subroutine checkd1mu (m,n,a)
   enddo
 
   write(ioutmat,'("checkd1m: ",2i5,e15.6)') immax,inmax,diff
-
+  
 end subroutine checkd1mu
 

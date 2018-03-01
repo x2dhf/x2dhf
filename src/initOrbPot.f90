@@ -1,12 +1,12 @@
 ! ***************************************************************************
-! *                                                                         *
-! *   Copyright (C) 1996 Leif Laaksonen, Dage Sundholm                      *
-! *   Copyright (C) 1996-2010 Jacek Kobus <jkob@fizyka.umk.pl>              *
-! *                                                                         *
-! *   This program is free software; you can redistribute it and/or modify  *
-! *   it under the terms of the GNU General Public License version 2 as     *
-! *   published by the Free Software Foundation.                            *
-! *                                                                         *
+! *                                                                                                                     *
+! *   Copyright (C) 1996 Leif Laaksonen, Dage Sundholm                                   *
+! *   Copyright (C) 1996-2010 Jacek Kobus <jkob@fizyka.umk.pl>                     *
+! *                                                                                                                     *
+! *   This program is free software; you can redistribute it and/or modify            *
+! *   it under the terms of the GNU General Public License version 2 as              *
+! *   published by the Free Software Foundation.                                               *
+! *                                                                                                                     *
 ! ***************************************************************************
 ! ### initOrbPot ###
 !
@@ -141,7 +141,7 @@ subroutine initOrbPot (cw_orb,cw_coul,cw_exch,cw_suppl,cw_sctch)
 
      !         if (islat.ne.0) islat=0
 
-     call initHyd (cw_orb,cw_coul,cw_exch,cw_suppl(i4b(7)),cw_suppl(i4b(9)),cw_suppl(i4b(14)),cw_sctch(i5b(1)))
+     call initHyd (cw_orb,cw_coul,cw_exch,cw_suppl(i4b(9)),cw_sctch(i5b(1)))
      idump=1
      do iorb=1,norb
         inhyd(iorb)=inhydlcao(iorb)
@@ -187,7 +187,7 @@ subroutine initOrbPot (cw_orb,cw_coul,cw_exch,cw_suppl,cw_sctch)
      !        case is being continued
 
      if (ini4.ne.0) then
-        call initHyd (cw_orb,cw_coul,cw_exch,cw_suppl(i4b(7)),cw_suppl(i4b(9)),cw_suppl(i4b(14)),cw_sctch(i5b(1)))
+        call initHyd (cw_orb,cw_coul,cw_exch,cw_suppl(i4b(9)),cw_sctch(i5b(1)))
         idump=1
      endif
 
@@ -202,7 +202,7 @@ subroutine initOrbPot (cw_orb,cw_coul,cw_exch,cw_suppl,cw_sctch)
      call initDisk (cw_orb,cw_coul,cw_exch,cw_sctch(i5b(1)))
 
      if (ini4.ne.0) then
-        call initHyd (cw_orb,cw_coul,cw_exch,cw_suppl(i4b(7)),cw_suppl(i4b(9)),cw_suppl(i4b(14)),cw_sctch(i5b(1)))
+        call initHyd (cw_orb,cw_coul,cw_exch,cw_suppl(i4b(9)),cw_sctch(i5b(1)))
         idump=1
      endif
 

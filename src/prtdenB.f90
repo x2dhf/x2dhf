@@ -16,5 +16,5 @@ subroutine prtdenB (m,n,a,ioutmat)
      r2t=(r/2.0_PREC)*(vxi(imu)-veta(in))
      write(ioutmat,'(2E25.16)') r2t,a(in,imu)
   enddo
-
+  
 end subroutine prtdenB

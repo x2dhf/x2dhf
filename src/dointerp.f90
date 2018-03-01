@@ -21,7 +21,7 @@ subroutine dointerp (ic,nmuall_p,nmuall,fbefore,fafter)
   use commons16
 
   implicit none
-  integer :: i,ic,im,imu,imu_bext,in,nmuall,nmuall_p
+  integer :: i,ic,im,imu,imu_bext,in,nall,nall_p,nstart,nstart_p,nmuall,nmuall_p
 
   real (PREC), dimension(nni_p,*)           ::  fbefore
   real (PREC), dimension(nni,*)             ::  fafter
@@ -78,10 +78,14 @@ subroutine dointerp (ic,nmuall_p,nmuall,fbefore,fafter)
         vmuq(imu)=vmu_p(imu)
      end do
 
+     nstart_p=1
+     nstart  =1
+     nall_p=nmuall_p
+     nall  =nmuall
      if (usemiddle) then
-        call dointerp_mu (nni_p,nmuall_p,nmuall,fbefore,fmiddle)
+        call dointerp_mu (nni_p,nstart_p,nall_p,nstart,nall,fbefore,fmiddle)
      else
-        call dointerp_mu (nni_p,nmuall_p,nmuall,fbefore,fafter)
+        call dointerp_mu (nni_p,nstart_p,nall_p,nstart,nall,fbefore,fafter)
      end if
 
      ! Extrapolation (needed when R_infy is being increased seems to
@@ -116,32 +120,36 @@ subroutine dointerp (ic,nmuall_p,nmuall,fbefore,fafter)
 
   if(nuinterp) then
      !        interpolate in nu variable
-
      if (nni_p.gt.maxmu) then
         print *,"dointerp: error! array vmuq is too short"
         stop 'dointerp'
      end if
 
-     if (ic.eq.1) then
-        iord=iord_nu_orb
-     elseif (ic.eq.2) then
-        iord=iord_nu_coul
-     elseif (ic.eq.3) then
-        iord=iord_nu_exch
-     else
-        stop "invalid argument ic"
-     end if
-
-     ! Interpolate in nu variable
-     kbeg=1
-     kend=iord
-     iord2=iord/2
      do i=1,nni_p
         vmuq(i)=vni_p(i)
      end do
 
+     if (ic.eq.1) then
+        iord=iord_nu_orb
+        kbeg=1
+        kend=iord
+        iord2=iord/2
+        !            stop "dointerp: error check array dimension"
+     elseif (ic.eq.2) then
+        iord=iord_nu_coul
+        kbeg=1
+        kend=iord
+        iord2=iord/2
+     elseif (ic.eq.3) then
+        iord=iord_nu_exch
+        kbeg=1
+        kend=iord
+        iord2=iord/2
+     else
+        stop "invalid argument ic"
+     end if
      if(usemiddle) then
-        call dointerp_nu (nmuall_p,fmiddle,fafter)
+        call dointerp_nu (nmuall,fmiddle,fafter)
      else
         call dointerp_nu (nmuall_p,fbefore,fafter)
      end if

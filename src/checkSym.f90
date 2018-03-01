@@ -2,7 +2,7 @@
 ! *                                                                         *
 ! *   Copyright (C) 1996 Leif Laaksonen, Dage Sundholm                      *
 ! *   Copyright (C) 1996-2010 Jacek Kobus <jkob@fizyka.umk.pl>              *
-! *                                                                         *
+! *                                                                         *     
 ! *   This program is free software; you can redistribute it and/or modify  *
 ! *   it under the terms of the GNU General Public License version 2 as     *
 ! *   published by the Free Software Foundation.                            *
@@ -10,9 +10,9 @@
 ! ***************************************************************************
 ! ### checkSym ###
 
-!     Checks Ci symmetry of all orbitals
+!     Checks Ci symmetry of all orbitals 
 
-subroutine checkSym(psi)
+subroutine checkSym(psi) 
   use params
   use commons8
 
@@ -24,7 +24,7 @@ subroutine checkSym(psi)
   character*8 :: sigma,pi,delta,phi
 
 
-  data sigma/'sigma'/,pi/'pi'/,delta/'delta'/,phi/'phi'/
+  data sigma/'sigma'/,pi/'pi'/,delta/'delta'/,phi/'phi'/ 
 
   write(*,1000)
   do iorb=1,norb
@@ -32,14 +32,14 @@ subroutine checkSym(psi)
      nmut = i1mu(iorb)
      call checkOrbSym(nmut,psi(ibeg),ihsym)
      if (ihsym.eq.1) then
-        if (bond(iorb).eq.sigma.or.bond(iorb).eq.delta) then
+        if (bond(iorb).eq.sigma.or.bond(iorb).eq.delta) then 
            write(*,1005) iorn(iorb),bond(iorb),gut(iorb)
-        else
+        else  
            write(*,1010) iorn(iorb),bond(iorb),gut(iorb)
         endif
      endif
      if (ihsym.eq.-1) then
-        if(bond(iorb).eq.sigma.or.bond(iorb).eq.delta) then
+        if(bond(iorb).eq.sigma.or.bond(iorb).eq.delta) then 
            write(*,1010) iorn(iorb),bond(iorb),gut(iorb)
         else
            write(*,1005) iorn(iorb),bond(iorb),gut(iorb)
@@ -53,4 +53,4 @@ subroutine checkSym(psi)
 end subroutine checkSym
 
 
-
+	  

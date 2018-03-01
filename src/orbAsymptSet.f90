@@ -2,7 +2,7 @@
 ! *                                                                         *
 ! *   Copyright (C) 1996 Leif Laaksonen, Dage Sundholm                      *
 ! *   Copyright (C) 1996-2010 Jacek Kobus <jkob@fizyka.umk.pl>              *
-! *                                                                         *
+! *                                                                         *     
 ! *   This program is free software; you can redistribute it and/or modify  *
 ! *   it under the terms of the GNU General Public License version 2 as     *
 ! *   published by the Free Software Foundation.                            *
@@ -20,6 +20,7 @@ subroutine orbAsymptSet (nmi,psi,edecay)
 
   implicit none
   integer :: i,j,jj,itt,kk,nmi
+
   real (PREC), dimension(*) :: psi
   real (PREC), dimension(nni,4) :: edecay
 
@@ -32,7 +33,7 @@ subroutine orbAsymptSet (nmi,psi,edecay)
         psi(kk)=psi(kk-nni)*edecay(i,jj)
      enddo
   enddo
-
+  
 end subroutine orbAsymptSet
 
 

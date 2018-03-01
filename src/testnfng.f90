@@ -12,7 +12,7 @@ subroutine testnfng(rhot,grhot,wk0,wk1,wk2,wk3,wk4,wk5,wk6,wk7)
   real (PREC), dimension(*) ::  wk0,wk1,wk2,wk3,wk4,wk5,wk6,wk7,rhot,grhot
 
   itest=1
-
+  
   if (itest.eq.1) then
      do i=1,mxnmu
         ii=(i-1)*nni
@@ -21,10 +21,10 @@ subroutine testnfng(rhot,grhot,wk0,wk1,wk2,wk3,wk4,wk5,wk6,wk7)
            grhot(ii+j)=0.d0
         enddo
      enddo
-
+     
      call nfng (rhot,grhot,wk0,wk1,wk2,wk3,wk4,wk5,wk6,wk7)
      call pmtx(nni,mxnmu,wk7,ione,ione,incrni,incrmu)
-
+     
   endif
-
+  
 end subroutine testnfng

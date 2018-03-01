@@ -1,7 +1,7 @@
 ! ***************************************************************************
 ! *                                                                         *
 ! *   Copyright (C) 1992 F.A. Parpia and I.P. Grant                         *
-! *                                                                         *
+! *                                                                         *     
 ! *   This program is free software; you can redistribute it and/or modify  *
 ! *   it under the terms of the GNU General Public License version 2 as     *
 ! *   published by the Free Software Foundation.                            *
@@ -45,11 +45,11 @@ subroutine es (f,s2f,s3f)
   obn = one/en
   fase = -fase
   enf = exp (en*f)
-  term2 = fase*enf*obn*obn
-  term3 = term2*obn
+  term2 = fase*enf*obn*obn 
+  term3 = term2*obn                                              
   s2last = s2f
   s2f = s2f+term2
-  s3f = s3f+term3
-  if (abs (s2f) .ne. abs (s2last)) goto 1
-
+  s3f = s3f+term3  
+  if (abs (s2f) .ne. abs (s2last)) goto 1                        
+  
 end subroutine es

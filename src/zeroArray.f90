@@ -14,5 +14,5 @@ subroutine zeroArray (n,array)
   do i=1,n
      array(i)=0.0_PREC
   enddo
-
+  
 end subroutine zeroArray

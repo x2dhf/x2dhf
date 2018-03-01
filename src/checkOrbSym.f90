@@ -1,7 +1,7 @@
 ! ### checkOrbSym ###
 !
 !     checks the Ci symmetry of a given orbital
-
+ 
 subroutine checkOrbSym (nmut,orb,ihsym)
   use params
   use discret

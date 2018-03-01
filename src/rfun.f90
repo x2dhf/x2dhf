@@ -2,13 +2,13 @@
 ! *                                                                         *
 ! *   Copyright (C) 1996 Leif Laaksonen, Dage Sundholm                      *
 ! *   Copyright (C) 1996-2010 Jacek Kobus <jkob@fizyka.umk.pl>              *
-! *                                                                         *
+! *                                                                         *     
 ! *   This program is free software; you can redistribute it and/or modify  *
 ! *   it under the terms of the GNU General Public License version 2 as     *
 ! *   published by the Free Software Foundation.                            *
 ! *                                                                         *
 ! ***************************************************************************
-! c ### rfun ###
+! c ### rfun ###	
 
 !     Reads functions from a disk file in an unformatted form
 
@@ -44,29 +44,29 @@ subroutine rfun (norbt,cw_orb,cw_coul,cw_exch,wk8,wk16)
      read (iinp11,formint,err=1000) i4tmp
   endif
 
-
+  
   !     if there are no virtual orbitals defined retrieve all orbitals and
   !     Coulomb functions from the corresponding disk data files ignoring
   !     inhyd flags. The flags are restored when returning from this
   !     routine.
-
+  
   !     ioffset is no longer used
   !      ioffset=norb-norbt
   ioffset=0
-
+  
   if (ini4.eq.0) then
      do i=1,norb
         inhyd(i)=0
      enddo
   endif
-
-  !     retrieve orbitals
-
+  
+  !     retrieve orbitals 
+  
   !      do i=1,norbt
-  !
+  !     
   do i=1,norb
      if (inhyd(i).eq.1) goto 100
-
+     
      if (inpform.eq.0) then
         if (lengthfp.eq.8) then
            call reada8(iinp11,i1si(i),wk8,ierr)
@@ -79,7 +79,7 @@ subroutine rfun (norbt,cw_orb,cw_coul,cw_exch,wk8,wk16)
               cw_orb(i1b(i)+j-1)=wk8(j)
            enddo
         endif
-
+        
         if (lengthfp.eq.16) then
            call reada16(iinp11,i1si(i),wk16,ierr)
            if (ierr.ne.0) then
@@ -96,27 +96,27 @@ subroutine rfun (norbt,cw_orb,cw_coul,cw_exch,wk8,wk16)
         !            if (ierr.ne.0) then
         !               write(iout6,*) 'error detected when reading orbital',i
         !               stop 'rfun 8'
-        !            endif
+        !            endif				   	
         do j=1,i1si(i)
            cw_orb(i1b(i)+j-1)=wk8(j)
         enddo
      endif
 100  continue
   enddo
-
+  
   !     retrieve the extra data from the orbital input file
-
+  
   if (lengthfp.eq.8) then
      if (inpform.eq.0) then
         read(iinp11,end=1008,err=1010) r8tmp1
         call rfunaux(r8tmp1,area)
-
+        
         read(iinp11,end=1008,err=1010) r8tmp1
         call rfunaux(r8tmp1,eng)
-
+        
         read(iinp11,end=1008,err=1010) r8tmp1
         call rfunaux(r8tmp1,engo)
-
+        
         read(iinp11,end=1008,err=1010) r8tmp2
         do i=1,1200
            cmulti(i)=r8tmp2(i)
@@ -159,7 +159,7 @@ subroutine rfun (norbt,cw_orb,cw_coul,cw_exch,wk8,wk16)
 
         read(iinp11,formfp64,end=1008,err=1010) r8tmp1
         call rfunaux(r8tmp1,eng)
-
+        
         read(iinp11,formfp64,end=1008,err=1010) r8tmp1
         call rfunaux(r8tmp1,engo)
 
@@ -253,7 +253,7 @@ subroutine rfun (norbt,cw_orb,cw_coul,cw_exch,wk8,wk16)
 
         read(iinp11,formfp128,end=1008,err=1010) r16tmp1
         call rfunaux16(r16tmp1,eng)
-
+        
         read(iinp11,formfp128,end=1008,err=1010) r16tmp1
         call rfunaux16(r16tmp1,engo)
 
@@ -305,10 +305,10 @@ subroutine rfun (norbt,cw_orb,cw_coul,cw_exch,wk8,wk16)
   endif
   rewind iinp11
 
-  !     read in Coulomb potentials
-
+  !     read in Coulomb potentials 
+  
   do i=1,norb
-     if (inhyd(i).eq.1) goto 200
+     if (inhyd(i).eq.1) goto 200 
      if (inpform.eq.0) then
         if (lengthfp.eq.8) then
            call reada8(iinp12,i2si(i),wk8,ierr)
@@ -339,18 +339,18 @@ subroutine rfun (norbt,cw_orb,cw_coul,cw_exch,wk8,wk16)
      endif
 200  continue
   enddo
-
+  
   !     read in exchange potentials from the exhange potential input file
   !     (only for HF calculations)
-
+  
   if (imethod.eq.1) then
      if (iform.eq.1.or.iform.eq.3.and.ini.ne.6) then
         do iorb1=1,norbt
            do iorb2=iorb1,norbt
               k=iorb1+iorb2*(iorb2-1)/2
               if (iorb1.eq.iorb2.and.ll(iorb1).eq.0) goto 50
-
-              if (inpform.eq.0) then
+              
+              if (inpform.eq.0) then                  
                  if (lengthfp.eq.8) then
                     call reada8(iinp13,i3si(k),wk8,ierr)
                     if (ierr.ne.0) then
@@ -377,11 +377,11 @@ subroutine rfun (norbt,cw_orb,cw_coul,cw_exch,wk8,wk16)
                     cw_exch(i3b(k)+j-1)=wk8(j)
                  enddo
               endif
-
+              
               if (iorb1.eq.iorb2) goto 50
               if (ll(iorb1).eq.0.or.ll(iorb2).eq.0) goto 50
-
-              if (inpform.eq.0) then
+              
+              if (inpform.eq.0) then                  
                  if (lengthfp.eq.8) then
                     call reada8(iinp13,i3si(k),wk8,ierr)
                     if (ierr.ne.0) then
@@ -415,9 +415,9 @@ subroutine rfun (norbt,cw_orb,cw_coul,cw_exch,wk8,wk16)
      endif
      write(*,*) '... orbitals and potentials retrieved ... '
   endif
-
+  
   if (imethod.eq.3.or.imethod.eq.4.or.imethod.eq.5) then
-     if (inpform.eq.0) then
+     if (inpform.eq.0) then                  
         if (lengthfp.eq.8) then
            call reada8(iinp13,i3si(1),wk8,ierr)
            if (ierr.ne.0) then
@@ -445,24 +445,24 @@ subroutine rfun (norbt,cw_orb,cw_coul,cw_exch,wk8,wk16)
         enddo
      endif
   endif
-
-
+  
+  
   if (lengthfpin.eq.8) then
      formfp=formfp64
   else
      formfp=formfp128
   endif
-
+  
   if(iprint(115).ne.0) then
      write(*,*)
      write(*,*) 'rfun: input orbitals'
-     !        print orbitals
+     !        print orbitals 
      do i=1,norb
         write(*,*) iorn(i),' ',bond(i)
         call pmtx(nni,i1mu(i),cw_orb(i1b(i)),ione,ione,incrni,incrmu)
      enddo
   endif
-
+  
   if(iprint(116).ne.0) then
      write(*,*)
      write(*,*) 'rfun: input Coulomb potentials'
@@ -472,47 +472,47 @@ subroutine rfun (norbt,cw_orb,cw_coul,cw_exch,wk8,wk16)
         call pmtx(nni,i1mu(i),cw_coul(i2b(i)),ione,ione,incrni,incrmu)
      enddo
   endif
-
+  
   if(iprint(117).ne.0.and.nexch.ge.1) then
      write(*,*)
      write(*,*) 'rfun: input exchange potentials'
      !        print exchange potentials
      do i=1,nexch
-        write(*,*) 'exchange potential ',i
+        write(*,*) 'exchange potential ',i 
         call pmtx(nni,i1mu(i),cw_exch(i3b(i)),ione,ione,incrni,incrmu)
      enddo
   endif
-
+  
   do i=1,norb
      inhyd(i)=inhydlcao(i)
   enddo
-
-
+  
+  
   return
-
+  
 1000 continue
   write(*,*) '... error detected when retrieving the disk file ... '
   stop 'rfun'
-
-
+  
+  
 1004 continue
   write(*,*) '... error detected when retrieving orbital function', i
   stop 'rfun'
-
+  
 1005 continue
   write(*,*) '... error detected when retrieving potential function', i
   stop 'rfun'
-
+  
 1008 continue
   write(*,*) '... end of file detected when retrieving extension of the orbital input file ...'
   write(*,*) '... disk file without extension retrieved ... '
   idump=1
   goto 1100
-
+  
 1010 write(*,*) '... error detected when retrieving extension of the orbital input file ...'
   write(*,*) '... disk file without extension retrieved ... '
   idump=1
 1100 continue
-
+  
 end subroutine rfun
 

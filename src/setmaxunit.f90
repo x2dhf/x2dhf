@@ -9,7 +9,7 @@ subroutine setmaxunit
   implicit none
 
   integer :: i,iunit
-  do i=99,1000
+  do i=99,1000 
      iunit=i
      open(iunit,status='scratch',form='unformatted',err=100)
      close(iunit)

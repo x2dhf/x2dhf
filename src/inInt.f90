@@ -17,7 +17,7 @@ subroutine inInt(jbuf)
 
 
   data ichar/'0','1','2','3','4','5','6','7','8','9','+','&','^','-'/,inpiexit/-99999/
-
+  
   jbuf = inpiexit
   jrec = jrec + 1
   if(jrec.gt.jump)goto 430
@@ -33,7 +33,7 @@ subroutine inInt(jbuf)
      enddo
 44   write(iout6,*) 'Error detected in inpi'
      stop 'inInt'
-
+     
 45   if(j.lt.11)goto 47
      if(nstrt.ne.ist)goto 44
      if(j.ge.14)jbuf=-jbuf
@@ -42,7 +42,7 @@ subroutine inInt(jbuf)
      ifact = ifact * 10
      nstrt=nstrt-1
   enddo
-
+  
 430 return
 
 end subroutine inInt
@@ -62,7 +62,7 @@ subroutine inIntG(jbuf)
 
 
   data ichar/'0','1','2','3','4','5','6','7','8','9','+','&','^','-'/,inpiexit/-99999/
-
+  
   jbuf = inpiexit
   jrec = jrec + 1
   if(jrec.gt.jump)goto 430
@@ -88,7 +88,7 @@ subroutine inIntG(jbuf)
      ifact = ifact * 10
      nstrt=nstrt-1
   enddo
-
+  
 430 return
 
 end subroutine inIntG

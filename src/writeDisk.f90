@@ -2,16 +2,16 @@
 ! *                                                                         *
 ! *   Copyright (C) 1996 Leif Laaksonen, Dage Sundholm                      *
 ! *   Copyright (C) 1996-2010 Jacek Kobus <jkob@fizyka.umk.pl>              *
-! *                                                                         *
+! *                                                                         *     
 ! *   This program is free software; you can redistribute it and/or modify  *
 ! *   it under the terms of the GNU General Public License version 2 as     *
 ! *   published by the Free Software Foundation.                            *
 ! *                                                                         *
 ! ***************************************************************************
-! ### writeDisk ###
+! ### writeDisk ### 
 
-!     Writes orbitals, potenials, Lagrange multipliers (diagonal
-!     and off-diagonal) and multipole expansion coefficients to a disk
+!     Writes orbitals, potenials, Lagrange multipliers (diagonal 
+!     and off-diagonal) and multipole expansion coefficients to a disk 
 !     file in either formatted or unformatted form
 
 subroutine writeDisk (cw_orb,cw_coul,cw_exch)
@@ -23,13 +23,13 @@ subroutine writeDisk (cw_orb,cw_coul,cw_exch)
   implicit none
   character*80 :: datetime
   integer :: i4,i8,i16,li4tmp,li8tmp
-
+  
   real (PREC), allocatable :: i4tmp(:),r8l60(:),r8l1200(:),r8l3660(:),r8mxsize(:)
   real (PREC), allocatable :: i8tmp(:),r16l60(:),r16l1200(:),r16l3660(:),r16mxsize(:)
-  real (PREC), dimension(*) :: cw_orb,cw_coul,cw_exch
+  real (PREC), dimension(*) :: cw_orb,cw_coul,cw_exch  
 
   data i4,i8,i16/4,8,16/
-
+ 
 ! fixed precision
   rewind(iout24)
   call getDateTime(datetime)
@@ -39,9 +39,9 @@ subroutine writeDisk (cw_orb,cw_coul,cw_exch)
   write(iout24,formfp64) r,rgrid
   write(iout24,formfp64) z1,z2
   write(iout24,formint) norb,nel,nexch
-
+  
   call flush(iout24)
-
+  
   if (inout32.eq.1) then
      li4tmp=10*maxorb+5*maxorb*(maxorb+1)/2
 
@@ -57,7 +57,7 @@ subroutine writeDisk (cw_orb,cw_coul,cw_exch)
      deallocate(r8l1200)
      deallocate(r8l3660)
      deallocate(r8mxsize)
-
+     
   elseif (inout32.eq.2) then
      li4tmp=10*maxorb+5*maxorb*(maxorb+1)/2
      allocate(i4tmp(li4tmp))
@@ -72,7 +72,7 @@ subroutine writeDisk (cw_orb,cw_coul,cw_exch)
      deallocate(r8l1200)
      deallocate(r8l3660)
      deallocate(r8mxsize)
-
+     
   elseif (inout64.eq.1) then
      li8tmp=10*maxorb+5*maxorb*(maxorb+1)/2
      allocate(i8tmp(li8tmp))
@@ -81,13 +81,13 @@ subroutine writeDisk (cw_orb,cw_coul,cw_exch)
      allocate(r8l3660(maxorb*(maxorb+1)))
      allocate(r8mxsize(nni*mxnmu))
      call wtdisk64 (cw_orb,cw_coul,cw_exch,i8tmp,r8l60,r8l1200,r8l3660,r8mxsize)
-
+     
      deallocate(i8tmp)
      deallocate(r8l60)
      deallocate(r8l1200)
      deallocate(r8l3660)
      deallocate(r8mxsize)
-
+     
   elseif (inout64.eq.2) then
      li8tmp=10*maxorb+5*maxorb*(maxorb+1)/2
      allocate(i8tmp(li8tmp))
@@ -102,7 +102,7 @@ subroutine writeDisk (cw_orb,cw_coul,cw_exch)
      deallocate(r8l1200)
      deallocate(r8l3660)
      deallocate(r8mxsize)
-
+     
   elseif (inout128.eq.1) then
      li8tmp=10*maxorb+5*maxorb*(maxorb+1)/2
      allocate(i8tmp(li8tmp))
@@ -110,7 +110,7 @@ subroutine writeDisk (cw_orb,cw_coul,cw_exch)
      allocate(r16l1200(20*maxorb))
      allocate(r16l3660(maxorb*(maxorb+1)))
      allocate(r16mxsize(nni*mxnmu))
-
+     
      call wtdisk128 (cw_orb,cw_coul,cw_exch,i8tmp,r16l60,r16l1200,r16l3660,r16mxsize)
 
      deallocate(i8tmp)
@@ -118,8 +118,8 @@ subroutine writeDisk (cw_orb,cw_coul,cw_exch)
      deallocate(r16l1200)
      deallocate(r16l3660)
      deallocate(r16mxsize)
-
-
+     
+     
   elseif (inout128.eq.2) then
      li8tmp=10*maxorb+5*maxorb*(maxorb+1)/2
      allocate(i8tmp(li8tmp))

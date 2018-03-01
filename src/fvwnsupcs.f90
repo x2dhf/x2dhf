@@ -1,7 +1,7 @@
 ! ***************************************************************************
 ! *                                                                         *
 ! *   Copyright (C) 2010 Jacek Kobus <jkob@fizyka.umk.pl>                   *
-! *                                                                         *
+! *                                                                         *     
 ! *   This program is free software; you can redistribute it and/or modify  *
 ! *   it under the terms of the GNU General Public License version 2 as     *
 ! *   published by the Free Software Foundation.                            *
@@ -19,19 +19,19 @@ subroutine fvwnsupcs (rhot,rhotup,rhotdown,wk0,wk1,wk2,wk3,wk4,wk5,wk6,wk7,wk8,w
 
   implicit none
   integer :: i
-  real (PREC) :: ck1,cl1,cm1,cn1,const16,const76,const56,constx,constxp,g1,g2,x,xderrhot
+  real (PREC) :: ck1,cl1,cm1,cn1,const16,const18,const76,const56,constx,constxp,g1,g2,x,xderrhot
   real (PREC), dimension(*) :: wk0,wk1,wk2,wk3,wk4,wk5,wk6,wk7,wk8,wk9,wk10,rhot,rhotup,rhotdown
 
   real (PREC), external :: qvwn,qvwnderx
 
   parameter(ck1=0.03109070_PREC,cl1=-0.104980_PREC,cm1=3.727440_PREC,cn1=12.93520_PREC, &
-       const16=1.0_PREC/6.0_PREC,const76=7.0_PREC/6.0_PREC,const56=5.0_PREC/6.0_PREC)
+       const16=1.0_PREC/6.0_PREC, const18=1.0_PREC/8.0_PREC,const76=7.0_PREC/6.0_PREC,const56=5.0_PREC/6.0_PREC)
 
 !     total density in rhot
 
   constx=(three/(four*pii))**const16
   constxp=-(four*pii/three)**const56/(eight*pii)
-
+  
   ! dx/d(rho)=xderrhot
   do i=1,mxsize
      if (abs(rhot(i)).lt.precis) then
