@@ -1,7 +1,7 @@
 ! ### getDateTime ###
 !     Returns current date and time as a string.
 !     This routine works for gfortran, g77 and ifort compilers
-!     Comment the lines 
+!     Comment the lines
 !        stime=time()
 !        call ctime(stime,datetime)
 !     or replace them with appropriate equivalents
@@ -16,24 +16,24 @@ subroutine getdatetime(datetime)
   character*1, dimension(8) :: dates
 
   equivalence(datetimex,str(1))
-  
+
   equivalence(date,dates(1))
   equivalence(time,times(1))
-  
+
   do i=1,80
      str(i)=' '
   enddo
-  
+
   !      stime=time()
   !      call ctime(stime,datetime)
-  
-  
+
+
   !     date_time works with g77, gfotran and ifort
   call date_and_time (date,time)
-  
+
   !     copy data from date and time character variables into datetime one
   !     inserting appropriate separators
-  
+
   str( 1)=dates(1)
   str( 2)=dates(2)
   str( 3)=dates(3)
@@ -44,14 +44,14 @@ subroutine getdatetime(datetime)
   str( 8)='/'
   str( 9)=dates(7)
   str(10)=dates(8)
-  
+
   str(11)=' '
   str(12)=' '
-  
+
   str(13)=times(1)
   str(14)=times(2)
   str(15)=':'
-  
+
   str(16)=times(3)
   str(17)=times(4)
   str(18)=':'
@@ -60,8 +60,8 @@ subroutine getdatetime(datetime)
   str(21)=times(7)
   str(22)=times(8)
   str(23)=times(9)
-  
-  
+
+
   datetime=datetimex
-  
+
 end subroutine getdatetime

@@ -2,13 +2,13 @@
 ! *                                                                         *
 ! *   Copyright (C) 1996 Leif Laaksonen, Dage Sundholm                      *
 ! *   Copyright (C) 1996-2010 Jacek Kobus <jkob@fizyka.umk.pl>              *
-! *                                                                         *     
+! *                                                                         *
 ! *   This program is free software; you can redistribute it and/or modify  *
 ! *   it under the terms of the GNU General Public License version 2 as     *
 ! *   published by the Free Software Foundation.                            *
 ! *                                                                         *
 ! ***************************************************************************
-! ### coulAsympt ###	
+! ### coulAsympt ###
 !
 !     mpole multipole moments (stored in cmulti) and associated Legendre
 !     functions are used to calculate for each i=1,nni 4 boundary values
@@ -26,7 +26,7 @@ subroutine coulAsympt(iorb,pot)
   real (PREC) :: costh,rr,rr1
   real (PREC), dimension(*) :: pot
   real (PREC), external :: vcoul
-  
+
   do j=mxnmu-3,mxnmu
      itt=(j-1)*nni
      do i=1,nni

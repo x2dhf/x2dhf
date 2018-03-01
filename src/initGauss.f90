@@ -1,7 +1,7 @@
 ! ***************************************************************************
 ! *                                                                         *
 ! *   Copyright (C) 1996-2010 Jacek Kobus <jkob@fizyka.umk.pl>              *
-! *                                                                         *     
+! *                                                                         *
 ! *   This program is free software; you can redistribute it and/or modify  *
 ! *   it under the terms of the GNU General Public License version 2 as     *
 ! *   published by the Free Software Foundation.                            *
@@ -13,8 +13,8 @@
 !     Gaussian orbitals. Parameters of the orbitals and the coeeficients
 !     are provided by the GAUSSIAN program.
 
-!     Coulomb (HF) potentials are initialized as a linear combination of 
-!     -ez1/r1 and -ez2/r2. For the initialization of exchange potentials 
+!     Coulomb (HF) potentials are initialized as a linear combination of
+!     -ez1/r1 and -ez2/r2. For the initialization of exchange potentials
 !     see routine tfpot.
 
 subroutine initGauss (psi,pot,excp,f2,f4,wgt2,wk0)
@@ -38,6 +38,7 @@ subroutine initGauss (psi,pot,excp,f2,f4,wgt2,wk0)
   ! Contracted basis function overlap
   real (PREC), dimension(:,:), allocatable :: cS
 
+  !     Initialization of molecular orbitals
   if (ini.eq.4.) then
      norbt=1
   else
@@ -151,10 +152,9 @@ subroutine initGauss (psi,pot,excp,f2,f4,wgt2,wk0)
 
   !     initialize Coulomb and exchange potentials
 
-  call initPot(psi,pot,excp,f4,wk0)
+  call initPot(psi,pot,excp,f2,f4,wk0)
 
 1114 format(/1x,'    orbital        norm      ')
 1115 format(1x,i3,1x,a8,a1,e20.12)
 
 end subroutine initGauss
-      

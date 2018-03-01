@@ -2,7 +2,7 @@
 ! *                                                                         *
 ! *   Copyright (C) 1996 Leif Laaksonen, Dage Sundholm                      *
 ! *   Copyright (C) 1996-2010 Jacek Kobus <jkob@fizyka.umk.pl>              *
-! *                                                                         *     
+! *                                                                         *
 ! *   This program is free software; you can redistribute it and/or modify  *
 ! *   it under the terms of the GNU General Public License version 2 as     *
 ! *   published by the Free Software Foundation.                            *
@@ -10,7 +10,7 @@
 ! ***************************************************************************
 ! ### wtdexch ###
 !
-!     Writes exchange potentials involving orbital iorb as separate files 
+!     Writes exchange potentials involving orbital iorb as separate files
 
 subroutine wtdexch (iorb1,excp)
   use params
@@ -28,9 +28,9 @@ subroutine wtdexch (iorb1,excp)
         if (iwexch(k).eq.-2) iwexch(k)=-1
         i3beg=i3brec(iorb1,iorb2)
         irec=i3xpair(iorb1,iorb2)
-        ngrid=i3si(k) 
+        ngrid=i3si(k)
         call wrec(irec,ngrid,excp(i3beg))
      endif
   enddo
-  
+
 end subroutine wtdexch

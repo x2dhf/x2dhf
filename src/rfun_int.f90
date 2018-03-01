@@ -21,6 +21,7 @@ subroutine rfun_int (norb_p,cw_orb,cw_coul,cw_exch,wk8,wk16,cw_sctch)
 
   implicit none
 
+!  integer :: i,ierr,ii,ioffset,iorb1,iorb2,j,k,norbt
   integer :: i,ica,idel,ierr,ioffset,iorb1,iorb2,ipex,isym,j,k,norb_p
 
   integer, dimension(60) :: i1b_p,i2b_p,i1e_p,i2e_p,i1si_p,i2si_p,i1ng_p,i2ng_p,i1mu_p,i2mu_p
@@ -29,19 +30,16 @@ subroutine rfun_int (norb_p,cw_orb,cw_coul,cw_exch,wk8,wk16,cw_sctch)
   real (PREC), dimension(*) :: wk8,cw_orb,cw_coul,cw_exch,cw_sctch
 
   real (PREC16), dimension(*) :: wk16
-  real (PREC), dimension(:), allocatable :: fbefore
-  
+
   read (iinp11,err=1000) i1b_p,i2b_p,i3b_p,i1e_p,i2e_p,i3e_p, &
        i1si_p,i2si_p,i3si_p,i1ng_p,i2ng_p,i3ng_p,i1mu_p,i2mu_p,i3mu_p
 
   ioffset=norb-norb_p
   ica=1
   write(iout6,1100)
-01100 format(' ... interpolating orbitals:',/,'  ',$)
+01100 format('... interpolating orbitals:',/6x,$)
 01110 format(i4,$)
 
-  allocate(fbefore(nni_p*nmu_p(1)))
-  
   do i=1,norb_p
      write(iout6,1110) i
      ipex=mgx(6,i)
@@ -58,7 +56,7 @@ subroutine rfun_int (norb_p,cw_orb,cw_coul,cw_exch,wk8,wk16,cw_sctch)
            stop 'rfun 8'
         endif
         do j=1,i1si_p(i+ioffset)
-           fbefore(j)=wk8(j)
+           cw_sctch(i5b(1)+j-1)=wk8(j)
         enddo
      endif
 
@@ -69,11 +67,11 @@ subroutine rfun_int (norb_p,cw_orb,cw_coul,cw_exch,wk8,wk16,cw_sctch)
            stop 'rfun 16'
         endif
         do j=1,i1si_p(i+ioffset)
-           fbefore(j)=wk16(j)
+           cw_sctch(i5b(1)+j-1)=wk16(j)
         enddo
      endif
 
-     call dointerp (ica,nmu_p(1),nmu(1),fbefore,cw_orb(i1b(i+ioffset)))     
+     call dointerp (ica,i1mu_p(i),i1mu(i),cw_sctch(i5b(1)),cw_orb(i1b(i+ioffset)),cw_sctch(i5b(2)) )
 
      if (ierr.ne.0) then
         write(iout6,*) 'error detected when reading orbital',i
@@ -102,8 +100,7 @@ subroutine rfun_int (norb_p,cw_orb,cw_coul,cw_exch,wk8,wk16,cw_sctch)
   ica=2
   isym=1
   write(iout6,1102)
-01102 format(' ... interpolating Coulomb potentials:',/,'  ',$)
-
+01102 format('... interpolating Coulomb potentials:',/6x,$)
   do i=1,norb_p
      write(iout6,1110) i
      if (lengthfp.eq.8) then
@@ -113,7 +110,7 @@ subroutine rfun_int (norb_p,cw_orb,cw_coul,cw_exch,wk8,wk16,cw_sctch)
            stop 'rfun 8'
         endif
         do j=1,i2si_p(i+ioffset)
-           fbefore(j)=wk8(j)
+           cw_sctch(i5b(1)+j-1)=wk8(j)
         enddo
      endif
      if (lengthfp.eq.16) then
@@ -123,11 +120,11 @@ subroutine rfun_int (norb_p,cw_orb,cw_coul,cw_exch,wk8,wk16,cw_sctch)
            stop 'rfun 16'
         endif
         do j=1,i2si_p(i+ioffset)
-           fbefore(j)=wk16(j)
+           cw_sctch(i5b(1)+j-1)=wk16(j)
         enddo
      endif
 
-     call dointerp (ica,nmu_p(1),nmu(1),fbefore,cw_coul(i2b(i+ioffset)) )
+     call dointerp (ica,i2mu_p(i),i2mu(i),cw_sctch(i5b(1)),cw_coul(i2b(i+ioffset)),cw_sctch(i5b(2)) )
 
      if (ierr.ne.0) then
         write(iout6,*) 'error detected when reading coulomb potential',i
@@ -146,6 +143,9 @@ subroutine rfun_int (norb_p,cw_orb,cw_coul,cw_exch,wk8,wk16,cw_sctch)
 
   if (imethod.eq.1) then
      ica=3
+
+     !        to interpolate exchange potentials they have to be read in as a single file
+
      if (iform.eq.0.or.iform.eq.2) then
         write(*,'("rfun_int: cannot interpolate exchange potentials when they are being retrieved as " &
              & "separate files")')
@@ -153,7 +153,7 @@ subroutine rfun_int (norb_p,cw_orb,cw_coul,cw_exch,wk8,wk16,cw_sctch)
      endif
 
      write(iout6,1104)
-01104 format(' ... interpolating exchange potentials for orbitals:',/,'  ',$)
+01104 format('... interpolating exchange potentials for orbitals:',/6x,$)
      do iorb1=1,norb_p
         write(iout6,1110) iorb1
 
@@ -177,7 +177,7 @@ subroutine rfun_int (norb_p,cw_orb,cw_coul,cw_exch,wk8,wk16,cw_sctch)
                  stop 'rfun 8'
               endif
               do j=1,i3si_p(k)
-                 fbefore(j)=wk8(j)
+                 cw_sctch(i5b(1)+j-1)=wk8(j)
               enddo
            endif
            if (lengthfp.eq.16) then
@@ -187,10 +187,13 @@ subroutine rfun_int (norb_p,cw_orb,cw_coul,cw_exch,wk8,wk16,cw_sctch)
                  stop 'rfun 16'
               endif
               do j=1,i3si_p(k)
-                 fbefore(j)=wk16(j)
+                 cw_sctch(i5b(1)+j-1)=wk16(j)
               enddo
            endif
-          call dointerp (ica,nmu_p(1),nmu(1),fbefore,cw_exch(i3b(k)))
+
+
+           call dointerp(ica,i3mu_p(k),i3mu(k),cw_sctch(i5b(1)),cw_exch(i3b(k)),cw_sctch(i5b(2)) )
+
            if (ierr.ne.0) then
               write(iout6,*) 'error detected when reading exchange potential',iorb1,iorb2,k
               stop 'rfun_int'
@@ -217,9 +220,8 @@ subroutine rfun_int (norb_p,cw_orb,cw_coul,cw_exch,wk8,wk16,cw_sctch)
                  cw_sctch(i5b(1)+j-1)=wk16(j)
               enddo
            endif
-           
-           call dointerp (ica,nmu_p(1),nmu(1),fbefore,cw_exch(i3b(k)+i3si(k)))
 
+           call dointerp (ica,i3mu_p(k),i3mu(k),cw_sctch(i5b(1)),cw_exch(i3b(k)+i3si(k)),cw_sctch(i5b(2)) )
            if (ierr.ne.0) then
               write(iout6,*) 'error detected when reading exchange potential',iorb1,iorb2,k
               stop 'rfun_int'

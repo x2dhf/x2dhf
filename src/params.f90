@@ -8,8 +8,8 @@ module params
 ! In order to make the 2DHF program the array dimensions in various routines have to be
 ! set according to the values of the following variables:
 
-! maxnu    = maximum number of grid points in \nu direction 
-! maxmu    = maximum number of grid points in \mu direction 
+! maxnu    = maximum number of grid points in \nu direction
+! maxmu    = maximum number of grid points in \mu direction
 
 ! maxbasis = maximum number of primitive gaussian basis functions used to construct
 !            numerical molecular orbitals out of data retrieved from GAUSSIAN outputs
@@ -18,11 +18,11 @@ module params
   integer, parameter :: maxmu    = 2500
   integer, parameter :: maxbasis = 650
 
-
-! the following values should be left unchanged
+  ! the following values should be left unchanged, since the code
+  ! still has the values hardcoded in some routines!
   integer, parameter :: maxgrids = 1
   integer, parameter :: maxorb   = 60
-  integer, parameter :: maxmpole  = 8
+  integer, parameter :: maxmpole = 8
 
   character*10 :: formint,formfp,formfp64,formfp128
   data formint /'(10i15)  '/

@@ -2,7 +2,7 @@
 ! *                                                                         *
 ! *   Copyright (C) 1996 Leif Laaksonen, Dage Sundholm                      *
 ! *   Copyright (C) 1996-2010 Jacek Kobus <jkob@fizyka.umk.pl>              *
-! *                                                                         *     
+! *                                                                         *
 ! *   This program is free software; you can redistribute it and/or modify  *
 ! *   it under the terms of the GNU General Public License version 2 as     *
 ! *   published by the Free Software Foundation.                            *
@@ -26,7 +26,7 @@ subroutine rrec(irec,ngrid,axyz)
      stop "rrec"
 910  format('rrec: maximum unit number exceeded (see User''s Guide)')
   endif
-  open(iunit,status='unknown',form='unformatted')
+  open(iunit,status='old',form='unformatted')
   rewind(iunit)
   read  (iunit) axyz
   close(iunit)

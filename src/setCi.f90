@@ -2,7 +2,7 @@
 ! *                                                                         *
 ! *   Copyright (C) 1996 Leif Laaksonen, Dage Sundholm                      *
 ! *   Copyright (C) 1996-2010 Jacek Kobus <jkob@fizyka.umk.pl>              *
-! *                                                                         *     
+! *                                                                         *
 ! *   This program is free software; you can redistribute it and/or modify  *
 ! *   it under the terms of the GNU General Public License version 2 as     *
 ! *   published by the Free Software Foundation.                            *
@@ -33,9 +33,9 @@ subroutine setCi (iorb,psi)
      iorb1=iorb
      iorb2=iorb
   endif
-  
+
   n2=nni/2+1
-  
+
   do i=iorb1,iorb2
      ibeg = i1b(i)
      nmut = i1mu(i)

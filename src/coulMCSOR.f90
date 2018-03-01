@@ -2,7 +2,7 @@
 ! *                                                                         *
 ! *   Copyright (C) 1996 Leif Laaksonen, Dage Sundholm                      *
 ! *   Copyright (C) 1996-2010 Jacek Kobus <jkob@fizyka.umk.pl>              *
-! *                                                                         *     
+! *                                                                         *
 ! *   This program is free software; you can redistribute it and/or modify  *
 ! *   it under the terms of the GNU General Public License version 2 as     *
 ! *   published by the Free Software Foundation.                            *
@@ -12,7 +12,7 @@
 
 !     Evaluates the Coulomb potential for a given orbital
 
-subroutine coulMCSOR (iorb,cw_sor,psi,pot,bpot,d,f3,g,lhs,rhs,wk2)
+subroutine coulMCSOR (iorb,cw_sor,psi,pot,excp,bpot,d,f3,g,lhs,rhs,wk2)
   use params
   use discret
   use scf
@@ -22,15 +22,15 @@ subroutine coulMCSOR (iorb,cw_sor,psi,pot,bpot,d,f3,g,lhs,rhs,wk2)
   implicit none
   integer :: i,iborb,iorb,ibpot,ibpot1,ig,ioffs1,ioffst,isym1,itr1,itr2,ngrid
   integer, dimension(*) :: cw_sor
-  real (PREC), dimension(*) :: psi,pot,rhs,bpot,d,f3,g,lhs,wk2
+  real (PREC), dimension(*) :: psi,pot,excp,rhs,bpot,d,f3,g,lhs,wk2
 
   !     dimension of wk2 array need be only (nni+8)*(nmi+4) but
   !     (nni+8)*(nmi+8) array is reserved
-  
+
   if (nel.eq.1) return
-  
+
   !     prepare right-hand side of Poisson's equation
-  
+
   iborb=i1b(iorb)
   ngrid=i1si(iorb)
   call prod2 (ngrid,psi(iborb),psi(iborb),wk2)
@@ -45,7 +45,7 @@ subroutine coulMCSOR (iorb,cw_sor,psi,pot,bpot,d,f3,g,lhs,rhs,wk2)
         omega=ovfcoul(ig)
         omega1=1.0_PREC-omega
         ioffst=ioffs(ig)
-        ioffs1=ioffst+1  
+        ioffs1=ioffst+1
         ibpot1=ibpot+ioffst
 
         do i=1,4
@@ -59,15 +59,15 @@ subroutine coulMCSOR (iorb,cw_sor,psi,pot,bpot,d,f3,g,lhs,rhs,wk2)
         do i=1,ngsize(ig)
            lhs(ioffst+i)=f3(ioffst+i)+diag(ig)
         enddo
-        
-        if (i1ng(iorb).eq.1) then 
+
+        if (i1ng(iorb).eq.1) then
            !              icase=1
            ifill=1
            ngrd1 =ingr1(1,ig)
            ngrd6a=ingr1(2,ig)
            ngrd6b=ingr1(3,ig)
            ngrd7 =ingr1(4,ig)
-
+           !
            call putin (nni,nmu(ig),isym1,pot(iborb),wk2)
            do itr2=1,maxsorpot(iorb)
               call mcsor (wk2,lhs(ioffs1),rhs(ioffs1), bpot(ioffs1),d(ioffs1),                   &
@@ -128,5 +128,5 @@ subroutine coulMCSOR (iorb,cw_sor,psi,pot,bpot,d,f3,g,lhs,rhs,wk2)
         endif
      enddo
   enddo
-
+!01021 format(/,i5,10e12.3,/(5x,10e12.3))
 end subroutine coulMCSOR

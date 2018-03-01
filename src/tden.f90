@@ -28,5 +28,5 @@ subroutine tden(iorb,ngorb1,psi,wk2)
         wk2(i)=wk2(i)+coo*psi(iborb1+i-1)*psi(iborb1+i-1)
      enddo
   enddo
-  
+
 end subroutine tden

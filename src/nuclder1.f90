@@ -21,7 +21,7 @@ subroutine nuclder1(iorb,psi,dznu,dzmu,dernu,dermu,wk2,wk3,wk4,wk5)
 
   psi(nni,1)= exeven(1)*psi(nni-1,1)+exeven(2)*psi(nni-2,1)+exeven(3)*psi(nni-3,1) &
        +exeven(4)*psi(nni-4,1)+exeven(5)*psi(nni-5,1)
- 
+
   call putin (nni,nmut,isym,psi,wk2)
   call diffnu (nmut,wk2,wk3,wk4,wk5)
   call putout (nni,nmut,dernu,wk3)
@@ -46,7 +46,7 @@ subroutine nuclder1(iorb,psi,dznu,dzmu,dernu,dermu,wk2,wk3,wk4,wk5)
   do imu=2,6
      dzmu(imu)=(-1.0_PREC)*2.0_PREC/(r*vxi1(imu))*dermu(nni,imu)
   enddo
-  
+
   !   calculate the derivative over z at (0,0,R/2+) by extrapolation
 
   dznu(nni)= exeven(1)*dznu(nni-1)+exeven(2)*dznu(nni-2)+exeven(3)*dznu(nni-3) &
@@ -58,7 +58,7 @@ subroutine nuclder1(iorb,psi,dznu,dzmu,dernu,dermu,wk2,wk3,wk4,wk5)
 
 ! FIXME
   iprt=1
-  if (iprt.eq.0) then        
+  if (iprt.eq.0) then
      write(*,*) 'psi(nni-5,...nni,1)'
      write(*,2000) (psi(i,1),i=nni-5,nni)
      write(*,*) 'dznu(nni-5,nni)'

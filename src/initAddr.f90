@@ -1,7 +1,7 @@
-! ### initAddr ### 
+! ### initAddr ###
 
 !     Determines dimensions of arrays and addresses of particular
-!     orbitals and coulomb potentials in cw_orb and cw_coul arrays 
+!     orbitals and coulomb potentials in cw_orb and cw_coul arrays
 !     addresses of exchange potentials v(i,j) in the cw_exch array.
 
 !     With each cw_sth array is associated corresponding address array
@@ -27,7 +27,7 @@
 
 !     i1ng(iorb) - number of grids used by the iorb-th orbital (must be
 !                  1 in x2dhf ver. 2.0)
-      
+
 
 
 !     i2b(iorb)  - the address of the first element of Coulomb potential
@@ -50,7 +50,7 @@
 !     i3e(k)     - the address of the last element of the exchange potential for
 !                  the k-th pair of orbitals (iorb1,iorb2)
 
-!     i3si(k)    - the size of the cw_exch subarray holding values of 
+!     i3si(k)    - the size of the cw_exch subarray holding values of
 !                  exchange potential for the k-th pair of orbitals
 
 !     i3ng(k)    - number of grids needed to define the k-th exchange potential
@@ -58,8 +58,8 @@
 !     ilc(k)     - 0, 1 or 2 indicating the number of exchange potentials for
 !                  a given pair of orbitals
 
-!     i3xk(iorb1,iorb2) 
-!                - the index k of exchange potential corresponding to the pair of 
+!     i3xk(iorb1,iorb2)
+!                - the index k of exchange potential corresponding to the pair of
 !                  orbitals iorb1 and iorb2
 
 !     Subarrays of cw_suppl and cw_sctch are defined accordingly by i4xx
@@ -69,7 +69,7 @@
 !     consequently no more than (maxorb*(maxorb+1)/2) exchange
 !     potentials.
 
-subroutine initAddr 
+subroutine initAddr
 
   use params
   use discret
@@ -85,7 +85,7 @@ subroutine initAddr
   i1e(1)=ngrid
   i1si(1)=ngrid
   i1mu(1)=iemu(i1ng(1))
-  
+
   !     current value of cw_orb length is stored in l1cur
   l1cur=ngrid
   do iorb=2,norb
@@ -96,17 +96,17 @@ subroutine initAddr
      i1mu(iorb)=iemu(i1ng(iorb))
      l1cur=l1cur+ngrid
   enddo
-  
+
   !     it is assumed that potential functions are defined on the same number
   !     of grids as the orbitals
-  
+
   i2b(1)=1
   ngrid=nni*iemu(i2ng(1))
   i2e(1)=ngrid
   i2si(1)=ngrid
   i2mu(1)=iemu(i1ng(1))
-  
-  !     current value of cw_coul length is stored in l2cur	
+
+  !     current value of cw_coul length is stored in l2cur
   l2cur=ngrid
   do iorb=2,norb
      i2b(iorb)=i2e(iorb-1)+1
@@ -119,11 +119,11 @@ subroutine initAddr
 
 !     dimension of i3xx arrays is norb*(norb+1)/2 to allow for two
 !     exchange potentials between non-sigma orbitals
-      
+
 !     (obsolete) exchange potential corresponding to orbitals iorb1 and iorb2
 !     defined on 1ing(iorb1) and i1ng(iorb2) grids respectively, is
 !     defined on smaller of these grids, i.e
-!     i3ng=min(i1ng(iorb1),i1ng(iorb2)) 
+!     i3ng=min(i1ng(iorb1),i1ng(iorb2))
 
       iend=0
       l=0
@@ -164,13 +164,13 @@ subroutine initAddr
             if (k.gt.1830) then
                write(*,*) 'initAddr:'
                write(*,*) 'address array for exchange potentials is too short'
-               stop 'initAddr'	
+               stop 'initAddr'
             endif
 00050       continue
          enddo
          i3boffset=i3bfin
       enddo
-      
+
       nexch=l
 
 !     When exchange potential functions are stored as separate files
@@ -179,17 +179,17 @@ subroutine initAddr
 
 !     prepare a two dimension array containing numerical labels of
 !     exchange potential functions being needed for every orbital
-!     
+!
 !     all exchange potentials have to be defined on the same grid
-!     
+!
 !     let k=i3xk(iorb1,iorb2) be an index associated uniquely with a given
 !     pair of orbitals
 
-!     if k=0  - no exchange potentials (no record)      
+!     if k=0  - no exchange potentials (no record)
 
 !     if k.ne.0 and ilc(k)=1  - exchange potential record label is stored in i3xrec1
 !     if k.ne.0 and ilc(k)=2  - exchange potential record label is stored in i3xrec2
-      
+
       ngrid=nni*mxnmu
       l=0
       do iorb1=1,norb
@@ -208,11 +208,11 @@ subroutine initAddr
             endif
          enddo
       enddo
-      
+
 !     determine exchange potentials associated with a particular orbital
 !     and store the record lables in i3rec; the number of exchange
 !     potentials for each orbital is kept in i3nexp
-      
+
       do iorb1=1,norb
          l=0
          ibeg=1
@@ -223,28 +223,28 @@ subroutine initAddr
             k=i3xk(iorb1,iorb2)
             if (k.ne.0) then
                if (ilc(k).ne.0) then
-                  l=l+1        
-                  
+                  l=l+1
+
                   if (l.gt.maxorb) then
                      print *,'initAddr: the second dimension of arrays i3xpair,i3brec can not exceed',maxorb
                      stop 'initAddr'
                   endif
-                  
+
                   i3xpair(iorb1,l)=i3xrec1(k)
                   i3brec (iorb1,l)=ibeg
                   i3breck(iorb1,l)=k
-                  
+
                   i3btv(iorb1,iorb2)=ibeg
                   i3btv(iorb2,iorb1)=ibeg
-                  
+
 !                 before a new portion of exchange potentials is read
 !                 i3b has to be modified accordingly (k is determined by
 !                 i3breck and must be non zero)
-                  
+
                   i3nexcp(iorb1)=l
                   ibeg=ibeg+ngrid
                   if (ilc(k).eq.2) then
-                     l=l+1      
+                     l=l+1
                      i3xpair(iorb1,l)=i3xrec2(k)
                      i3brec(iorb1,l)=ibeg
                      i3breck(iorb1,l)=k
@@ -257,7 +257,7 @@ subroutine initAddr
       enddo
 
 !     is working array cw_suppl large enough?
-      
+
       if (nsuppl*mxsize.gt.length4) then
          write(iout6,*) 'cw_suppl is too short!'
          write(iout6,*) 'declared length is:',length4
@@ -271,7 +271,7 @@ subroutine initAddr
          i4si(i)=mxsize
          i4ng(i)=ngrids
       enddo
-      
+
 !     current value of cw_sctch length is stored in l5cur
       mxsize8=(nni+8)*(mxnmu+8)
       do i=1,nsctch
@@ -286,7 +286,7 @@ subroutine initAddr
 
       if (l1cur.gt.length1) then
          write(iout6,*) 'cw_orb is too short!'
-         write(iout6,*) 'declared length is:',length1      
+         write(iout6,*) 'declared length is:',length1
          write(iout6,*) 'needed length is:',l1cur
          if (idbg(550).eq.0) stop 'initAddr'
       endif
@@ -300,7 +300,7 @@ subroutine initAddr
 
 !     l3cur is calculated as if all exchange potential functions were
 !     to be kept in core. This is the case if iform=1 or iform=3.
-      
+
       if (imethod.eq.1) then
          if (iform.eq.1.or.iform.eq.3) then
             if (l3cur.gt.length3) then
@@ -339,7 +339,7 @@ subroutine initAddr
          print *,'initAddr: ngrid ',nni*mxnmu
          print *,'initAddr: nexch ',nexch
 
-         print *, 'initAddr: iorb1,iorb2,k,i3xk,ilc(k),i3b'      
+         print *, 'initAddr: iorb1,iorb2,k,i3xk,ilc(k),i3b'
          do  iorb1=1,norb
             do  iorb2=iorb1,norb
                k=iorb1+iorb2*(iorb2-1)/2
@@ -354,7 +354,7 @@ subroutine initAddr
             print *,iorb1,i3nexcp(iorb1)
          enddo
          print *,' '
-         
+
          print *,'iaddr: iorb // l,i3xpair,i3brec,i3breck'
          do iorb1=1,norb
             print *,'iorb1: ',iorb1
@@ -363,10 +363,10 @@ subroutine initAddr
                write(*,1210) l, i3xpair(iorb1,l),i3brec(iorb1,l),k
             enddo
          enddo
-         
+
 01200    format(2i4,i6,3i12)
 01210    format(i4,5i12)
-         
+
          print *,'iaddr: iorb1,iorb2,k,i3xrec1,i3xrec2'
          do  iorb1=1,norb
             do  iorb2=iorb1,norb

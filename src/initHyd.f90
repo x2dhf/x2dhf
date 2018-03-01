@@ -2,13 +2,13 @@
 ! *                                                                         *
 ! *   Copyright (C) 1996 Leif Laaksonen, Dage Sundholm                      *
 ! *   Copyright (C) 1996-2010 Jacek Kobus <jkob@fizyka.umk.pl>              *
-! *                                                                         *     
+! *                                                                         *
 ! *   This program is free software; you can redistribute it and/or modify  *
 ! *   it under the terms of the GNU General Public License version 2 as     *
 ! *   published by the Free Software Foundation.                            *
 ! *                                                                         *
 ! ***************************************************************************
-! c ### initHyd ###  
+! c ### initHyd ###
 ! c
 ! c     This routine initializes molecular orbitals as linear combinations
 ! c     of hydrogenic functions on centres A and B.  In the case of HF or
@@ -17,7 +17,7 @@
 ! c     centres; if method OED is chosen the potential functions are set
 ! c     to zero.
 
-subroutine initHyd (psi,pot,excp,f4,wk0)
+subroutine initHyd (psi,pot,excp,f2,f4,wgt2,wk0)
   use params
   use commons8
 
@@ -29,16 +29,16 @@ subroutine initHyd (psi,pot,excp,f4,wk0)
 
   real (PREC), dimension(*) :: psi,pot
   real (PREC), dimension(*) :: excp
-  real (PREC), dimension(*) :: f4
+  real (PREC), dimension(*) :: f2,f4,wgt2
   real (PREC), dimension(*) :: wk0
 
 
-  !     Initialization of molecular orbitals 
+  !     Initialization of molecular orbitals
 
   print *,'... initializing orbitals from hydrogenic functions ...'
 
 !     loop over orbitals
-      
+
 !      do iorb=1,norbt
       do iorb=1,norb
          if (inhyd(iorb).eq.0) goto 100
@@ -65,9 +65,12 @@ subroutine initHyd (psi,pot,excp,f4,wk0)
          endif
  100     continue
       enddo
-      
+
+!01114 format(/1x,'  orbital        norm       (# primitive bf)')
+!01115 format(1x,i2,1x,a5,e20.12,' (',i4,')')
+
 !  initialize Coulomb and exchange potentials
 
-      call initPot(psi,pot,excp,f4,wk0)
+      call initPot(psi,pot,excp,f2,f4,wk0)
 
     end subroutine initHyd

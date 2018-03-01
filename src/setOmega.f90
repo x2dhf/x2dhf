@@ -13,7 +13,7 @@ function setOmega()
   real (PREC) :: a,b,rho
 
   parameter (a=0.603_PREC,b=0.79_PREC)
-  
+
   rho=0.5_PREC*(cos(pii/dble(mxnmu))+cos(pii/dble(nni)))
   setOmega=2.0_PREC*a/(1.0_PREC+sqrt(1.0_PREC-rho*rho))+b
 

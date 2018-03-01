@@ -3,6 +3,6 @@ module scheduler
 
   integer :: ibonus,iepoch,nepochs
   parameter (ibonus=3,iepoch=10,nepochs=5000)
-  integer, dimension(60) :: iorbiter
-  real (PREC), dimension(nepochs,60) ::  orbenergy,orbnorm
+  integer, dimension(maxorb) :: iorbiter
+  real (PREC), dimension(nepochs,maxorb) ::  orbenergy,orbnorm
 end module scheduler

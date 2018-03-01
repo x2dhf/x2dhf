@@ -19,7 +19,7 @@ subroutine zeroArrays (cw_orb,cw_coul,cw_exch,cw_suppl,cw_sctch,cw_sor)
   call zeroArray(length1,cw_orb)
   call zeroArray(length2,cw_coul)
   call zeroArray(length3,cw_exch)
-  stop  
+  stop
   call zeroArray(length4,cw_suppl)
   call zeroArray(length5,cw_sctch)
 
@@ -28,8 +28,8 @@ subroutine zeroArrays (cw_orb,cw_coul,cw_exch,cw_suppl,cw_sctch,cw_sor)
   enddo
 
   !     off-diagonal Lagrange multipliers must be zero (see fock)
-  
+
   n=maxorb*maxorb
   call zeroArray(n,engo)
-  
+
 end subroutine zeroArrays

@@ -465,10 +465,10 @@ contains
 00990 print *,'PREPGAUSS: end of file encountered when reading gaussian.out'
     stop
 00991 print *,'PREPGAUSS: end of file encountered when reading gaussian.pun'
-  stop
+    stop
 00992 print *,'PREPGAUSS: error encountered when reading gaussian.pun'
-  stop "prepGauss"
-  
+    stop "prepGauss"
+
 01001 format(a46)
 01011 format(15x,e15.8)
 01012 format(5e15.8)
