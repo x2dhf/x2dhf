@@ -25,16 +25,14 @@ subroutine dointerp_nu (nmuall,fbefore,fafter)
   real (PREC16) xni
   real (PREC16), dimension(kend) :: coeffq
   real (PREC16), dimension(kend,kend) :: coeffq2
-  
   real (PREC16), external ::  vpoly1q
 
 ! interpolation for the first iord2 points in ni variable
 
-  do ini=1,nni
-     if(vni(ini).ge.vni_p(iord2)) exit
-  enddo
-
   nni_first=ini
+  do nni_first=1,nni
+     if(vni(nni_first).ge.vni_p(iord2)) exit
+  enddo
 
   do k=1,kend
      call lpcoeffq(iord2+1,k,coeffq)
@@ -118,3 +116,4 @@ subroutine dointerp_nu (nmuall,fbefore,fafter)
      enddo
   enddo
 end subroutine dointerp_nu
+
