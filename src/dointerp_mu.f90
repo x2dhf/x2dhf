@@ -102,14 +102,13 @@ subroutine dointerp_mu (nnit,nmumin_p,nmumax_p,nmumin,nmumax,fbefore,fafter)
   
   !     interpolation for the inner points in this region
   
-  !  do imu=nmu_first+1,nmu_last-iord2 !!!!!!!!!
-    do imu=nmu_first+1,nmu_last-iord2-1
+  do imu=nmu_first+1,nmu_last-iord2-1
      xmu=vmu(imu)            
      do i=1,nmumax_p
         if(vmu_p(i).ge.xmu) exit
      enddo
      imu_p=i
-
+     
      do k=1,kend
         call lpcoeffq(imu_p,k,coeffq)
         do i=1,kend
