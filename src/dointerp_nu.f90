@@ -11,17 +11,17 @@
 !
 !     Performs interpolations of functions in ni variable.
 !
-subroutine dointerp_nu (nmuall,fbefore,fafter)
+subroutine dointerp_nu (nmuall_p,nmuall,fbefore,fafter)
   use params
   use discret
   use commons8
   use commons16
 
   implicit none
-  integer :: i,imu,ini_p,k,nmuall,nni_first,nni_last
+  integer :: i,imu,ini_p,k,nmuall_p,nmuall,nni_first,nni_last
 
-  real (PREC), dimension(nni_p,*) :: fbefore
-  real (PREC), dimension(nni,*) :: fafter
+  real (PREC), dimension(nni_p,nmuall_p) :: fbefore
+  real (PREC), dimension(nni,nmuall) :: fafter
   real (PREC16) xni
   real (PREC16), dimension(kend) :: coeffq
   real (PREC16), dimension(kend,kend) :: coeffq2

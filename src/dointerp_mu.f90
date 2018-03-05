@@ -25,8 +25,10 @@ subroutine dointerp_mu (nnit,nmumin_p,nmumax_p,nmumin,nmumax,fbefore,fafter)
   real (PREC16) xmu
   real (PREC16), dimension(kend) :: coeffq
   real (PREC16), dimension(kend,kend) :: coeffq2
-  real (PREC), dimension(nnit,*) :: fbefore,fafter
-  real (PREC16), external ::  vpoly1q  
+  real (PREC), dimension(nnit,nmumax_p) :: fbefore
+  real (PREC), dimension(nnit,nmumax) :: fafter  
+  real (PREC16), external ::  vpoly1q
+
   rerror=2
   idebug1=0
   idebug2=0
@@ -100,7 +102,8 @@ subroutine dointerp_mu (nnit,nmumin_p,nmumax_p,nmumin,nmumax,fbefore,fafter)
   
   !     interpolation for the inner points in this region
   
-  do imu=nmu_first+1,nmu_last-iord2
+  !  do imu=nmu_first+1,nmu_last-iord2 !!!!!!!!!
+    do imu=nmu_first+1,nmu_last-iord2-1
      xmu=vmu(imu)            
      do i=1,nmumax_p
         if(vmu_p(i).ge.xmu) exit

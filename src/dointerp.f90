@@ -23,8 +23,8 @@ subroutine dointerp (ic,nmuall_p,nmuall,fbefore,fafter)
   implicit none
   integer :: i,ic,im,imu,imu_bext,in,nall,nall_p,nstart,nstart_p,nmuall,nmuall_p
 
-  real (PREC), dimension(nni_p,*)           ::  fbefore
-  real (PREC), dimension(nni,*)             ::  fafter
+  real (PREC), dimension(nni_p,nmuall_p)           ::  fbefore
+  real (PREC), dimension(nni,nmuall)             ::  fafter
   real (PREC), dimension(:,:), allocatable  ::  fmiddle
   real (PREC) :: gtol
 
@@ -85,7 +85,7 @@ subroutine dointerp (ic,nmuall_p,nmuall,fbefore,fafter)
      if (usemiddle) then
         call dointerp_mu (nni_p,nstart_p,nall_p,nstart,nall,fbefore,fmiddle) 
      else
-        call dointerp_mu (nni_p,nstart_p,nall_p,nstart,nall,fbefore,fafter) 
+        call dointerp_mu (nni,nstart_p,nall_p,nstart,nall,fbefore,fafter) 
      end if
 
      ! Extrapolation (needed when R_infy is being increased seems to
@@ -149,9 +149,9 @@ subroutine dointerp (ic,nmuall_p,nmuall,fbefore,fafter)
         stop "invalid argument ic"
      end if
      if(usemiddle) then
-        call dointerp_nu (nmuall,fmiddle,fafter)
+        call dointerp_nu (nmuall_p,nmuall,fmiddle,fafter)
      else
-        call dointerp_nu (nmuall_p,fbefore,fafter)
+        call dointerp_nu (nmuall_p,nmuall_p,fbefore,fafter)
      end if
   end if
 
