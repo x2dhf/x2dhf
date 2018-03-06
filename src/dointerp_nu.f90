@@ -27,72 +27,19 @@ subroutine dointerp_nu (nmuall,fbefore,fafter)
   real (PREC16), dimension(kend,kend) :: coeffq2
   real (PREC16), external ::  vpoly1q
 
-  ! interpolation for the first iord points in ni variable
-  do nni_first=1,nni
-     if(vni(nni_first).ge.vni_p(iord)) exit
-  enddo
-
-  do k=1,kend
-     call lpcoeffq(iord+1,k,coeffq)
-     do i=1,kend
-        coeffq2(i,k)=coeffq(i)
-     enddo
-  enddo
-
-  do ini=1,nni_first
+  do ini=1,nni
      xni=vni(ini)
-     do imu=1,nmuall
-        fafter(ini,imu)=0.0_PREC
-        do k=1,kend
-           fafter(ini,imu)=fafter(ini,imu)+fbefore(k,imu)*vpoly1q(xni,coeffq2(1,k))
-        enddo
-        if (ini.eq.1.and.(imu.eq.1.or.imu.eq.nmuall)) then
-           fafter(ini,imu)=fbefore(ini,imu)
-        endif
-     enddo
-  enddo
-
-  !  Interpolation for the last iord points in ni variable.
-  !  Determine the location of the tail region in the new grid
-
-  do nni_last=1,nni
-     if(vni(nni_last).ge.vni_p(nni_p-iord+1)) exit
-  enddo
-  if (nni_last.gt.nni) nni_last=nni
-
-  do k=1,kend
-     call lpcoeffq(nni_p-iord,k,coeffq)
-     do i=1,kend
-        coeffq2(i,k)=coeffq(i)
-     enddo
-  enddo
-
-  do ini=nni_last-iord+1,nni
-     xni=vni(ini)
-     do imu=1,nmuall
-        fafter(ini,imu)=0.0_PREC
-        do k=1,kend
-           fafter(ini,imu)=fafter(ini,imu)+fbefore(nni_p-iord+k,imu)*vpoly1q(xni,coeffq2(1,k))
-        enddo
-        if (ini.eq.nni.and.(imu.eq.1.or.imu.eq.nmuall)) then
-           fafter(nni,imu)=fbefore(nni_p,imu)
-        endif
-     enddo
-  enddo
-
-  !     interpolation for the inner points in this region
-
-  do ini=nni_first+1,nni_last-iord
-     xni=vni(ini)
-     do i=1,nni_p
-        if(vni_p(i).ge.xni) exit
+     do ini_p=1,nni_p-1
+        if(vni_p(ini_p).ge.xni) exit
      enddo
 
-     if (i.gt.nni_p) then
-        ini_p=nni_p
-     else
-        ini_p=i
-     endif
+     ! Handle case at beginning or end of array
+     if(ini_p .lt. iord2+1) then
+	ini_p=iord2+1
+     end if
+     if(ini_p .gt. nni_p-iord2) then
+        ini_p=nni_p-iord2
+     end if
 
      do k=1,kend
         call lpcoeffq(ini_p,k,coeffq)
@@ -104,7 +51,7 @@ subroutine dointerp_nu (nmuall,fbefore,fafter)
      do imu=1,nmuall
         fafter(ini,imu)=0.0_PREC
         do k=1,kend
-           fafter(ini,imu)=fafter(ini,imu)+fbefore(ini_p-iord-1+k,imu)*vpoly1q(xni,coeffq2(1,k))
+           fafter(ini,imu)=fafter(ini,imu)+fbefore(ini_p-iord2-1+k,imu)*vpoly1q(xni,coeffq2(1,k))
         enddo
      enddo
   enddo

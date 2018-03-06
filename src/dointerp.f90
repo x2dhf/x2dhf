@@ -23,8 +23,8 @@ subroutine dointerp (ic,nmuall_p,nmuall,fbefore,fafter)
   implicit none
   integer :: i,ic,im,imu,imu_bext,in,nmuall,nmuall_p
 
-  real (PREC), dimension(nni_p,*)           ::  fbefore
-  real (PREC), dimension(nni,*)             ::  fafter
+  real (PREC), dimension(nni_p,nmuall_p)    ::  fbefore
+  real (PREC), dimension(nni,nmuall)        ::  fafter
   real (PREC), dimension(:,:), allocatable  ::  fmiddle
   real (PREC) :: gtol
 
@@ -46,10 +46,23 @@ subroutine dointerp (ic,nmuall_p,nmuall,fbefore,fafter)
   ! For nu, we only do interpolation if the size of the nu grid changes.
   nuinterp=(nuchange)
 
+  ! Initialize memory
+  do in=1,nni
+     do im=1,nmuall
+        fafter(in,im)=0.0_PREC
+     end do
+  end do
+
   ! Allocate helper if necessary
   if(muinterp .and. nuinterp) then
      usemiddle = .true.
      allocate(fmiddle(nni_p,nmuall))
+     ! Initialize memory
+     do in=1,nni_p
+        do im=1,nmuall
+           fmiddle(in,im)=0.0_PREC
+        end do
+     end do
   else
      usemiddle = .false.
   end if
