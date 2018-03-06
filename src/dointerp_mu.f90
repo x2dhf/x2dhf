@@ -33,73 +33,19 @@ subroutine dointerp_mu (nnit,nmuall_p,nmuall,fbefore,fafter)
   idebug2=0
   idebug3=0
 
-  !     interpolation for the first iord points in mu variable
-  do nmu_first=1,nmuall-1
-     if(vmu(nmu_first).ge.vmu_p(iord2)) exit
-  enddo
-
-  do k=1,kend
-     call lpcoeffq(iord2+1,k,coeffq)
-     do i=1,kend
-        coeffq2(i,k)=coeffq(i)
-     enddo
-
-  enddo
-  do imu=1,nmu_first
-     xmu=vmu(imu)
-     do ini=1,nnit
-        fafter(ini,imu)=0.0_PREC
-        do k=1,kend
-           fafter(ini,imu)=fafter(ini,imu)+fbefore(ini,k)*vpoly1q(xmu,coeffq2(1,k))
-        enddo
-        if (idebug1.eq.1) then
-           if (abs(fafter(ini,imu)-fbefore(ini,3)).gt.abs(fbefore(ini,3))*rerror) then
-              write(*,*) 'first'
-              write(*,'(2i5,e15.3,4x,5e15.3)') ini,imu,fafter(ini,imu),(fbefore(ini,k),k=1,kend)
-           endif
-        endif
-
-     enddo
-  enddo
-
-  !     Interpolation for the last iord points in mu variable.
-  !     Determine the location of the tail region in the new grid
-
-  do nmu_last=1,nmuall-1
-     if(vmu(nmu_last).ge.vmu_p(nmuall_p)) exit
-  enddo
-
-  do k=1,kend
-     call lpcoeffq(nmuall_p-iord2,k,coeffq)
-     do i=1,kend
-        coeffq2(i,k)=coeffq(i)
-     enddo
-  enddo
-  do imu=nmu_last-iord2+1,nmuall
-     xmu=vmu(imu)
-     do ini=1,nnit
-        fafter(ini,imu)=0.0_PREC
-        do k=1,kend
-           fafter(ini,imu)=fafter(ini,imu)+fbefore(ini,nmuall_p-iord+k)*vpoly1q(xmu,coeffq2(1,k))
-        enddo
-        if (idebug2.eq.1) then
-           if (abs(fafter(ini,imu)-fbefore(ini,nmuall_p-iord2+2)).gt. &
-                abs(fbefore(ini,nmuall_p-iord+2))*rerror) then
-              write(*,*) 'last'
-              write(*,'(2i5,e15.3,4x,5e15.3)') ini,imu,fafter(ini,imu), &
-                   (fbefore(ini,nmuall_p-iord+k),k=1,kend)
-           endif
-        endif
-     enddo
-  enddo
-
-  !     interpolation for the inner points in this region
-
-  do imu=nmu_first+1,nmu_last-iord2-1
+  do imu=1,nmuall
      xmu=vmu(imu)
      do imu_p=1,nmuall_p-1
         if(vmu_p(imu_p).ge.xmu) exit
-     enddo
+     end do
+
+     ! Handle case at beginning or end of array
+     if(imu_p .lt. iord2+1) then
+        imu_p=iord2+1
+     end if
+     if(imu_p .gt. nmuall_p-iord2) then
+        imu_p=nmuall_p-iord2
+     end if
 
      do k=1,kend
         call lpcoeffq(imu_p,k,coeffq)
@@ -116,7 +62,6 @@ subroutine dointerp_mu (nnit,nmuall_p,nmuall,fbefore,fafter)
         if (idebug3.eq.1) then
            if (abs(fafter(ini,imu)-fbefore(ini,imu_p-iord2+1)).gt. &
                 abs(fbefore(ini,imu_p-iord2+1))*rerror) then
-              write(*,*) 'inside'
               write(*,'(2i5,e15.3,4x,5e15.3,2i5)') ini,imu,fafter(ini,imu), &
                    (fbefore(ini,imu_p-iord2-1+k),k=1,kend),nmu_first,nmu_last
            endif
