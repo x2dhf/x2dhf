@@ -33,7 +33,7 @@ subroutine dointerp_mu (nnit,nmuall_p,nmuall,fbefore,fafter)
   idebug2=0
   idebug3=0
 
-  !     interpolation for the first iord2 points in mu variable
+  !     interpolation for the first iord points in mu variable
   do nmu_first=1,nmuall-1
      if(vmu(nmu_first).ge.vmu_p(iord2)) exit
   enddo
@@ -62,7 +62,7 @@ subroutine dointerp_mu (nnit,nmuall_p,nmuall,fbefore,fafter)
      enddo
   enddo
 
-  !     Interpolation for the last iord2 points in mu variable.
+  !     Interpolation for the last iord points in mu variable.
   !     Determine the location of the tail region in the new grid
 
   do nmu_last=1,nmuall-1
@@ -80,14 +80,14 @@ subroutine dointerp_mu (nnit,nmuall_p,nmuall,fbefore,fafter)
      do ini=1,nnit
         fafter(ini,imu)=0.0_PREC
         do k=1,kend
-           fafter(ini,imu)=fafter(ini,imu)+fbefore(ini,nmuall_p-iord2+k)*vpoly1q(xmu,coeffq2(1,k))
+           fafter(ini,imu)=fafter(ini,imu)+fbefore(ini,nmuall_p-iord+k)*vpoly1q(xmu,coeffq2(1,k))
         enddo
         if (idebug2.eq.1) then
            if (abs(fafter(ini,imu)-fbefore(ini,nmuall_p-iord2+2)).gt. &
-                abs(fbefore(ini,nmuall_p-iord2+2))*rerror) then
+                abs(fbefore(ini,nmuall_p-iord+2))*rerror) then
               write(*,*) 'last'
               write(*,'(2i5,e15.3,4x,5e15.3)') ini,imu,fafter(ini,imu), &
-                   (fbefore(ini,nmuall_p-iord2+k),k=1,kend)
+                   (fbefore(ini,nmuall_p-iord+k),k=1,kend)
            endif
         endif
      enddo
@@ -111,7 +111,6 @@ subroutine dointerp_mu (nnit,nmuall_p,nmuall,fbefore,fafter)
      do ini=1,nnit
         fafter(ini,imu)=0.0_PREC
         do k=1,kend
-           ! Array overflow in the second index of fbefore:
            fafter(ini,imu)=fafter(ini,imu)+fbefore(ini,imu_p-iord2-1+k)*vpoly1q(xmu,coeffq2(1,k))
         enddo
         if (idebug3.eq.1) then

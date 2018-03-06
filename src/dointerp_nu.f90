@@ -71,7 +71,7 @@ subroutine dointerp_nu (nmuall,fbefore,fafter)
      do imu=1,nmuall
         fafter(ini,imu)=0.0_PREC
         do k=1,kend
-           fafter(ini,imu)=fafter(ini,imu)+fbefore(nni_p-iord2+k,imu)*vpoly1q(xni,coeffq2(1,k))
+           fafter(ini,imu)=fafter(ini,imu)+fbefore(nni_p-iord+k,imu)*vpoly1q(xni,coeffq2(1,k))
         enddo
         if (ini.eq.nni.and.(imu.eq.1.or.imu.eq.nmuall)) then
            fafter(nni,imu)=fbefore(nni_p,imu)
