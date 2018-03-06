@@ -289,14 +289,19 @@ contains
     if(ncen==3 .and. iZ(2).ne.0) then
        stop 'Bond-center atom must be a dummy!'
     end if
+
     ! Check charges are correct
     if(abs(z1-iZ(1)).gt.precis) then
+       write (*,*) '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
+       write (*,*) "Gaussian calculation is inconsistent with x2dhf for atom on the left"
        write (*,'(A,F4.1,A,I3)') 'z1=',z1,', iZ(1)=',iZ(1)
-       stop "Gaussian calculation is inconsistent with x2dhf for atom on the left"
+       write (*,*) '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
     end if
     if(abs(z2-iZ(ncen)).gt.precis) then
+       write (*,*) '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
+       write (*,*) "Gaussian calculation is inconsistent with x2dhf for atom on the right"
        write (*,'(A,F4.1,A,I1,A,I3)') 'z2=',z2,', iZ(',ncen,')=',iZ(ncen)
-       stop "Gaussian calculation is inconsistent with x2dhf for atom on the right"
+       write (*,*) '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
     end if
 
     ! Check bond length is correct
