@@ -3,8 +3,8 @@
 # Fortran compiler to use
 export FC=gfortran
 # Compiler flags to use
-#export FFLAGS="-O2 -Wall"
-export FFLAGS=" -O -g  -fbounds-check"
+export FFLAGS="-O2 -Wall"
+#export FFLAGS=" -O -g  -fbounds-check"
 
 # Installation directory
 export target=$(pwd) # this installs x2dhf under bin/ in the present directory

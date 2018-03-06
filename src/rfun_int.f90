@@ -128,7 +128,7 @@ subroutine rfun_int (norb_p,cw_orb,cw_coul,cw_exch,wk8,wk16,cw_sctch)
      endif
 
      call dointerp (ica,nmu_p(1),nmu(1),fbefore,cw_coul(i2b(i+ioffset)) )
-
+     
      if (ierr.ne.0) then
         write(iout6,*) 'error detected when reading coulomb potential',i
         stop 'rfun_int'

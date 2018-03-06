@@ -23,9 +23,9 @@ subroutine dointerp (ic,nmuall_p,nmuall,fbefore,fafter)
   implicit none
   integer :: i,ic,im,imu,imu_bext,in,nall,nall_p,nstart,nstart_p,nmuall,nmuall_p
 
-  real (PREC), dimension(nni_p,nmuall_p)           ::  fbefore
-  real (PREC), dimension(nni,nmuall)             ::  fafter
-  real (PREC), dimension(:,:), allocatable  ::  fmiddle
+  real (PREC), dimension(nni_p,nmuall_p) ::  fbefore
+  real (PREC), dimension(nni,nmuall) ::  fafter
+  real (PREC), dimension(:,:), allocatable ::  fmiddle
   real (PREC) :: gtol
 
   logical :: muchange, nuchange, gridchange, rinfchange
@@ -83,9 +83,9 @@ subroutine dointerp (ic,nmuall_p,nmuall,fbefore,fafter)
      nall_p=nmuall_p
      nall  =nmuall
      if (usemiddle) then
-        call dointerp_mu (nni_p,nstart_p,nall_p,nstart,nall,fbefore,fmiddle) 
+        call dointerp_mu (nni_p,nall_p,nall,fbefore,fmiddle) 
      else
-        call dointerp_mu (nni,nstart_p,nall_p,nstart,nall,fbefore,fafter) 
+        call dointerp_mu (nni,nall_p,nall,fbefore,fafter) 
      end if
 
      ! Extrapolation (needed when R_infy is being increased seems to
