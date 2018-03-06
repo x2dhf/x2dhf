@@ -5,15 +5,17 @@ subroutine lagrpolq (dc1,dc2)
   use discret
   use commons8
   use commons16
+  use vpolyq_m
+  use lpcoeffq_m
 
   implicit none
 
   integer :: i,ib,ie,ig,imup,k,mup
-  real(PREC16) :: vpolyq
 
   real (PREC16), dimension(kbeg:kend) :: coeffq,coeff1,coeff2
   real (PREC), dimension(kbeg:kend,7,kbeg:kend) :: dc1,dc2
-
+  real(PREC16), dimension(maxmu) :: vmuq
+  
 !      derivative coeff. from 8th-order Lagrange interpolation formula
 !      are stored in dc[1-2](ngbound,imu,k), where ngbound is the number of
 !      the grid boundaries (1 for 1-2, 2 for 2-3 etc), imu is one of the 7
@@ -58,10 +60,10 @@ subroutine lagrpolq (dc1,dc2)
      do mup=ib,ie
         imup=imup+1
         do k=kbeg,kend
-           call lpcoeffq(mup,k,coeffq)
+           call lpcoeffq(mup,k,coeffq,vmuq)
            call lpderq(coeffq,coeff1,coeff2)
-           dc1(ig,imup,k)=vpolyq(mup,coeff1)
-           dc2(ig,imup,k)=vpolyq(mup,coeff2)
+           dc1(ig,imup,k)=vpolyq(mup,coeff1,vmuq)
+           dc2(ig,imup,k)=vpolyq(mup,coeff2,vmuq)
         enddo
      enddo
   enddo

@@ -4,7 +4,7 @@
 !     This function uses the Horner scheme to calculate value of the polynomial
 !     stored in array a at a particular point
 
-function vpolyq (mup,a)
+function vpolyq (mup,a,vmuq)
   use params
   use commons16
 
@@ -13,6 +13,7 @@ function vpolyq (mup,a)
   real (PREC16) :: vpolyq
   real (PREC16) :: x
   real (PREC16), dimension(kend) :: a
+  real (PREC16), dimension(maxmu) :: vmuq
 
   x=vmuq(mup)
   vpolyq=0.0_PREC16

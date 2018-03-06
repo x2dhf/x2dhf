@@ -11,116 +11,122 @@
 !
 !     Performs interpolations of functions in mu variable.
 !
-subroutine dointerp_mu (nnit,nmuall_p,nmuall,fbefore,fafter)
-  use params
-  use discret
-  use commons8
-  use commons16
-
+module dointerp_mu_m
   implicit none
-  integer :: i,idebug1,idebug2,idebug3,imu,imu_p,k, &
-       nmu_first,nmu_last,nnit,nmuall_p,nmuall
-  real (PREC) :: rerror
+contains
+  subroutine dointerp_mu (nnit,nmuall_p,nmuall,fbefore,fafter,vmuq)
+    use params
+    use discret
+    use commons8
+    use commons16
+    use lpcoeffq_m
+    use vpoly1q_m
 
-  real (PREC16) xmu
-  real (PREC16), dimension(kend) :: coeffq
-  real (PREC16), dimension(kend,kend) :: coeffq2
-  real (PREC), dimension(nnit,nmuall_p) :: fbefore
-  real (PREC), dimension(nnit,nmuall) :: fafter
-  real (PREC16), external ::  vpoly1q
-  rerror=2
-  idebug1=0
-  idebug2=0
-  idebug3=0
+    implicit none
+    integer :: i,idebug1,idebug2,idebug3,imu,imu_p,k, &
+         nmu_first,nmu_last,nnit,nmuall_p,nmuall
+    real (PREC) :: rerror
 
-  !     interpolation for the first iord points in mu variable
-  do nmu_first=1,nmuall-1
-     if(vmu(nmu_first).ge.vmu_p(iord2)) exit
-  enddo
+    real (PREC16) xmu
+    real (PREC16), dimension(kend) :: coeffq
+    real (PREC16), dimension(kend,kend) :: coeffq2
+    real (PREC), dimension(nnit,nmuall_p) :: fbefore
+    real (PREC), dimension(nnit,nmuall) :: fafter
+    real (PREC16), dimension(maxmu) :: vmuq
+    rerror=2
+    idebug1=0
+    idebug2=0
+    idebug3=0
 
-  do k=1,kend
-     call lpcoeffq(iord2+1,k,coeffq)
-     do i=1,kend
-        coeffq2(i,k)=coeffq(i)
-     enddo
+    !     interpolation for the first iord points in mu variable
+    do nmu_first=1,nmuall-1
+       if(vmu(nmu_first).ge.vmu_p(iord2)) exit
+    enddo
 
-  enddo
-  do imu=1,nmu_first
-     xmu=vmu(imu)
-     do ini=1,nnit
-        fafter(ini,imu)=0.0_PREC
-        do k=1,kend
-           fafter(ini,imu)=fafter(ini,imu)+fbefore(ini,k)*vpoly1q(xmu,coeffq2(1,k))
-        enddo
-        if (idebug1.eq.1) then
-           if (abs(fafter(ini,imu)-fbefore(ini,3)).gt.abs(fbefore(ini,3))*rerror) then
-              write(*,*) 'first'
-              write(*,'(2i5,e15.3,4x,5e15.3)') ini,imu,fafter(ini,imu),(fbefore(ini,k),k=1,kend)
-           endif
-        endif
+    do k=1,kend
+       call lpcoeffq(iord2+1,k,coeffq,vmuq)
+       do i=1,kend
+          coeffq2(i,k)=coeffq(i)
+       enddo
 
-     enddo
-  enddo
+    enddo
+    do imu=1,nmu_first
+       xmu=vmu(imu)
+       do ini=1,nnit
+          fafter(ini,imu)=0.0_PREC
+          do k=1,kend
+             fafter(ini,imu)=fafter(ini,imu)+fbefore(ini,k)*vpoly1q(xmu,coeffq2(1,k))
+          enddo
+          if (idebug1.eq.1) then
+             if (abs(fafter(ini,imu)-fbefore(ini,3)).gt.abs(fbefore(ini,3))*rerror) then
+                write(*,*) 'first'
+                write(*,'(2i5,e15.3,4x,5e15.3)') ini,imu,fafter(ini,imu),(fbefore(ini,k),k=1,kend)
+             endif
+          endif
 
-  !     Interpolation for the last iord points in mu variable.
-  !     Determine the location of the tail region in the new grid
+       enddo
+    enddo
 
-  do nmu_last=1,nmuall-1
-     if(vmu(nmu_last).ge.vmu_p(nmuall_p)) exit
-  enddo
+    !     Interpolation for the last iord points in mu variable.
+    !     Determine the location of the tail region in the new grid
 
-  do k=1,kend
-     call lpcoeffq(nmuall_p-iord2,k,coeffq)
-     do i=1,kend
-        coeffq2(i,k)=coeffq(i)
-     enddo
-  enddo
-  do imu=nmu_last-iord2+1,nmuall
-     xmu=vmu(imu)
-     do ini=1,nnit
-        fafter(ini,imu)=0.0_PREC
-        do k=1,kend
-           fafter(ini,imu)=fafter(ini,imu)+fbefore(ini,nmuall_p-iord+k)*vpoly1q(xmu,coeffq2(1,k))
-        enddo
-        if (idebug2.eq.1) then
-           if (abs(fafter(ini,imu)-fbefore(ini,nmuall_p-iord2+2)).gt. &
-                abs(fbefore(ini,nmuall_p-iord+2))*rerror) then
-              write(*,*) 'last'
-              write(*,'(2i5,e15.3,4x,5e15.3)') ini,imu,fafter(ini,imu), &
-                   (fbefore(ini,nmuall_p-iord+k),k=1,kend)
-           endif
-        endif
-     enddo
-  enddo
+    do nmu_last=1,nmuall-1
+       if(vmu(nmu_last).ge.vmu_p(nmuall_p)) exit
+    enddo
 
-  !     interpolation for the inner points in this region
+    do k=1,kend
+       call lpcoeffq(nmuall_p-iord2,k,coeffq,vmuq)
+       do i=1,kend
+          coeffq2(i,k)=coeffq(i)
+       enddo
+    enddo
+    do imu=nmu_last-iord2+1,nmuall
+       xmu=vmu(imu)
+       do ini=1,nnit
+          fafter(ini,imu)=0.0_PREC
+          do k=1,kend
+             fafter(ini,imu)=fafter(ini,imu)+fbefore(ini,nmuall_p-iord+k)*vpoly1q(xmu,coeffq2(1,k))
+          enddo
+          if (idebug2.eq.1) then
+             if (abs(fafter(ini,imu)-fbefore(ini,nmuall_p-iord2+2)).gt. &
+                  abs(fbefore(ini,nmuall_p-iord+2))*rerror) then
+                write(*,*) 'last'
+                write(*,'(2i5,e15.3,4x,5e15.3)') ini,imu,fafter(ini,imu), &
+                     (fbefore(ini,nmuall_p-iord+k),k=1,kend)
+             endif
+          endif
+       enddo
+    enddo
 
-  do imu=nmu_first+1,nmu_last-iord2-1
-     xmu=vmu(imu)
-     do imu_p=1,nmuall_p-1
-        if(vmu_p(imu_p).ge.xmu) exit
-     enddo
+    !     interpolation for the inner points in this region
 
-     do k=1,kend
-        call lpcoeffq(imu_p,k,coeffq)
-        do i=1,kend
-           coeffq2(i,k)=coeffq(i)
-        enddo
-     enddo
+    do imu=nmu_first+1,nmu_last-iord2-1
+       xmu=vmu(imu)
+       do imu_p=1,nmuall_p-1
+          if(vmu_p(imu_p).ge.xmu) exit
+       enddo
 
-     do ini=1,nnit
-        fafter(ini,imu)=0.0_PREC
-        do k=1,kend
-           fafter(ini,imu)=fafter(ini,imu)+fbefore(ini,imu_p-iord2-1+k)*vpoly1q(xmu,coeffq2(1,k))
-        enddo
-        if (idebug3.eq.1) then
-           if (abs(fafter(ini,imu)-fbefore(ini,imu_p-iord2+1)).gt. &
-                abs(fbefore(ini,imu_p-iord2+1))*rerror) then
-              write(*,*) 'inside'
-              write(*,'(2i5,e15.3,4x,5e15.3,2i5)') ini,imu,fafter(ini,imu), &
-                   (fbefore(ini,imu_p-iord2-1+k),k=1,kend),nmu_first,nmu_last
-           endif
-        endif
-     enddo
-  enddo
-end subroutine dointerp_mu
+       do k=1,kend
+          call lpcoeffq(imu_p,k,coeffq,vmuq)
+          do i=1,kend
+             coeffq2(i,k)=coeffq(i)
+          enddo
+       enddo
+
+       do ini=1,nnit
+          fafter(ini,imu)=0.0_PREC
+          do k=1,kend
+             fafter(ini,imu)=fafter(ini,imu)+fbefore(ini,imu_p-iord2-1+k)*vpoly1q(xmu,coeffq2(1,k))
+          enddo
+          if (idebug3.eq.1) then
+             if (abs(fafter(ini,imu)-fbefore(ini,imu_p-iord2+1)).gt. &
+                  abs(fbefore(ini,imu_p-iord2+1))*rerror) then
+                write(*,*) 'inside'
+                write(*,'(2i5,e15.3,4x,5e15.3,2i5)') ini,imu,fafter(ini,imu), &
+                     (fbefore(ini,imu_p-iord2-1+k),k=1,kend),nmu_first,nmu_last
+             endif
+          endif
+       enddo
+    enddo
+  end subroutine dointerp_mu
+end module dointerp_mu_m

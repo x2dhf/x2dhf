@@ -19,6 +19,8 @@ subroutine dointerp (ic,nmuall_p,nmuall,fbefore,fafter)
   use discret
   use commons8
   use commons16
+  use dointerp_mu_m
+  use dointerp_nu_m
 
   implicit none
   integer :: i,ic,im,imu,imu_bext,in,nmuall,nmuall_p
@@ -27,6 +29,8 @@ subroutine dointerp (ic,nmuall_p,nmuall,fbefore,fafter)
   real (PREC), dimension(nni,nmuall)        ::  fafter
   real (PREC), dimension(:,:), allocatable  ::  fmiddle
   real (PREC) :: gtol
+
+  real (PREC16), dimension(maxmu)           ::  vmuq
 
   logical :: muchange, nuchange, gridchange, rinfchange
   logical :: muinterp, nuinterp, usemiddle
@@ -92,9 +96,9 @@ subroutine dointerp (ic,nmuall_p,nmuall,fbefore,fafter)
      end do
 
      if (usemiddle) then
-        call dointerp_mu (nni_p,nmuall_p,nmuall,fbefore,fmiddle)
+        call dointerp_mu (nni_p,nmuall_p,nmuall,fbefore,fmiddle,vmuq)
      else
-        call dointerp_mu (nni_p,nmuall_p,nmuall,fbefore,fafter)
+        call dointerp_mu (nni_p,nmuall_p,nmuall,fbefore,fafter,vmuq)
      end if
 
      ! Extrapolation (needed when R_infy is being increased seems to
@@ -154,9 +158,9 @@ subroutine dointerp (ic,nmuall_p,nmuall,fbefore,fafter)
      end do
 
      if(usemiddle) then
-        call dointerp_nu (nmuall_p,fmiddle,fafter)
+        call dointerp_nu (nmuall_p,fmiddle,fafter,vmuq)
      else
-        call dointerp_nu (nmuall_p,fbefore,fafter)
+        call dointerp_nu (nmuall_p,fbefore,fafter,vmuq)
      end if
   end if
 

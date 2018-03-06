@@ -17,12 +17,14 @@ subroutine interpolq
   use discret
   use commons8
   use commons16
+  use lpcoeffq_m
+  use vpoly1q_m
 
   implicit none
 
   integer :: i,imu,k,mup
   real (PREC) :: hmu1,hmu2,hmu3
-  real (PREC16) xmu,vpoly1q
+  real (PREC16) xmu
   real (PREC16), dimension(9) :: coeffq
 
 !
@@ -122,7 +124,9 @@ subroutine interpolq
 00090   continue
         iadint2(i)=mup-4
         do k=kbeg,kend
-           call lpcoeffq(mup,k,coeffq)
+           write (*,*) 'FIXME'
+           call abort
+           !call lpcoeffq(mup,k,coeffq)
            xmu=(vmu(iemu(1))+dble(i)*hmu1)
            cint2(k,i)=vpoly1q(xmu,coeffq)
         enddo
@@ -149,7 +153,9 @@ subroutine interpolq
 00100   continue
         iadint4(5-i)=mup-4
         do k=kbeg,kend
-           call lpcoeffq(mup,k,coeffq)
+           write (*,*) 'FIXME'
+           call abort
+           !call lpcoeffq(mup,k,coeffq)
            xmu=(vmu(iemu(1))-dble(i)*hmu2)
            !                reverse order of addressing columns, cf. fill4
            cint4(k,5-i)=vpoly1q(xmu,coeffq)
@@ -210,8 +216,10 @@ subroutine interpolq
         enddo
 00091   continue
         iadint2(i)=mup-4
-        do k=kbeg,kend
-           call lpcoeffq(mup,k,coeffq)
+        do k=kbeg,kend 
+           write (*,*) 'FIXME'
+           call abort
+!           call lpcoeffq(mup,k,coeffq)
            xmu=(vmu(iemu(1))+dble(i)*hmu1)
            cint2(k,i)=vpoly1q(xmu,coeffq)
         enddo
@@ -244,7 +252,9 @@ subroutine interpolq
 00101   continue
         iadint4(5-i)=mup-4
         do k=kbeg,kend
-           call lpcoeffq(mup,k,coeffq)
+           write (*,*) 'FIXME'
+           call abort
+!           call lpcoeffq(mup,k,coeffq)
            xmu=(vmu(iemu(2))-dble(i)*hmu3)
            !                  reverse order of addressing columns, cf. fill4
            cint4(k,5-i)=vpoly1q(xmu,coeffq)
@@ -270,7 +280,9 @@ subroutine interpolq
 00110   continue
         iadint3l(5-i)=mup-4
         do k=kbeg,kend
-           call lpcoeffq(mup,k,coeffq)
+           write (*,*) 'FIXME'
+           call abort
+!           call lpcoeffq(mup,k,coeffq)
            xmu=(vmu(iemu(1))-dble(i)*hmu2)
            !                  reverse order of addressing columns, cf. fill3
            cint3l(k,5-i)=vpoly1q(xmu,coeffq)
@@ -294,7 +306,9 @@ subroutine interpolq
 00120   continue
         iadint3r(i)=mup-4
         do k=kbeg,kend
-           call lpcoeffq(mup,k,coeffq)
+           write (*,*) 'FIXME'
+           call abort
+!           call lpcoeffq(mup,k,coeffq)
            xmu=(vmu(iemu(2))+dble(i)*hmu2)
            cint3r(k,i)=vpoly1q(xmu,coeffq)
         enddo
