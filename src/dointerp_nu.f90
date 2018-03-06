@@ -20,7 +20,7 @@ subroutine dointerp_nu (nmuall_p,nmuall,fbefore,fafter)
   implicit none
   integer :: i,imu,ini_p,k,nmuall_p,nmuall,nni_first,nni_last
 
-  real (PREC), dimension(nni_p,nmuall_p) :: fbefore
+  real (PREC), dimension(nni_p,nmuall) :: fbefore
   real (PREC), dimension(nni,nmuall) :: fafter
   real (PREC16) xni
   real (PREC16), dimension(kend) :: coeffq
