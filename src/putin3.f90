@@ -41,9 +41,7 @@ contains
     !   mu=2,...,4 from interpolation (coefficients from cint3l)
 
     do i=2,4
-       write (*,*) 'FIXME'
-       call abort
-       !call gemv (nni,n9,fun(1,iadint3l(i)),nni,cint3l(1,i),fint(1,i))
+       call gemv (nni,n9,fun(1,iadint3l(i)),cint3l(1,i),fint(1,i))
     enddo
 
     do i=2,4
@@ -56,9 +54,7 @@ contains
     !   mu=nmu+5....nmu+8 from interpolation (coefficients from cint3r)
 
     do i=1,4
-       write (*,*) 'FIXME'
-       call abort
-       !call gemv (nni,n9,fun(1,iadint3r(i)),nni,cint3r(1,i),fint(1,i))
+       call gemv (nni,n9,fun(1,iadint3r(i)),cint3r(1,i),fint(1,i))
     enddo
 
     do i=1,4

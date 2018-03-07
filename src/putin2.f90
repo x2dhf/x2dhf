@@ -40,9 +40,7 @@ contains
     !   mu=nmu+5....nmu+8 from interpolation (coefficients from cint2)
 
     do i=1,4
-       write (*,*) 'FIXME'
-       call abort
-       !call gemv (nni,n9,fun(1,iadint2(i)),nni,cint2(1,i),fint(1,i))
+       call gemv (nni,n9,fun(1,iadint2(i)),cint2(1,i),fint(1,i))
     enddo
 
     do i=1,4
