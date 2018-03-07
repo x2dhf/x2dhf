@@ -2,21 +2,24 @@
 !
 !     checks the Ci symmetry of a given orbital
 
-subroutine checkOrbSym (nmut,orb,ihsym)
-  use params
-  use discret
-
+module checkOrbSym_m
   implicit none
-  integer :: ihsym,imu,inu,nmut
-  real (PREC), dimension(nni,nmut) :: orb
+contains
+  subroutine checkOrbSym (nmut,orb,ihsym)
+    use params
+    use discret
 
-  imu=10
-  inu=2
-  if (orb(inu,imu)*orb(nni-inu+1,imu).gt.0.0_PREC) then
-     ihsym= 1
-  else
-     ihsym=-1
-  endif
+    implicit none
+    integer :: ihsym,imu,inu,nmut
+    real (PREC), dimension(nni,nmut) :: orb
 
-end subroutine checkOrbSym
+    imu=10
+    inu=2
+    if (orb(inu,imu)*orb(nni-inu+1,imu).gt.0.0_PREC) then
+       ihsym= 1
+    else
+       ihsym=-1
+    endif
 
+  end subroutine checkOrbSym
+end module checkOrbSym_m

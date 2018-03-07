@@ -12,17 +12,21 @@
 !
 !     Writes a to a disk file in a formatted form
 
-subroutine writea32f (iunit,ndim,a,ierr)
- use params
- use commons8
+module writea32f_m
+  implicit none
+contains
+  subroutine writea32f (iunit,ndim,a,ierr)
+    use params
+    use commons8
 
- implicit none
+    implicit none
 
-  integer :: ierr,iunit,ndim
-  real (PREC), dimension(ndim) :: a
-  write (iunit,formfp64,err=1000) a
-  ierr=0
-  return
+    integer :: ierr,iunit,ndim
+    real (PREC), dimension(ndim) :: a
+    write (iunit,formfp64,err=1000) a
+    ierr=0
+    return
 
 1000 ierr=1
-end subroutine writea32f
+  end subroutine writea32f
+end module writea32f_m

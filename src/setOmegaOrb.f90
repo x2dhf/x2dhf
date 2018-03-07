@@ -6,23 +6,23 @@
 !        a = 1.26598          +/- 0.04347      (3.433%)
 !        b = -0.528979        +/- 0.08577      (16.21%)
 
-function setOmegaOrb()
-  use params
-  use discret
-  use commons8
-
+module setOmegaOrb_m
   implicit none
-  real (PREC) :: setOmegaOrb
-  real (PREC) :: a,b,rho
+contains
+  function setOmegaOrb()
+    use params
+    use discret
+    use commons8
 
-  parameter (a=1.073_PREC,b=-0.1456_PREC)
-!      parameter (a=1.266,b=-0.5290)
+    implicit none
+    real (PREC) :: setOmegaOrb
+    real (PREC) :: a,b,rho
 
-  rho=0.5_PREC*(cos(pii/dble(mxnmu))+cos(pii/dble(nni)))
-  setOmegaOrb=2.0_PREC*a/(1.0_PREC+sqrt(1.0_PREC-rho*rho))+b
+    parameter (a=1.073_PREC,b=-0.1456_PREC)
+    !      parameter (a=1.266,b=-0.5290)
 
-end function setOmegaOrb
+    rho=0.5_PREC*(cos(pii/dble(mxnmu))+cos(pii/dble(nni)))
+    setOmegaOrb=2.0_PREC*a/(1.0_PREC+sqrt(1.0_PREC-rho*rho))+b
 
-
-
-
+  end function setOmegaOrb
+end module setOmegaOrb_m

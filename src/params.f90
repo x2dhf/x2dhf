@@ -28,16 +28,60 @@ module params
   data formint /'(10i15)  '/
   data formfp64,formfp128/'(5e25.16) ','(5e41.32) '/
 
-  integer :: izero,ione,itwo,ithree,ifour
-  data izero,ione,itwo,ithree,ifour /0,1,2,3,4/
+  integer, parameter :: izero=0
+  integer, parameter :: ione=1
+  integer, parameter :: itwo=2
+  integer, parameter :: ithree=3
+  integer, parameter :: ifour=4
 
-  integer :: iinp5,iinp11,iinp12,iinp13,iinp14,iout6,iout21,iout22,iout23,iout24
-  data iinp5/5/,iout6/6/,iinp11/11/,iinp12/12/,iinp13/13/,iinp14/14/,iout21/21/,iout22/22/,iout23/23/,iout24/24/
+  integer*8, parameter :: i8zero=0
+  integer*8, parameter :: i8one=1
+  integer*8, parameter :: i8two=2
+  integer*8, parameter :: i8three=3
+  integer*8, parameter :: i8four=4
 
-  real (PREC) :: zero,half,tenth,one,two,three,four,five,six,seven,eight,ten,pii,precis
-  data zero,half,tenth,one,two,three,four,five,six,seven,eight,ten&
-       /0.0_PREC,0.50_PREC,0.10_PREC,1.0_PREC,2.0_PREC,3.0_PREC,4.0_PREC,5.0_PREC,6.0_PREC, &
-       7.0_PREC,8.0_PREC,10.0_PREC/
+  integer, parameter :: iinp5=5
+  integer, parameter :: iinp11=11
+  integer, parameter :: iinp12=12
+  integer :: iinp13=13   ! This can be reset in the code(!)
+  integer, parameter :: iinp14=14
+
+  integer*8, parameter :: i8inp5=5
+  integer*8, parameter :: i8inp11=11
+  integer*8, parameter :: i8inp12=12
+  integer*8 :: i8inp13=13 ! This can be reset in the code(!)
+  integer*8, parameter :: i8inp14=14
+
+  integer, parameter :: iout6=6
+  integer, parameter :: iout21=21
+  integer, parameter :: iout22=22
+  integer, parameter :: iout23=23
+  integer, parameter :: iout24=24
+
+  integer*8, parameter :: i8out6=6
+  integer*8, parameter :: i8out21=21
+  integer*8, parameter :: i8out22=22
+  integer*8, parameter :: i8out23=23
+  integer*8, parameter :: i8out24=24
+
+  real (PREC), parameter :: zero=0.0_PREC
+  real (PREC), parameter :: half=0.5_PREC
+  real (PREC), parameter :: one=1.0_PREC
+  real (PREC), parameter :: two=2.0_PREC
+  real (PREC), parameter :: three=3.0_PREC
+  real (PREC), parameter :: four=4.0_PREC
+  real (PREC), parameter :: five=5.0_PREC
+  real (PREC), parameter :: six=6.0_PREC
+  real (PREC), parameter :: seven=7.0_PREC
+  real (PREC), parameter :: eight=8.0_PREC
+  real (PREC), parameter :: nine=9.0_PREC
+  real (PREC), parameter :: ten=10.0_PREC
+
+  ! 100 digits from Maple
+  real (PREC), parameter :: pii=3.141592653589793238462643383279502884197169399375105820974944592307816406286208998628034825342117068
+
+  ! Numerical precision
+  real (PREC) :: precis
 
    integer :: incrni,incrmu,maxunit,lengthfp,lengthint,lengthintin,lengthfpin,iprint16,idat,&
        iord_nu_orb,iord_nu_coul,iord_nu_exch,iord_mu_orb,iord_mu_coul,iord_mu_exch,&

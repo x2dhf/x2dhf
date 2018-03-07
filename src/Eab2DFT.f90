@@ -13,79 +13,85 @@
 !     Evaluates the off-diagonal Lagrange multipliers in case of a local
 !     exchange approximation
 
-subroutine Eab2DFT(iorb1,iorb2,psi,pot,excp,wgt2,wk0,wk1)
-  use params
-  use discret
-  use scf
-  use commons8
-
+module Eab2DFT_m
   implicit none
+contains
+  subroutine Eab2DFT(iorb1,iorb2,psi,pot,excp,wgt2,wk0,wk1)
+    use params
+    use discret
+    use scf
+    use commons8
+    use util
 
-! ?????????????????
-  integer :: length
-  integer :: i,iborb,ibpot,iorb1,iorb2,iborb1,isiorb1,iborb2,iorb,ipc1,ipc2,ipc12,ipc21,isiorb2,isipot,ngrid,nmut
-  real (PREC) :: engo1,engo2,engoprv1,engoprv2,oc,wtwoel
-  real (PREC), dimension(*) :: psi,pot,excp,wgt2,wk0,wk1
-  real (PREC), external :: dot
+    use blas_m
 
-  if (mgx(6,iorb1).ne.mgx(6,iorb2)) return
-  if (ige(iorb1).ne.ige(iorb2)) return
+    implicit none
 
-! FIXME
-  ipc12=iorb1+(iorb2-1)*norb
-  ipc21=iorb2+(iorb1-1)*norb
-  engo(ipc12)=zero
+    ! ?????????????????
+    integer :: length
+    integer :: i,iborb,ibpot,iorb1,iorb2,iborb1,isiorb1,iborb2,iorb,ipc1,ipc2,ipc12,ipc21,isiorb2,isipot,ngrid,nmut
+    real (PREC) :: engo1,engo2,engoprv1,engoprv2,oc,wtwoel
+    real (PREC), dimension(*) :: psi,pot,excp,wgt2,wk0,wk1
 
-  iborb1=i1b(iorb1)
-  isiorb1=i1si(iorb1)
-  iborb2=i1b(iorb2)
-  isiorb2=i1si(iorb2)
+    if (mgx(6,iorb1).ne.mgx(6,iorb2)) return
+    if (ige(iorb1).ne.ige(iorb2)) return
 
-  !     Add contributions from the Coulomb and local exchange potentials.
-  !     In the local exchange approximtion the Coulomb potential includes
-  !     also the contribution from a given orbital
+    ! FIXME
+    ipc12=iorb1+(iorb2-1)*norb
+    ipc21=iorb2+(iorb1-1)*norb
+    engo(ipc12)=zero
 
-  !     Calculate the Coulomb potential contribution from all the orbitals
+    iborb1=i1b(iorb1)
+    isiorb1=i1si(iorb1)
+    iborb2=i1b(iorb2)
+    isiorb2=i1si(iorb2)
 
-  do i=1,mxsize
-     wk0(i)=0.0_PREC
-  enddo
+    !     Add contributions from the Coulomb and local exchange potentials.
+    !     In the local exchange approximtion the Coulomb potential includes
+    !     also the contribution from a given orbital
 
-  do iorb=1,norb
-     iborb=i1b(iorb)
-     ibpot=i2b(iorb)
-     nmut=i1mu(iorb)
-     isipot=i2si(iorb)
-     oc=occ(iorb)
-     call axpy (isipot,oc,pot(ibpot),ione,wk0,ione)
-  enddo
+    !     Calculate the Coulomb potential contribution from all the orbitals
 
-  call prod  (isiorb2,psi(iborb2),wk0)
+    do i=1,mxsize
+       wk0(i)=0.0_PREC
+    enddo
 
-  !     Multiply the local exchange potential by psi(iborb2)
-  !     and add the result to the Coulomb potential
+    do iorb=1,norb
+       iborb=i1b(iorb)
+       ibpot=i2b(iorb)
+       nmut=i1mu(iorb)
+       isipot=i2si(iorb)
+       oc=occ(iorb)
+       call axpy (isipot,oc,pot(ibpot),ione,wk0,ione)
+    enddo
 
-  call prod2 (isiorb2,psi(iborb2),excp(length-mxsize),wk1)
-  call add (isiorb2,wk0,wk1)
+    call prod  (isiorb2,psi(iborb2),wk0)
 
-  !     To complete the integrand wk1 has to be multiplied by psi(iborb1)
+    !     Multiply the local exchange potential by psi(iborb2)
+    !     and add the result to the Coulomb potential
 
-  ngrid=min(isiorb1,isiorb2)
-  call prod (ngrid,psi(iborb1),wk1)
-  wtwoel=dot(ngrid,wgt2,ione,wk1,ione)
+    call prod2 (isiorb2,psi(iborb2),excp(length-mxsize),wk1)
+    call add (isiorb2,wk0,wk1)
 
-  engo(ipc1)= wtwoel
-  engo(ipc2)= wtwoel
+    !     To complete the integrand wk1 has to be multiplied by psi(iborb1)
 
-  ! FIXME
-  !        Damping factors are set to 0 by default (obsolete).
+    ngrid=min(isiorb1,isiorb2)
+    call prod (ngrid,psi(iborb1),wk1)
+    wtwoel=dot(ngrid,wgt2,ione,wk1,ione)
 
-  engo(ipc1)=sflagra*((1.0_PREC-dflagra)*engo1+dflagra*engoprv1)
-  engo(ipc2)=sflagra*((1.0_PREC-dflagra)*engo2+dflagra*engoprv2)
+    engo(ipc1)= wtwoel
+    engo(ipc2)= wtwoel
 
-  if (iprint(48).ne.0) then
-     write(*,'(a8,i4,e16.6,i4,a8,i4,a8,2e16.8)') 'Eab2DFT: ', &
-          lmtype,sflagra,iorn(iorb),bond(iorb1),iorn(iorb1),bond(iorb1),engo(ipc1),engo(ipc2)
-  endif
+    ! FIXME
+    !        Damping factors are set to 0 by default (obsolete).
 
-end subroutine Eab2DFT
+    engo(ipc1)=sflagra*((1.0_PREC-dflagra)*engo1+dflagra*engoprv1)
+    engo(ipc2)=sflagra*((1.0_PREC-dflagra)*engo2+dflagra*engoprv2)
+
+    if (iprint(48).ne.0) then
+       write(*,'(a8,i4,e16.6,i4,a8,i4,a8,2e16.8)') 'Eab2DFT: ', &
+            lmtype,sflagra,iorn(iorb),bond(iorb1),iorn(iorb1),bond(iorb1),engo(ipc1),engo(ipc2)
+    endif
+
+  end subroutine Eab2DFT
+end module Eab2DFT_m

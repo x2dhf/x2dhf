@@ -25,60 +25,57 @@
 !     r0 - an abscissa for which f(r0) is calculated via 8th-order
 !          Lagrange polynomial
 
-function flp(iord,n,r,f,r0)
-  use params
-
+module flp_m
   implicit none
-  integer :: i,iord,istart,k,n,nearest
-  real (PREC) :: flp
-  real (PREC) :: r0
-  real (PREC), dimension(9) :: coeff
-  real (PREC), dimension(9,9) :: coeff2
-  real (PREC), dimension(n) :: r,f
+contains
+  function flp(iord,n,r,f,r0)
+    use params
+    use lpcoeff_m
+    use vlpcoeff_m
 
-  real (PREC), external :: vlpcoeff
+    implicit none
+    integer :: i,iord,istart,k,n,nearest
+    real (PREC) :: flp
+    real (PREC) :: r0
+    real (PREC), dimension(9) :: coeff
+    real (PREC), dimension(9,9) :: coeff2
+    real (PREC), dimension(n) :: r,f
 
-  !     iord value for 2th order (3-point) Lagrange polynomial
-  !     parameter (iord=3)
+    !     iord value for 2th order (3-point) Lagrange polynomial
+    !     parameter (iord=3)
 
-  !     iord value for 8th order (9-point) Lagrange polynomial
-  !     parameter (iord=9)
-
-
-  !     find the smallest element of arry r that is greater than
-  !     r0. Whenever possible [iord/2] points to its left and right are
-  !     used to construct the interpolation polynomial (the start and the
-  !     end of r array are taken care of)
-
-  nearest=1
-  do i=1,n
-     if (r(i).gt.r0) then
-        nearest=i
-        goto 10
-     endif
-  enddo
-10 continue
-
-  !     calculate coefficients of iord Lagrange polynomials (begining with
-  !     istart+1) and store them in coeff2
-
-  istart=nearest-(iord/2+1)
-  if (istart.lt.1) istart=0
-  if (istart+iord.gt.n) istart=n-iord
-  do k=1,iord
-     call lpcoeff(iord,istart,k,r,coeff)
-     do i=1,iord
-        coeff2(i,k)=coeff(i)
-     enddo
-  enddo
-
-  !     evaluate the value of the Lagrange interpolation polynomial at r0
-
-  flp=0.0_PREC
-  do k=1,iord
-     flp=flp+f(istart+k)*vlpcoeff(iord,r0,coeff2(1,k))
-  enddo
-  return
-end function flp
+    !     iord value for 8th order (9-point) Lagrange polynomial
+    !     parameter (iord=9)
 
 
+    !     find the smallest element of arry r that is greater than
+    !     r0. Whenever possible [iord/2] points to its left and right are
+    !     used to construct the interpolation polynomial (the start and the
+    !     end of r array are taken care of)
+
+    do nearest=1,n
+       if (r(nearest).gt.r0) exit
+    enddo
+
+    !     calculate coefficients of iord Lagrange polynomials (begining with
+    !     istart+1) and store them in coeff2
+
+    istart=nearest-(iord/2+1)
+    if (istart.lt.1) istart=0
+    if (istart+iord.gt.n) istart=n-iord
+    do k=1,iord
+       call lpcoeff(iord,istart,k,r,coeff)
+       do i=1,iord
+          coeff2(i,k)=coeff(i)
+       enddo
+    enddo
+
+    !     evaluate the value of the Lagrange interpolation polynomial at r0
+
+    flp=0.0_PREC
+    do k=1,iord
+       flp=flp+f(istart+k)*vlpcoeff(iord,r0,coeff2(1,k))
+    enddo
+    return
+  end function flp
+end module flp_m

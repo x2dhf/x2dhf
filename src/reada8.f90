@@ -12,15 +12,19 @@
 !
 !     Reads the matrix A from a disk file in an unformatted form
 
-subroutine reada8 (iunit,ndim,a,ierr)
-  use params
-
+module reada8_m
   implicit none
-  integer :: ierr,iunit,ndim
-  real (PREC), dimension(ndim) :: a
+contains
+  subroutine reada8 (iunit,ndim,a,ierr)
+    use params
 
-  read (iunit,err=1000) a
-  ierr=0
-  return
+    implicit none
+    integer :: ierr,iunit,ndim
+    real (PREC), dimension(ndim) :: a
+
+    read (iunit,err=1000) a
+    ierr=0
+    return
 1000 ierr=1
-end subroutine reada8
+  end subroutine reada8
+end module reada8_m

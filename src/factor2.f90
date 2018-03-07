@@ -12,15 +12,19 @@
 
 !     Calculates n!!
 
-function factor2(n)
-  use params
+module factor2_m
   implicit none
-  integer :: i,n
-  real (PREC) :: factor2
+contains
+  function factor2(n)
+    use params
+    implicit none
+    integer :: i,n
+    real (PREC) :: factor2
 
-  factor2=1.0_PREC
-  do i=1,n,2
-     factor2=dble(i)*factor2
-  enddo
+    factor2=1.0_PREC
+    do i=1,n,2
+       factor2=dble(i)*factor2
+    enddo
 
-end function factor2
+  end function factor2
+end module factor2_m

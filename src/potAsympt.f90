@@ -13,53 +13,60 @@
 !     determines the asymptotic values of Coulomb and exchange
 !     potentials needed for a given Fock equation
 
-subroutine potAsympt (iorb1,pot,excp)
-  use params
-  use commons8
-
+module potAsympt_m
   implicit none
-  integer :: i3beg,ibeg,idel,iorb1,iorb2,k,ngrid
+contains
+  subroutine potAsympt (iorb1,pot,excp)
+    use params
+    use commons8
 
-  real (PREC), dimension(*) :: pot,excp
+    use coulAsympt_m
+    use exchAsympt_m
 
-!   determine values of Coulomb potentials in the asymptotic region
-!   from the multipole expansion
+    implicit none
+    integer :: i3beg,ibeg,idel,iorb1,iorb2,k,ngrid
 
-  if (itouch(iorb1).eq.1) then
-     ibeg=i2b(iorb1)
-     call coulAsympt(iorb1,pot(ibeg))
-  endif
+    real (PREC), dimension(*) :: pot,excp
 
-  if (islat.eq.1) return
+    !   determine values of Coulomb potentials in the asymptotic region
+    !   from the multipole expansion
 
-  !   initialize amul array needed to evaluate exchange potential in
-  !   the asymptotic region by calling zasyx
+    if (itouch(iorb1).eq.1) then
+       ibeg=i2b(iorb1)
+       call coulAsympt(iorb1,pot(ibeg))
+    endif
 
-  do iorb2=1,norb
-     if (itouch(iorb1).eq.0.and.itouch(iorb2).eq.0) goto 10
-     k=i3xk(iorb1,iorb2)
-     !      check if k=0
-     if (k.eq.0) goto 10
-     ngrid=i3si(k)
-     if (ilc(k).ne.0) then
+    if (islat.eq.1) return
 
-        !         the exchange potential address array should already be modified by
-        !         call to rfdexch routine
+    !   initialize amul array needed to evaluate exchange potential in
+    !   the asymptotic region by calling zasyx
 
-        i3beg=i3b(k)
-        idel=abs(mgx(6,iorb1)-mgx(6,iorb2))
-        if (iorb1.eq.iorb2) idel=2*mgx(6,iorb1)
+    do iorb2=1,norb
+       if (itouch(iorb1).eq.0.and.itouch(iorb2).eq.0) goto 10
+       k=i3xk(iorb1,iorb2)
+       !      check if k=0
+       if (k.eq.0) goto 10
+       ngrid=i3si(k)
+       if (ilc(k).ne.0) then
 
-        call exchAsympt (idel,k,excp(i3beg))
+          !         the exchange potential address array should already be modified by
+          !         call to rfdexch routine
 
-        if (ilc(k).eq.2) then
-           idel=mgx(6,iorb2)+mgx(6,iorb1)
-           k=k+norb*(norb+1)/2
-           i3beg=i3beg+ngrid
-           call exchAsympt (idel,k,excp(i3beg))
-        endif
-     endif
-10   continue
-  enddo
+          i3beg=i3b(k)
+          idel=abs(mgx(6,iorb1)-mgx(6,iorb2))
+          if (iorb1.eq.iorb2) idel=2*mgx(6,iorb1)
 
-end subroutine potAsympt
+          call exchAsympt (idel,k,excp(i3beg))
+
+          if (ilc(k).eq.2) then
+             idel=mgx(6,iorb2)+mgx(6,iorb1)
+             k=k+norb*(norb+1)/2
+             i3beg=i3beg+ngrid
+             call exchAsympt (idel,k,excp(i3beg))
+          endif
+       endif
+10     continue
+    enddo
+
+  end subroutine potAsympt
+end module potAsympt_m

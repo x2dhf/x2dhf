@@ -12,23 +12,27 @@
 
 ! FIXME
 
-subroutine rrec(irec,ngrid,axyz)
-  use params
-  use commons8
-
+module rrec_m
   implicit none
-  integer :: irec,ngrid,iunit
-  real (PREC), dimension(ngrid) :: axyz
+contains
+  subroutine rrec(irec,ngrid,axyz)
+    use params
+    use commons8
 
-  iunit=irec+30
-  if (iunit.gt.maxunit) then
-     write(*,910)
-     stop "rrec"
-910  format('rrec: maximum unit number exceeded (see User''s Guide)')
-  endif
-  open(iunit,status='old',form='unformatted')
-  rewind(iunit)
-  read  (iunit) axyz
-  close(iunit)
+    implicit none
+    integer :: irec,ngrid,iunit
+    real (PREC), dimension(ngrid) :: axyz
 
-end subroutine rrec
+    iunit=irec+30
+    if (iunit.gt.maxunit) then
+       write(*,910)
+       stop "rrec"
+910    format('rrec: maximum unit number exceeded (see User''s Guide)')
+    endif
+    open(iunit,status='old',form='unformatted')
+    rewind(iunit)
+    read  (iunit) axyz
+    close(iunit)
+
+  end subroutine rrec
+end module rrec_m

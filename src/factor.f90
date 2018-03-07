@@ -11,17 +11,20 @@
 ! ### factor ###
 
 !     Calculates the factorial of n.
-
-function factor(n)
-  use params
+module factor_m
   implicit none
-  integer :: i,n
-  real (PREC) :: factor
+contains
+  function factor(n)
+    use params
+    implicit none
+    integer :: i,n
+    real (PREC) :: factor
 
-  factor=1.0_PREC
-  if (n.eq.0) return
-  do i=1,n
-     factor=dble(i)*factor
-  enddo
+    factor=1.0_PREC
+    if (n.eq.0) return
+    do i=1,n
+       factor=dble(i)*factor
+    enddo
 
-end function factor
+  end function factor
+end module factor_m

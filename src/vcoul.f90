@@ -12,35 +12,39 @@
 !     Evaluates and returns the boundary value of the Coulomb potential
 !     for a given orbital at a given point ($\tilde{V}^a_C$))
 
-function vcoul(iorb,i,j,costh)
-  use params
-  use discret
-  use scf
-  use commons8
-
+module vcoul_m
   implicit none
-  integer :: i,iorb,j,kxk,m,n
-  real (PREC) :: vcoul
-  real (PREC) :: costh,rr,rr1,rr2,pe
-  real (PREC), dimension(10) :: dome
+contains
+  function vcoul(iorb,i,j,costh)
+    use params
+    use discret
+    use scf
+    use commons8
 
-  rr=sqrt(vxisq(j)+vetasq(i)-1.0_PREC)
-  rr1=1.0_PREC/(rr*r2)
+    implicit none
+    integer :: i,iorb,j,kxk,m,n
+    real (PREC) :: vcoul
+    real (PREC) :: costh,rr,rr1,rr2,pe
+    real (PREC), dimension(10) :: dome
 
-  dome(1)=costh
-  dome(2)=(3.0_PREC*costh*costh-1.0_PREC)*5.d-01
-  do n=2,mpole-1
-     dome(n+1)=(dble(2*n+1)*costh*dome(n)-dble(n)*dome(n-1))/dble(n+1)
-  enddo
+    rr=sqrt(vxisq(j)+vetasq(i)-1.0_PREC)
+    rr1=1.0_PREC/(rr*r2)
 
-  pe=0.0_PREC
-  rr2=rr1
-  do m=1,mpole
-     !         rr2=rr2*rr1
-     kxk=iorb+(m-1)*norb
-     pe=pe+cmulti(kxk)*dome(m)*(rr1**dble(m+1))
-     !         pe=pe+cmulti(kxk)*dome(m)*rr2
-  enddo
-  vcoul=pe
+    dome(1)=costh
+    dome(2)=(3.0_PREC*costh*costh-1.0_PREC)*5.d-01
+    do n=2,mpole-1
+       dome(n+1)=(dble(2*n+1)*costh*dome(n)-dble(n)*dome(n-1))/dble(n+1)
+    enddo
 
-end function vcoul
+    pe=0.0_PREC
+    rr2=rr1
+    do m=1,mpole
+       !         rr2=rr2*rr1
+       kxk=iorb+(m-1)*norb
+       pe=pe+cmulti(kxk)*dome(m)*(rr1**dble(m+1))
+       !         pe=pe+cmulti(kxk)*dome(m)*rr2
+    enddo
+    vcoul=pe
+
+  end function vcoul
+end module vcoul_m

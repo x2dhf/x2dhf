@@ -3,30 +3,35 @@
 
 !    This routine initializes arrays used for differentiation needed in nuclder
 
-subroutine tden(iorb,ngorb1,psi,wk2)
-  use params
-  use discret
-  use commons8
-
+module tden_m
   implicit none
-  integer :: i,iborb1,iorb,iorb1,ngorb1
-  real (PREC) :: coo
-  real (PREC), dimension(*) :: psi,wk2
+contains
+  subroutine tden(iorb,ngorb1,psi,wk2)
+    use params
+    use discret
+    use commons8
+    use extinorg_m
 
-  do i=1,ngorb1
-     wk2(i)=.0_PREC
-  enddo
+    implicit none
+    integer :: i,iborb1,iorb,iorb1,ngorb1
+    real (PREC) :: coo
+    real (PREC), dimension(*) :: psi,wk2
 
-  call extinorg(psi)
+    do i=1,ngorb1
+       wk2(i)=.0_PREC
+    enddo
 
-  !      do iorb1=1,norb
-  do iorb1=iorb,iorb
-     iborb1=i1b(iorb1)
-     ngorb1=i1si(iorb1)
-     coo=occ(iorb1)
-     do i=1,ngorb1
-        wk2(i)=wk2(i)+coo*psi(iborb1+i-1)*psi(iborb1+i-1)
-     enddo
-  enddo
+    call extinorg(psi)
 
-end subroutine tden
+    !      do iorb1=1,norb
+    do iorb1=iorb,iorb
+       iborb1=i1b(iorb1)
+       ngorb1=i1si(iorb1)
+       coo=occ(iorb1)
+       do i=1,ngorb1
+          wk2(i)=wk2(i)+coo*psi(iborb1+i-1)*psi(iborb1+i-1)
+       enddo
+    enddo
+
+  end subroutine tden
+end module tden_m

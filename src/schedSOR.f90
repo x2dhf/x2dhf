@@ -12,64 +12,68 @@
 
 !     Assigns maxsor for each orbital every iepoch iterations
 
-subroutine schedsor
-  use params
-  use commons8
-  use scheduler
-  use qsort
-
+module schedSOR_m
   implicit none
-  integer :: i,iorb,inde,indemin,maxlevel,minlevel,nlevels
-  integer, dimension(maxorb) :: index
-  real (PREC), dimension(maxorb) :: endiff
+contains
+  subroutine schedsor
+    use params
+    use commons8
+    use scheduler
+    use qsort
 
-  if (mod(iscf,iepoch).eq.0) then
-     i=iscf/iepoch
-     do iorb=1,norb
-        orbenergy(i,iorb)=eng(iorb)
-        orbnorm(i,iorb)=area(iorb)
-     enddo
+    implicit none
+    integer :: i,iorb,inde,indemin,maxlevel,minlevel,nlevels
+    integer, dimension(maxorb) :: index
+    real (PREC), dimension(maxorb) :: endiff
 
-     if (i.eq.1) then
-        do iorb=1,norb
-           iorbiter(iorb)=iepoch*maxsororb(iorb)
-        enddo
-        return
-     endif
+    if (mod(iscf,iepoch).eq.0) then
+       i=iscf/iepoch
+       do iorb=1,norb
+          orbenergy(i,iorb)=eng(iorb)
+          orbnorm(i,iorb)=area(iorb)
+       enddo
 
-     do iorb=1,norb
-        iorbiter(iorb)=iorbiter(iorb)+iepoch*maxsororb(iorb)
-     enddo
+       if (i.eq.1) then
+          do iorb=1,norb
+             iorbiter(iorb)=iepoch*maxsororb(iorb)
+          enddo
+          return
+       endif
 
-     inde=0
-     do iorb=1,norb
-        endiff(iorb)=abs(orbenergy(i-1,iorb)-orbenergy(i,iorb))
-     enddo
+       do iorb=1,norb
+          iorbiter(iorb)=iorbiter(iorb)+iepoch*maxsororb(iorb)
+       enddo
 
-     call quicksort(norb,endiff,index)
+       inde=0
+       do iorb=1,norb
+          endiff(iorb)=abs(orbenergy(i-1,iorb)-orbenergy(i,iorb))
+       enddo
 
-     !      every orbital gets maxsororb number ranging from maxsor2-ibonus
-     !      to maxsor2+ibonus according to its position in the index array
+       call quicksort(norb,endiff,index)
 
-     inde=index(norb)
-     indemin=index(ione)
+       !      every orbital gets maxsororb number ranging from maxsor2-ibonus
+       !      to maxsor2+ibonus according to its position in the index array
 
-     minlevel=maxsor2-ibonus
-     maxlevel=maxsor2+ibonus
-     nlevels=maxlevel-minlevel
+       inde=index(norb)
+       indemin=index(ione)
 
-     do i=1,norb
-        iorb=index(i)
-        maxsororb(iorb)=(norb-i)*minlevel/(norb-1)+(i-1)*maxlevel/(norb-1)
+       minlevel=maxsor2-ibonus
+       maxlevel=maxsor2+ibonus
+       nlevels=maxlevel-minlevel
 
-        maxsorpot(iorb)=maxsororb(iorb)
-        print *, i,iorb,maxsororb(iorb)
-     enddo
+       do i=1,norb
+          iorb=index(i)
+          maxsororb(iorb)=(norb-i)*minlevel/(norb-1)+(i-1)*maxlevel/(norb-1)
 
-     write(*,'(2i6,5i6)') iscf,i,(iorbiter(iorb),iorb=norb,1,-1)
+          maxsorpot(iorb)=maxsororb(iorb)
+          print *, i,iorb,maxsororb(iorb)
+       enddo
 
-     write(*,'(8x,5e15.5)') (abs(orbenergy(i-1,iorb)-orbenergy(i,iorb)),iorb=norb,1,-1)
-     write(*,'(8x,5e15.5)') (abs(orbnorm(i-1,iorb)-orbnorm(i,iorb)),iorb=norb,1,-1)
-  endif
+       write(*,'(2i6,5i6)') iscf,i,(iorbiter(iorb),iorb=norb,1,-1)
 
-end subroutine schedsor
+       write(*,'(8x,5e15.5)') (abs(orbenergy(i-1,iorb)-orbenergy(i,iorb)),iorb=norb,1,-1)
+       write(*,'(8x,5e15.5)') (abs(orbnorm(i-1,iorb)-orbnorm(i,iorb)),iorb=norb,1,-1)
+    endif
+
+  end subroutine schedsor
+end module schedSOR_m

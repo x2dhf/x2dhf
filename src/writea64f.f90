@@ -12,18 +12,22 @@
 !
 !     Writes a to a disk file in a formatted form
 !
-subroutine writea64f (iunit,ndim,a,ierr)
- use params
- use commons8
+module writea64f_m
+  implicit none
+contains
+  subroutine writea64f (iunit,ndim,a,ierr)
+    use params
+    use commons8
 
- implicit none
+    implicit none
 
-  integer :: ierr,iunit,ndim
-  real (PREC), dimension(ndim) :: a
+    integer*8 :: iunit, ndim, ierr
+    real (PREC), dimension(ndim) :: a
 
-  write (iunit,formfp64,err=1000) a
-  ierr=0
-  return
+    write (iunit,formfp64,err=1000) a
+    ierr=0
+    return
 
 1000 ierr=1
-end subroutine writea64f
+  end subroutine writea64f
+end module writea64f_m

@@ -12,36 +12,40 @@
 
 !     Normalizes a given orbital.
 
-subroutine norm (iorb,psi,f4,wgt2,wk0)
-  use params
-  use commons8
-
+module norm_m
   implicit none
-  integer :: i,ibeg,iorb,ngrid
-  real (PREC) :: xnorm,zarea
-  real (PREC), dimension(*) :: psi,f4,wgt2,wk0
-  real (PREC), external :: dot
+contains
+  subroutine norm (iorb,psi,f4,wgt2,wk0)
+    use params
+    use commons8
+    use util
+    use blas_m
 
-  if (ifix(iorb).ne.0) return
+    implicit none
+    integer :: i,ibeg,iorb,ngrid
+    real (PREC) :: xnorm,zarea
+    real (PREC), dimension(*) :: psi,f4,wgt2,wk0
 
-  ibeg = i1b (iorb)
-  ngrid= i1si(iorb)
+    if (ifix(iorb).ne.0) return
 
-  do i=1,ngrid
-     wk0(i)=psi(ibeg-1+i)*psi(ibeg-1+i)
-  enddo
-  call prod  (ngrid,f4,wk0)
+    ibeg = i1b (iorb)
+    ngrid= i1si(iorb)
 
-  xnorm=dot (ngrid,wgt2,ione,wk0,ione)
+    do i=1,ngrid
+       wk0(i)=psi(ibeg-1+i)*psi(ibeg-1+i)
+    enddo
+    call prod  (ngrid,f4,wk0)
 
-  area(iorb)=xnorm
-  zarea = one/sqrt(xnorm)
+    xnorm=dot (ngrid,wgt2,ione,wk0,ione)
 
-  call scal (ngrid,zarea,psi(ibeg),ione)
+    area(iorb)=xnorm
+    zarea = one/sqrt(xnorm)
 
-  if (iprint(36).ne.0) then
-     write(*,'("norm: ",i4,1x,a8,a1,3x,e16.2)') iorn(iorb),bond(iorb),gut(iorb),abs(one-area(iorb))
-  endif
+    call scal (ngrid,zarea,psi(ibeg),ione)
 
-end subroutine norm
+    if (iprint(36).ne.0) then
+       write(*,'("norm: ",i4,1x,a8,a1,3x,e16.2)') iorn(iorb),bond(iorb),gut(iorb),abs(one-area(iorb))
+    endif
 
+  end subroutine norm
+end module norm_m

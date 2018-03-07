@@ -18,7 +18,7 @@ contains
     integer, intent(out) :: y(:)
     integer, intent(in) :: map(:)
     integer :: i
-    
+
     do i=1,size(y)
        y(i)=x(map(i))
     end do
@@ -29,7 +29,7 @@ contains
     real(PREC), intent(out) :: y(:)
     integer, intent(in) :: map(:)
     integer :: i
-    
+
     do i=1,size(y)
        y(i)=x(map(i))
     end do

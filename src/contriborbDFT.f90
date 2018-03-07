@@ -13,15 +13,21 @@
 !     Calculates various contributions to total DFT energy due to a given
 !     orbital
 
-subroutine contriborbDFT(iorb,psi,pot,excp,e,f0,wgt1,wgt2,wk0,wk1,wk2,wk3)
-  use params
-  use commons8
-
+module contriborbDFT_m
   implicit none
-  integer :: iorb
-  real (PREC), dimension(*) :: psi,pot,excp,e,f0,wgt1,wgt2,wk0,wk1,wk2,wk3
+contains
+  subroutine contriborbDFT(iorb,psi,pot,excp,e,f0,wgt1,wgt2,wk0,wk1,wk2,wk3)
+    use params
+    use commons8
+    use EaDFT_m
 
-! FIXME!!! make EaDFT into contribDFTorb with detailed printouts
-  call EaDFT (iorb,psi,pot,excp,e,f0,wgt1,wgt2,wk0,wk1,wk2,wk3)
+    implicit none
+    integer :: iorb
+    real (PREC), dimension(*) :: psi,pot,excp,e,f0,wgt1,wgt2,wk0,wk1,wk2,wk3
 
-end subroutine contriborbDFT
+    ! FIXME!!! make EaDFT into contribDFTorb with detailed printouts
+    call EaDFT (iorb,psi,pot,excp,e,f0,wgt1,wgt2,wk0,wk1,wk2,wk3)
+
+  end subroutine contriborbDFT
+end module contriborbDFT_m
+

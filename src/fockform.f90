@@ -12,180 +12,184 @@
 !
 !     Print the Fock equation for every orbital.
 
-subroutine fockform
-  use params
-  use discret
-  use scf
-  use commons8
-
+module fockform_m
   implicit none
-  integer :: iorb,iorb1,ipc,kex,idexp,norb2,orborder
-  real (PREC) :: coo,coo0,coo1,coo2
-  parameter (orborder=1)
+contains
+  subroutine fockform
+    use params
+    use discret
+    use scf
+    use commons8
 
-  norb2=norb*norb
+    implicit none
+    integer :: iorb,iorb1,ipc,kex,idexp,norb2,orborder
+    real (PREC) :: coo,coo0,coo1,coo2
+    parameter (orborder=1)
 
-  ! exchange contributions due to different pair of orbitals
-  ! Ka:  sigma i - nonsigma j
-  ! Kb:  nonsigma i - nonsigma i
-  ! Kc:  nonsigma i - nonsigma j
+    norb2=norb*norb
 
-  if (nel.eq.1) return
+    ! exchange contributions due to different pair of orbitals
+    ! Ka:  sigma i - nonsigma j
+    ! Kb:  nonsigma i - nonsigma i
+    ! Kc:  nonsigma i - nonsigma j
 
-  if (norb.eq.1) then
-     iorb=1
-     !      FIXME what about one non-sigma orbital
-     !      contribution from coulomb potential of one sigma orbital
-     !     call copy (ngpot,pot(ibpot),ione,wk1,ione)
-     write(*,'(/5x,"2-electron part of Fock operator for orbital",i4,1x,a8,a1)') iorn(iorb),bond(iorb),gut(iorb)
-     write(*,'(15x,f6.2, "  J (",i4,1x,a8,a1,",",i4,1x,a8,a1,")" )') &
-          1.0,iorn(iorb),bond(iorb),gut(iorb),iorn(iorb),bond(iorb),gut(iorb)
-     return
-  endif
+    if (nel.eq.1) return
 
-  if (orborder.eq.1) goto 1000
+    if (norb.eq.1) then
+       iorb=1
+       !      FIXME what about one non-sigma orbital
+       !      contribution from coulomb potential of one sigma orbital
+       !     call copy (ngpot,pot(ibpot),ione,wk1,ione)
+       write(*,'(/5x,"2-electron part of Fock operator for orbital",i4,1x,a8,a1)') iorn(iorb),bond(iorb),gut(iorb)
+       write(*,'(15x,f6.2, "  J (",i4,1x,a8,a1,",",i4,1x,a8,a1,")" )') &
+            1.0,iorn(iorb),bond(iorb),gut(iorb),iorn(iorb),bond(iorb),gut(iorb)
+       return
+    endif
 
-  do iorb=1,norb
-     write(*,'(/5x,"2-electron part of Fock operator for orbital",i4,1x,a8,a1)') iorn(iorb),bond(iorb),gut(iorb)
+    if (orborder.eq.1) goto 1000
 
-     !      add contributions from Coulomb potentials
+    do iorb=1,norb
+       write(*,'(/5x,"2-electron part of Fock operator for orbital",i4,1x,a8,a1)') iorn(iorb),bond(iorb),gut(iorb)
 
-     do iorb1=1,norb
-        kex=iorb+norb*(iorb1-1)
-        ipc=iorb1+norb*(iorb-1)
+       !      add contributions from Coulomb potentials
 
-        if (iorb.le.iorb1) then
-           idexp=iorb+iorb1*(iorb1-1)/2
-        else
-           idexp=iorb1+iorb*(iorb-1)/2
-        endif
+       do iorb1=1,norb
+          kex=iorb+norb*(iorb1-1)
+          ipc=iorb1+norb*(iorb-1)
 
-        coo=occ(iorb1)
-        if (iorb.eq.iorb1) coo=coo-1.0_PREC
+          if (iorb.le.iorb1) then
+             idexp=iorb+iorb1*(iorb1-1)/2
+          else
+             idexp=iorb1+iorb*(iorb-1)/2
+          endif
 
-        !           write(*,'(2i5," J1  " ,1Pe12.2)') iorb,iorb1,coo
-        write(*,'(15x,f6.2, "  J (",i4,1x,a8,a1,",",i4,1x,a8,a1,")" )') &
-             coo,iorn(iorb1),bond(iorb1),gut(iorb1),iorn(iorb1),bond(iorb1),gut(iorb1)
-     enddo
+          coo=occ(iorb1)
+          if (iorb.eq.iorb1) coo=coo-1.0_PREC
 
-     !      add contributions from exchange potentials
-     do iorb1=1,norb
-        kex=iorb+norb*(iorb1-1)
-        ipc=iorb1+norb*(iorb-1)
+          !           write(*,'(2i5," J1  " ,1Pe12.2)') iorb,iorb1,coo
+          write(*,'(15x,f6.2, "  J (",i4,1x,a8,a1,",",i4,1x,a8,a1,")" )') &
+               coo,iorn(iorb1),bond(iorb1),gut(iorb1),iorn(iorb1),bond(iorb1),gut(iorb1)
+       enddo
 
-        if (iorb.le.iorb1) then
-           idexp=iorb+iorb1*(iorb1-1)/2
-        else
-           idexp=iorb1+iorb*(iorb-1)/2
-        endif
+       !      add contributions from exchange potentials
+       do iorb1=1,norb
+          kex=iorb+norb*(iorb1-1)
+          ipc=iorb1+norb*(iorb-1)
 
-        if (iorb1.ne.iorb)  then
-           coo=gec(kex)
-           !              write(*,'(2i5," Ka  " ,1Pe12.2)') iorb,iorb1,-coo
-           write(*,'(15x,f6.2, "  Ka(",i4,1x,a8,a1,",",i4,1x,a8,a1,")" )') &
-                -coo,iorn(iorb1),bond(iorb1),gut(iorb1),iorn(iorb),bond(iorb),gut(iorb)
+          if (iorb.le.iorb1) then
+             idexp=iorb+iorb1*(iorb1-1)/2
+          else
+             idexp=iorb1+iorb*(iorb-1)/2
+          endif
 
-           if (ilc(idexp).gt.1) then
-              coo=gec(kex+norb2)
-              !              call axpy (ngexp,coo,excp(ibexp+ngexp),ione,wk2,ione)
-              !                 write(*,'(2i5," Kc  " ,1Pe12.2)') iorb,iorb1,-coo
-              write(*,'(15x,f6.2, "  Kc(",i4,1x,a8,a1,",",i4,1x,a8,a1,")" )') &
-                   -coo,iorn(iorb1),bond(iorb1),gut(iorb1),iorn(iorb),bond(iorb),gut(iorb)
+          if (iorb1.ne.iorb)  then
+             coo=gec(kex)
+             !              write(*,'(2i5," Ka  " ,1Pe12.2)') iorb,iorb1,-coo
+             write(*,'(15x,f6.2, "  Ka(",i4,1x,a8,a1,",",i4,1x,a8,a1,")" )') &
+                  -coo,iorn(iorb1),bond(iorb1),gut(iorb1),iorn(iorb),bond(iorb),gut(iorb)
 
-           endif
-        else
-           if ((mm(iorb).gt.0).and.(ilc(idexp).gt.0)) then
-              coo=gec(kex)
-              coo2=coo
-              !                 write(*,'(2i5," Kb  " ,1Pe12.2)') iorb,iorb1,-coo
-              write(*,'(15x,f6.2, "  Kb(",i4,1x,a8,a1,",",i4,1x,a8,a1,")" )') &
-                   -coo,iorn(iorb1),bond(iorb1),gut(iorb1),iorn(iorb),bond(iorb),gut(iorb)
-           endif
-        endif
-     enddo
-  enddo
+             if (ilc(idexp).gt.1) then
+                coo=gec(kex+norb2)
+                !              call axpy (ngexp,coo,excp(ibexp+ngexp),ione,wk2,ione)
+                !                 write(*,'(2i5," Kc  " ,1Pe12.2)') iorb,iorb1,-coo
+                write(*,'(15x,f6.2, "  Kc(",i4,1x,a8,a1,",",i4,1x,a8,a1,")" )') &
+                     -coo,iorn(iorb1),bond(iorb1),gut(iorb1),iorn(iorb),bond(iorb),gut(iorb)
+
+             endif
+          else
+             if ((mm(iorb).gt.0).and.(ilc(idexp).gt.0)) then
+                coo=gec(kex)
+                coo2=coo
+                !                 write(*,'(2i5," Kb  " ,1Pe12.2)') iorb,iorb1,-coo
+                write(*,'(15x,f6.2, "  Kb(",i4,1x,a8,a1,",",i4,1x,a8,a1,")" )') &
+                     -coo,iorn(iorb1),bond(iorb1),gut(iorb1),iorn(iorb),bond(iorb),gut(iorb)
+             endif
+          endif
+       enddo
+    enddo
 
 1000 continue
 
-  do iorb=norb,1,-1
-     write(*,'(/5x,"2-electron part of Fock operator for orbital",i4,1x,a8,a1)') iorn(iorb),bond(iorb),gut(iorb)
+    do iorb=norb,1,-1
+       write(*,'(/5x,"2-electron part of Fock operator for orbital",i4,1x,a8,a1)') iorn(iorb),bond(iorb),gut(iorb)
 
-     !      add contributions from Coulomb potentials
+       !      add contributions from Coulomb potentials
 
-     do iorb1=norb,1,-1
-        kex=iorb+norb*(iorb1-1)
-        ipc=iorb1+norb*(iorb-1)
+       do iorb1=norb,1,-1
+          kex=iorb+norb*(iorb1-1)
+          ipc=iorb1+norb*(iorb-1)
 
-        if (iorb.le.iorb1) then
-           idexp=iorb+iorb1*(iorb1-1)/2
-        else
-           idexp=iorb1+iorb*(iorb-1)/2
-        endif
+          if (iorb.le.iorb1) then
+             idexp=iorb+iorb1*(iorb1-1)/2
+          else
+             idexp=iorb1+iorb*(iorb-1)/2
+          endif
 
-        coo=occ(iorb1)
+          coo=occ(iorb1)
 
-        !         FIXME
-        if (iorb.eq.iorb1) coo=coo-1.0_PREC
-        coo0=coo
+          !         FIXME
+          if (iorb.eq.iorb1) coo=coo-1.0_PREC
+          coo0=coo
 
-        !        call axpy (ngpot1,coo,pot(ibpot1),ione,wk1,ione)
+          !        call axpy (ngpot1,coo,pot(ibpot1),ione,wk1,ione)
 
-        !           write(*,'(2i5," J1  " ,1Pe12.2)') iorb,iorb1,coo
-        write(*,'(15x,f6.2, "  J (",i4,1x,a8,a1,",",i4,1x,a8,a1,")" )') &
-             coo,iorn(iorb1),bond(iorb1),gut(iorb1),iorn(iorb1),bond(iorb1),gut(iorb1)
-     enddo
+          !           write(*,'(2i5," J1  " ,1Pe12.2)') iorb,iorb1,coo
+          write(*,'(15x,f6.2, "  J (",i4,1x,a8,a1,",",i4,1x,a8,a1,")" )') &
+               coo,iorn(iorb1),bond(iorb1),gut(iorb1),iorn(iorb1),bond(iorb1),gut(iorb1)
+       enddo
 
-     !      add contributions from exchange potentials
-     do iorb1=norb,1,-1
-        kex=iorb+norb*(iorb1-1)
-        ipc=iorb1+norb*(iorb-1)
+       !      add contributions from exchange potentials
+       do iorb1=norb,1,-1
+          kex=iorb+norb*(iorb1-1)
+          ipc=iorb1+norb*(iorb-1)
 
-        if (iorb.le.iorb1) then
-           idexp=iorb+iorb1*(iorb1-1)/2
-        else
-           idexp=iorb1+iorb*(iorb-1)/2
-        endif
+          if (iorb.le.iorb1) then
+             idexp=iorb+iorb1*(iorb1-1)/2
+          else
+             idexp=iorb1+iorb*(iorb-1)/2
+          endif
 
-        coo=occ(iorb1)
+          coo=occ(iorb1)
 
-        if (iorb.eq.iorb1) coo=coo-1.0_PREC
-        coo0=coo
+          if (iorb.eq.iorb1) coo=coo-1.0_PREC
+          coo0=coo
 
-        coo1=0.0_PREC
-        coo2=0.0_PREC
+          coo1=0.0_PREC
+          coo2=0.0_PREC
 
-        if (iorb1.ne.iorb)  then
-           coo=gec(kex)
-           coo1=coo
-           !           call copy (ngexp,excp(ibexp),ione,wk2,ione)
-           !           call scal (ngexp,coo,wk2,ione)
-           !              write(*,'(2i5," Ka  " ,1Pe12.2)') iorb,iorb1,-coo
-           write(*,'(15x,f6.2, "  Ka(",i4,1x,a8,a1,",",i4,1x,a8,a1,")" )') &
-                -coo,iorn(iorb1),bond(iorb1),gut(iorb1),iorn(iorb),bond(iorb),gut(iorb)
-
-
-           if (ilc(idexp).gt.1) then
-              coo=gec(kex+norb2)
-              coo2=coo
-              !              call axpy (ngexp,coo,excp(ibexp+ngexp),ione,wk2,ione)
-              !                 write(*,'(2i5," Kc  " ,1Pe12.2)') iorb,iorb1,-coo
-              write(*,'(15x,f6.2, "  Kc(",i4,1x,a8,a1,",",i4,1x,a8,a1,")" )') &
-                   -coo,iorn(iorb1),bond(iorb1),gut(iorb1),iorn(iorb),bond(iorb),gut(iorb)
-
-           endif
-        else
-           if ((mm(iorb).gt.0).and.(ilc(idexp).gt.0)) then
-              coo=gec(kex)
-              coo2=coo
-              !                 write(*,'(2i5," Kb  " ,1Pe12.2)') iorb,iorb1,-coo
-              write(*,'(15x,f6.2, "  Kb(",i4,1x,a8,a1,",",i4,1x,a8,a1,")" )') &
-                   -coo,iorn(iorb1),bond(iorb1),gut(iorb1),iorn(iorb),bond(iorb),gut(iorb)
-           endif
-        endif
-     enddo
-  enddo
+          if (iorb1.ne.iorb)  then
+             coo=gec(kex)
+             coo1=coo
+             !           call copy (ngexp,excp(ibexp),ione,wk2,ione)
+             !           call scal (ngexp,coo,wk2,ione)
+             !              write(*,'(2i5," Ka  " ,1Pe12.2)') iorb,iorb1,-coo
+             write(*,'(15x,f6.2, "  Ka(",i4,1x,a8,a1,",",i4,1x,a8,a1,")" )') &
+                  -coo,iorn(iorb1),bond(iorb1),gut(iorb1),iorn(iorb),bond(iorb),gut(iorb)
 
 
+             if (ilc(idexp).gt.1) then
+                coo=gec(kex+norb2)
+                coo2=coo
+                !              call axpy (ngexp,coo,excp(ibexp+ngexp),ione,wk2,ione)
+                !                 write(*,'(2i5," Kc  " ,1Pe12.2)') iorb,iorb1,-coo
+                write(*,'(15x,f6.2, "  Kc(",i4,1x,a8,a1,",",i4,1x,a8,a1,")" )') &
+                     -coo,iorn(iorb1),bond(iorb1),gut(iorb1),iorn(iorb),bond(iorb),gut(iorb)
 
-  return
-end subroutine fockform
+             endif
+          else
+             if ((mm(iorb).gt.0).and.(ilc(idexp).gt.0)) then
+                coo=gec(kex)
+                coo2=coo
+                !                 write(*,'(2i5," Kb  " ,1Pe12.2)') iorb,iorb1,-coo
+                write(*,'(15x,f6.2, "  Kb(",i4,1x,a8,a1,",",i4,1x,a8,a1,")" )') &
+                     -coo,iorn(iorb1),bond(iorb1),gut(iorb1),iorn(iorb),bond(iorb),gut(iorb)
+             endif
+          endif
+       enddo
+    enddo
+
+
+
+    return
+  end subroutine fockform
+end module fockform_m

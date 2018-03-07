@@ -13,111 +13,115 @@
 !     Calculates the number of exchange integrals between two given
 !     (open) shells.
 
-subroutine excont (iorb1,iorb2,ox1,ox2)
-  use params
-  use commons8
-
+module excont_m
   implicit none
-  integer :: i1,i2,i1end,i2end,io1,io2,iorb1,iorb2,ip1,ip2,ipe1,ipe2
-  real (PREC) :: ox1,ox2
+contains
+  subroutine excont (iorb1,iorb2,ox1,ox2)
+    use params
+    use commons8
 
-  character*8 :: alpha,beta
+    implicit none
+    integer :: i1,i2,i1end,i2end,io1,io2,iorb1,iorb2,ip1,ip2,ipe1,ipe2
+    real (PREC) :: ox1,ox2
 
-  data alpha,beta /'+','-'/
+    character*8 :: alpha,beta
 
-  ipe1 =mgx(6,iorb1)
-  ipe2 =mgx(6,iorb2)
+    data alpha,beta /'+','-'/
 
-  io1=iorb1
-  io2=iorb2
+    ipe1 =mgx(6,iorb1)
+    ipe2 =mgx(6,iorb2)
 
-  ox1=0.0_PREC
-  ox2=0.0_PREC
+    io1=iorb1
+    io2=iorb2
 
-  ip1=4*(io1-1)
-  ip2=4*(io2-1)
+    ox1=0.0_PREC
+    ox2=0.0_PREC
 
-  if (ipe1.eq.0) then
-     icase=1
-     i1end=2
-     if(ipe2.eq.0) then
-        i2end=2
-     else
-        i2end=4
-     endif
-  else
-     i1end=4
-     if(ipe2.eq.0) then
-        icase=1
-        i2end=2
-     else
-        icase=2
-     endif
-  endif
+    ip1=4*(io1-1)
+    ip2=4*(io2-1)
 
-  if (icase.eq.1) then
+    if (ipe1.eq.0) then
+       icase=1
+       i1end=2
+       if(ipe2.eq.0) then
+          i2end=2
+       else
+          i2end=4
+       endif
+    else
+       i1end=4
+       if(ipe2.eq.0) then
+          icase=1
+          i2end=2
+       else
+          icase=2
+       endif
+    endif
 
-     !        interaction between sigma-sigma or sigma-nonsigma shells
+    if (icase.eq.1) then
 
-     do i1=1,i1end
-        if(spin(ip1+i1).ne.alpha.and.spin(ip1+i1).ne.beta) goto 10
-        do i2=1,i2end
-           if(spin(ip2+i2).ne.alpha.and.spin(ip2+i2).ne.beta) goto 12
-           if(spin(ip1+i1).eq.spin(ip2+i2)) ox1=ox1+1.0_PREC
-00012      continue
-        enddo
-00010   continue
-     enddo
-  elseif(icase.eq.2) then
+       !        interaction between sigma-sigma or sigma-nonsigma shells
 
-     !        interaction between nonsigma-nonsigma shells
-     !        lambda positive for both orbitals
+       do i1=1,i1end
+          if(spin(ip1+i1).ne.alpha.and.spin(ip1+i1).ne.beta) goto 10
+          do i2=1,i2end
+             if(spin(ip2+i2).ne.alpha.and.spin(ip2+i2).ne.beta) goto 12
+             if(spin(ip1+i1).eq.spin(ip2+i2)) ox1=ox1+1.0_PREC
+00012        continue
+          enddo
+00010     continue
+       enddo
+    elseif(icase.eq.2) then
 
-     do i1=1,2
-        if(spin(ip1+i1).ne.alpha.and.spin(ip1+i1).ne.beta) goto 20
-        do i2=1,2
-           if(spin(ip2+i2).ne.alpha.and.spin(ip2+i2).ne.beta) goto 22
-           if(spin(ip1+i1).eq.spin(ip2+i2)) ox1=ox1+1.0_PREC
-00022      continue
-        enddo
-00020   continue
-     enddo
+       !        interaction between nonsigma-nonsigma shells
+       !        lambda positive for both orbitals
 
-     !          lambda negative for both orbitals
+       do i1=1,2
+          if(spin(ip1+i1).ne.alpha.and.spin(ip1+i1).ne.beta) goto 20
+          do i2=1,2
+             if(spin(ip2+i2).ne.alpha.and.spin(ip2+i2).ne.beta) goto 22
+             if(spin(ip1+i1).eq.spin(ip2+i2)) ox1=ox1+1.0_PREC
+00022        continue
+          enddo
+00020     continue
+       enddo
 
-     do i1=3,4
-        if(spin(ip1+i1).ne.alpha.and.spin(ip1+i1).ne.beta) goto 30
-        do i2=3,4
-           if(spin(ip2+i2).ne.alpha.and.spin(ip2+i2).ne.beta) goto 32
-           if(spin(ip1+i1).eq.spin(ip2+i2)) ox1=ox1+1.0_PREC
-00032      continue
-        enddo
-00030   continue
-     enddo
+       !          lambda negative for both orbitals
 
-     !          lambda positive and negative
+       do i1=3,4
+          if(spin(ip1+i1).ne.alpha.and.spin(ip1+i1).ne.beta) goto 30
+          do i2=3,4
+             if(spin(ip2+i2).ne.alpha.and.spin(ip2+i2).ne.beta) goto 32
+             if(spin(ip1+i1).eq.spin(ip2+i2)) ox1=ox1+1.0_PREC
+00032        continue
+          enddo
+00030     continue
+       enddo
 
-     do i1=1,2
-        if(spin(ip1+i1).ne.alpha.and.spin(ip1+i1).ne.beta) goto 40
-        do i2=3,4
-           if(spin(ip2+i2).ne.alpha.and.spin(ip2+i2).ne.beta) goto 42
-           if(spin(ip1+i1).eq.spin(ip2+i2)) ox2=ox2+1.0_PREC
-00042      continue
-        enddo
-00040   continue
-     enddo
+       !          lambda positive and negative
 
-     !          lambda negative positive
+       do i1=1,2
+          if(spin(ip1+i1).ne.alpha.and.spin(ip1+i1).ne.beta) goto 40
+          do i2=3,4
+             if(spin(ip2+i2).ne.alpha.and.spin(ip2+i2).ne.beta) goto 42
+             if(spin(ip1+i1).eq.spin(ip2+i2)) ox2=ox2+1.0_PREC
+00042        continue
+          enddo
+00040     continue
+       enddo
 
-     do i1=3,4
-        if(spin(ip1+i1).ne.alpha.and.spin(ip1+i1).ne.beta) goto 50
-        do i2=1,2
-           if(spin(ip2+i2).ne.alpha.and.spin(ip2+i2).ne.beta) goto 52
-           if(spin(ip1+i1).eq.spin(ip2+i2)) ox2=ox2+1.0_PREC
-00052      continue
-        enddo
-00050   continue
-     enddo
-  endif
+       !          lambda negative positive
 
-end subroutine excont
+       do i1=3,4
+          if(spin(ip1+i1).ne.alpha.and.spin(ip1+i1).ne.beta) goto 50
+          do i2=1,2
+             if(spin(ip2+i2).ne.alpha.and.spin(ip2+i2).ne.beta) goto 52
+             if(spin(ip1+i1).eq.spin(ip2+i2)) ox2=ox2+1.0_PREC
+00052        continue
+          enddo
+00050     continue
+       enddo
+    endif
+
+  end subroutine excont
+end module excont_m

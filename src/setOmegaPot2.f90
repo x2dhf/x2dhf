@@ -1,18 +1,21 @@
 
 !     optimal omega for 2nd-order stencil
-function setOmegaPot2()
-  use params
-  use discret
-  use commons8
-
+module setOmegaPot2_m
   implicit none
-  real (PREC) :: setOmegaPot2
-  real (PREC) :: a,b,rho
+contains
+  function setOmegaPot2()
+    use params
+    use discret
+    use commons8
 
-  parameter (a=1.0_PREC,b=0.0_PREC)
+    implicit none
+    real (PREC) :: setOmegaPot2
+    real (PREC) :: a,b,rho
 
-  rho=0.5_PREC*(cos(pii/dble(mxnmu))+cos(pii/dble(nni)))
-  setOmegaPot2=2.0_PREC*a/(1.0_PREC+sqrt(1.0_PREC-rho*rho))+b
+    parameter (a=1.0_PREC,b=0.0_PREC)
 
-end function setOmegaPot2
+    rho=0.5_PREC*(cos(pii/dble(mxnmu))+cos(pii/dble(nni)))
+    setOmegaPot2=2.0_PREC*a/(1.0_PREC+sqrt(1.0_PREC-rho*rho))+b
 
+  end function setOmegaPot2
+end module setOmegaPot2_m

@@ -13,18 +13,22 @@
 ! c   Prepears data for writing exchange potentials involving a given
 ! c   orbital (see wtdexch).
 
-subroutine prepwexch
-  use params
-  use commons8
-
+module prepwexch_m
   implicit none
-  integer :: iorb1,iorb2,k
+contains
+  subroutine prepwexch
+    use params
+    use commons8
 
-  do iorb1=1,norb
-     do iorb2=iorb1,norb
-        k=i3xk(iorb2,iorb1)
-        if (k.ne.0) iwexch(k)=k
-     enddo
-  enddo
+    implicit none
+    integer :: iorb1,iorb2,k
 
-end subroutine prepwexch
+    do iorb1=1,norb
+       do iorb2=iorb1,norb
+          k=i3xk(iorb2,iorb1)
+          if (k.ne.0) iwexch(k)=k
+       enddo
+    enddo
+
+  end subroutine prepwexch
+end module prepwexch_m

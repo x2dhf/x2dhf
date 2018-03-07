@@ -12,34 +12,38 @@
 !
 !     Calculates the number of alpha and beta electrons for a given orbital.
 
-subroutine exocc (iorb,ocup,ocdown)
-  use params
-  use commons8
-
+module exocc_m
   implicit none
-  integer :: i,iend,iorb,ip,ipe
-  real (PREC) :: ocdown,ocup
+contains
+  subroutine exocc (iorb,ocup,ocdown)
+    use params
+    use commons8
 
-  character*8 ::  alpha,beta
-  data alpha,beta /'+','-'/
+    implicit none
+    integer :: i,iend,iorb,ip,ipe
+    real (PREC) :: ocdown,ocup
 
-  ocup  =0.0_PREC
-  ocdown=0.0_PREC
+    character*8 ::  alpha,beta
+    data alpha,beta /'+','-'/
 
-  ipe =mgx(6,iorb)
-  ip=4*(iorb-1)
+    ocup  =0.0_PREC
+    ocdown=0.0_PREC
 
-  if(ipe.eq.0) then
-     iend=2
-  else
-     iend=4
-  endif
+    ipe =mgx(6,iorb)
+    ip=4*(iorb-1)
 
-  do i=1,iend
-     if(spin(ip+i).ne.alpha.and.spin(ip+i).ne.beta) goto 10
-     if(spin(ip+i).eq.alpha) ocup  =ocup+1.0_PREC
-     if(spin(ip+i).eq.beta ) ocdown=ocdown+1.0_PREC
-00010 continue
-  enddo
+    if(ipe.eq.0) then
+       iend=2
+    else
+       iend=4
+    endif
 
-end subroutine exocc
+    do i=1,iend
+       if(spin(ip+i).ne.alpha.and.spin(ip+i).ne.beta) goto 10
+       if(spin(ip+i).eq.alpha) ocup  =ocup+1.0_PREC
+       if(spin(ip+i).eq.beta ) ocdown=ocdown+1.0_PREC
+00010  continue
+    enddo
+
+  end subroutine exocc
+end module exocc_m

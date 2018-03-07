@@ -142,6 +142,7 @@ contains
   end subroutine make_mapping
 
   subroutine read_basis(nprim,nexpon,npbasis)
+    use rexponents_m
     implicit none
     integer, intent(out) :: nprim(3), nexpon, npbasis
     integer :: ibc, ibp, istop, ncen
@@ -184,6 +185,9 @@ contains
     use discret, only : z1, z2, r
     use params
     use commons8
+    use factor_m
+    use factor2_m
+
     implicit none
     integer :: i,ib,ibc,ibp,icount,ifbo,jfbo,ilines,iorb,iprint0,iprint1,iprint2, &
          l1,m1,m1abs,nexpon,nfborb
@@ -195,7 +199,6 @@ contains
     ! We can have up to 2x more orbitals in Gaussian than in the 2d
     ! calculation because non-sigma orbitals appear in twos.
     real (PREC), dimension(2*maxorb,maxbasis) :: excoeff
-    real (PREC), external :: factor, factor2
 
     ! Orbital character
     real (PREC), dimension(0:3) :: ochar

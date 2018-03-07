@@ -13,81 +13,86 @@
 !     Immerses FUN array into WORK and adds boundary values:
 !     the last subgrid
 
-subroutine putin4 (nni,nmi,fun,work)
-  use params
-  use solver
-
+module putin4_m
   implicit none
-  integer :: i,j,jj,nmi,nni,n9
+contains
+  subroutine putin4 (nni,nmi,fun,work)
+    use params
+    use solver
+    use blas_m
 
-  real (PREC), dimension(nni,*):: fun
-  real (PREC), dimension(nni+8,nmi+8) :: work
-  real (PREC), dimension(maxmu,4) :: fint
-  data n9/9/
+    implicit none
+    integer :: i,j,jj,nmi,nni,n9
 
-  !   muoffs=iemu(ig-1)-1
-  !   fill the interior of work array
+    real (PREC), dimension(nni,*):: fun
+    real (PREC), dimension(nni+8,nmi+8) :: work
+    real (PREC), dimension(maxmu,4) :: fint
+    data n9/9/
 
-  do i=1,nmi
-     do j=1,nni
-        work(j+4,i+4)=fun(j,muoffs+i)
-     enddo
-  enddo
+    !   muoffs=iemu(ig-1)-1
+    !   fill the interior of work array
 
-  !   values over i=1 bondary are determined from the interpolation formula
-  !   mu=2,...,4 from interpolation (coefficients from cint4)
+    do i=1,nmi
+       do j=1,nni
+          work(j+4,i+4)=fun(j,muoffs+i)
+       enddo
+    enddo
 
-  do i=2,4
-     call gemv (nni,n9,fun(1,iadint4(i)),nni,cint4(1,i),fint(1,i))
-  enddo
+    !   values over i=1 bondary are determined from the interpolation formula
+    !   mu=2,...,4 from interpolation (coefficients from cint4)
 
-  do i=2,4
-     do j=1,nni
-        work(j+4,i)= fint(j,i)
-     enddo
-  enddo
+    do i=2,4
+       call gemv (nni,n9,fun(1,iadint4(i)),cint4(1,i),fint(1,i))
+    enddo
 
-  !   the following code is necessary since the derivatives must be calculated
-  !   up to i=nmi
-  do i=1,4
-     do j=1,nni
-        work(j+4,nmi+4+i)= fun(j,muoffs+nmi)
-     enddo
-  enddo
+    do i=2,4
+       do j=1,nni
+          work(j+4,i)= fint(j,i)
+       enddo
+    enddo
 
-  !   isym = 1 - even symmetry, isym =-1 - odd symmetry
+    !   the following code is necessary since the derivatives must be calculated
+    !   up to i=nmi
+    do i=1,4
+       do j=1,nni
+          work(j+4,nmi+4+i)= fun(j,muoffs+nmi)
+       enddo
+    enddo
 
-  if (isym.eq.1) then
+    !   isym = 1 - even symmetry, isym =-1 - odd symmetry
 
-     ! ni=1...4
-     do i=1,nmi
-        do j=2,5
-           work(6-j,i+4)= fun(j,muoffs+i)
-        enddo
-     enddo
+    if (isym.eq.1) then
 
-     ! ni=ni+4...ni+8
-     do i=1,nmi
-        jj=0
-        do j=nni-4,nni-1
-           jj=jj+1
-           work(nni+9-jj,i+4)= fun(j,muoffs+i)
-        enddo
-     enddo
-  else
-     do i=1,nmi
-        do j=2,5
-           work(6-j,i+4)=-fun(j,muoffs+i)
-        enddo
-     enddo
+       ! ni=1...4
+       do i=1,nmi
+          do j=2,5
+             work(6-j,i+4)= fun(j,muoffs+i)
+          enddo
+       enddo
 
-     do i=1,nmi
-        jj=0
-        do j=nni-4,nni-1
-           jj=jj+1
-           work(nni+9-jj,i+4)=-fun(j,muoffs+i)
-        enddo
-     enddo
-  endif
+       ! ni=ni+4...ni+8
+       do i=1,nmi
+          jj=0
+          do j=nni-4,nni-1
+             jj=jj+1
+             work(nni+9-jj,i+4)= fun(j,muoffs+i)
+          enddo
+       enddo
+    else
+       do i=1,nmi
+          do j=2,5
+             work(6-j,i+4)=-fun(j,muoffs+i)
+          enddo
+       enddo
 
-end subroutine putin4
+       do i=1,nmi
+          jj=0
+          do j=nni-4,nni-1
+             jj=jj+1
+             work(nni+9-jj,i+4)=-fun(j,muoffs+i)
+          enddo
+       enddo
+    endif
+
+  end subroutine putin4
+end module putin4_m

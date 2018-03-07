@@ -12,21 +12,25 @@
 !
 !     Reverses the action of putin and putin[2-4]
 
-subroutine putout (nni,nmi,fun,work)
-  use params
-
+module putout_m
   implicit none
-  integer :: i,j,nni,nmi
+contains
+  subroutine putout (nni,nmi,fun,work)
+    use params
 
-  real (PREC), dimension(nni,nmi) :: fun
-  real (PREC), dimension(nni+8,nmi+8) :: work
+    implicit none
+    integer :: i,j,nni,nmi
 
-!     refill the interior of work array
+    real (PREC), dimension(nni,nmi) :: fun
+    real (PREC), dimension(nni+8,nmi+8) :: work
 
-  do i=1,nmi
-     do j=1,nni
-        fun(j,i)=work(j+4,i+4)
-     enddo
-  enddo
+    !     refill the interior of work array
 
-end subroutine putout
+    do i=1,nmi
+       do j=1,nni
+          fun(j,i)=work(j+4,i+4)
+       enddo
+    enddo
+
+  end subroutine putout
+end module putout_m

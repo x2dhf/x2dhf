@@ -12,52 +12,56 @@
 !     Calculates exchange energy according to a formula of Parr and Wang
 !     Yue (PRB 33 (1986) 8800)
 
-function expw86sup (wgt2,rho,grho,wk0,wk1)
-  use params
-  use discret
-  use commons8
-
+module expw86sup_m
   implicit none
-  integer :: i
-  real (PREC) :: expw86sup
-  real (PREC) :: a,b,c,const,const23,const43,const83,const115,fgga,s,s2
-  real (PREC), dimension(*) :: wgt2,rho,grho,wk0,wk1
-  real (PREC), external :: dot
+contains
+  function expw86sup (wgt2,rho,grho,wk0,wk1)
+    use params
+    use discret
+    use commons8
 
-  parameter (a=1.2960_PREC,b=14.0_PREC,c=0.20_PREC,const23=2.0_PREC/3.0_PREC, &
-       const43=4.0_PREC/3.0_PREC,const83=8.0_PREC/3.0_PREC,const115=1.0_PREC/15.0_PREC)
+    use blas_m
+    use multf4_m
 
-!      grho = nabla rho  nabla rho
-!      |nabla rho| = sqrt(grho)
+    implicit none
+    integer :: i
+    real (PREC) :: expw86sup
+    real (PREC) :: a,b,c,const,const23,const43,const83,const115,fgga,s,s2
+    real (PREC), dimension(*) :: wgt2,rho,grho,wk0,wk1
 
-  const=(24.0_PREC*pii*pii)**(-const23)
-  do i=1,mxsize
-     if (abs(rho(i)).lt.precis) then
-        wk0(i)=0.0_PREC
-     else
-        s2=const*grho(i)/rho(i)**const83
-        s=sqrt(s2)
-        fgga=(one+a*s2+b*s2*s2+c*s2*s2*s2)**const115
+    parameter (a=1.2960_PREC,b=14.0_PREC,c=0.20_PREC,const23=2.0_PREC/3.0_PREC, &
+         const43=4.0_PREC/3.0_PREC,const83=8.0_PREC/3.0_PREC,const115=1.0_PREC/15.0_PREC)
 
-        ! Parr & Yue 1986
-        wk0(i)=rho(i)**const43*fgga
+    !      grho = nabla rho  nabla rho
+    !      |nabla rho| = sqrt(grho)
 
-        ! Langreth-Mehl
-        !           wk0(i)=rho(i)**const43*(one+1.521*0.0864*s2)
+    const=(24.0_PREC*pii*pii)**(-const23)
+    do i=1,mxsize
+       if (abs(rho(i)).lt.precis) then
+          wk0(i)=0.0_PREC
+       else
+          s2=const*grho(i)/rho(i)**const83
+          s=sqrt(s2)
+          fgga=(one+a*s2+b*s2*s2+c*s2*s2*s2)**const115
 
-        ! GEA
-        !           wk0(i)=rho(i)**const43*(one+0.0864*s2)
+          ! Parr & Yue 1986
+          wk0(i)=rho(i)**const43*fgga
 
-        ! LDA
-        !           wk0(i)=rho(i)**const43
-     endif
-  enddo
+          ! Langreth-Mehl
+          !           wk0(i)=rho(i)**const43*(one+1.521*0.0864*s2)
 
-  !     take care of F4 factor
-  call multf4(wk0)
+          ! GEA
+          !           wk0(i)=rho(i)**const43*(one+0.0864*s2)
 
-  expw86sup=dot(mxsize,wgt2,ione,wk0,ione)
+          ! LDA
+          !           wk0(i)=rho(i)**const43
+       endif
+    enddo
 
-end function expw86sup
+    !     take care of F4 factor
+    call multf4(wk0)
 
+    expw86sup=dot(mxsize,wgt2,ione,wk0,ione)
 
+  end function expw86sup
+end module expw86sup_m

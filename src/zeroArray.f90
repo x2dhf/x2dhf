@@ -2,17 +2,21 @@
 !
 !     Zeroize an array.
 
-subroutine zeroArray (n,array)
-
-  use params
-
+module zeroArray_m
   implicit none
+contains
+  subroutine zeroArray (n,array)
 
-  integer :: i,n
-  real (PREC), dimension(*) ::  array
+    use params
 
-  do i=1,n
-     array(i)=0.0_PREC
-  enddo
+    implicit none
 
-end subroutine zeroArray
+    integer :: i,n
+    real (PREC), dimension(*) ::  array
+
+    do i=1,n
+       array(i)=0.0_PREC
+    enddo
+
+  end subroutine zeroArray
+end module zeroArray_m

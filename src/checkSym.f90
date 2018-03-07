@@ -12,45 +12,47 @@
 
 !     Checks Ci symmetry of all orbitals
 
-subroutine checkSym(psi)
-  use params
-  use commons8
-
+module checkSym_m
   implicit none
-  integer :: iorb,ibeg,ihsym,nmut
+contains
+  subroutine checkSym(psi)
+    use params
+    use commons8
+    use checkOrbSym_m
 
-  real (PREC), dimension(*) :: psi
+    implicit none
+    integer :: iorb,ibeg,ihsym,nmut
 
-  character*8 :: sigma,pi,delta,phi
+    real (PREC), dimension(*) :: psi
+
+    character*8 :: sigma,pi,delta,phi
 
 
-  data sigma/'sigma'/,pi/'pi'/,delta/'delta'/,phi/'phi'/
+    data sigma/'sigma'/,pi/'pi'/,delta/'delta'/,phi/'phi'/
 
-  write(*,1000)
-  do iorb=1,norb
-     ibeg = i1b(iorb)
-     nmut = i1mu(iorb)
-     call checkOrbSym(nmut,psi(ibeg),ihsym)
-     if (ihsym.eq.1) then
-        if (bond(iorb).eq.sigma.or.bond(iorb).eq.delta) then
-           write(*,1005) iorn(iorb),bond(iorb),gut(iorb)
-        else
-           write(*,1010) iorn(iorb),bond(iorb),gut(iorb)
-        endif
-     endif
-     if (ihsym.eq.-1) then
-        if(bond(iorb).eq.sigma.or.bond(iorb).eq.delta) then
-           write(*,1010) iorn(iorb),bond(iorb),gut(iorb)
-        else
-           write(*,1005) iorn(iorb),bond(iorb),gut(iorb)
-        endif
-     endif
-  enddo
+    write(*,1000)
+    do iorb=1,norb
+       ibeg = i1b(iorb)
+       nmut = i1mu(iorb)
+       call checkOrbSym(nmut,psi(ibeg),ihsym)
+       if (ihsym.eq.1) then
+          if (bond(iorb).eq.sigma.or.bond(iorb).eq.delta) then
+             write(*,1005) iorn(iorb),bond(iorb),gut(iorb)
+          else
+             write(*,1010) iorn(iorb),bond(iorb),gut(iorb)
+          endif
+       endif
+       if (ihsym.eq.-1) then
+          if(bond(iorb).eq.sigma.or.bond(iorb).eq.delta) then
+             write(*,1010) iorn(iorb),bond(iorb),gut(iorb)
+          else
+             write(*,1005) iorn(iorb),bond(iorb),gut(iorb)
+          endif
+       endif
+    enddo
 01000 format(/,' checking symmetry of orbitals:'/,'          required    actual ')
 01005 format(1x,i3,1x,a8,1x,a1,10x,'g')
 01010 format(1x,i3,1x,a8,1x,a1,10x,'u')
 
-end subroutine checkSym
-
-
-
+  end subroutine checkSym
+end module checkSym_m

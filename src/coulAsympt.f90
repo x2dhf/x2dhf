@@ -15,27 +15,31 @@
 !     of Coulomb potential for a given orbital ($\tilde{V}^a_C$)),
 !     i.e. its values for j=mxnmu-3, mxnmu-2, mxnmu-1,mxnmu
 
-subroutine coulAsympt(iorb,pot)
-  use params
-  use discret
-  use scf
-  use commons8
-
+module coulAsympt_m
   implicit none
-  integer :: i,iorb,itt,j,kk
-  real (PREC) :: costh,rr,rr1
-  real (PREC), dimension(*) :: pot
-  real (PREC), external :: vcoul
+contains
+  subroutine coulAsympt(iorb,pot)
+    use params
+    use discret
+    use scf
+    use commons8
+    use vcoul_m
 
-  do j=mxnmu-3,mxnmu
-     itt=(j-1)*nni
-     do i=1,nni
-        kk=i+itt
-        rr=sqrt(vxisq(j)+vetasq(i)-1.0_PREC)
-        rr1=1.0_PREC/(rr*r2)
-        costh=veta(i)*vxi(j)/rr
-        pot(kk)=r2*vxi(j)*(rr1+vcoul(iorb,i,j,costh))
-     enddo
-  enddo
+    implicit none
+    integer :: i,iorb,itt,j,kk
+    real (PREC) :: costh,rr,rr1
+    real (PREC), dimension(*) :: pot
 
-end subroutine coulAsympt
+    do j=mxnmu-3,mxnmu
+       itt=(j-1)*nni
+       do i=1,nni
+          kk=i+itt
+          rr=sqrt(vxisq(j)+vetasq(i)-1.0_PREC)
+          rr1=1.0_PREC/(rr*r2)
+          costh=veta(i)*vxi(j)/rr
+          pot(kk)=r2*vxi(j)*(rr1+vcoul(iorb,i,j,costh))
+       enddo
+    enddo
+  end subroutine coulAsympt
+end module coulAsympt_m
+

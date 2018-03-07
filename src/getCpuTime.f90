@@ -12,29 +12,31 @@
 !
 !     Returns cpu time in seconds
 
-subroutine getCpuTime(t)
-  use params
-
+module getCpuTime_m
   implicit none
-  real (PREC) t
+contains
+  subroutine getCpuTime(t)
+    use params
 
-  !      real*4 time(2),result
-  !      real*4 a,b
-  !      real*4 second
+    implicit none
+    real (PREC) t
 
-  !     usage:
-  !     etime - Convex, Sun, Intel (Linux)
-  !     second - Cray
-  !     mclock - RS6000 (current process time in 1/100 sec.
-  !     t=dble(second())
-  !     t=dble(mclock())/100.0_PREC
+    !      real*4 time(2),result
+    !      real*4 a,b
+    !      real*4 second
 
-  !      call etime(time,result)
-  !      t=(time(1))
+    !     usage:
+    !     etime - Convex, Sun, Intel (Linux)
+    !     second - Cray
+    !     mclock - RS6000 (current process time in 1/100 sec.
+    !     t=dble(second())
+    !     t=dble(mclock())/100.0_PREC
 
-  !     cpu_time works for g77, gfortran, ifort
-  call cpu_time (t)
+    !      call etime(time,result)
+    !      t=(time(1))
 
-end subroutine getCpuTime
+    !     cpu_time works for g77, gfortran, ifort
+    call cpu_time (t)
 
-
+  end subroutine getCpuTime
+end module getCpuTime_m

@@ -15,19 +15,23 @@
 !
 !     vlpcoeff(r0)=coeff(1)+coeff(2)*r0+...+coeff(iord)*r0**(iord-1)
 
-function vlpcoeff (iord,r0,coeff)
-  use params
-
+module vlpcoeff_m
   implicit none
-  integer :: i,iord
-  real (PREC) :: vlpcoeff
-  real (PREC) :: r0
-  real (PREC), dimension(*) ::coeff
+contains
+  function vlpcoeff (iord,r0,coeff)
+    use params
 
-  vlpcoeff=0.0_PREC
-  do i=iord,2,-1
-     vlpcoeff=(vlpcoeff+coeff(i))*r0
-  enddo
-  vlpcoeff=vlpcoeff+coeff(1)
+    implicit none
+    integer :: i,iord
+    real (PREC) :: vlpcoeff
+    real (PREC) :: r0
+    real (PREC), dimension(*) ::coeff
 
-end function vlpcoeff
+    vlpcoeff=0.0_PREC
+    do i=iord,2,-1
+       vlpcoeff=(vlpcoeff+coeff(i))*r0
+    enddo
+    vlpcoeff=vlpcoeff+coeff(1)
+
+  end function vlpcoeff
+end module vlpcoeff_m
