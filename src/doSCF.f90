@@ -390,7 +390,7 @@ subroutine doSCF (cw_sor,cw_orb,cw_coul,cw_exch,cw_suppl,cw_sctch)
 
      !   calculate and print various contributions to total energy
      if (iprint(50).ne.0) then
-        call contrib (cw_orb,cw_coul,cw_exch,                                         &
+        call contriborb (cw_orb,cw_coul,cw_exch,                                         &
              cw_suppl(i4b( 4)),cw_suppl(i4b( 5)),cw_suppl(i4b(13)),cw_suppl(i4b(14)), &
              cw_sctch(i5b( 1)),cw_sctch(i5b( 2)),cw_sctch(i5b( 3)),cw_sctch(i5b( 4)))
      endif
