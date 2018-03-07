@@ -17,211 +17,217 @@
 !     to be calculated for non -1 values of \nu and then extrapolated to
 !     \nu=-1.
 
-subroutine nuclder(psi,e,f0,wgt1,wgt2,dermu,dernu,dznu,wk2,wk3,wk4,wk5)
-  use params
-  use discret
-  use commons8
-
-  use blas_m
-  use diffmu_m
-  use diffnu_m
-  use factor_m
-  
+module nuclder_m
   implicit none
-  integer :: i,i1beg,ib,imu,inu,iorb,iprt,isym,l1,m1,n1,ngorb,ngpot,nmut
-  real (PREC) :: ez1,fn,fn1,shn1,tderz
-  real (PREC), dimension(*) :: e,f0,wgt1,wgt2,dznu,wk2,wk3,wk4,wk5
-  real (PREC), dimension(nni,*) :: psi,dermu,dernu
-  real (PREC), dimension(6) :: dzmu
-  real (PREC), dimension(maxorb) :: tderzorb1,tderzorb2,tderzorb3,tderzorb4
-  iprt=0
+contains
+  subroutine nuclder(psi,e,f0,wgt1,wgt2,dermu,dernu,dznu,wk2,wk3,wk4,wk5)
+    use params
+    use discret
+    use commons8
 
-  !     prepare differentialtion arrays used by diffnu and difmu
+    use blas_m
+    use diffmu_m
+    use diffnu_m
+    use factor_m
+    use prepDiff1_m
+    use nuclder1_m
+    use tden_m
+    use putin_m
+    use putout_m
 
-  if (nni.gt.5000) then
-     write(*,*) 'nuclder: nni > 5000 '
-     stop 'nuclder'
-  endif
+    implicit none
+    integer :: i,i1beg,ib,imu,inu,iorb,iprt,isym,l1,m1,n1,ngorb,ngpot,nmut
+    real (PREC) :: ez1,fn,fn1,shn1,tderz
+    real (PREC), dimension(*) :: e,f0,wgt1,wgt2,dznu,wk2,wk3,wk4,wk5
+    real (PREC), dimension(nni,*) :: psi,dermu,dernu
+    real (PREC), dimension(6) :: dzmu
+    real (PREC), dimension(maxorb) :: tderzorb1,tderzorb2,tderzorb3,tderzorb4
+    iprt=0
 
-  call prepdiff1
+    !     prepare differentialtion arrays used by diffnu and difmu
 
-  !     orbital density functions are of even symmetry
+    if (nni.gt.5000) then
+       write(*,*) 'nuclder: nni > 5000 '
+       stop 'nuclder'
+    endif
 
-  write(*,*)
-  write(*,*) 'derivative and derivative/(N*N) of density over z at (0,0,-R/2) for orbital '
-  write(*,*)
+    call prepdiff1
 
-  !     calculate the derivative of density as d(rho)/dz = 2 psi d(psi)/dz
+    !     orbital density functions are of even symmetry
 
-  isym=1
-  tderz=.0_PREC
-  nmut=mxnmu
+    write(*,*)
+    write(*,*) 'derivative and derivative/(N*N) of density over z at (0,0,-R/2) for orbital '
+    write(*,*)
 
-  do iorb=1,norb
+    !     calculate the derivative of density as d(rho)/dz = 2 psi d(psi)/dz
 
-     !        for hydrogen-like systems the accuracy of the derivatives can
-     !        be checked since the analytical formulae are known. For example,
-     !        the 1s orbital density is N^2*exp(-2Zr) and the derivative is
-     !        -2Z up to the normalization constant. This procedure calculates
-     !        the derivative and prints out both its value and the value
-     !        divided by N squared.
+    isym=1
+    tderz=.0_PREC
+    nmut=mxnmu
 
-     n1=mgx(1,iorb)
-     l1=mgx(2,iorb)
-     m1=mgx(3,iorb)
-     ez1=eza1(iorb)
+    do iorb=1,norb
 
-     ! normalization factor for Laguere polynomials
+       !        for hydrogen-like systems the accuracy of the derivatives can
+       !        be checked since the analytical formulae are known. For example,
+       !        the 1s orbital density is N^2*exp(-2Zr) and the derivative is
+       !        -2Z up to the normalization constant. This procedure calculates
+       !        the derivative and prints out both its value and the value
+       !        divided by N squared.
 
-     fn1=(2.0_PREC*ez1/dble(n1))**(3.0_PREC/2.0_PREC+dble(l1)) &
-          *sqrt(factor(n1+l1)/(2.0_PREC*dble(n1)*factor(n1-l1-1)))/factor(2*l1+1)
+       n1=mgx(1,iorb)
+       l1=mgx(2,iorb)
+       m1=mgx(3,iorb)
+       ez1=eza1(iorb)
 
-     ! normalization factor for spherical harmonics
+       ! normalization factor for Laguere polynomials
 
-     shn1=(-1.0_PREC)**dble(m1)/sqrt(4.0_PREC*pii)*sqrt((2*l1+1)*factor(l1-m1)/factor(l1+m1))
-     if (m1.eq.0) shn1=1.0_PREC/sqrt(4.0_PREC*pii)*sqrt((2*l1+1)*factor(l1-m1)/factor(l1+m1))
+       fn1=(2.0_PREC*ez1/dble(n1))**(3.0_PREC/2.0_PREC+dble(l1)) &
+            *sqrt(factor(n1+l1)/(2.0_PREC*dble(n1)*factor(n1-l1-1)))/factor(2*l1+1)
 
-     fn=fn1*shn1
+       ! normalization factor for spherical harmonics
 
-     i1beg=i1b(iorb)
-     nmut=i1mu(iorb)
-     ib=(iorb-1)*nmut+1
+       shn1=(-1.0_PREC)**dble(m1)/sqrt(4.0_PREC*pii)*sqrt((2*l1+1)*factor(l1-m1)/factor(l1+m1))
+       if (m1.eq.0) shn1=1.0_PREC/sqrt(4.0_PREC*pii)*sqrt((2*l1+1)*factor(l1-m1)/factor(l1+m1))
 
-     call nuclder1(iorb,psi(1,ib),dznu,dzmu,dernu,dermu,wk2,wk3,wk4,wk5)
+       fn=fn1*shn1
 
-     tderz=tderz+dznu(nni)+dzmu(1)
-     tderzorb1(iorb)=dznu(nni)
-     tderzorb2(iorb)=dzmu(1)
-     tderzorb3(iorb)=dznu(nni)+dzmu(1)
-     tderzorb4(iorb)=dznu(nni)/(fn*fn)
-  enddo
+       i1beg=i1b(iorb)
+       nmut=i1mu(iorb)
+       ib=(iorb-1)*nmut+1
 
-  write(*,*)
-  write(*,*) 'derivative of the total density',tderz
-  write(*,*) 'and its components '
-  do iorb=1,norb
-     write(*,1000) iorn(iorb),bond(iorb),tderzorb1(iorb),tderzorb2(iorb),tderzorb3(iorb),tderzorb4(iorb)
-  enddo
+       call nuclder1(iorb,psi(1,ib),dznu,dzmu,dernu,dermu,wk2,wk3,wk4,wk5)
 
-  write(*,*)
-  write(*,*)
+       tderz=tderz+dznu(nni)+dzmu(1)
+       tderzorb1(iorb)=dznu(nni)
+       tderzorb2(iorb)=dzmu(1)
+       tderzorb3(iorb)=dznu(nni)+dzmu(1)
+       tderzorb4(iorb)=dznu(nni)/(fn*fn)
+    enddo
 
-  !     calculate the dervivative of density directly
+    write(*,*)
+    write(*,*) 'derivative of the total density',tderz
+    write(*,*) 'and its components '
+    do iorb=1,norb
+       write(*,1000) iorn(iorb),bond(iorb),tderzorb1(iorb),tderzorb2(iorb),tderzorb3(iorb),tderzorb4(iorb)
+    enddo
 
-  tderz=0.0_PREC
-  do iorb=1,norb
+    write(*,*)
+    write(*,*)
 
-     !        for hydrogen-like systems the accuracy of the derivatives can
-     !        be checked since the analytical formulae are known For example,
-     !        the 1s orbital density is N^2*exp(-2Zr) and the derivative is
-     !        -2Z up to the normalization constant. This procedure calculates
-     !        the derivative and prints outs both its value and the value
-     !        divided by N squared.
+    !     calculate the dervivative of density directly
 
-     n1=mgx(1,iorb)
-     l1=mgx(2,iorb)
-     m1=mgx(3,iorb)
-     ez1=eza1(iorb)
+    tderz=0.0_PREC
+    do iorb=1,norb
 
-     !        normalization factor for Laguere polynomials
+       !        for hydrogen-like systems the accuracy of the derivatives can
+       !        be checked since the analytical formulae are known For example,
+       !        the 1s orbital density is N^2*exp(-2Zr) and the derivative is
+       !        -2Z up to the normalization constant. This procedure calculates
+       !        the derivative and prints outs both its value and the value
+       !        divided by N squared.
 
-     fn1=(2.0_PREC*ez1/dble(n1))**(3.0_PREC/2.0_PREC+dble(l1)) &
-          *sqrt(factor(n1+l1)/(2.0_PREC*dble(n1)*factor(n1-l1-1)))/factor(2*l1+1)
+       n1=mgx(1,iorb)
+       l1=mgx(2,iorb)
+       m1=mgx(3,iorb)
+       ez1=eza1(iorb)
 
-     !        normalization factor for spherical harmonics
+       !        normalization factor for Laguere polynomials
 
-     shn1=(-1.0_PREC)**dble(m1)/sqrt(4.0_PREC*pii)*sqrt((2*l1+1)*factor(l1-m1)/factor(l1+m1))
-     if (m1.eq.0) shn1=1.0_PREC/sqrt(4.0_PREC*pii)*sqrt((2*l1+1)*factor(l1-m1)/factor(l1+m1))
+       fn1=(2.0_PREC*ez1/dble(n1))**(3.0_PREC/2.0_PREC+dble(l1)) &
+            *sqrt(factor(n1+l1)/(2.0_PREC*dble(n1)*factor(n1-l1-1)))/factor(2*l1+1)
 
-     fn=fn1*shn1
+       !        normalization factor for spherical harmonics
 
-     i1beg=i1b(iorb)
-     nmut=i1mu(iorb)
-     ngorb=i1si(iorb)
-     ngpot=i2si(iorb)
+       shn1=(-1.0_PREC)**dble(m1)/sqrt(4.0_PREC*pii)*sqrt((2*l1+1)*factor(l1-m1)/factor(l1+m1))
+       if (m1.eq.0) shn1=1.0_PREC/sqrt(4.0_PREC*pii)*sqrt((2*l1+1)*factor(l1-m1)/factor(l1+m1))
 
-     call tden(iorb,ngorb,psi,wk2)
-     call copy(ngorb,wk2,ione,psi(ione,ione),ione)
+       fn=fn1*shn1
 
-     call putin (nni,nmut,isym,psi(ione,ione),wk3)
-     call diffnu (nmut,wk3,dermu,dernu,wk2)
-     call putout (nni,nmut,dernu,dermu)
+       i1beg=i1b(iorb)
+       nmut=i1mu(iorb)
+       ngorb=i1si(iorb)
+       ngpot=i2si(iorb)
 
-     call diffmu (nmut,wk3,wk2)
-     call putout (nni,nmut,dermu,wk2)
+       call tden(iorb,ngorb,psi,wk2)
+       call copy(ngorb,wk2,ione,psi(ione,ione),ione)
 
-     !  derivatives at the right nuclei (0,0,R/2)
+       call putin (nni,nmut,isym,psi(ione,ione),wk3)
+       call diffnu (nmut,wk3,dermu,dernu,wk2)
+       call putout (nni,nmut,dernu,dermu)
 
-     !       dernu(1,1)= exeven(1)*dernu(2,1)+exeven(2)*dernu(3,1)
-     !     &          +exeven(3)*dernu(4,1)
-     !     &          +exeven(4)*dernu(5,1)+exeven(5)*dernu(6,1)
+       call diffmu (nmut,wk3,wk2)
+       call putout (nni,nmut,dermu,wk2)
 
-     !        dermu(1,1)= exeven(1)*dermu(1,2)+exeven(2)*dermu(1,3)
-     !     &          +exeven(3)*dermu(1,4)
-     !     &          +exeven(4)*dermu(1,5)+exeven(5)*dermu(1,6)
+       !  derivatives at the right nuclei (0,0,R/2)
 
-     !        write(*,*) '(dernu(i,1),i=1,6) after extrapolation'
-     !        write(*,*) (dernu(i,1),i=1,6)
+       !       dernu(1,1)= exeven(1)*dernu(2,1)+exeven(2)*dernu(3,1)
+       !     &          +exeven(3)*dernu(4,1)
+       !     &          +exeven(4)*dernu(5,1)+exeven(5)*dernu(6,1)
 
-     !        write(*,*) 'difmu'
-     !        write(*,*) (dermu(1,i),i=1,6)
+       !        dermu(1,1)= exeven(1)*dermu(1,2)+exeven(2)*dermu(1,3)
+       !     &          +exeven(3)*dermu(1,4)
+       !     &          +exeven(4)*dermu(1,5)+exeven(5)*dermu(1,6)
 
-     dernu(nni,1)= exeven(1)*dernu(nni-1,1)+exeven(2)*dernu(nni-2,1)+exeven(3)*dernu(nni-3,1) &
-          +exeven(4)*dernu(nni-4,1)+exeven(5)*dernu(nni-5,1)
+       !        write(*,*) '(dernu(i,1),i=1,6) after extrapolation'
+       !        write(*,*) (dernu(i,1),i=1,6)
 
-     dermu(nni,1)= exeven(1)*dermu(nni,2)+exeven(2)*dermu(nni,3)+exeven(3)*dermu(nni,4) &
-          +exeven(4)*dermu(nni,5)+exeven(5)*dermu(nni,6)
+       !        write(*,*) 'difmu'
+       !        write(*,*) (dermu(1,i),i=1,6)
 
-     !  vxi1(i)=sqrt(xi^2-1)
-     !  veta1(i)=sqrt(1-eta^2)
+       dernu(nni,1)= exeven(1)*dernu(nni-1,1)+exeven(2)*dernu(nni-2,1)+exeven(3)*dernu(nni-3,1) &
+            +exeven(4)*dernu(nni-4,1)+exeven(5)*dernu(nni-5,1)
 
-     !  Having derivative over nu calculate the derivative over z near
-     !  (0,0,-R/2)
+       dermu(nni,1)= exeven(1)*dermu(nni,2)+exeven(2)*dermu(nni,3)+exeven(3)*dermu(nni,4) &
+            +exeven(4)*dermu(nni,5)+exeven(5)*dermu(nni,6)
 
-     do inu=nni-5,nni
-        dznu(inu)=(-1.0_PREC)*2.0_PREC/(r*veta1(inu))*dernu(inu,1)
-     enddo
+       !  vxi1(i)=sqrt(xi^2-1)
+       !  veta1(i)=sqrt(1-eta^2)
 
-     dzmu(1)=.0_PREC
-     do imu=2,6
-        dzmu(imu)=(-1.0_PREC)*2.0_PREC/(r*vxi1(imu))*dermu(nni,imu)
-     enddo
+       !  Having derivative over nu calculate the derivative over z near
+       !  (0,0,-R/2)
 
-     !       calculate the derivative over z at (0,0,-R/2+) by extrapolation
+       do inu=nni-5,nni
+          dznu(inu)=(-1.0_PREC)*2.0_PREC/(r*veta1(inu))*dernu(inu,1)
+       enddo
 
-     dznu(nni)= exeven(1)*dznu(nni-1)+exeven(2)*dznu(nni-2)+exeven(3)*dznu(nni-3) &
-          +exeven(4)*dznu(nni-4)+exeven(5)*dznu(nni-5)
+       dzmu(1)=.0_PREC
+       do imu=2,6
+          dzmu(imu)=(-1.0_PREC)*2.0_PREC/(r*vxi1(imu))*dermu(nni,imu)
+       enddo
 
-     !   calculate the derivative over z at (0,0,-R/2-) by extrapolation
+       !       calculate the derivative over z at (0,0,-R/2+) by extrapolation
 
-     dzmu(1)= exeven(1)*dzmu(2)+exeven(2)*dzmu(3)+exeven(3)*dzmu(4) &
-          +exeven(4)*dzmu(5)+exeven(5)*dzmu(6)
+       dznu(nni)= exeven(1)*dznu(nni-1)+exeven(2)*dznu(nni-2)+exeven(3)*dznu(nni-3) &
+            +exeven(4)*dznu(nni-4)+exeven(5)*dznu(nni-5)
 
-     iprt=1
-     if (iprt.eq.0) then
-        write(*,*) 'dznu(nni) ',(dznu(i),i=nni-5,nni)
-        write(*,*) 'dzmu(1)   ',(dzmu(i),i=1,6)
+       !   calculate the derivative over z at (0,0,-R/2-) by extrapolation
 
-        write(*,*) iorn(iorb),'  ',bond(iorb),dznu(nni),dznu(nni)/(fn*fn),dznu(nni)*(fn*fn)
-     endif
+       dzmu(1)= exeven(1)*dzmu(2)+exeven(2)*dzmu(3)+exeven(3)*dzmu(4) &
+            +exeven(4)*dzmu(5)+exeven(5)*dzmu(6)
 
-     tderz=tderz+dznu(nni)+dzmu(1)
-     tderzorb1(iorb)=dznu(nni)
-     tderzorb2(iorb)=dzmu(1)
-     tderzorb3(iorb)=dznu(nni)+dzmu(1)
-     tderzorb4(iorb)=dznu(nni)/(fn*fn)
-  enddo
+       iprt=1
+       if (iprt.eq.0) then
+          write(*,*) 'dznu(nni) ',(dznu(i),i=nni-5,nni)
+          write(*,*) 'dzmu(1)   ',(dzmu(i),i=1,6)
 
-  write(*,*)
-  write(*,*) 'derivative of the total density',tderz
-  write(*,*) 'and its components '
-  do iorb=1,norb
-     write(*,1000) iorn(iorb),bond(iorb),tderzorb1(iorb),tderzorb2(iorb),tderzorb3(iorb),tderzorb4(iorb)
-  enddo
+          write(*,*) iorn(iorb),'  ',bond(iorb),dznu(nni),dznu(nni)/(fn*fn),dznu(nni)*(fn*fn)
+       endif
+
+       tderz=tderz+dznu(nni)+dzmu(1)
+       tderzorb1(iorb)=dznu(nni)
+       tderzorb2(iorb)=dzmu(1)
+       tderzorb3(iorb)=dznu(nni)+dzmu(1)
+       tderzorb4(iorb)=dznu(nni)/(fn*fn)
+    enddo
+
+    write(*,*)
+    write(*,*) 'derivative of the total density',tderz
+    write(*,*) 'and its components '
+    do iorb=1,norb
+       write(*,1000) iorn(iorb),bond(iorb),tderzorb1(iorb),tderzorb2(iorb),tderzorb3(iorb),tderzorb4(iorb)
+    enddo
 
 01000 format(1x,i2,a6,2x,4e20.10)
-  write(*,*)
-end subroutine nuclder
-
-
-
+    write(*,*)
+  end subroutine nuclder
+end module nuclder_m

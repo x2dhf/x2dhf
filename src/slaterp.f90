@@ -13,42 +13,45 @@
 !     Calculates exchange potentials according to the local Slater
 !     approximation
 
-subroutine slaterp(psi,pot,excp,f2,f4,wk0)
-  use params
-  use discret
-  use commons8
-
+module slaterp_m
   implicit none
-  integer :: i,iborb1,iorb1,ngorb1
+contains
+  subroutine slaterp(psi,pot,excp,f2,f4,wk0)
+    use params
+    use discret
+    use commons8
+    use util
+    use zeroArray_m
 
-  real (PREC) :: const13,coo,xa
+    implicit none
+    integer :: i,iborb1,iorb1,ngorb1
 
-  real (PREC), dimension(*) :: psi,pot,excp,f2,f4,wk0
+    real (PREC) :: const13,coo,xa
+    real (PREC), dimension(*) :: psi,pot,excp,f2,f4,wk0
 
+    parameter (const13=1.0_PREC/3.0_PREC)
 
+    if (nel.eq.1) return
 
-  parameter (const13=1.0_PREC/3.0_PREC)
+    call zeroArray(mxsize,excp)
 
-  if (nel.eq.1) return
+    !   contributions from the local slater exchange
 
-  call zeroArray(mxsize,excp)
+    do iorb1=1,norb
+       iborb1=i1b(iorb1)
+       ngorb1=i1si(iorb1)
+       coo=occ(iorb1)
+       call prodas(ngorb1,coo,psi(iorb1),psi(iorb1),excp)
+    enddo
 
-  !   contributions from the local slater exchange
+    !     multiply exchange potential by f4 to make it commensurate with
+    !     Coulomb potential
 
-  do iorb1=1,norb
-     iborb1=i1b(iorb1)
-     ngorb1=i1si(iorb1)
-     coo=occ(iorb1)
-     call prodas(ngorb1,coo,psi(iorb1),psi(iorb1),excp)
-  enddo
+    xa=-three/two*alphaf*(three/pii)**const13
 
-  !     multiply exchange potential by f4 to make it commensurate with
-  !     Coulomb potential
+    do i=1,mxsize
+       excp(i)=xa*f4(i)*(excp(i))**const13
+    enddo
 
-  xa=-three/two*alphaf*(three/pii)**const13
-
-  do i=1,mxsize
-     excp(i)=xa*f4(i)*(excp(i))**const13
-  enddo
-
-end subroutine slaterp
+  end subroutine slaterp
+end module slaterp_m

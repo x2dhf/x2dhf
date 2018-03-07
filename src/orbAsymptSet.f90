@@ -13,26 +13,28 @@
 !     Recalculates asymptotic values of a given orbital at the practical
 !     infinity using exponential decay values prepared by calling orbAsymptDet.
 !
-subroutine orbAsymptSet (nmi,psi,edecay)
-  use params
-  use discret
-  use commons8
-
+module orbAsymptSet_m
   implicit none
-  integer :: i,j,jj,itt,kk,nmi
-  real (PREC), dimension(*) :: psi
-  real (PREC), dimension(nni,4) :: edecay
+contains
+  subroutine orbAsymptSet (nmi,psi,edecay)
+    use params
+    use discret
+    use commons8
 
-  jj=0
-  do j=nmi-3,nmi
-     itt=(j-1)*nni
-     jj=jj+1
-     do i=1,nni
-        kk=i+itt
-        psi(kk)=psi(kk-nni)*edecay(i,jj)
-     enddo
-  enddo
+    implicit none
+    integer :: i,j,jj,itt,kk,nmi
+    real (PREC), dimension(*) :: psi
+    real (PREC), dimension(nni,4) :: edecay
 
-end subroutine orbAsymptSet
+    jj=0
+    do j=nmi-3,nmi
+       itt=(j-1)*nni
+       jj=jj+1
+       do i=1,nni
+          kk=i+itt
+          psi(kk)=psi(kk-nni)*edecay(i,jj)
+       enddo
+    enddo
 
-
+  end subroutine orbAsymptSet
+end module orbAsymptSet_m

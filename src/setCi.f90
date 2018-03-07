@@ -14,39 +14,40 @@
 !     uses it to replace the values in the [pi/2,pi] region by these
 !     from the [0,pi/2] one.
 
-subroutine setCi (iorb,psi)
-  use params
-  use discret
-  use commons8
-
+module setCi_m
   implicit none
-  integer :: i,ihsym,ibeg,iorb,iorb1,iorb2,n2,nmut
-  real (PREC), dimension(*) :: psi
+contains
+  subroutine setCi (iorb,psi)
+    use params
+    use discret
+    use commons8
+    use setCiOrb_m
 
-!   ihsym = 1 - symmetry g
-!   ihsym =-1 - symmetry u
+    implicit none
+    integer :: i,ihsym,ibeg,iorb,iorb1,iorb2,n2,nmut
+    real (PREC), dimension(*) :: psi
 
-  if (iorb.eq.0) then
-     iorb1=1
-     iorb2=norb
-  else
-     iorb1=iorb
-     iorb2=iorb
-  endif
+    !   ihsym = 1 - symmetry g
+    !   ihsym =-1 - symmetry u
 
-  n2=nni/2+1
+    if (iorb.eq.0) then
+       iorb1=1
+       iorb2=norb
+    else
+       iorb1=iorb
+       iorb2=iorb
+    endif
 
-  do i=iorb1,iorb2
-     ibeg = i1b(i)
-     nmut = i1mu(i)
-     ihsym=ihomo(i)
-     call setCiOrb (n2,nmut,psi(ibeg),ihsym)
-     if (iprint(55).ne.0) then
-        write(*,*) 'homo: ihomo(iorb),ihsym',iorn(i),bond(i),gut(i),ihomo(i),ihsym
-     endif
-  enddo
-end subroutine setCi
+    n2=nni/2+1
 
-
-
-
+    do i=iorb1,iorb2
+       ibeg = i1b(i)
+       nmut = i1mu(i)
+       ihsym=ihomo(i)
+       call setCiOrb (n2,nmut,psi(ibeg),ihsym)
+       if (iprint(55).ne.0) then
+          write(*,*) 'homo: ihomo(iorb),ihsym',iorn(i),bond(i),gut(i),ihomo(i),ihsym
+       endif
+    enddo
+  end subroutine setCi
+end module setCi_m

@@ -20,6 +20,7 @@ contains
     use params
     use discret
     use commons8
+    use util
 
     use blas_m
     use diffmu_m
@@ -30,6 +31,11 @@ contains
     use exbe88_m
     use expw86_m
     use expw91_m
+    use n2f_m
+    use putin_m
+    use putout_m
+    use testn2f_m
+    use testnfng_m
     
     implicit none
     integer :: i,iborb,ibpot,iorb,isiorb,isipot,isym,nmut,norb2

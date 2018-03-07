@@ -2,14 +2,15 @@
 !
 !     Prints a banner of the program
 
-subroutine printBanner
+module printBanner_m
   implicit none
+contains
+  subroutine printBanner
+    implicit none
 
-  write(*,1020)
+    write(*,1020)
 
 01020 format(//,25x,'FINITE DIFFERENCE 2D HARTREE-FOCK  (version 2.1)',//)
 
-end subroutine printBanner
-
-
-
+  end subroutine printBanner
+end module printBanner_m

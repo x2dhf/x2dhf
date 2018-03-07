@@ -19,6 +19,8 @@ contains
     use params
     use discret
     use commons8
+    use util
+
     use blas_m
     use exxalpha_m
     use exbe88_m

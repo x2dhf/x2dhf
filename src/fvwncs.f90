@@ -12,57 +12,63 @@
 !     Calculates (and returns in wk2) the correlation potential of VWN
 !     using the closed-shell formula.
 
-subroutine fvwncs (psi,f4,rhot,rhotup,rhotdown,grhot,grhotup,grhotdown, &
-     wk0,wk1,wk2,wk3,wk4,wk5,wk6,wk7)
-  use params
-  use discret
-  use commons8
-  use blas_m
-
+module fvwncs_m
   implicit none
-  integer :: i,iborb,iorb,isiorb,nmut
-  real (PREC) :: ocdown,ocup
-  real (PREC), dimension(*) :: psi,f4,wk0,wk1,wk2,wk3,wk4,wk5,wk6,wk7, &
-       rhot,rhotup,rhotdown,grhot,grhotup,grhotdown
+contains
+  subroutine fvwncs (psi,f4,rhot,rhotup,rhotdown,grhot,grhotup,grhotdown, &
+       wk0,wk1,wk2,wk3,wk4,wk5,wk6,wk7)
+    use params
+    use discret
+    use commons8
+    use util
 
-  do i=1,mxsize
-     rhotup(i)   =0.0_PREC
-     rhotdown(i) =0.0_PREC
-  enddo
+    use exocc_m
+    use blas_m
+    use fvwnsupcs_m
 
-  !     calculate total densities due to up and down spin
-  do iorb=1,norb
-     if (inhyd(iorb).eq.1) goto 10
-     iborb=i1b(iorb)
-     isiorb=i1si(iorb)
-     nmut=i1mu(iorb)
+    implicit none
+    integer :: i,iborb,iorb,isiorb,nmut
+    real (PREC) :: ocdown,ocup
+    real (PREC), dimension(*) :: psi,f4,wk0,wk1,wk2,wk3,wk4,wk5,wk6,wk7, &
+         rhot,rhotup,rhotdown,grhot,grhotup,grhotdown
 
-     call exocc (iorb,ocup,ocdown)
+    do i=1,mxsize
+       rhotup(i)   =0.0_PREC
+       rhotdown(i) =0.0_PREC
+    enddo
 
-     if (ocup.ne.ocdown) then
-        write(*,*) "Warning: This implementation of VWN potential is only valid for closed shell systems."
-        stop 'fvwncs'
-     endif
+    !     calculate total densities due to up and down spin
+    do iorb=1,norb
+       if (inhyd(iorb).eq.1) cycle
+       iborb=i1b(iorb)
+       isiorb=i1si(iorb)
+       nmut=i1mu(iorb)
 
-     call prod2 (isiorb,psi(iborb),psi(iborb),wk1)
-     call scal (isiorb,ocup,wk1,ione)
+       call exocc (iorb,ocup,ocdown)
 
-     call prod2 (isiorb,psi(iborb),psi(iborb),wk2)
-     call scal (isiorb,ocdown,wk2,ione)
+       if (ocup.ne.ocdown) then
+          write(*,*) "Warning: This implementation of VWN potential is only valid for closed shell systems."
+          stop 'fvwncs'
+       endif
 
-     !        store total densities
-     call add(isiorb,wk1,rhotup)
-     call add(isiorb,wk2,rhotdown)
-10   continue
-  enddo
+       call prod2 (isiorb,psi(iborb),psi(iborb),wk1)
+       call scal (isiorb,ocup,wk1,ione)
 
-  call copy(mxsize,rhotup,ione,rhot,ione)
-  call add(mxsize,rhotdown,rhot)
+       call prod2 (isiorb,psi(iborb),psi(iborb),wk2)
+       call scal (isiorb,ocdown,wk2,ione)
 
-  call fvwnsupcs (rhot,rhotup,rhotdown,grhot,grhotup,grhotdown,wk0,wk1,wk2,wk3,wk4,wk5,wk6,wk7)
+       !        store total densities
+       call add(isiorb,wk1,rhotup)
+       call add(isiorb,wk2,rhotdown)
+    enddo
 
-  call prod (mxsize,f4,wk7)
-  call copy(mxsize,wk7,ione,wk2,ione)
+    call copy(mxsize,rhotup,ione,rhot,ione)
+    call add(mxsize,rhotdown,rhot)
 
-end subroutine fvwncs
+    call fvwnsupcs (rhot,rhotup,rhotdown,grhot,grhotup,grhotdown,wk0,wk1,wk2,wk3,wk4,wk5,wk6,wk7)
 
+    call prod (mxsize,f4,wk7)
+    call copy(mxsize,wk7,ione,wk2,ione)
+
+  end subroutine fvwncs
+end module fvwncs_m

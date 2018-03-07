@@ -21,6 +21,15 @@ contains
     use scf
     use solver
     use commons8
+    use util
+
+    use putin_m
+    use putin2_m
+    use putin3_m
+    use putin4_m
+    use putout_m
+    use putout34_m
+    use mcsor_m
 
     implicit none
     integer :: i,iborb,iorb,ibpot,ibpot1,ig,ioffs1,ioffst,isym1,itr1,itr2,ngrid

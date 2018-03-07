@@ -12,88 +12,92 @@
 
 !     Immerses FUN array into WORK and adds boundary values:
 !     the first subgrid but not the last one.
-subroutine putin2 (nni,nmi,fun,work)
-  use params
-  use solver
-  use blas_m
-
+module putin2_m
   implicit none
-  integer :: i,j,jj,nmi,nni,n9
+contains
+  subroutine putin2 (nni,nmi,fun,work)
+    use params
+    use solver
+    use blas_m
 
-  real (PREC), dimension(nni,*):: fun
-  real (PREC), dimension(nni+8,nmi+8) :: work
-  real (PREC), dimension(maxmu,4) :: fint
-  data n9/9/
+    implicit none
+    integer :: i,j,jj,nmi,nni,n9
 
-!   fill the interior of work array
+    real (PREC), dimension(nni,*):: fun
+    real (PREC), dimension(nni+8,nmi+8) :: work
+    real (PREC), dimension(maxmu,4) :: fint
+    data n9/9/
 
-  do i=1,nmi
-     do j=1,nni
-        work(j+4,i+4)=fun(j,i)
-     enddo
-  enddo
+    !   fill the interior of work array
 
-  !   values over i=nmi bondary are determined from the interpolation formula
-  !   mu=nmu+5....nmu+8 from interpolation (coefficients from cint2)
+    do i=1,nmi
+       do j=1,nni
+          work(j+4,i+4)=fun(j,i)
+       enddo
+    enddo
 
-  do i=1,4
-     write (*,*) 'FIXME'
-     call abort
-     !call gemv (nni,n9,fun(1,iadint2(i)),nni,cint2(1,i),fint(1,i))
-  enddo
+    !   values over i=nmi bondary are determined from the interpolation formula
+    !   mu=nmu+5....nmu+8 from interpolation (coefficients from cint2)
 
-  do i=1,4
-     do j=1,nni
-        work(j+4,nmi+4+i)= fint(j,i)
-     enddo
-  enddo
+    do i=1,4
+       write (*,*) 'FIXME'
+       call abort
+       !call gemv (nni,n9,fun(1,iadint2(i)),nni,cint2(1,i),fint(1,i))
+    enddo
 
-  !   isym = 1 - even symmetry, isym =-1 - odd symmetry
+    do i=1,4
+       do j=1,nni
+          work(j+4,nmi+4+i)= fint(j,i)
+       enddo
+    enddo
 
-  if (isym.eq.1) then
+    !   isym = 1 - even symmetry, isym =-1 - odd symmetry
 
-     !  mu=1...4
-     do i=2,5
-        do j=1,nni
-           work(j+4,6-i)= fun(j,i)
-        enddo
-     enddo
+    if (isym.eq.1) then
 
-     ! ni=1...4
-     do i=1,nmi
-        do j=2,5
-           work(6-j,i+4)= fun(j,i)
-        enddo
-     enddo
+       !  mu=1...4
+       do i=2,5
+          do j=1,nni
+             work(j+4,6-i)= fun(j,i)
+          enddo
+       enddo
 
-     ! ni=ni+4...ni+8
-     do i=1,nmi
-        jj=0
-        do j=nni-4,nni-1
-           jj=jj+1
-           work(nni+9-jj,i+4)= fun(j,i)
-        enddo
-     enddo
-  else
-     do i=2,5
-        do j=1,nni
-           work(j+4,6-i)=-fun(j,i)
-        enddo
-     enddo
+       ! ni=1...4
+       do i=1,nmi
+          do j=2,5
+             work(6-j,i+4)= fun(j,i)
+          enddo
+       enddo
 
-     do i=1,nmi
-        do j=2,5
-           work(6-j,i+4)=-fun(j,i)
-        enddo
-     enddo
+       ! ni=ni+4...ni+8
+       do i=1,nmi
+          jj=0
+          do j=nni-4,nni-1
+             jj=jj+1
+             work(nni+9-jj,i+4)= fun(j,i)
+          enddo
+       enddo
+    else
+       do i=2,5
+          do j=1,nni
+             work(j+4,6-i)=-fun(j,i)
+          enddo
+       enddo
 
-     do i=1,nmi
-        jj=0
-        do j=nni-4,nni-1
-           jj=jj+1
-           work(nni+9-jj,i+4)=-fun(j,i)
-        enddo
-     enddo
-  endif
+       do i=1,nmi
+          do j=2,5
+             work(6-j,i+4)=-fun(j,i)
+          enddo
+       enddo
 
-end subroutine putin2
+       do i=1,nmi
+          jj=0
+          do j=nni-4,nni-1
+             jj=jj+1
+             work(nni+9-jj,i+4)=-fun(j,i)
+          enddo
+       enddo
+    endif
+
+  end subroutine putin2
+end module putin2_m

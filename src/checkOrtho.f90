@@ -18,6 +18,7 @@ contains
   subroutine checkOrtho (iorb1,psi,f4,wgt2,wk0)
     use params
     use commons8
+    use util
     use blas_m
 
     implicit none

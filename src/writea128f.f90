@@ -12,18 +12,21 @@
 !
 !     Writes a to a disk file in a formatted form
 !
-subroutine writea128f (iunit,ndim,a,ierr)
-  use params
-  use commons8
+module writea128f_m
   implicit none
-  integer :: ierr,iunit
-  integer*8 ndim
+contains
+  subroutine writea128f (iunit,ndim,a,ierr)
+    use params
+    use commons8
+    implicit none
 
-  real (PREC16), dimension(ndim) :: a
+    integer*8 :: iunit, ndim, ierr
+    real (PREC16), dimension(ndim) :: a
 
-  write (iunit,formfp128,err=1000) a
-  ierr=0
-  return
+    write (iunit,formfp128,err=1000) a
+    ierr=0
+    return
 
 1000 ierr=1
-end subroutine writea128f
+  end subroutine writea128f
+end module writea128f_m

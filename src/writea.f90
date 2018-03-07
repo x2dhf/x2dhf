@@ -12,16 +12,20 @@
 !
 !     Writes a to a disk file in an unformatted form
 
-subroutine writea (iunit,ndim,a,ierr)
-  use params
-
+module writea_m
   implicit none
+contains
+  subroutine writea (iunit,ndim,a,ierr)
+    use params
 
-  integer :: ierr,iunit,ndim
-  real (PREC), dimension(ndim) :: a
-  write (iunit,err=1000) a
-  ierr=0
-  return
+    implicit none
+
+    integer :: ierr,iunit,ndim
+    real (PREC), dimension(ndim) :: a
+    write (iunit,err=1000) a
+    ierr=0
+    return
 
 1000 ierr=1
-end subroutine writea
+  end subroutine writea
+end module writea_m

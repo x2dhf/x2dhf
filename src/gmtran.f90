@@ -12,21 +12,25 @@
 
 !     Transposes an array A and stores it in ATR.
 
-subroutine gmtran(a,atr,n,m)
-  use params
-
+module gmtran_m
   implicit none
-  integer :: i,ij,ir,j,n,m
-  real (PREC), dimension(*) :: a,atr
+contains
+  subroutine gmtran(a,atr,n,m)
+    use params
 
-  ir=0
-  do i=1,n
-     ij=i-n
-     do j=1,m
-        ij=ij+n
-        ir=ir+1
-        atr(ir)=a(ij)
-     enddo
-  enddo
+    implicit none
+    integer :: i,ij,ir,j,n,m
+    real (PREC), dimension(*) :: a,atr
 
-end subroutine gmtran
+    ir=0
+    do i=1,n
+       ij=i-n
+       do j=1,m
+          ij=ij+n
+          ir=ir+1
+          atr(ir)=a(ij)
+       enddo
+    enddo
+
+  end subroutine gmtran
+end module gmtran_m

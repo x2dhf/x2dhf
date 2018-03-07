@@ -9,6 +9,19 @@ PROGRAM  x2dhf
   use commons8
 
   use doSCF_m
+  use separator_m
+  use printBanner_m
+  use getDateTime_m
+  use setPrecision_m
+  use setDefaults_m
+  use inputData_m
+  use zeroArray_m
+  use initArrays_m
+  use printCase_m
+  use initOrbPot_m
+  use prepSCF_m
+  use printResults_m
+  
   
   implicit none
 

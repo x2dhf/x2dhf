@@ -1,30 +1,35 @@
 ! ### testnfng ###
 !     Tests nabla f nabla g
 
-subroutine testnfng(rhot,grhot,wk0,wk1,wk2,wk3,wk4,wk5,wk6,wk7)
-
-  use params
-  use discret
-  use commons8
-
+module testnfng_m
   implicit none
-  integer :: i,ii,itest,j
-  real (PREC), dimension(*) ::  wk0,wk1,wk2,wk3,wk4,wk5,wk6,wk7,rhot,grhot
+contains
 
-  itest=1
+  subroutine testnfng(rhot,grhot,wk0,wk1,wk2,wk3,wk4,wk5,wk6,wk7)
+    use params
+    use discret
+    use commons8
+    use nfng_m
+    use pmtx_m
 
-  if (itest.eq.1) then
-     do i=1,mxnmu
-        ii=(i-1)*nni
-        do j=1,nni
-           rhot(ii+j) =0.d0
-           grhot(ii+j)=0.d0
-        enddo
-     enddo
+    implicit none
+    integer :: i,ii,itest,j
+    real (PREC), dimension(*) ::  wk0,wk1,wk2,wk3,wk4,wk5,wk6,wk7,rhot,grhot
 
-     call nfng (rhot,grhot,wk0,wk1,wk2,wk3,wk4,wk5,wk6,wk7)
-     call pmtx(nni,mxnmu,wk7,ione,ione,incrni,incrmu)
+    itest=1
 
-  endif
+    if (itest.eq.1) then
+       do i=1,mxnmu
+          ii=(i-1)*nni
+          do j=1,nni
+             rhot(ii+j) =0.d0
+             grhot(ii+j)=0.d0
+          enddo
+       enddo
 
-end subroutine testnfng
+       call nfng (rhot,grhot,wk0,wk1,wk2,wk3,wk4,wk5,wk6,wk7)
+       call pmtx(nni,mxnmu,wk7,ione,ione,incrni,incrmu)
+
+    endif
+  end subroutine testnfng
+end module testnfng_m

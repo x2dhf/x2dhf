@@ -4,42 +4,46 @@
 !    to 8 characters. This string is stored in IBUF.  The remaining
 !    non-blank characters (if any) are ignored.
 
-subroutine inStr(guf)
-
-  use params
-  use card
-
+module inStr_m
   implicit none
+contains
+  subroutine inStr(guf)
 
-  integer :: i,n,nstrt
+    use params
+    use card
 
-  character*1 iblnk
-  character*8 :: ibufr,guf
+    implicit none
 
-  character*1, dimension(8) ::  ibuf
-  character*1, dimension(60) :: iall
+    integer :: i,n,nstrt
 
-  equivalence (ibuf(1),ibufr)
+    character*1 iblnk
+    character*8 :: ibufr,guf
 
-  data iblnk/' '/
-  data iall/'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j','k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't',&
-       'u', 'v', 'w', 'x', 'y', 'z', '-', '-', '-', ' ',&
-       'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J','K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T',&
-       'U', 'V', 'W', 'X', 'Y', 'Z', '-', '-', '-', ' '/
+    character*1, dimension(8) ::  ibuf
+    character*1, dimension(60) :: iall
 
-  do i=1,8
-     ibuf(i)=iblnk
-  enddo
-  jrec = jrec + 1
-  if(jrec .gt. jump) goto 11
-  n = inumb(jrec)
-  nstrt = istrt(jrec)
-  if (n.gt.8) n=8
-  do i = 1,n
-     ibuf(i) = ia(nstrt)
-     nstrt = nstrt + 1
-  enddo
+    equivalence (ibuf(1),ibufr)
 
-11 guf=ibufr
+    data iblnk/' '/
+    data iall/'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j','k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't',&
+         'u', 'v', 'w', 'x', 'y', 'z', '-', '-', '-', ' ',&
+         'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J','K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T',&
+         'U', 'V', 'W', 'X', 'Y', 'Z', '-', '-', '-', ' '/
 
-end subroutine inStr
+    do i=1,8
+       ibuf(i)=iblnk
+    enddo
+    jrec = jrec + 1
+    if(jrec .gt. jump) goto 11
+    n = inumb(jrec)
+    nstrt = istrt(jrec)
+    if (n.gt.8) n=8
+    do i = 1,n
+       ibuf(i) = ia(nstrt)
+       nstrt = nstrt + 1
+    enddo
+
+11  guf=ibufr
+
+  end subroutine inStr
+end module inStr_m

@@ -12,23 +12,26 @@
 
 !     Reads functions from a disk file in an unformatted form
 
-subroutine rfunaux16 (s,t)
-  use params
-  use commons8
-
+module rfunaux16_m
   implicit none
-  integer :: i,ioffset
-  real (PREC16), dimension(*) :: s
-  real (PREC16), dimension(*) :: t
+contains
+  subroutine rfunaux16 (s,t)
+    use params
+    use commons8
 
-  ioffset=0
-  do i=1,60
-     if (inhyd(i).eq.0) then
-        t(i)=s(i-ioffset)
-     else
-        ioffset=ioffset+1
-     endif
-  enddo
+    implicit none
+    integer :: i,ioffset
+    real (PREC16), dimension(*) :: s
+    real (PREC16), dimension(*) :: t
 
-end subroutine rfunaux16
+    ioffset=0
+    do i=1,60
+       if (inhyd(i).eq.0) then
+          t(i)=s(i-ioffset)
+       else
+          ioffset=ioffset+1
+       endif
+    enddo
 
+  end subroutine rfunaux16
+end module rfunaux16_m

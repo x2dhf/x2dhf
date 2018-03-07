@@ -12,39 +12,43 @@
 !
 !     Reads from a disk file exchange potentials involving orbital iorb
 
-subroutine rfdexch (iorb1,excp)
-  use params
-  use commons8
-
+module rfdexch_m
   implicit none
-  integer :: i3beg,iadd,iorb1,iorb2,irec,k,ngrid
-  real (PREC), dimension(*) :: excp
+contains
+  subroutine rfdexch (iorb1,excp)
+    use params
+    use commons8
+    use rrec_m
+    
+    implicit none
+    integer :: i3beg,iadd,iorb1,iorb2,irec,k,ngrid
+    real (PREC), dimension(*) :: excp
 
-  iadd=0
-  do iorb2=1,i3nexcp(iorb1)
-     k=i3breck(iorb1,iorb2)
-     i3beg=i3brec(iorb1,iorb2)
-     if (ilc(k).eq.1) then
-        i3b(k)=i3beg
-     elseif (ilc(k).eq.2) then
-        if (iadd.eq.0) then
-           i3b(k)=i3beg
-           iadd=1
-        else
-           iadd=0
-        endif
-     endif
+    iadd=0
+    do iorb2=1,i3nexcp(iorb1)
+       k=i3breck(iorb1,iorb2)
+       i3beg=i3brec(iorb1,iorb2)
+       if (ilc(k).eq.1) then
+          i3b(k)=i3beg
+       elseif (ilc(k).eq.2) then
+          if (iadd.eq.0) then
+             i3b(k)=i3beg
+             iadd=1
+          else
+             iadd=0
+          endif
+       endif
 
-     irec=i3xpair(iorb1,iorb2)
-     ngrid=i3si(k)
+       irec=i3xpair(iorb1,iorb2)
+       ngrid=i3si(k)
 
-     call rrec(irec,ngrid,excp(i3beg))
-  enddo
-  return
+       call rrec(irec,ngrid,excp(i3beg))
+    enddo
+    return
 
-!900 write(iout6,*) 'error detected when reading exchange potential',iorb1,iorb2,k,irec
-!  stop 'rfdexch'
-!1050 format(/1x,'... writing functions to disk ...'//)
-!1070 format(//1x,'error! can not write data to disk'//)
-end subroutine rfdexch
-
+    !900 write(iout6,*) 'error detected when reading exchange potential',iorb1,iorb2,k,irec
+    !  stop 'rfdexch'
+    !1050 format(/1x,'... writing functions to disk ...'//)
+    !1070 format(//1x,'error! can not write data to disk'//)
+  end subroutine rfdexch
+end module rfdexch_m

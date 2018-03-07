@@ -21,6 +21,8 @@ contains
     use discret
     use scf
     use commons8
+    use util
+
     use blas_m
 
     implicit none

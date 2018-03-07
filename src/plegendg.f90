@@ -19,13 +19,12 @@ contains
     use params
     use commons8
     use factor_m
+    use hypg2f1_m
 
     implicit none
     integer :: l,m
     real (PREC) :: plegendg
     real (PREC) :: ct,ct1,costh,fn0
-    real (PREC), external :: hypg2f1
-
 
     ct=abs(one-costh*costh)
 

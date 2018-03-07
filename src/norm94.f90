@@ -12,25 +12,30 @@
 !
 ! FIXME
 
-subroutine norm94 (iorb,psi,f4,wgt2,wk0,xnorm)
-  use params
-  use commons8
-  use blas_m
-
+module norm94_m
   implicit none
-  integer :: i,ibeg,iorb,ngrid
-  real (PREC) :: xnorm
-  real (PREC), dimension(*) :: psi,f4,wgt2,wk0
+contains
+  subroutine norm94 (iorb,psi,f4,wgt2,wk0,xnorm)
+    use params
+    use commons8
+    use util
+    use blas_m
 
-  ibeg = i1b (iorb)
-  ngrid= i1si(iorb)
-  do i=1,ngrid
-     wk0(i)=psi(ibeg-1+i)*psi(ibeg-1+i)
-  enddo
+    implicit none
+    integer :: i,ibeg,iorb,ngrid
+    real (PREC) :: xnorm
+    real (PREC), dimension(*) :: psi,f4,wgt2,wk0
 
-  call prod  (ngrid,f4,wk0)
+    ibeg = i1b (iorb)
+    ngrid= i1si(iorb)
+    do i=1,ngrid
+       wk0(i)=psi(ibeg-1+i)*psi(ibeg-1+i)
+    enddo
 
-  xnorm=dot (ngrid,wgt2,ione,wk0,ione)
-  area(iorb)=xnorm
+    call prod  (ngrid,f4,wk0)
 
-end subroutine norm94
+    xnorm=dot (ngrid,wgt2,ione,wk0,ione)
+    area(iorb)=xnorm
+
+  end subroutine norm94
+end module norm94_m

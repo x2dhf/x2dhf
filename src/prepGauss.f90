@@ -142,6 +142,7 @@ contains
   end subroutine make_mapping
 
   subroutine read_basis(nprim,nexpon,npbasis)
+    use rexponents_m
     implicit none
     integer, intent(out) :: nprim(3), nexpon, npbasis
     integer :: ibc, ibp, istop, ncen

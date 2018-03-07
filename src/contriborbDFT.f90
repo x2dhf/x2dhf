@@ -19,6 +19,7 @@ contains
   subroutine contriborbDFT(iorb,psi,pot,excp,e,f0,wgt1,wgt2,wk0,wk1,wk2,wk3)
     use params
     use commons8
+    use EaDFT_m
 
     implicit none
     integer :: iorb

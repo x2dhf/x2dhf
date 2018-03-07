@@ -12,32 +12,35 @@
 
 !     Prints total energy and its components
 
-subroutine prttoten
-  use params
-  use commons8
-
+module prttoten_m
   implicit none
+contains
+  subroutine prttoten
+    use params
+    use commons8
 
-  if (iprint16.eq.0) then
-     write(iout6,6110)  etot
-     write(iout6,6100)  evt
+    implicit none
 
-     !        if (islat.eq.0) write(iout6,6120)  virrat
-     write(iout6,6120)  virrat
-     if (ifermi.eq.2.and.iprint(590).ne.0) then
-        write(iout6,6130)  etotFN
-     endif
-  else
-     write(iout6,7110)  etot
-     write(iout6,7100)  evt
+    if (iprint16.eq.0) then
+       write(iout6,6110)  etot
+       write(iout6,6100)  evt
 
-     !        if (islat.eq.0) write(iout6,7120)  virrat
-     write(iout6,7120)  virrat
-     if (ifermi.eq.2.and.iprint(590).ne.0) then
-        write(iout6,7130)  etotFN
-     endif
-  endif
-  return
+       !        if (islat.eq.0) write(iout6,6120)  virrat
+       write(iout6,6120)  virrat
+       if (ifermi.eq.2.and.iprint(590).ne.0) then
+          write(iout6,6130)  etotFN
+       endif
+    else
+       write(iout6,7110)  etot
+       write(iout6,7100)  evt
+
+       !        if (islat.eq.0) write(iout6,7120)  virrat
+       write(iout6,7120)  virrat
+       if (ifermi.eq.2.and.iprint(590).ne.0) then
+          write(iout6,7130)  etotFN
+       endif
+    endif
+    return
 
 6100 format(1x,'total electronic energy: ',e28.16)
 6110 format(1x,'total energy:            ',e28.16)
@@ -49,5 +52,5 @@ subroutine prttoten
 7120 format(1x,'virial ratio:            ',e44.32)
 7130 format(1x,'total energy + FN:       ',e44.32)
 
-end subroutine prttoten
-
+  end subroutine prttoten
+end module prttoten_m

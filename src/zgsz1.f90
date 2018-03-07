@@ -13,30 +13,34 @@
 !     Evaluate the model HF potential according to the formula derived by
 !     Green, Sellin, Zachor (Phys. Rev. 184 (1969) 1) using Z1 centre
 
-function zgsz1(i,j)
-  use params
-  use discret
-  use commons8
-
+module zgsz1_m
   implicit none
-  integer :: i,j,izz1
-  real (PREC) :: zgsz1
-  real (PREC) hc,ri
+contains
+  function zgsz1(i,j)
+    use params
+    use discret
+    use commons8
 
-  ri = r*(vxi(i)+veta(j))/two
-  izz1=nint(z1)
-  if (izz1.eq.0) then
-     zgsz1=0.0_PREC
-     return
-  endif
+    implicit none
+    integer :: i,j,izz1
+    real (PREC) :: zgsz1
+    real (PREC) hc,ri
 
-  if (izz1.eq.1) then
-     hc=dgsz(izz1)*(z1)**0.4_PREC
-     zgsz1=(z1)/(hc*(exp(ri/dgsz(izz1))-one)+one)+one
-     return
-  endif
+    ri = r*(vxi(i)+veta(j))/two
+    izz1=nint(z1)
+    if (izz1.eq.0) then
+       zgsz1=0.0_PREC
+       return
+    endif
 
-  hc=dgsz(izz1)*(z1-one)**0.4_PREC
-  zgsz1=(z1-one)/(hc*(exp(ri/dgsz(izz1))-one)+one)+one
+    if (izz1.eq.1) then
+       hc=dgsz(izz1)*(z1)**0.4_PREC
+       zgsz1=(z1)/(hc*(exp(ri/dgsz(izz1))-one)+one)+one
+       return
+    endif
 
-end function zgsz1
+    hc=dgsz(izz1)*(z1-one)**0.4_PREC
+    zgsz1=(z1-one)/(hc*(exp(ri/dgsz(izz1))-one)+one)+one
+
+  end function zgsz1
+end module zgsz1_m

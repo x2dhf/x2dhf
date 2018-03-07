@@ -12,80 +12,84 @@
 !
 !     a vector plus a vector: dy(i)=dx(i)+dy(i), i=1..n
 
-subroutine  add(n,dx,dy)
-  use params
+module util
   implicit none
-  integer :: i,n
-  real (PREC), dimension(*) :: dx,dy
+contains
 
-  do i = 1,n
-     dy(i) = dy(i) + dx(i)
-  enddo
+  subroutine  add(n,dx,dy)
+    use params
+    implicit none
+    integer :: i,n
+    real (PREC), dimension(*) :: dx,dy
 
-end subroutine add
+    do i = 1,n
+       dy(i) = dy(i) + dx(i)
+    enddo
 
-! ### prod ###
-!
-!     a vector times a vector: dy(i)=dx(i)*dy(i), i=1..n
+  end subroutine add
 
-subroutine prod(n,dx,dy)
-  use params
-  implicit none
-  integer :: i,n
-  real (PREC), dimension(*) :: dx,dy
+  ! ### prod ###
+  !
+  !     a vector times a vector: dy(i)=dx(i)*dy(i), i=1..n
 
-  do i = 1,n
-     dy(i) = dy(i) * dx(i)
-  enddo
+  subroutine prod(n,dx,dy)
+    use params
+    implicit none
+    integer :: i,n
+    real (PREC), dimension(*) :: dx,dy
 
-end subroutine prod
+    do i = 1,n
+       dy(i) = dy(i) * dx(i)
+    enddo
 
-! ### prod2 ###
+  end subroutine prod
 
-!     a vector times a vector: dr(i)=dx(i)*dy(i), i=1..n
+  ! ### prod2 ###
 
-subroutine   prod2(n,dx,dy,dr)
-  use params
-  implicit none
-  integer :: i,n
-  real (PREC), dimension(*) :: dx,dy,dr
+  !     a vector times a vector: dr(i)=dx(i)*dy(i), i=1..n
 
-  do i = 1,n
-     dr(i) = dx(i) * dy(i)
-  enddo
+  subroutine   prod2(n,dx,dy,dr)
+    use params
+    implicit none
+    integer :: i,n
+    real (PREC), dimension(*) :: dx,dy,dr
 
-end subroutine prod2
+    do i = 1,n
+       dr(i) = dx(i) * dy(i)
+    enddo
 
-! ### proda ###
+  end subroutine prod2
 
-!     a vector times a vector: dr(i)=dx(i)*dy(i)+r(i), i=1..n
+  ! ### proda ###
 
-subroutine   proda(n,dx,dy,dr)
-  use params
-  implicit none
-  integer :: i,n
-  real (PREC), dimension(*) :: dx,dy,dr
+  !     a vector times a vector: dr(i)=dx(i)*dy(i)+r(i), i=1..n
 
-  do i = 1,n
-     dr(i) = dx(i) * dy(i)+dr(i)
-  enddo
+  subroutine   proda(n,dx,dy,dr)
+    use params
+    implicit none
+    integer :: i,n
+    real (PREC), dimension(*) :: dx,dy,dr
 
-end subroutine proda
+    do i = 1,n
+       dr(i) = dx(i) * dy(i)+dr(i)
+    enddo
 
-! ### prodas ###
+  end subroutine proda
 
-!     a vector times a vector: dr(i)=s*dx(i)*dy(i)+dr(i), i=1..n
+  ! ### prodas ###
 
-subroutine   prodas(n,s,dx,dy,dr)
-  use params
-  implicit none
-  integer :: i,n
-  real (PREC) :: s
-  real (PREC), dimension(*) :: dx,dy,dr
+  !     a vector times a vector: dr(i)=s*dx(i)*dy(i)+dr(i), i=1..n
 
-  do i = 1,n
-     dr(i) = s*dx(i) * dy(i)+dr(i)
-  enddo
+  subroutine   prodas(n,s,dx,dy,dr)
+    use params
+    implicit none
+    integer :: i,n
+    real (PREC) :: s
+    real (PREC), dimension(*) :: dx,dy,dr
 
-end subroutine prodas
+    do i = 1,n
+       dr(i) = s*dx(i) * dy(i)+dr(i)
+    enddo
 
+  end subroutine prodas
+end module util

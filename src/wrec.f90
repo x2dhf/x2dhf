@@ -12,27 +12,31 @@
 
 ! FIXME
 
-subroutine wrec(irec,ngrid,axyz)
-  use params
-  use commons8
-
+module wrec_m
   implicit none
-  integer :: irec,iunit,ngrid
-  real (PREC), dimension(ngrid) :: axyz
+contains
+  subroutine wrec(irec,ngrid,axyz)
+    use params
+    use commons8
 
-  iunit=irec+30
-  if (iunit.gt.maxunit) then
-     write(*,910)
-     stop "wrec"
-910  format('wrec: maximum unit number exceeded (see User''s Guide)')
-  endif
+    implicit none
+    integer :: irec,iunit,ngrid
+    real (PREC), dimension(ngrid) :: axyz
 
-  ! status=replace doesn't work here
-  open(iunit,status='unknown',form='unformatted')
-  rewind(iunit)
-  write (iunit,err=900) axyz
-  close(iunit)
-  return
+    iunit=irec+30
+    if (iunit.gt.maxunit) then
+       write(*,910)
+       stop "wrec"
+910    format('wrec: maximum unit number exceeded (see User''s Guide)')
+    endif
+
+    ! status=replace doesn't work here
+    open(iunit,status='unknown',form='unformatted')
+    rewind(iunit)
+    write (iunit,err=900) axyz
+    close(iunit)
+    return
 900 write(iout6,*) 'error detected when writing exchange potential',irec
-  stop 'wrec'
-end subroutine wrec
+    stop 'wrec'
+  end subroutine wrec
+end module wrec_m

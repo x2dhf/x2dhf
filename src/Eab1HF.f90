@@ -26,9 +26,13 @@ contains
     use discret
     use scf
     use commons8
+    use util
+
     use blas_m
     use diffmu_m
     use diffnu_m
+    use putin_m
+    use putout_m
 
     implicit none
     integer :: i,i1beg,i1beg1,i1beg2,i2beg,i3beg,ihc,iorb,iorb1,iorb2,ipc12,isym,kex,ngex,&

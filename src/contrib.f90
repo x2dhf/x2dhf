@@ -19,9 +19,17 @@ contains
     use params
     use discret
     use commons8
+    use util
+
     use blas_m
     use diffmu_m
     use diffnu_m
+    use excont_m
+    use exint_m
+    use prepwexch_m
+    use putin_m
+    use putout_m
+    use rfdexch_m
 
     implicit none
     integer :: ibex,iborb,iborb1,iborb2,ibpot,ibpot1,ibpot2,iex,iex1,iorb,iorb1,iorb2,ipe,ipe1,ipe2,&

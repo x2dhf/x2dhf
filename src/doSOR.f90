@@ -22,7 +22,12 @@ contains
     use commons8
     use coulSOR_m
     use coulMCSOR_m
-
+    use exchSOR_m
+    use exchMCSOR_m
+    use orbSOR_m
+    use orbMCSOR_m
+    use tail_m
+    
     implicit none
     integer :: iorb
     integer, dimension(*) :: cw_sor

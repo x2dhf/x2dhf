@@ -20,10 +20,14 @@ contains
     use params
     use discret
     use commons8
+    use util
 
     use blas_m
+    use exocc_m
     use fdften_m
     use exbe88sup_m
+    use multf4_m
+    use nfng_m
 
     implicit none
     real (PREC) :: exbe88

@@ -20,6 +20,8 @@ contains
     use discret
     use scf
     use commons8
+    use util
+    use pmtx_m
     use blas_m
 
     implicit none

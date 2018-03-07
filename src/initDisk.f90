@@ -12,34 +12,41 @@
 
 !     Controls retrieving orbitals and potentials from a disk file
 
-subroutine initDisk (cw_orb,cw_coul,cw_exch,cw_sctch)
-  use params
-  use commons8
-
+module initDisk_m
   implicit none
-  integer :: lengthint_curr,lengthfp_curr,norb_p
+contains
+  subroutine initDisk (cw_orb,cw_coul,cw_exch,cw_sctch)
+    use params
+    use commons8
+    use grid_old_m
+    use rheader_m
+    use rfun_m
+    use rfun_int_m
 
-  real (PREC), dimension(*) :: cw_orb,cw_coul,cw_exch,cw_sctch
+    implicit none
+    integer :: lengthint_curr,lengthfp_curr,norb_p
 
-  !     input files can be in i32, i64 and r128 formats
-  !     save the current formats
-  lengthint_curr=lengthint
-  lengthfp_curr=lengthfp
+    real (PREC), dimension(*) :: cw_orb,cw_coul,cw_exch,cw_sctch
 
-  !     and determine ones used in input files
-  lengthint=lengthintin
-  lengthfp=lengthfpin
+    !     input files can be in i32, i64 and r128 formats
+    !     save the current formats
+    lengthint_curr=lengthint
+    lengthfp_curr=lengthfp
 
-  call rheader(norb_p)
-  if (iinterp.eq.0) then
-     call rfun (norb_p,cw_orb,cw_coul,cw_exch,cw_sctch(i5b( 1)),cw_sctch(i5b( 2)))
-  else
-     call grid_old
-     call rfun_int (norb_p,cw_orb,cw_coul,cw_exch,cw_sctch(i5b( 1)),cw_sctch(i5b( 2)),cw_sctch(i5b(3)))
-  endif
+    !     and determine ones used in input files
+    lengthint=lengthintin
+    lengthfp=lengthfpin
 
-  lengthint=lengthint_curr
-  lengthfp=lengthfp_curr
+    call rheader(norb_p)
+    if (iinterp.eq.0) then
+       call rfun (norb_p,cw_orb,cw_coul,cw_exch,cw_sctch(i5b( 1)),cw_sctch(i5b( 2)))
+    else
+       call grid_old
+       call rfun_int (norb_p,cw_orb,cw_coul,cw_exch,cw_sctch(i5b( 1)),cw_sctch(i5b( 2)),cw_sctch(i5b(3)))
+    endif
 
-end subroutine initDisk
+    lengthint=lengthint_curr
+    lengthfp=lengthfp_curr
 
+  end subroutine initDisk
+end module initDisk_m

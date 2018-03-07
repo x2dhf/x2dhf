@@ -11,127 +11,123 @@
 
 !     Analyzes Fermi charge distribution.
 
-subroutine fermi
-  use params
-  use discret
-  use commons8
-
+module fermi_m
   implicit none
+contains
+  subroutine fermi
+    use params
+    use discret
+    use commons8
 
-  integer :: iprt,mu,nc1,nc2,ni
-  real (PREC) :: a,at3,atw,c,facto1,fmtoau,rr,rrms,rrmsfm,t,tfm,xr2,xrr
+    implicit none
 
-  if (iprint(230).ne.0) then
-     write(*,*) ' '
-     write(*,*) '  finite nuclei with the Fermi charge distribution'
-  endif
+    integer :: iprt,mu,nc1,nc2,ni
+    real (PREC) :: a,at3,atw,c,facto1,fmtoau,rr,rrms,rrmsfm,t,tfm,xr2,xrr
 
-  !     calculate parameters of the finite nucleus charge distribution
-  !     (Fremi distribution)
+    if (iprint(230).ne.0) then
+       write(*,*) ' '
+       write(*,*) '  finite nuclei with the Fermi charge distribution'
+    endif
 
-  fmtoau=1.0e-13_PREC/ainfcm
+    !     calculate parameters of the finite nucleus charge distribution
+    !     (Fremi distribution)
 
-  if (z1.ne.0.0_PREC) then
+    fmtoau=1.0e-13_PREC/ainfcm
 
-     !        set atomic weight for centre A
+    if (z1.ne.0.0_PREC) then
 
-     atw=z1atmass
-     at3=atw**(1.0_PREC/3.0_PREC)
-     rrmsfm = 0.8360_PREC*at3+0.5700_PREC
-     tfm = 2.30_PREC
+       !        set atomic weight for centre A
 
-     !        change units from fm into bohr
+       atw=z1atmass
+       at3=atw**(1.0_PREC/3.0_PREC)
+       rrmsfm = 0.8360_PREC*at3+0.5700_PREC
+       tfm = 2.30_PREC
 
-     rrms = rrmsfm*fmtoau
-     t = tfm*fmtoau
-     a = t/(4.00_PREC*log(3.00_PREC))
-     facto1 = rrms**2-(7.00_PREC/5.00_PREC)*(pii**2)*(a**2)
-     c = sqrt (5.00_PREC/3.00_PREC) * sqrt (facto1)
+       !        change units from fm into bohr
 
-     ni=nni
-     nc1=0
-     xr2=r/2.00_PREC
-     do mu=1,mxnmu
-        rr=sqrt(vxisq(mu)+vetasq(ni)-1.0_PREC)
-        xrr=xr2*rr
-        if (abs(xrr-xr2).lt.c) then
-           nc1=nc1+1
-           if (iprint(231).ne.0) write(*,*) 'mu,xrr',mu,xrr
-        endif
-     enddo
+       rrms = rrmsfm*fmtoau
+       t = tfm*fmtoau
+       a = t/(4.00_PREC*log(3.00_PREC))
+       facto1 = rrms**2-(7.00_PREC/5.00_PREC)*(pii**2)*(a**2)
+       c = sqrt (5.00_PREC/3.00_PREC) * sqrt (facto1)
 
-     mu=1
-     nc2=0
-     do ni=nni,nni/2,-1
-        rr=sqrt(vxisq(mu)+vetasq(ni)-1.0_PREC)
-        xrr=xr2*rr
-        if (abs(xrr-xr2).lt.c) then
-           nc2=nc2+1
-           if (iprint(231).ne.0) write(*,*) 'ni,xrr',ni,xrr
-        endif
-     enddo
+       ni=nni
+       nc1=0
+       xr2=r/2.00_PREC
+       do mu=1,mxnmu
+          rr=sqrt(vxisq(mu)+vetasq(ni)-1.0_PREC)
+          xrr=xr2*rr
+          if (abs(xrr-xr2).lt.c) then
+             nc1=nc1+1
+             if (iprint(231).ne.0) write(*,*) 'mu,xrr',mu,xrr
+          endif
+       enddo
 
-     if (iprt.ne.0) then
-        write(*,*) '    center A: '
-        write(*,*) '    c = ',c,' bohr', '  a = ',a,' bohr'
-        write(*,*) '    nu=-1:',nc1, ' points inside radius c'
-        write(*,*) '    mu= 1:',nc2, ' points inside radius c'
-        write(*,*) ' '
-     endif
-  elseif (z2.ne.0.0_PREC) then
+       mu=1
+       nc2=0
+       do ni=nni,nni/2,-1
+          rr=sqrt(vxisq(mu)+vetasq(ni)-1.0_PREC)
+          xrr=xr2*rr
+          if (abs(xrr-xr2).lt.c) then
+             nc2=nc2+1
+             if (iprint(231).ne.0) write(*,*) 'ni,xrr',ni,xrr
+          endif
+       enddo
 
-     !           set atomic weight for centre B
+       if (iprt.ne.0) then
+          write(*,*) '    center A: '
+          write(*,*) '    c = ',c,' bohr', '  a = ',a,' bohr'
+          write(*,*) '    nu=-1:',nc1, ' points inside radius c'
+          write(*,*) '    mu= 1:',nc2, ' points inside radius c'
+          write(*,*) ' '
+       endif
+    elseif (z2.ne.0.0_PREC) then
 
-     atw=z2atmass
-     at3=atw**(1.0_PREC/3.0_PREC)
-     rrmsfm = 0.8360_PREC*at3+0.5700_PREC
-     tfm = 2.300_PREC
+       !           set atomic weight for centre B
 
-     !        change units from fm into bohr
+       atw=z2atmass
+       at3=atw**(1.0_PREC/3.0_PREC)
+       rrmsfm = 0.8360_PREC*at3+0.5700_PREC
+       tfm = 2.300_PREC
 
-     rrms = rrmsfm*fmtoau
-     t = tfm*fmtoau
-     a = t/(4.00_PREC*log (3.00_PREC))
-     facto1 = rrms**2-(7.00_PREC/5.00_PREC)*(pii**2)*(a**2)
-     c = sqrt (5.00_PREC/3.00_PREC) * sqrt (facto1)
+       !        change units from fm into bohr
 
-     ni=1
-     nc1=0
-     xr2=r/2.00_PREC
-     do mu=1,mxnmu
-        rr=sqrt(vxisq(mu)+vetasq(ni)-1.0_PREC)
-        xrr=xr2*rr
-        if (abs(xrr-xr2).lt.c) then
-           nc1=nc1+1
-           if (iprint(231).ne.0) write(*,*) 'mu,xrr',mu,xrr
-        endif
-     enddo
+       rrms = rrmsfm*fmtoau
+       t = tfm*fmtoau
+       a = t/(4.00_PREC*log (3.00_PREC))
+       facto1 = rrms**2-(7.00_PREC/5.00_PREC)*(pii**2)*(a**2)
+       c = sqrt (5.00_PREC/3.00_PREC) * sqrt (facto1)
 
-     mu=1
-     nc2=0
-     do ni=nni,nni/2,-1
-        rr=sqrt(vxisq(mu)+vetasq(ni)-1.0_PREC)
-        xrr=xr2*rr
-        if (abs(xrr-xr2).lt.c) then
-           nc2=nc2+1
-           if (iprint(231).ne.0) write(*,*) 'ni,xrr',ni,xrr
-        endif
-     enddo
+       ni=1
+       nc1=0
+       xr2=r/2.00_PREC
+       do mu=1,mxnmu
+          rr=sqrt(vxisq(mu)+vetasq(ni)-1.0_PREC)
+          xrr=xr2*rr
+          if (abs(xrr-xr2).lt.c) then
+             nc1=nc1+1
+             if (iprint(231).ne.0) write(*,*) 'mu,xrr',mu,xrr
+          endif
+       enddo
 
-     if (iprint(230).ne.0) then
-        write(*,*) '     Center B: '
-        write(*,*) '     c = ',c,' bohr', '  a = ',a,' bohr'
-        write(*,*) '     nu=1:',nc1, ' points inside radius c'
-        write(*,*) '     mu= 1:',nc2, ' points inside radius c'
-     endif
-  endif
+       mu=1
+       nc2=0
+       do ni=nni,nni/2,-1
+          rr=sqrt(vxisq(mu)+vetasq(ni)-1.0_PREC)
+          xrr=xr2*rr
+          if (abs(xrr-xr2).lt.c) then
+             nc2=nc2+1
+             if (iprint(231).ne.0) write(*,*) 'ni,xrr',ni,xrr
+          endif
+       enddo
 
-end subroutine fermi
+       if (iprint(230).ne.0) then
+          write(*,*) '     Center B: '
+          write(*,*) '     c = ',c,' bohr', '  a = ',a,' bohr'
+          write(*,*) '     nu=1:',nc1, ' points inside radius c'
+          write(*,*) '     mu= 1:',nc2, ' points inside radius c'
+       endif
+    endif
 
-
-
-
-
-
-
-
+  end subroutine fermi
+end module fermi_m

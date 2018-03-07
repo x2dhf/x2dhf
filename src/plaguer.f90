@@ -16,12 +16,12 @@ module plaguer_m
 contains
   function plaguer(n,l,cz,cr)
     use params
+    use hypg1f1_m
 
     implicit none
     integer :: n,l,lp,np
     real (PREC) :: plaguer
     real (PREC) :: cz,cr,x
-    real (PREC), external :: hypg1f1
 
     np=n-l-1
     lp=2*l+2

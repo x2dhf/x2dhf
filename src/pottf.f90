@@ -12,22 +12,26 @@
 !
 !     Calculates a Thomas-Fermi potential (a modified version of dentfa by Desclaux)
 
-function pottf(r,ek,qk,dz,ch,slim)
-  use params
-
+module pottf_m
   implicit none
-  real (PREC) :: pottf
-  real (PREC) :: ch,dz,ek,qk,r,slim,t,w
+contains
+  function pottf(r,ek,qk,dz,ch,slim)
+    use params
 
-  pottf=0.0_PREC
-  if((dz+ch).lt.1.e-04_PREC)  return
+    implicit none
+    real (PREC) :: pottf
+    real (PREC) :: ch,dz,ek,qk,r,slim,t,w
 
-  if(abs(qk+ek).lt.1.e-10_PREC) return
+    pottf=0.0_PREC
+    if((dz+ch).lt.1.e-04_PREC)  return
 
-  w=r*(qk+ek)/2.0_PREC*(dz+ch)**(1.0_PREC/3.0_PREC)
-  w=sqrt(w/0.885340_PREC)
-  t=w*(0.6011200_PREC*w+1.8106100_PREC)+1.0_PREC
-  w=w*(w*(w*(w*(0.0479300_PREC*w+0.2146500_PREC)+0.7711200_PREC)+1.3951500_PREC)+1.8106100_PREC)+1.0_PREC
-  pottf=slim*(1.0_PREC-(t/w)*(t/w))*2.0_PREC/(r*(qk+ek))
+    if(abs(qk+ek).lt.1.e-10_PREC) return
 
-end function pottf
+    w=r*(qk+ek)/2.0_PREC*(dz+ch)**(1.0_PREC/3.0_PREC)
+    w=sqrt(w/0.885340_PREC)
+    t=w*(0.6011200_PREC*w+1.8106100_PREC)+1.0_PREC
+    w=w*(w*(w*(w*(0.0479300_PREC*w+0.2146500_PREC)+0.7711200_PREC)+1.3951500_PREC)+1.8106100_PREC)+1.0_PREC
+    pottf=slim*(1.0_PREC-(t/w)*(t/w))*2.0_PREC/(r*(qk+ek))
+
+  end function pottf
+end module pottf_m

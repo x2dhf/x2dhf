@@ -23,6 +23,7 @@ contains
     use discret
     use commons8
     use blas_m
+    use multf4_m
 
     implicit none
     integer :: i

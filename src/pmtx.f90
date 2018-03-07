@@ -12,42 +12,46 @@
 
 !     Prints two-dimensional array in tabular row-wise form.
 
-subroutine pmtx (n1,n2,a,n1st,n2st,incrn1,incrn2)
-
-  use params
-
+module pmtx_m
   implicit none
-  integer :: i,j,incrn1,incrn2,n1,n2,n1st,n2st
+contains
+  subroutine pmtx (n1,n2,a,n1st,n2st,incrn1,incrn2)
 
-  real (PREC), dimension(n1,n2) :: a
+    use params
 
-  !      print *,n1,n2,n1st,n2st
-  write(6,1000) (j, j=n2st,n2,incrn2)
-  do i=n1st,n1,incrn1
-     write(6,1010) i, (a(i,j),j=n2st,n2,incrn2)
-  enddo
+    implicit none
+    integer :: i,j,incrn1,incrn2,n1,n2,n1st,n2st
+
+    real (PREC), dimension(n1,n2) :: a
+
+    !      print *,n1,n2,n1st,n2st
+    write(6,1000) (j, j=n2st,n2,incrn2)
+    do i=n1st,n1,incrn1
+       write(6,1010) i, (a(i,j),j=n2st,n2,incrn2)
+    enddo
 
 01000 format(4i25)
 01010 format(/,1x,i4,4e25.16,/(5x,4e25.16))
 
-end subroutine pmtx
+  end subroutine pmtx
 
 
-subroutine pmtxi (n1,n2,ia,n1st,n2st,incrn1,incrn2)
+  subroutine pmtxi (n1,n2,ia,n1st,n2st,incrn1,incrn2)
 
-  use params
+    use params
 
-  implicit none
-  integer :: i,j,incrn1,incrn2,n1,n2,n1st,n2st
-  integer, dimension(n1,n2) :: ia
+    implicit none
+    integer :: i,j,incrn1,incrn2,n1,n2,n1st,n2st
+    integer, dimension(n1,n2) :: ia
 
-  !      print *,n1,n2,n1st,n2st
-  write(6,1000) (j, j=n2st,n2,incrn2)
-  do i=n1st,n1,incrn1
-     write(6,1010) i, (ia(i,j),j=n2st,n2,incrn2)
-  enddo
+    !      print *,n1,n2,n1st,n2st
+    write(6,1000) (j, j=n2st,n2,incrn2)
+    do i=n1st,n1,incrn1
+       write(6,1010) i, (ia(i,j),j=n2st,n2,incrn2)
+    enddo
 
 01000 format(4i25)
 01010 format(1x,i4,10i5,/(5x,10i5))
 
-end subroutine pmtxi
+  end subroutine pmtxi
+end module pmtx_m

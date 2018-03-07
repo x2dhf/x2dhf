@@ -20,7 +20,14 @@ contains
     use params
     use discret
     use commons8
+    use util
+
     use blas_m
+    use exocc_m
+    use multf4_m
+    use n2f_m
+    use nfng_m
+    use zeroArray_m
 
     implicit none
     real (PREC) :: eclyptot

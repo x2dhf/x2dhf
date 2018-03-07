@@ -12,18 +12,22 @@
 !
 !     Writes a to a disk file in an unformatted form
 
-subroutine writea32 (iunit,ndim,a,ierr)
- use params
-
+module writea32_m
   implicit none
+contains
+  subroutine writea32 (iunit,ndim,a,ierr)
+    use params
 
-  integer :: ierr,iunit,ndim
-  real (PREC), dimension(ndim) :: a
+    implicit none
 
-  write (iunit,err=1000) a
-  ierr=0
-  return
+    integer :: ierr,iunit,ndim
+    real (PREC), dimension(ndim) :: a
+
+    write (iunit,err=1000) a
+    ierr=0
+    return
 
 1000 ierr=1
 
-end subroutine writea32
+  end subroutine writea32
+end module writea32_m

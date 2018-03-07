@@ -24,6 +24,7 @@ contains
     use commons8
 
     use coulAsymptCont_m
+    use exchAsymptCont_m
 
     implicit none
     integer :: iax,ibeg,idel,ido,iorb,iorb1,iorb2,ipc

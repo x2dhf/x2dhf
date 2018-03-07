@@ -13,24 +13,29 @@
 !     evaluates multipole moment contributions to the boundary values of
 !     exchange for at imu=mxnmu, inu=(nn1-1)/2 (Pi/2)
 
-subroutine exchAsymptCont (idel,ipc,excp)
-  use params
-  use discret
-  use commons8
-
+module exchAsymptCont_m
   implicit none
-  integer :: i,idel,ipc,j,m
+contains
+  subroutine exchAsymptCont (idel,ipc,excp)
+    use params
+    use discret
+    use commons8
+    use vexch_m
 
-  real (PREC), dimension(*) ::  excp
-  real (PREC), dimension(maxmpole) :: excptmp,pe
+    implicit none
+    integer :: i,idel,ipc,j,m
 
-  j=mxnmu
-  i=(nni-1)/2
-  call vexch(i,j,idel,ipc,pe)
-  do m=1,mpole
-     excptmp(m)= r2*vxi(j)*pe(m)
-  enddo
-  write(*,1000) excptmp(1),(excptmp(m)-excptmp(m-1),m=2,mpole),excptmp(mpole)
+    real (PREC), dimension(*) ::  excp
+    real (PREC), dimension(maxmpole) :: excptmp,pe
+
+    j=mxnmu
+    i=(nni-1)/2
+    call vexch(i,j,idel,ipc,pe)
+    do m=1,mpole
+       excptmp(m)= r2*vxi(j)*pe(m)
+    enddo
+    write(*,1000) excptmp(1),(excptmp(m)-excptmp(m-1),m=2,mpole),excptmp(mpole)
 1000 format(4e16.8/5e16.8)
 
-end subroutine exchAsymptCont
+  end subroutine exchAsymptCont
+end module exchAsymptCont_m

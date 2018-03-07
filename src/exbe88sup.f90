@@ -19,7 +19,9 @@ contains
     use params
     use discret
     use commons8
+
     use blas_m
+    use multf4_m
 
     implicit none
     real (PREC) :: exbe88sup

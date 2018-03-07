@@ -23,12 +23,12 @@ contains
     use discret
     use scf
     use commons8
+    use vcoul_m
 
     implicit none
     integer :: i,iorb,itt,j,kk
     real (PREC) :: costh,rr,rr1
     real (PREC), dimension(*) :: pot
-    real (PREC), external :: vcoul
 
     do j=mxnmu-3,mxnmu
        itt=(j-1)*nni

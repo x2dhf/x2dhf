@@ -20,10 +20,13 @@ contains
     use params
     use discret
     use commons8
+    use util
 
     use blas_m
+    use exocc_m
     use fdften_m
     use expw86sup_m
+    use nfng_m
 
     implicit none
     integer :: i,iborb,iorb,isiorb,nmut

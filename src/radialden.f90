@@ -14,46 +14,53 @@
 !     and B (z+R/2) along the internuclear axis (from A to -\infty or B
 !     to +\infty).
 
-subroutine radialden(psi,wk0)
-  use params
-  use discret
-  use commons8
-
+module radialden_m
   implicit none
-  integer :: i,iborb,iorb,iunit,ngorb
-  real (PREC) :: coo
-  real (PREC), dimension(*) :: psi,wk0
+contains
+  subroutine radialden(psi,wk0)
+    use params
+    use discret
+    use commons8
 
-  ngorb=i1si(norb)
-  call zeroArray(ngorb,wk0)
+    use zeroArray_m
+    use prtden_m
+    
+    implicit none
+    integer :: i,iborb,iorb,iunit,ngorb
+    real (PREC) :: coo
+    real (PREC), dimension(*) :: psi,wk0
 
-  do iorb=1,norb
-     iborb=i1b(iorb)
-     coo=occ(iorb)
-     do i=1,ngorb
-        wk0(i)=wk0(i)+coo*psi(iborb+i-1)*psi(iborb+i-1)
-     enddo
-  enddo
+    ngorb=i1si(norb)
+    call zeroArray(ngorb,wk0)
 
-  iunit=99
-  if (iprint(110).eq.1) then
+    do iorb=1,norb
+       iborb=i1b(iorb)
+       coo=occ(iorb)
+       do i=1,ngorb
+          wk0(i)=wk0(i)+coo*psi(iborb+i-1)*psi(iborb+i-1)
+       enddo
+    enddo
 
-     !        print radial density relative to centre A along the
-     !        internuclear axis (-R_{\infty}<=z<=-R/2)
+    iunit=99
+    if (iprint(110).eq.1) then
 
-     open(iunit,file='density-A',status='replace',form='formatted')
-     call prtdenA(nni,i1mu(1),wk0,iunit)
-     close(iunit)
-  endif
+       !        print radial density relative to centre A along the
+       !        internuclear axis (-R_{\infty}<=z<=-R/2)
 
-  if (iprint(111).eq.1) then
+       open(iunit,file='density-A',status='replace',form='formatted')
+       call prtdenA(nni,i1mu(1),wk0,iunit)
+       close(iunit)
+    endif
 
-     !        print radial density relative to centre B along the
-     !        internuclear axis (R/2<=z<=R_{\infty})
+    if (iprint(111).eq.1) then
 
-     open(iunit,file='density-B',status='replace',form='formatted')
-     call prtdenB(ione,i1mu(1),wk0,iunit)
-     close(iunit)
-  endif
+       !        print radial density relative to centre B along the
+       !        internuclear axis (R/2<=z<=R_{\infty})
 
-end subroutine radialden
+       open(iunit,file='density-B',status='replace',form='formatted')
+       call prtdenB(ione,i1mu(1),wk0,iunit)
+       close(iunit)
+    endif
+
+  end subroutine radialden
+end module radialden_m

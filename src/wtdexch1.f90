@@ -12,37 +12,41 @@
 !
 !     Writes exchange potentials as separate files
 
-subroutine wtdexch1 (excp)
-  use params
-  use commons8
-
+module wtdexch1_m
   implicit none
-  integer :: i3beg,iorb1,iorb2,irec,k,ngrid
-  real (PREC), dimension(*) :: excp
+contains
+  subroutine wtdexch1 (excp)
+    use params
+    use commons8
+    use wrec_m
 
-  do iorb1=1,norb
-     do iorb2=iorb1,norb
-        k=i3xk(iorb1,iorb2)
-        if (ilc(k).ne.0) then
-           i3beg=i3b(k)
-           irec=i3xrec1(k)
-           ngrid=i3si(k)
+    implicit none
+    integer :: i3beg,iorb1,iorb2,irec,k,ngrid
+    real (PREC), dimension(*) :: excp
 
-           call wrec(irec,ngrid,excp(i3beg))
+    do iorb1=1,norb
+       do iorb2=iorb1,norb
+          k=i3xk(iorb1,iorb2)
+          if (ilc(k).ne.0) then
+             i3beg=i3b(k)
+             irec=i3xrec1(k)
+             ngrid=i3si(k)
 
-           if (ilc(k).eq.2) then
-              i3beg=i3b(k)+ngrid
-              irec=i3xrec2(k)
-              call wrec(irec,ngrid,excp(i3beg))
-           endif
-        endif
-     enddo
-  enddo
-  return
+             call wrec(irec,ngrid,excp(i3beg))
 
-  write(iout6,*) 'error detected when writing exchange potential',iorb1,iorb2,k,irec
-  stop 'wtdexch1'
-!1050 format(/1x,'... writing functions to disk ...'//)
-!1070 format(//1x,'error! can not write data to disk'//)
-end subroutine wtdexch1
+             if (ilc(k).eq.2) then
+                i3beg=i3b(k)+ngrid
+                irec=i3xrec2(k)
+                call wrec(irec,ngrid,excp(i3beg))
+             endif
+          endif
+       enddo
+    enddo
+    return
 
+    write(iout6,*) 'error detected when writing exchange potential',iorb1,iorb2,k,irec
+    stop 'wtdexch1'
+    !1050 format(/1x,'... writing functions to disk ...'//)
+    !1070 format(//1x,'error! can not write data to disk'//)
+  end subroutine wtdexch1
+end module wtdexch1_m

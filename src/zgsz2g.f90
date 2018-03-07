@@ -14,37 +14,41 @@
 !     Green, Sellin, Zachor (Phys. Rev. 184 (1969) 1) using Z2 centre
 !     with Z2 modified according to the Gauss nucleus model
 
-function zgsz2g(i,j)
-  use params
-  use discret
-  use commons8
-
+module zgsz2g_m
   implicit none
-  integer :: i,j,izz2
-  real (PREC) :: zgsz2g
-  real (PREC) :: hc,ri,zz2t
-  real (PREC), external :: zz2g
+contains
+  function zgsz2g(i,j)
+    use params
+    use discret
+    use commons8
+    use zz2g_m
 
-  ri = r*(vxi(i)-veta(j))/two
-  izz2=nint(z2)
-  if (izz2.eq.0) then
-     zgsz2g=0.0_PREC
-     return
-  endif
+    implicit none
+    integer :: i,j,izz2
+    real (PREC) :: zgsz2g
+    real (PREC) :: hc,ri,zz2t
 
-  if (izz2.eq.1) then
-     hc=dgsz(izz2)*(z2)**0.4_PREC
-     zgsz2g=(z2)/(hc*(exp(ri/dgsz(izz2))-one)+one)+one
-     return
-  endif
+    ri = r*(vxi(i)-veta(j))/two
+    izz2=nint(z2)
+    if (izz2.eq.0) then
+       zgsz2g=0.0_PREC
+       return
+    endif
 
-  zz2t=zz2g(i,j)
-  if (zz2t.eq.zero) then
-     zgsz2g=zero
-     return
-  endif
+    if (izz2.eq.1) then
+       hc=dgsz(izz2)*(z2)**0.4_PREC
+       zgsz2g=(z2)/(hc*(exp(ri/dgsz(izz2))-one)+one)+one
+       return
+    endif
 
-  hc=dgsz(izz2)*(zz2t-one)**0.4_PREC
-  zgsz2g=(zz2t-one)/(hc*(exp(ri/dgsz(izz2))-one)+one)+one
+    zz2t=zz2g(i,j)
+    if (zz2t.eq.zero) then
+       zgsz2g=zero
+       return
+    endif
 
-end function zgsz2g
+    hc=dgsz(izz2)*(zz2t-one)**0.4_PREC
+    zgsz2g=(zz2t-one)/(hc*(exp(ri/dgsz(izz2))-one)+one)+one
+
+  end function zgsz2g
+end module zgsz2g_m

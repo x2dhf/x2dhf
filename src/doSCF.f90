@@ -20,15 +20,30 @@ contains
     use discret
     use commons8
 
-    use ea_m
-    use contribOrb_m
-    use doSOR_m
-    use norm_m
-    use EabDFT_m
-    use contribOrbDFT_m
-    use etotal_m
     use contrib_m
+    use contribOrb_m
+    use contribOrbDFT_m
+    use doSOR_m
+    use Ea_m
+    use EaDFT_m
+    use Eab_m
+    use EabDFT_m
+    use etotal_m
     use etotalDFT_m
+    use etotalOrb_m
+    use getCpuTime_m
+    use mpoleMom_m
+    use norm_m
+    use ortho_m
+    use prepwexch_m
+    use rfdexch_m
+    use setCi_m
+    use potAsympt_m
+    use schedSOR_m
+    use scmc_m
+    use writeDisk_m
+    use writeDisk4dd_m  
+    use wtdexch_m
     
     implicit none
     integer :: i,iasympt,ibeg,ic,iend,imomen,inde,indn,iorb,istat,modv,nei,next,noenergydec,nonormdec,nthren

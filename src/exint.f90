@@ -13,31 +13,35 @@
 !     Calculates the number of exchange integrals within one open nonsigma
 !     shell.
 
-subroutine exint (iorb1,ox1)
-  use params
-  use commons8
-
+module exint_m
   implicit none
-  integer :: i1,i2,iorb1,ip1
-  real (PREC) :: ox1
+contains
+  subroutine exint (iorb1,ox1)
+    use params
+    use commons8
 
-  character*8 :: alpha,beta
+    implicit none
+    integer :: i1,i2,iorb1,ip1
+    real (PREC) :: ox1
 
-  data alpha,beta /'+','-'/
+    character*8 :: alpha,beta
 
-  ox1=0.0_PREC
-  ip1=4*(iorb1-1)
+    data alpha,beta /'+','-'/
 
-  !    interaction within nonsigma shell
+    ox1=0.0_PREC
+    ip1=4*(iorb1-1)
 
-  do i1=1,2
-     if(spin(ip1+i1).ne.alpha.and.spin(ip1+i1).ne.beta) goto 10
-     do i2=3,4
-        if(spin(ip1+i2).ne.alpha.and.spin(ip1+i2).ne.beta) goto 12
-        if(spin(ip1+i1).eq.spin(ip1+i2)) ox1=ox1+1.0_PREC
-00012   continue
-     enddo
-00010 continue
-  enddo
+    !    interaction within nonsigma shell
 
-end subroutine exint
+    do i1=1,2
+       if(spin(ip1+i1).ne.alpha.and.spin(ip1+i1).ne.beta) goto 10
+       do i2=3,4
+          if(spin(ip1+i2).ne.alpha.and.spin(ip1+i2).ne.beta) goto 12
+          if(spin(ip1+i1).eq.spin(ip1+i2)) ox1=ox1+1.0_PREC
+00012     continue
+       enddo
+00010  continue
+    enddo
+
+  end subroutine exint
+end module exint_m

@@ -27,9 +27,14 @@ contains
     use memory
     use scf
     use commons8
+    use util
+
     use blas_m
     use diffmu_m
     use diffnu_m
+    use putin_m
+    use putout_m
+    use zeroArray_m
 
     implicit none
     integer :: i1beg1,i1beg2,iborb,iborb1,iborb2,ibpot,iorb,iorb1,iorb2,ipc1,ipc2,&

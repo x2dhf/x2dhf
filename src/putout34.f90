@@ -12,24 +12,28 @@
 !
 !     Reverses the action of putin and putout[2-4]
 
-subroutine putout34 (nnit,nmit,fun,work)
-  use params
-  use discret
-  use solver
-  use commons8
-
+module putout34_m
   implicit none
-  integer :: i,j,nnit,nmit
+contains
+  subroutine putout34 (nnit,nmit,fun,work)
+    use params
+    use discret
+    use solver
+    use commons8
 
-  real (PREC), dimension(nnit,*) :: fun
-  real (PREC), dimension(nnit+8,nmit+8) :: work
+    implicit none
+    integer :: i,j,nnit,nmit
 
-  !     refill the interior of work array
+    real (PREC), dimension(nnit,*) :: fun
+    real (PREC), dimension(nnit+8,nmit+8) :: work
 
-  do i=1,nmit
-     do j=1,nnit
-        fun(j,muoffs+i)=work(j+4,i+4)
-     enddo
-  enddo
+    !     refill the interior of work array
 
-end subroutine putout34
+    do i=1,nmit
+       do j=1,nnit
+          fun(j,muoffs+i)=work(j+4,i+4)
+       enddo
+    enddo
+
+  end subroutine putout34
+end module putout34_m

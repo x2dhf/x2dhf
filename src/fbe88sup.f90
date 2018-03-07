@@ -13,76 +13,82 @@
 !     returns it in grhot array (see Johnson, Gill, Pople, JCP 98 (1993)
 !     p.5623) and L.Fan and T.Ziegler, JCP 94 (1991) 6057)
 
-subroutine fbe88sup (rhot,grhot,wk,wk0,wk1,wk2,wk3,wk4,wk5,wk6,wk7)
-  use params
-  use discret
-  use commons8
-  use fdftpot_m
-  use blas_m
-  
+module fbe88sup_m
   implicit none
-  integer :: i
-  real (PREC) :: ash,bbeta,const13,const43,const53, &
-       g1,g3,f,fm1,s,s2,t1,t2,t3
+contains
+  subroutine fbe88sup (rhot,grhot,wk,wk0,wk1,wk2,wk3,wk4,wk5,wk6,wk7)
+    use params
+    use discret
+    use commons8
 
-  real (PREC), dimension(*) :: wk,wk0,wk1,wk2,wk3,wk4,wk5,wk6,wk7,rhot,grhot
-  parameter (const13=1.0_PREC/3.0_PREC,const43=4.0_PREC/3.0_PREC, &
-       const53=5.0_PREC/3.0_PREC,bbeta=0.0042)
+    use blas_m
+    use fdftpot_m
+    use n2f_m
+    use nfng_m
+
+    implicit none
+    integer :: i
+    real (PREC) :: ash,bbeta,const13,const43,const53, &
+         g1,g3,f,fm1,s,s2,t1,t2,t3
+
+    real (PREC), dimension(*) :: wk,wk0,wk1,wk2,wk3,wk4,wk5,wk6,wk7,rhot,grhot
+    parameter (const13=1.0_PREC/3.0_PREC,const43=4.0_PREC/3.0_PREC, &
+         const53=5.0_PREC/3.0_PREC,bbeta=0.0042)
 
 
-  ! arcsinh
-  ash(s)=log(s+sqrt(one+s*s))
+    ! arcsinh
+    ash(s)=log(s+sqrt(one+s*s))
 
-  !     Calculate |(nabla rhot nabla rhot)| (grhot)
-  call nfng (rhot,rhot,wk0,wk1,wk2,wk3,wk4,wk5,wk6,grhot)
+    !     Calculate |(nabla rhot nabla rhot)| (grhot)
+    call nfng (rhot,rhot,wk0,wk1,wk2,wk3,wk4,wk5,wk6,grhot)
 
-  !     calculate gamma (see JGP, p.5623)
-  do i=1,mxsize
-     if (abs(rhot(i)).lt.precis) then
-        wk(i)=0.0_PREC
-     else
-        wk(i)=sqrt(grhot(i))/rhot(i)**const43
-     endif
-  enddo
+    !     calculate gamma (see JGP, p.5623)
+    do i=1,mxsize
+       if (abs(rhot(i)).lt.precis) then
+          wk(i)=0.0_PREC
+       else
+          wk(i)=sqrt(grhot(i))/rhot(i)**const43
+       endif
+    enddo
 
-  !     nabla^2 rho
-  call n2f (rhot,wk0,wk1,wk2,grhot)
+    !     nabla^2 rho
+    call n2f (rhot,wk0,wk1,wk2,grhot)
 
-  !     nabla gamma nabla rho (wk7)
-  call nfng (wk,rhot,wk0,wk1,wk2,wk3,wk4,wk5,wk6,wk7)
+    !     nabla gamma nabla rho (wk7)
+    call nfng (wk,rhot,wk0,wk1,wk2,wk3,wk4,wk5,wk6,wk7)
 
-  !     calculate g and g prime
-  do i=1,mxsize
-     g1=fdftpot(alphaf)*rhot(i)**const13
+    !     calculate g and g prime
+    do i=1,mxsize
+       g1=fdftpot(alphaf)*rhot(i)**const13
 
-     s=wk(i)
-     s2=s*s
+       s=wk(i)
+       s2=s*s
 
-     if (abs(rhot(i)).lt.precis) then
-        wk1(i)=g1
-     else
-        fm1=(one+6.0_PREC*bbeta*s*ash(s))
-        if (fm1.lt.precis) then
-           f=0.0_PREC
-        else
-           f=one/fm1
-        endif
+       if (abs(rhot(i)).lt.precis) then
+          wk1(i)=g1
+       else
+          fm1=(one+6.0_PREC*bbeta*s*ash(s))
+          if (fm1.lt.precis) then
+             f=0.0_PREC
+          else
+             f=one/fm1
+          endif
 
-        g3=s/sqrt(one+s2)
+          g3=s/sqrt(one+s2)
 
-        t1=const43*s2*rhot(i)**const53
-        !           nabla^2 rho
-        t2=one+f*(one-6.0_PREC*bbeta*s*g3)
+          t1=const43*s2*rhot(i)**const53
+          !           nabla^2 rho
+          t2=one+f*(one-6.0_PREC*bbeta*s*g3)
 
-        !           nabla rho nabla gamma
-        t3=6.0_PREC*bbeta*f*((one+two*f)*ash(s)+g3*(one/(one+s2)+two*f*(two-6.0_PREC*bbeta*s*g3)))
+          !           nabla rho nabla gamma
+          t3=6.0_PREC*bbeta*f*((one+two*f)*ash(s)+g3*(one/(one+s2)+two*f*(two-6.0_PREC*bbeta*s*g3)))
 
-        wk1(i)=g1-bbeta*f/rhot(i)**const43*(t1-grhot(i)*t2+wk7(i)*t3)
+          wk1(i)=g1-bbeta*f/rhot(i)**const43*(t1-grhot(i)*t2+wk7(i)*t3)
 
-     endif
-  enddo
+       endif
+    enddo
 
-  call copy(mxsize,wk1,ione,grhot,ione)
+    call copy(mxsize,wk1,ione,grhot,ione)
 
-end subroutine fbe88sup
-
+  end subroutine fbe88sup
+end module fbe88sup_m

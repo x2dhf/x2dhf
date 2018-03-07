@@ -13,28 +13,32 @@
 !   Initializes array edecay which is used by orbAsymptSet to calculate
 !    boundary values of a given orbital at practical infinity.
 
-subroutine orbAsymptDet (nmi,iorb,edecay,fa)
-  use params
-  use discret
-  use commons8
-
+module orbAsymptDet_m
   implicit none
-  integer :: i,iorb,j,jj,itt,kk,nmi
-  real (PREC) :: raiq,raiq1
-  real (PREC), dimension(*) :: fa
-  real (PREC), dimension(nni,4) :: edecay
+contains
+  subroutine orbAsymptDet (nmi,iorb,edecay,fa)
+    use params
+    use discret
+    use commons8
 
-  jj=0
-  do j=nmi-3,nmi
-     jj=jj+1
-     itt=(j-1)*nni
-     do i=1,nni
-        kk=i+itt
-        raiq1=sqrt(vxisq(j-1)+vetasq(i)-1.0_PREC)
-        raiq =sqrt(vxisq(j)+vetasq(i)-1.0_PREC)
-!        edecay(i,jj)=(abs(fa(kk-nni)/fa(kk)))**0.250_PREC*exp(sqrt(abs(fa(kk-nni)))*(raiq1-raiq))
-        edecay(i,jj)=(abs(fa(kk)/fa(kk-nni)))**0.250_PREC*exp(sqrt(abs(fa(kk-nni)))*(raiq1-raiq))
-     enddo
-  enddo
+    implicit none
+    integer :: i,iorb,j,jj,itt,kk,nmi
+    real (PREC) :: raiq,raiq1
+    real (PREC), dimension(*) :: fa
+    real (PREC), dimension(nni,4) :: edecay
 
-end subroutine orbAsymptDet
+    jj=0
+    do j=nmi-3,nmi
+       jj=jj+1
+       itt=(j-1)*nni
+       do i=1,nni
+          kk=i+itt
+          raiq1=sqrt(vxisq(j-1)+vetasq(i)-1.0_PREC)
+          raiq =sqrt(vxisq(j)+vetasq(i)-1.0_PREC)
+          !        edecay(i,jj)=(abs(fa(kk-nni)/fa(kk)))**0.250_PREC*exp(sqrt(abs(fa(kk-nni)))*(raiq1-raiq))
+          edecay(i,jj)=(abs(fa(kk)/fa(kk-nni)))**0.250_PREC*exp(sqrt(abs(fa(kk-nni)))*(raiq1-raiq))
+       enddo
+    enddo
+
+  end subroutine orbAsymptDet
+end module orbAsymptDet_m

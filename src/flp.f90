@@ -30,6 +30,8 @@ module flp_m
 contains
   function flp(iord,n,r,f,r0)
     use params
+    use lpcoeff_m
+    use vlpcoeff_m
 
     implicit none
     integer :: i,iord,istart,k,n,nearest
@@ -38,8 +40,6 @@ contains
     real (PREC), dimension(9) :: coeff
     real (PREC), dimension(9,9) :: coeff2
     real (PREC), dimension(n) :: r,f
-
-    real (PREC), external :: vlpcoeff
 
     !     iord value for 2th order (3-point) Lagrange polynomial
     !     parameter (iord=3)

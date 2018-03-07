@@ -12,18 +12,22 @@
 !
 !     Writes a to a disk file in an unformatted form
 
-subroutine writea64 (iunit,ndim,a,ierr)
- use params
+module writea64_m
+  implicit none
+contains
+  subroutine writea64 (iunit,ndim,a,ierr)
+    use params
 
- implicit none
+    implicit none
 
-  integer :: ierr,iunit,ndim
-  real (PREC), dimension(ndim) :: a
+    integer*8 :: ierr,iunit,ndim
+    real (PREC), dimension(ndim) :: a
 
-  write (iunit,err=1000) a
-  ierr=0
-  return
+    write (iunit,err=1000) a
+    ierr=0
+    return
 
 1000 ierr=1
-  return
-end subroutine writea64
+    return
+  end subroutine writea64
+end module writea64_m
