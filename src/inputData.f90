@@ -20,7 +20,7 @@ subroutine inputData(ni_t,mu_t,no_t,nons_t)
 
   integer, external :: nmucalc,nnucalc
 
-  parameter (nmethods=5,nlabels=43,maxflags=40)
+  parameter (nmethods=5,nlabels=42,maxflags=40)
   character*4 cdftext(10),cdftcorrt(10)
   character*8 clabel,clabel1,clabel2,char8
   character*8 labellc(nlabels),cmethod(nmethods)
@@ -36,7 +36,7 @@ subroutine inputData(ni_t,mu_t,no_t,nons_t)
        'orbpot','order','potgsz','potgszg','poth3',&
        'potkh','print','prtevery','scf','scfexch',&
        'sor','sormcsor','stop','title','xalpha',&
-       'potharm', 'pothook','out4dd'/
+       'potharm', 'pothook'/
 
 
   data cdftext /'lda','b88','pw86','pw91','x','x','x','x','x','x'/
@@ -945,13 +945,6 @@ subroutine inputData(ni_t,mu_t,no_t,nons_t)
          endif
          goto 5
       endif
-
-      if (clabel.eq.'out4dd') then
-         iout4dd=1
-         goto 5
-      endif
-
-
 
       if (clabel.eq.'scf') then
 !        label label label label label label label label label label label label label

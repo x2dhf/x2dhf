@@ -39,7 +39,7 @@ setPrecision.f90 slaterp.f90 solver.f90 sor.f90 sort.f90 swap.f90
 tail.f90 tden.f90 testn2f.f90 testnfng.f90 util.f90 vcoul.f90
 vexch.f90 vlpcoeff.f90 vpoly1q.f90 vpolyq.f90 wrec.f90 wrecf.f90
 writea128.f90 writea128f.f90 writea32.f90 writea32f.f90 writea64.f90
-writea64f.f90 writea.f90 writeDisk4dd.f90 writeDisk.f90 wtdexch1.f90
+writea64f.f90 writea.f90 writeDisk.f90 wtdexch1.f90
 wtdexch1f.f90 wtdexch.f90 wtdisk128.f90 wtdisk128f.f90 wtdisk32.f90
 wtdisk32f.f90 wtdisk64.f90 wtdisk64f.f90 wtdisknat.f90 x2dhf.f90
 zeroArray.f90 zeroArrays.f90 zgsz1.f90 zgsz1g.f90 zgsz2.f90 zgsz2g.f90
