@@ -20,7 +20,7 @@
 subroutine initHyd (psi,pot,excp,f2,f4,wgt2,wk0)
   use params
   use commons8
-
+  use blas_m
 
   implicit none
 

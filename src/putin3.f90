@@ -16,6 +16,7 @@
 subroutine putin3 (nni,nmi,fun,work)
   use params
   use solver
+  use blas_m
 
   implicit none
   integer :: i,j,jj,nmi,nni,n9
@@ -38,7 +39,9 @@ subroutine putin3 (nni,nmi,fun,work)
   !   mu=2,...,4 from interpolation (coefficients from cint3l)
 
   do i=2,4
-     call gemv (nni,n9,fun(1,iadint3l(i)),nni,cint3l(1,i),fint(1,i))
+     write (*,*) 'FIXME'
+     call abort
+     !call gemv (nni,n9,fun(1,iadint3l(i)),nni,cint3l(1,i),fint(1,i))
   enddo
 
   do i=2,4
@@ -51,7 +54,9 @@ subroutine putin3 (nni,nmi,fun,work)
   !   mu=nmu+5....nmu+8 from interpolation (coefficients from cint3r)
 
   do i=1,4
-     call gemv (nni,n9,fun(1,iadint3r(i)),nni,cint3r(1,i),fint(1,i))
+     write (*,*) 'FIXME'
+     call abort
+     !call gemv (nni,n9,fun(1,iadint3r(i)),nni,cint3r(1,i),fint(1,i))
   enddo
 
   do i=1,4

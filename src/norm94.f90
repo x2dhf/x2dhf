@@ -13,14 +13,14 @@
 ! FIXME
 
 subroutine norm94 (iorb,psi,f4,wgt2,wk0,xnorm)
-    use params
+  use params
   use commons8
+  use blas_m
 
   implicit none
   integer :: i,ibeg,iorb,ngrid
   real (PREC) :: xnorm
   real (PREC), dimension(*) :: psi,f4,wgt2,wk0
-  real (PREC), external :: dot
 
   ibeg = i1b (iorb)
   ngrid= i1si(iorb)

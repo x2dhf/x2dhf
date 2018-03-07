@@ -13,78 +13,82 @@
 !     Calculates the off-diagonal Lagrange multipliers in case of a
 !     local exchange potential.
 
-subroutine EabDFT (iorb,psi,pot,excp,e,f0,wgt1,wgt2,wk0,wk1,wk2,wk3)
-
-  use params
-  use scf
-  use commons8
-
+module EabDFT_m
   implicit none
-  integer :: iorb,iorb1,iorbbeg,ipc12,ipc21
+contains
+  subroutine EabDFT (iorb,psi,pot,excp,e,f0,wgt1,wgt2,wk0,wk1,wk2,wk3)
 
-  real (PREC) :: engo12,engo21,ent,wocc
-  real (PREC), dimension(*) :: psi,pot,excp,e,f0,wgt1,wgt2,wk0,wk1,wk2,wk3
+    use params
+    use scf
+    use commons8
+    use Eab1DFT_m
+    use Eab2DFT_m
 
-  if (idbg(459).ne.0) return
+    implicit none
+    integer :: iorb,iorb1,iorbbeg,ipc12,ipc21
 
-  if (nel.eq.1)  return
-  if (norb.le.1) return
-  if (iorb.eq.norb) return
+    real (PREC) :: engo12,engo21,ent,wocc
+    real (PREC), dimension(*) :: psi,pot,excp,e,f0,wgt1,wgt2,wk0,wk1,wk2,wk3
 
-  iorbbeg=iorb+1
+    if (idbg(459).ne.0) return
 
-  do iorb1=iorbbeg,norb
-     !        if break is on and the two orbitals have different symmetry
-     !        off-diagonal lm is not calculated
-     !        if (ihomon.eq.2.and.ihomo(iorb1)*ihomo(iorb).lt.0) goto 10
+    if (nel.eq.1)  return
+    if (norb.le.1) return
+    if (iorb.eq.norb) return
 
-     if (ilagra.eq.0.and.ihomo(iorb1)*ihomo(iorb).lt.0) goto 10
-     if (ilagra.eq.0.and.nlm(iorb1,iorb).eq.0) goto 10
-     if (ilagra.eq.1.and.nlmf(iorb1,iorb).eq.0) goto 10
+    iorbbeg=iorb+1
 
-     ipc12=iorb1+(iorb-1)*norb
-     ipc21=iorb+(iorb1-1)*norb
+    do iorb1=iorbbeg,norb
+       !        if break is on and the two orbitals have different symmetry
+       !        off-diagonal lm is not calculated
+       !        if (ihomon.eq.2.and.ihomo(iorb1)*ihomo(iorb).lt.0) goto 10
 
-     !        store previous values in order to make damping of LM possible
-     !         engoprv12=engo(ipc12)
-     !         engoprv21=engo(ipc21)
+       if (ilagra.eq.0.and.ihomo(iorb1)*ihomo(iorb).lt.0) goto 10
+       if (ilagra.eq.0.and.nlm(iorb1,iorb).eq.0) goto 10
+       if (ilagra.eq.1.and.nlmf(iorb1,iorb).eq.0) goto 10
 
-     if (lmtype.eq.0) then
-        wocc=(occ(iorb1)+occ(iorb))/(occ(iorb1)*occ(iorb))
-        call Eab1DFT (iorb1,iorb,psi,pot,excp,e,f0,wgt1,wgt2,wk0,wk1,wk2,wk3)
-        call Eab1DFT (iorb,iorb1,psi,pot,excp,e,f0,wgt1,wgt2,wk0,wk1,wk2,wk3)
-        ent=(engo(ipc12)+engo(ipc21))/wocc
-        engo12=ent/occ(iorb)
-        engo21=ent/occ(iorb1)
-     elseif (lmtype.eq.1) then
-        call Eab1DFT (iorb1,iorb,psi,pot,excp,e,f0,wgt1,wgt2,wk0,wk1,wk2,wk3)
-        engo12=engo(ipc12)
-        engo21=engo(ipc12)/occ(iorb1)
-     elseif (lmtype.eq.2) then
-        call Eab2DFT (iorb1,iorb,psi,pot,excp,wgt2,wk0,wk1)
-        engo21=engo(ipc21)
-        engo12=engo(ipc21)*occ(iorb1)
-     else
-        write(iout6,1000)
-1000    format(/1x,'... off-diagonal Lagrange multiplies cannot be calculated ...'//)
-        stop 'EabDHF'
-     endif
+       ipc12=iorb1+(iorb-1)*norb
+       ipc21=iorb+(iorb1-1)*norb
 
-     !        dflagra=0, sflagra=1 (obsolete)
-     !        engo(ipc12)=sflagra*((1.0_PREC-dflagra)*engo12+dflagra*engoprv12)
-     !        engo(ipc21)=sflagra*((1.0_PREC-dflagra)*engo21+dflagra*engoprv21)
+       !        store previous values in order to make damping of LM possible
+       !         engoprv12=engo(ipc12)
+       !         engoprv21=engo(ipc21)
 
-     engo(ipc12)=engo12
-     engo(ipc21)=engo21
+       if (lmtype.eq.0) then
+          wocc=(occ(iorb1)+occ(iorb))/(occ(iorb1)*occ(iorb))
+          call Eab1DFT (iorb1,iorb,psi,pot,excp,e,f0,wgt1,wgt2,wk0,wk1,wk2,wk3)
+          call Eab1DFT (iorb,iorb1,psi,pot,excp,e,f0,wgt1,wgt2,wk0,wk1,wk2,wk3)
+          ent=(engo(ipc12)+engo(ipc21))/wocc
+          engo12=ent/occ(iorb)
+          engo21=ent/occ(iorb1)
+       elseif (lmtype.eq.1) then
+          call Eab1DFT (iorb1,iorb,psi,pot,excp,e,f0,wgt1,wgt2,wk0,wk1,wk2,wk3)
+          engo12=engo(ipc12)
+          engo21=engo(ipc12)/occ(iorb1)
+       elseif (lmtype.eq.2) then
+          call Eab2DFT (iorb1,iorb,psi,pot,excp,wgt2,wk0,wk1)
+          engo21=engo(ipc21)
+          engo12=engo(ipc21)*occ(iorb1)
+       else
+          write(iout6,1000)
+1000      format(/1x,'... off-diagonal Lagrange multiplies cannot be calculated ...'//)
+          stop 'EabDHF'
+       endif
 
-     if (iprint(48).ne.0) then
-        write(*,'(a8,i4,e16.6,i4,a8,i4,a8,2e16.8)') 'EabDFT: ',&
-             lmtype,sflagra,iorn(iorb),bond(iorb1),iorn(iorb1),bond(iorb1),engo12,engo21
-     endif
-10   continue
-  enddo
+       !        dflagra=0, sflagra=1 (obsolete)
+       !        engo(ipc12)=sflagra*((1.0_PREC-dflagra)*engo12+dflagra*engoprv12)
+       !        engo(ipc21)=sflagra*((1.0_PREC-dflagra)*engo21+dflagra*engoprv21)
 
-end subroutine EabDFT
+       engo(ipc12)=engo12
+       engo(ipc21)=engo21
 
+       if (iprint(48).ne.0) then
+          write(*,'(a8,i4,e16.6,i4,a8,i4,a8,2e16.8)') 'EabDFT: ',&
+               lmtype,sflagra,iorn(iorb),bond(iorb1),iorn(iorb1),bond(iorb1),engo12,engo21
+       endif
+10     continue
+    enddo
 
+  end subroutine EabDFT
+end module EabDFT_m
 

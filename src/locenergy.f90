@@ -18,6 +18,10 @@ subroutine locenergy (iorb,psi,pot,excp,e,f0,f4,wgt1,wgt2,wk0,wk1,wk2,wk3)
   use scf
   use commons8
 
+  use blas_m
+  use diffmu_m
+  use diffnu_m
+
   implicit none
   integer :: i,i1beg1,i1beg,i2beg,i2beg1,i3beg,ibeg,ihc,im,imax,in,iorb,iorb1,ioutmat, &
        ipc,ipe,isym,kex,ngex,ngorb,ngorb1,ngpot,ngpot1,ngrid,ngrid2,nmut

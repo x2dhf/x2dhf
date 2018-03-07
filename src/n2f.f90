@@ -17,6 +17,9 @@ subroutine n2f(f,wk0,wk1,wk2,wk3)
   use solver
   use commons8
 
+  use diffmu_m
+  use diffnu_m
+
   implicit none
   integer :: i,ii,j
   real (PREC) :: t1

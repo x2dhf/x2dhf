@@ -18,135 +18,137 @@
 !      e(iorb2,iorb1) = e(2,1) = engo(ipc21)=<1|T_k +V_n+V_C-V_x|2>
 !      e(iorb1,iorb2) = e(1,2) = engo(ipc12)=<2|T_k +V_n+V_C-V_x|1>
 
-subroutine Eab1HF(iorb1,iorb2,psi,pot,excp,e,f0,wgt1,wgt2,wk0,wk1,wk2,wk3)
-  use params
-  use discret
-  use scf
-  use commons8
-
+module Eab1HF_m
   implicit none
-  integer :: i,i1beg,i1beg1,i1beg2,i2beg,i3beg,ihc,iorb,iorb1,iorb2,ipc12,isym,kex,ngex,&
-       ngorb,ngorb1,ngorb2,ngpot,ngpot1,ngpot2,ngrid,ngrid2,norb2,nmut
+contains
+  subroutine Eab1HF(iorb1,iorb2,psi,pot,excp,e,f0,wgt1,wgt2,wk0,wk1,wk2,wk3)
+    use params
+    use discret
+    use scf
+    use commons8
+    use blas_m
+    use diffmu_m
+    use diffnu_m
 
-  real (PREC) :: coo,w,woneel,wtwoel
-  real (PREC), dimension(*) :: psi,pot,excp,e,f0,wgt1,wgt2,wk0,wk1,wk2,wk3
-  real (PREC), external :: dot
+    implicit none
+    integer :: i,i1beg,i1beg1,i1beg2,i2beg,i3beg,ihc,iorb,iorb1,iorb2,ipc12,isym,kex,ngex,&
+         ngorb,ngorb1,ngorb2,ngpot,ngpot1,ngpot2,ngrid,ngrid2,norb2,nmut
 
-  ipc12=iorb1+(iorb2-1)*norb
-  engo(ipc12)=zero
+    real (PREC) :: coo,w,woneel,wtwoel
+    real (PREC), dimension(*) :: psi,pot,excp,e,f0,wgt1,wgt2,wk0,wk1,wk2,wk3
 
-  if (mm(iorb1).ne.mm(iorb2)) return
-  if (ige(iorb1).ne.ige(iorb2)) return
+    ipc12=iorb1+(iorb2-1)*norb
+    engo(ipc12)=zero
 
-  i1beg1=i1b(iorb1)
-  ngorb1=i1si(iorb1)
-  ngpot1=i2si(iorb1)
+    if (mm(iorb1).ne.mm(iorb2)) return
+    if (ige(iorb1).ne.ige(iorb2)) return
 
-  i1beg2=i1b(iorb2)
-  ngorb2=i1si(iorb2)
-  ngpot2=i2si(iorb2)
+    i1beg1=i1b(iorb1)
+    ngorb1=i1si(iorb1)
+    ngpot1=i2si(iorb1)
 
-  norb2=norb*norb
+    i1beg2=i1b(iorb2)
+    ngorb2=i1si(iorb2)
+    ngpot2=i2si(iorb2)
 
-  nmut=i1mu(iorb1)
-  isym=isymOrb(iorb1)
+    norb2=norb*norb
 
-  !    calculate derivatives over mu and ni
+    nmut=i1mu(iorb1)
+    isym=isymOrb(iorb1)
 
-  call putin (nni,nmut,isym,psi(i1beg1),wk3)
-  call diffnu (nmut,wk3,wk0,wk1,wk2)
-  call putout (nni,nmut,wk1,wk0)
+    !    calculate derivatives over mu and ni
 
-  call diffmu (nmut,wk3,wk2)
-  call putout (nni,nmut,wk0,wk2)
+    call putin (nni,nmut,isym,psi(i1beg1),wk3)
+    call diffnu (nmut,wk3,wk0,wk1,wk2)
+    call putout (nni,nmut,wk1,wk0)
 
-  !     add contributions from derivatives over mu and ni
-  ngorb=min(ngorb1,ngorb2)
-  call add (ngorb,wk0,wk1)
+    call diffmu (nmut,wk3,wk2)
+    call putout (nni,nmut,wk0,wk2)
 
-  if (mm(iorb1).eq.0) then
-     call copy (ngorb,f0,ione,wk0,ione)
-  else
+    !     add contributions from derivatives over mu and ni
+    ngorb=min(ngorb1,ngorb2)
+    call add (ngorb,wk0,wk1)
 
-     !        nuclear energy for non-sigma orbitals contains contribution
-     !        from e term (in totalHF this term is correctly added to the
-     !        kinetic energy contribution); e enters the expression with
-     !        minus sign which is already incorporated in e
+    if (mm(iorb1).eq.0) then
+       call copy (ngorb,f0,ione,wk0,ione)
+    else
 
-     w=dble(mm(iorb1)*mm(iorb1))
+       !        nuclear energy for non-sigma orbitals contains contribution
+       !        from e term (in totalHF this term is correctly added to the
+       !        kinetic energy contribution); e enters the expression with
+       !        minus sign which is already incorporated in e
 
-     call copy (ngorb,f0,ione,wk0,ione)
-     call axpy (ngorb,w,e,ione,wk0,ione)
-  endif
+       w=dble(mm(iorb1)*mm(iorb1))
 
-  call proda (ngorb,psi(i1beg1),wk0,wk1)
-  call prod (ngorb,psi(i1beg2),wk1)
+       call copy (ngorb,f0,ione,wk0,ione)
+       call axpy (ngorb,w,e,ione,wk0,ione)
+    endif
 
-  woneel=dot(ngorb,wgt1,ione,wk1,ione)
+    call proda (ngorb,psi(i1beg1),wk0,wk1)
+    call prod (ngorb,psi(i1beg2),wk1)
 
-  !     add contributions from Coulomb and exchange potentials
+    woneel=dot(ngorb,wgt1,ione,wk1,ione)
 
-  do iorb=1,norb
-     i1beg=i1b(iorb)
-     ngorb=i1si(iorb)
-     ngpot=i2si(iorb)
+    !     add contributions from Coulomb and exchange potentials
 
-     kex=iorb2+norb*(iorb-1)
-     if (iorb2.le.iorb) then
-        ihc=iorb2+iorb*(iorb-1)/2
-     else
-        ihc=iorb+iorb2*(iorb2-1)/2
-     endif
+    do iorb=1,norb
+       i1beg=i1b(iorb)
+       ngorb=i1si(iorb)
+       ngpot=i2si(iorb)
 
-     i2beg=i2b(iorb)
-     i3beg=i3b(ihc)
-     ngex =i3si(ihc)
+       kex=iorb2+norb*(iorb-1)
+       if (iorb2.le.iorb) then
+          ihc=iorb2+iorb*(iorb-1)/2
+       else
+          ihc=iorb+iorb2*(iorb2-1)/2
+       endif
 
-     ngrid=min(ngorb2,ngpot)
-     do i=1,mxsize
-        wk0(i)=0.0_PREC
-     enddo
+       i2beg=i2b(iorb)
+       i3beg=i3b(ihc)
+       ngex =i3si(ihc)
 
-     coo=occ(iorb)
-     if (iorb2.eq.iorb) coo=coo-one
+       ngrid=min(ngorb2,ngpot)
+       do i=1,mxsize
+          wk0(i)=0.0_PREC
+       enddo
 
-     call copy (ngrid,pot(i2beg),ione,wk0,ione)
-     call prod  (ngrid,psi(i1beg2),wk0)
+       coo=occ(iorb)
+       if (iorb2.eq.iorb) coo=coo-one
 
-     if (coo.ne.one) then
-        call scal (ngrid,coo,wk0,ione)
-     endif
+       call copy (ngrid,pot(i2beg),ione,wk0,ione)
+       call prod  (ngrid,psi(i1beg2),wk0)
 
-     ngrid2=min(ngorb2,ngex,ngorb)
-     if (iorb.ne.iorb2)  then
-        coo=gec(kex)
-        call prodas (ngrid2,-coo,psi(i1beg),excp(i3beg),wk0)
-        if (ilc(ihc).gt.1) then
-           coo=gec(kex+norb*norb)
-           call prodas (ngrid2,-coo,psi(i1beg),excp(i3beg+i3si(ihc)),wk0)
-        endif
-     else
-        if ((mm(iorb1).gt.0).and.(ilc(ihc).gt.0)) then
-           coo=gec(kex)
-           call prodas (ngrid2,-coo,psi(i1beg),excp(i3beg),wk0)
-        endif
-     endif
+       if (coo.ne.one) then
+          call scal (ngrid,coo,wk0,ione)
+       endif
 
-     if (iorb.eq.1) then
-        call copy (ngrid,wk0,ione,wk1,ione)
-     else
-        call add   (ngrid,wk0,wk1)
-     endif
-  enddo
+       ngrid2=min(ngorb2,ngex,ngorb)
+       if (iorb.ne.iorb2)  then
+          coo=gec(kex)
+          call prodas (ngrid2,-coo,psi(i1beg),excp(i3beg),wk0)
+          if (ilc(ihc).gt.1) then
+             coo=gec(kex+norb*norb)
+             call prodas (ngrid2,-coo,psi(i1beg),excp(i3beg+i3si(ihc)),wk0)
+          endif
+       else
+          if ((mm(iorb1).gt.0).and.(ilc(ihc).gt.0)) then
+             coo=gec(kex)
+             call prodas (ngrid2,-coo,psi(i1beg),excp(i3beg),wk0)
+          endif
+       endif
 
-  !     to complete the integrand wk1 has to be multiplied by psi(i1beg1)
-  call prod (ngrid,psi(i1beg1),wk1)
-  wtwoel=dot(ngrid,wgt2,ione,wk1,ione)
+       if (iorb.eq.1) then
+          call copy (ngrid,wk0,ione,wk1,ione)
+       else
+          call add   (ngrid,wk0,wk1)
+       endif
+    enddo
 
-  engo(ipc12)=woneel+wtwoel
+    !     to complete the integrand wk1 has to be multiplied by psi(i1beg1)
+    call prod (ngrid,psi(i1beg1),wk1)
+    wtwoel=dot(ngrid,wgt2,ione,wk1,ione)
 
-end subroutine Eab1HF
+    engo(ipc12)=woneel+wtwoel
 
-
-
-
+  end subroutine Eab1HF
+end module Eab1HF_m

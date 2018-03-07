@@ -22,6 +22,11 @@ subroutine nuclder(psi,e,f0,wgt1,wgt2,dermu,dernu,dznu,wk2,wk3,wk4,wk5)
   use discret
   use commons8
 
+  use blas_m
+  use diffmu_m
+  use diffnu_m
+  use factor_m
+  
   implicit none
   integer :: i,i1beg,ib,imu,inu,iorb,iprt,isym,l1,m1,n1,ngorb,ngpot,nmut
   real (PREC) :: ez1,fn,fn1,shn1,tderz
@@ -29,7 +34,6 @@ subroutine nuclder(psi,e,f0,wgt1,wgt2,dermu,dernu,dznu,wk2,wk3,wk4,wk5)
   real (PREC), dimension(nni,*) :: psi,dermu,dernu
   real (PREC), dimension(6) :: dzmu
   real (PREC), dimension(maxorb) :: tderzorb1,tderzorb2,tderzorb3,tderzorb4
-  real (PREC), external :: factor
   iprt=0
 
   !     prepare differentialtion arrays used by diffnu and difmu

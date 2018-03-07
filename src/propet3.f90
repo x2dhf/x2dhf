@@ -19,6 +19,9 @@ subroutine propet3 (cw_orb,cw_coul,cw_exch,f4,wgt2,wk0,wk1,wk2,wk3,wk4,wk5)
   use scf
   use commons8
 
+  use blas_m
+  use plegendg_m
+  
   implicit none
 
   integer :: i1beg,igp,imu,in,inioff,iorb,izz1,izz2,k,ngorb
@@ -26,7 +29,6 @@ subroutine propet3 (cw_orb,cw_coul,cw_exch,f4,wgt2,wk0,wk1,wk2,wk3,wk4,wk5)
        sum1,sum2,sum3,xxplusyy,z,zcm
 
   real (PREC), dimension(*) :: cw_orb,cw_coul,cw_exch,f4,wgt2,wk0,wk1,wk2,wk3,wk4,wk5
-  real (PREC), external :: dot,plegendg
 
   !     1 bohr electron = 2.541765 Debye -- Gaussian94 User's Reference
   !     data au2Debye /2.5417650_PREC/

@@ -19,12 +19,14 @@ subroutine EaDFT(iorb,psi,pot,excp,e,f0,wgt1,wgt2,wk0,wk1,wk2,wk3)
   use memory
   use scf
   use commons8
+  use diffmu_m
+  use diffnu_m
+  use blas_m
 
   implicit none
   integer :: iorb,iorb1,i1beg,i1beg1,i2beg,i2beg1,ipc,isym,nmut,ngorb,ngpot,ngorb1,ngpot1
   real (PREC) :: w,woneel,wtwoel
   real (PREC), dimension(*) :: psi,pot,excp,e,f0,wgt1,wgt2,wk0,wk1,wk2,wk3
-  real (PREC), external :: dot
 
   if (ifix(iorb).eq.1) return
 

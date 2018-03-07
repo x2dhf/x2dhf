@@ -18,6 +18,9 @@ subroutine etotalOrb (iorb,psi,pot,excp,e,f0,wgt1,wgt2,wk0,wk1,wk2,wk3,wk4,wk5,w
   use params
   use discret
   use commons8
+  use blas_m
+  use diffmu_m
+  use diffnu_m
 
   implicit none
   integer :: ibex,iborb,iborb1,iborb2,ibpot,ibpot1,ibpot2,iex,iex1,iorb,iorb1,iorb2,&
@@ -25,7 +28,6 @@ subroutine etotalOrb (iorb,psi,pot,excp,e,f0,wgt1,wgt2,wk0,wk1,wk2,wk3,wk4,wk5,w
   real (PREC) :: epscharge,oc,oc1,oc2,ocx1,ocx2,w,wdcoul,wex1,wex2,wndc,woneel
 
   real (PREC), dimension(*) :: psi,pot,excp,e,f0,wgt1,wgt2,wk0,wk1,wk2,wk3,wk4,wk5,wk6,wk7,wk8,wk9,wk10,wk11,wk12,wk13
-  real (PREC), external :: dot
 
 
 !   an orbital is considerd occupied if its charge is greater than epscharge

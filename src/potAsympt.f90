@@ -17,6 +17,8 @@ subroutine potAsympt (iorb1,pot,excp)
   use params
   use commons8
 
+  use coulAsympt_m
+  
   implicit none
   integer :: i3beg,ibeg,idel,iorb1,iorb2,k,ngrid
 

@@ -12,121 +12,125 @@
 
 !     Evaluates the Coulomb potential for a given orbital
 
-subroutine coulMCSOR (iorb,cw_sor,psi,pot,excp,bpot,d,f3,g,lhs,rhs,wk2)
-  use params
-  use discret
-  use scf
-  use solver
-  use commons8
-
+module coulMCSOR_m
   implicit none
-  integer :: i,iborb,iorb,ibpot,ibpot1,ig,ioffs1,ioffst,isym1,itr1,itr2,ngrid
-  integer, dimension(*) :: cw_sor
-  real (PREC), dimension(*) :: psi,pot,excp,rhs,bpot,d,f3,g,lhs,wk2
+contains
+  subroutine coulMCSOR (iorb,cw_sor,psi,pot,excp,bpot,d,f3,g,lhs,rhs,wk2)
+    use params
+    use discret
+    use scf
+    use solver
+    use commons8
 
-  !     dimension of wk2 array need be only (nni+8)*(nmi+4) but
-  !     (nni+8)*(nmi+8) array is reserved
+    implicit none
+    integer :: i,iborb,iorb,ibpot,ibpot1,ig,ioffs1,ioffst,isym1,itr1,itr2,ngrid
+    integer, dimension(*) :: cw_sor
+    real (PREC), dimension(*) :: psi,pot,excp,rhs,bpot,d,f3,g,lhs,wk2
 
-  if (nel.eq.1) return
+    !     dimension of wk2 array need be only (nni+8)*(nmi+4) but
+    !     (nni+8)*(nmi+8) array is reserved
 
-  !     prepare right-hand side of Poisson's equation
+    if (nel.eq.1) return
 
-  iborb=i1b(iorb)
-  ngrid=i1si(iorb)
-  call prod2 (ngrid,psi(iborb),psi(iborb),wk2)
-  call prod2 (ngrid,wk2,g,rhs)
+    !     prepare right-hand side of Poisson's equation
 
-  !     even symmetry for coulomb potential
-  isym1=1
-  ibpot=i2b(iorb)
+    iborb=i1b(iorb)
+    ngrid=i1si(iorb)
+    call prod2 (ngrid,psi(iborb),psi(iborb),wk2)
+    call prod2 (ngrid,wk2,g,rhs)
 
-  do itr1=1,maxsor1
-     do ig=1,i1ng(iorb)
-        omega=ovfcoul(ig)
-        omega1=1.0_PREC-omega
-        ioffst=ioffs(ig)
-        ioffs1=ioffst+1
-        ibpot1=ibpot+ioffst
+    !     even symmetry for coulomb potential
+    isym1=1
+    ibpot=i2b(iorb)
 
-        do i=1,4
-           dmu2t(i)=dmu2(i,ig)
-           dmu1t(i)=dmu1(i,ig)
-        enddo
+    do itr1=1,maxsor1
+       do ig=1,i1ng(iorb)
+          omega=ovfcoul(ig)
+          omega1=1.0_PREC-omega
+          ioffst=ioffs(ig)
+          ioffs1=ioffst+1
+          ibpot1=ibpot+ioffst
 
-        !           prepare left-hand side of the poisson equation
-        !           include the diagonal part of the differentiation operator in lhs
+          do i=1,4
+             dmu2t(i)=dmu2(i,ig)
+             dmu1t(i)=dmu1(i,ig)
+          enddo
 
-        do i=1,ngsize(ig)
-           lhs(ioffst+i)=f3(ioffst+i)+diag(ig)
-        enddo
+          !           prepare left-hand side of the poisson equation
+          !           include the diagonal part of the differentiation operator in lhs
 
-        if (i1ng(iorb).eq.1) then
-           !              icase=1
-           ifill=1
-           ngrd1 =ingr1(1,ig)
-           ngrd6a=ingr1(2,ig)
-           ngrd6b=ingr1(3,ig)
-           ngrd7 =ingr1(4,ig)
-           !
-           call putin (nni,nmu(ig),isym1,pot(iborb),wk2)
-           do itr2=1,maxsorpot(iorb)
-              call mcsor (wk2,lhs(ioffs1),rhs(ioffs1), bpot(ioffs1),d(ioffs1),                   &
-                   cw_sor(iadext(ig)),cw_sor(iadnor(ig)),cw_sor(iadex1(ig)),cw_sor(iadex2(ig)),  &
-                   cw_sor(iadex3(ig)))
-           enddo
-           call putout (nni,nmu(ig),pot(iborb),wk2)
-        else
-           if (ig.eq.1) then
-              !                 icase=2
-              ifill=2
-              ngrd1 =ingr2(1,ig)
-              ngrd6a=ingr2(2,ig)
-              ngrd6b=ingr2(3,ig)
-              ngrd7 =ingr2(4,ig)
+          do i=1,ngsize(ig)
+             lhs(ioffst+i)=f3(ioffst+i)+diag(ig)
+          enddo
 
-              call putin2 (nni,nmu(ig),pot(iborb),wk2)
-              do itr2=1,maxsorpot(iorb)
-                 call mcsor (wk2,lhs(ioffs1),rhs(ioffs1),bpot(ioffs1),d(ioffs1),                     &
-                      cw_sor(iadext(ig+ngrids)),cw_sor(iadnor(ig+ngrids)),cw_sor(iadex1(ig+ngrids)), &
-                      cw_sor(iadex2(ig+ngrids)),cw_sor(iadex3(ig+ngrids)))
-              enddo
-              call putout (nni,nmu(ig),pot(iborb),wk2)
-           elseif (ig.ne.1.and.ig.ne.i1ng(iorb)) then
-              !                 icase=2
-              ifill=3
-              ngrd1 =ingr2(1,ig)
-              ngrd6a=ingr2(2,ig)
-              ngrd6b=ingr2(3,ig)
-              ngrd7 =ingr2(4,ig)
+          if (i1ng(iorb).eq.1) then
+             !              icase=1
+             ifill=1
+             ngrd1 =ingr1(1,ig)
+             ngrd6a=ingr1(2,ig)
+             ngrd6b=ingr1(3,ig)
+             ngrd7 =ingr1(4,ig)
+             !
+             call putin (nni,nmu(ig),isym1,pot(iborb),wk2)
+             do itr2=1,maxsorpot(iorb)
+                call mcsor (wk2,lhs(ioffs1),rhs(ioffs1), bpot(ioffs1),d(ioffs1),                   &
+                     cw_sor(iadext(ig)),cw_sor(iadnor(ig)),cw_sor(iadex1(ig)),cw_sor(iadex2(ig)),  &
+                     cw_sor(iadex3(ig)))
+             enddo
+             call putout (nni,nmu(ig),pot(iborb),wk2)
+          else
+             if (ig.eq.1) then
+                !                 icase=2
+                ifill=2
+                ngrd1 =ingr2(1,ig)
+                ngrd6a=ingr2(2,ig)
+                ngrd6b=ingr2(3,ig)
+                ngrd7 =ingr2(4,ig)
 
-              muoffs=iemu(ig-1)-1
-              call putin3 (nni,nmu(ig),pot(iborb),wk2)
-              do itr2=1,maxsorpot(iorb)
-                 call mcsor (wk2,lhs(ioffs1),rhs(ioffs1),bpot(ioffs1),d(ioffs1),                     &
-                      cw_sor(iadext(ig+ngrids)),cw_sor(iadnor(ig+ngrids)),cw_sor(iadex1(ig+ngrids)), &
-                      cw_sor(iadex2(ig+ngrids)),cw_sor(iadex3(ig+ngrids)))
-              enddo
-              call putout34 (nni,nmu(ig),pot(iborb),wk2)
-              muoffs=0
-           elseif (ig.eq.i1ng(iorb)) then
-              ifill=4
-              ngrd1 =ingr1(1,ig)
-              ngrd6a=ingr1(2,ig)
-              ngrd6b=ingr1(3,ig)
-              ngrd7 =ingr1(4,ig)
+                call putin2 (nni,nmu(ig),pot(iborb),wk2)
+                do itr2=1,maxsorpot(iorb)
+                   call mcsor (wk2,lhs(ioffs1),rhs(ioffs1),bpot(ioffs1),d(ioffs1),                     &
+                        cw_sor(iadext(ig+ngrids)),cw_sor(iadnor(ig+ngrids)),cw_sor(iadex1(ig+ngrids)), &
+                        cw_sor(iadex2(ig+ngrids)),cw_sor(iadex3(ig+ngrids)))
+                enddo
+                call putout (nni,nmu(ig),pot(iborb),wk2)
+             elseif (ig.ne.1.and.ig.ne.i1ng(iorb)) then
+                !                 icase=2
+                ifill=3
+                ngrd1 =ingr2(1,ig)
+                ngrd6a=ingr2(2,ig)
+                ngrd6b=ingr2(3,ig)
+                ngrd7 =ingr2(4,ig)
 
-              muoffs=iemu(ig-1)-1
-              call putin4 (nni,nmu(ig),pot(iborb),wk2)
-              do itr2=1,maxsorpot(iorb)
-                 call mcsor (wk2,lhs(ioffs1),rhs(ioffs1),bpot(ioffs1),d(ioffs1), &
-                      cw_sor(iadext(ig)),cw_sor(iadnor(ig)),cw_sor(iadex1(ig)),  &
-                      cw_sor(iadex2(ig)),cw_sor(iadex3(ig)))
-              enddo
-              call putout34 (nni,nmu(ig),pot(iborb),wk2)
-              muoffs=0
-           endif
-        endif
-     enddo
-  enddo
-!01021 format(/,i5,10e12.3,/(5x,10e12.3))
-end subroutine coulMCSOR
+                muoffs=iemu(ig-1)-1
+                call putin3 (nni,nmu(ig),pot(iborb),wk2)
+                do itr2=1,maxsorpot(iorb)
+                   call mcsor (wk2,lhs(ioffs1),rhs(ioffs1),bpot(ioffs1),d(ioffs1),                     &
+                        cw_sor(iadext(ig+ngrids)),cw_sor(iadnor(ig+ngrids)),cw_sor(iadex1(ig+ngrids)), &
+                        cw_sor(iadex2(ig+ngrids)),cw_sor(iadex3(ig+ngrids)))
+                enddo
+                call putout34 (nni,nmu(ig),pot(iborb),wk2)
+                muoffs=0
+             elseif (ig.eq.i1ng(iorb)) then
+                ifill=4
+                ngrd1 =ingr1(1,ig)
+                ngrd6a=ingr1(2,ig)
+                ngrd6b=ingr1(3,ig)
+                ngrd7 =ingr1(4,ig)
+
+                muoffs=iemu(ig-1)-1
+                call putin4 (nni,nmu(ig),pot(iborb),wk2)
+                do itr2=1,maxsorpot(iorb)
+                   call mcsor (wk2,lhs(ioffs1),rhs(ioffs1),bpot(ioffs1),d(ioffs1), &
+                        cw_sor(iadext(ig)),cw_sor(iadnor(ig)),cw_sor(iadex1(ig)),  &
+                        cw_sor(iadex2(ig)),cw_sor(iadex3(ig)))
+                enddo
+                call putout34 (nni,nmu(ig),pot(iborb),wk2)
+                muoffs=0
+             endif
+          endif
+       enddo
+    enddo
+    !01021 format(/,i5,10e12.3,/(5x,10e12.3))
+  end subroutine coulMCSOR
+end module coulMCSOR_m

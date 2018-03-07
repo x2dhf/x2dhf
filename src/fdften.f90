@@ -11,35 +11,39 @@
 
 !     Calculates coefficients appearing in LDA energy formulea.
 
-function fdften (alpha)
-  use params
-  use commons8
-
+module fdften_m
   implicit none
+contains
+  function fdften (alpha)
+    use params
+    use commons8
 
-  real (PREC) :: fdften
-  real (PREC) :: alpha,const13,const34,const98
-  parameter (const13=1.0_PREC/3.0_PREC,const34=3.0_PREC/4.0_PREC, &
-       const98=9.0_PREC/8.0_PREC)
+    implicit none
+
+    real (PREC) :: fdften
+    real (PREC) :: alpha,const13,const34,const98
+    parameter (const13=1.0_PREC/3.0_PREC,const34=3.0_PREC/4.0_PREC, &
+         const98=9.0_PREC/8.0_PREC)
 
 
-  if (idftex.eq.1.or.idftex.eq.2) then
-     !        L.Laaksonen, P.Pyykko, D.Sundholm (Int. J.Quantum Chem. 27 (1985) 601)
-     !        additional factor 2**(1/3) is due to the way the total density is calculated
-     !        (see fldapot)
+    if (idftex.eq.1.or.idftex.eq.2) then
+       !        L.Laaksonen, P.Pyykko, D.Sundholm (Int. J.Quantum Chem. 27 (1985) 601)
+       !        additional factor 2**(1/3) is due to the way the total density is calculated
+       !        (see fldapot)
 
-     !        Becke (idftex=2)
-     fdften = -alpha*const98*(three/pii)**const13*two**(const13)
-  elseif (idftex.eq.3) then
-     !        generalized gradient approximation (GGA) (Perdew & Wang 86 )
-     fdften = -const34*(three/pii)**const13
+       !        Becke (idftex=2)
+       fdften = -alpha*const98*(three/pii)**const13*two**(const13)
+    elseif (idftex.eq.3) then
+       !        generalized gradient approximation (GGA) (Perdew & Wang 86 )
+       fdften = -const34*(three/pii)**const13
 
-  elseif (idftex.eq.4) then
-     !        generalized gradient approximation (GGA) (Perdew & Wang 91 )
-     fdften = -const34*(three/pii)**const13
+    elseif (idftex.eq.4) then
+       !        generalized gradient approximation (GGA) (Perdew & Wang 91 )
+       fdften = -const34*(three/pii)**const13
 
-  else
-     stop "Invalid argument idftex to fdften"
-  endif
+    else
+       stop "Invalid argument idftex to fdften"
+    endif
 
-end function fdften
+  end function fdften
+end module fdften_m

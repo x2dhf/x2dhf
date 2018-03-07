@@ -17,14 +17,15 @@ subroutine hydrogenOrbA (orbital,n1,l1,m1,ez1)
   use params
   use discret
   use commons8
-
+  use factor_m
+  use plaguer_m
+  use plegendg_m
 
   implicit none
   integer :: igp,imu,in,inioff,n1,l1,m1
 
   real (PREC) :: costh1,ez1,fn1,r1t,rr,shn1,z
   real (PREC), dimension(*) :: orbital
-  real (PREC), external :: factor,plaguer,plegendg
 
   !     normalization factor for Laguere polynomials
 

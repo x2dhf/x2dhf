@@ -19,6 +19,8 @@ subroutine initPot (psi,pot,excp,f2,f4,wk0)
   use memory
   use commons8
 
+  use blas_m
+
   implicit none
 
   integer :: i3beg,igp,imu,in,inioff,iorb,iorb1,iorb2,iorb2t,irec,ishift,k,ngrid

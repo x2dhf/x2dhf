@@ -18,6 +18,7 @@ subroutine rfun_int (norb_p,cw_orb,cw_coul,cw_exch,wk8,wk16,cw_sctch)
   use discret
   use scf
   use commons8
+  use dointerp_m
 
   implicit none
 
@@ -71,7 +72,9 @@ subroutine rfun_int (norb_p,cw_orb,cw_coul,cw_exch,wk8,wk16,cw_sctch)
         enddo
      endif
 
-     call dointerp (ica,i1mu_p(i),i1mu(i),cw_sctch(i5b(1)),cw_orb(i1b(i+ioffset)),cw_sctch(i5b(2)) )
+     write (*,*) 'FIXME'
+     call abort 
+     !call dointerp (ica,i1mu_p(i),i1mu(i),cw_sctch(i5b(1)),cw_orb(i1b(i+ioffset)),cw_sctch(i5b(2)) )
 
      if (ierr.ne.0) then
         write(iout6,*) 'error detected when reading orbital',i
@@ -124,7 +127,9 @@ subroutine rfun_int (norb_p,cw_orb,cw_coul,cw_exch,wk8,wk16,cw_sctch)
         enddo
      endif
 
-     call dointerp (ica,i2mu_p(i),i2mu(i),cw_sctch(i5b(1)),cw_coul(i2b(i+ioffset)),cw_sctch(i5b(2)) )
+     write (*,*) 'FIXME'
+     call abort
+     !call dointerp (ica,i2mu_p(i),i2mu(i),cw_sctch(i5b(1)),cw_coul(i2b(i+ioffset)),cw_sctch(i5b(2)) )
 
      if (ierr.ne.0) then
         write(iout6,*) 'error detected when reading coulomb potential',i
@@ -191,8 +196,9 @@ subroutine rfun_int (norb_p,cw_orb,cw_coul,cw_exch,wk8,wk16,cw_sctch)
               enddo
            endif
 
-
-           call dointerp(ica,i3mu_p(k),i3mu(k),cw_sctch(i5b(1)),cw_exch(i3b(k)),cw_sctch(i5b(2)) )
+           write (*,*) 'FIXME'
+           call abort 
+           !call dointerp(ica,i3mu_p(k),i3mu(k),cw_sctch(i5b(1)),cw_exch(i3b(k)),cw_sctch(i5b(2)) )
 
            if (ierr.ne.0) then
               write(iout6,*) 'error detected when reading exchange potential',iorb1,iorb2,k
@@ -221,7 +227,9 @@ subroutine rfun_int (norb_p,cw_orb,cw_coul,cw_exch,wk8,wk16,cw_sctch)
               enddo
            endif
 
-           call dointerp (ica,i3mu_p(k),i3mu(k),cw_sctch(i5b(1)),cw_exch(i3b(k)+i3si(k)),cw_sctch(i5b(2)) )
+           write (*,*) 'FIXME'
+           call abort 
+           !call dointerp (ica,i3mu_p(k),i3mu(k),cw_sctch(i5b(1)),cw_exch(i3b(k)+i3si(k)),cw_sctch(i5b(2)) )
            if (ierr.ne.0) then
               write(iout6,*) 'error detected when reading exchange potential',iorb1,iorb2,k
               stop 'rfun_int'

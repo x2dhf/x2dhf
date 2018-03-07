@@ -16,13 +16,15 @@ subroutine fpw86sup (rhot,grhot,wk,wk0,wk1,wk2,wk3,wk4,wk5,wk6,wk7)
   use params
   use discret
   use commons8
+  use dftauxfun_m
+  use fdftpot_m
+  use blas_m
 
   implicit none
   integer :: i
   real (PREC) :: akf,const13,const43,fdftcoeff,s,t,u,w1,w2
 
   real (PREC), dimension(*) :: wk,wk0,wk1,wk2,wk3,wk4,wk5,wk6,wk7,rhot,grhot
-  real (PREC), external :: ff,ffdp,ffp,fdftpot
 
   parameter (const13=1.0_PREC/3.0_PREC,const43=4.0_PREC/3.0_PREC)
 

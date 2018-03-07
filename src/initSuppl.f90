@@ -12,6 +12,8 @@ subroutine initSuppl (borb,bpot,d,e,f0,f1,f2,f3,f4,g,wjac1,wjac2,wgt1,wgt2)
   use commons8
   use kh, only: poth3, potkh
 
+  use plegendg_m
+  
   implicit none
 
   integer :: i,ib,ie,ig,ii,imu,in,izz1,izz2,j,k
@@ -25,7 +27,7 @@ subroutine initSuppl (borb,bpot,d,e,f0,f1,f2,f3,f4,g,wjac1,wjac2,wgt1,wgt2)
   real (PREC), dimension(9) :: aa1,aa2,a1,a2
   real (PREC), dimension(9,7,9) :: dc1,dc2
 
-  real (PREC), external :: plegendg,zz1,zz2,zz1g,zz2g,zgsz1,zgsz2,zgsz1g,zgsz2g
+  real (PREC), external :: zz1,zz2,zz1g,zz2g,zgsz1,zgsz2,zgsz1g,zgsz2g
 
 !     Coefficients of the first and second derivatives taken from from
 !     the 8th-order Stirling interpolation formula

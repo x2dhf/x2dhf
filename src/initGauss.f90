@@ -21,7 +21,7 @@ subroutine initGauss (psi,pot,excp,f2,f4,wgt2,wk0)
   use params
   use discret
   use commons8
-  use evalGauss
+  use evalGauss_m
 
   implicit none
   integer :: i,igauss,igp,igrid,imu,in,inioff,iorb,ipb,ishift,m1, &
@@ -47,7 +47,7 @@ subroutine initGauss (psi,pot,excp,f2,f4,wgt2,wk0)
 
   ! Evaluate basis functions
   allocate(bf(nni*mxnmu,npbasis))
-  call evaluate(bf)
+  call evalGauss(bf)
 
   ! Evaluate overlap matrix over gaussian basis functions
   igauss=0

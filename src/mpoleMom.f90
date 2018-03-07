@@ -23,6 +23,7 @@
 subroutine mpoleMom (cw_orb,cw_suppl,cw_sctch)
   use params
   use commons8
+  use coulMom_m
 
   implicit none
   integer :: iorb1,iorb2

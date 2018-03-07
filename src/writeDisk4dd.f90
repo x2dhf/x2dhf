@@ -21,6 +21,10 @@ subroutine writeDisk4dd (psi,pot,f0,f4,wk0,wk1,wk2,wk3)
   use solver
   use commons8
 
+  use diffmu_m
+  use diffnu_m
+  use dointerp_m
+
   implicit none
   integer :: i4,i1beg,ig,iorb,ngrid,isym4nu,isym4mu,isymmetry
 

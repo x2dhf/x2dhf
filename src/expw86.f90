@@ -12,66 +12,72 @@
 !     Calculates exchange energy according to a formula of Parr and Wang
 !     Yue (PRB 33 (1986) 8800)
 
-function expw86 (psi,wgt2,rhot,rhotup,rhotdown,grhot,grhotup,grhotdown, &
-     wk0,wk1,wk2,wk3,wk4,wk5,wk6,wk7)
-  use params
-  use discret
-  use commons8
-
+module expw86_m
   implicit none
-  integer :: i,iborb,iorb,isiorb,nmut
-  real (PREC) :: expw86
-  real (PREC) :: ocdown,ocup
-  real (PREC), dimension(:) :: psi,wgt2,wk0,wk1,wk2,wk3,wk4,wk5,wk6,wk7,  &
-       rhot,rhotup,rhotdown,grhot,grhotup,grhotdown
+contains
+  function expw86 (psi,wgt2,rhot,rhotup,rhotdown,grhot,grhotup,grhotdown, &
+       wk0,wk1,wk2,wk3,wk4,wk5,wk6,wk7)
+    use params
+    use discret
+    use commons8
 
-  real (PREC), external :: expw86sup,fdften
+    use blas_m
+    use fdften_m
+    use expw86sup_m
 
-  do i=1,mxsize
-     rhotup(i)  =0.0_PREC
-     rhotdown(i)=0.0_PREC
-  enddo
+    implicit none
+    integer :: i,iborb,iorb,isiorb,nmut
+    real (PREC) :: expw86
+    real (PREC) :: ocdown,ocup
+    real (PREC), dimension(*) :: psi,wgt2,wk0,wk1,wk2,wk3,wk4,wk5,wk6,wk7,  &
+         rhot,rhotup,rhotdown,grhot,grhotup,grhotdown
 
-  !     calculate total densities due to up and down spins
-  do iorb=1,norb
-     if (inhyd(iorb).eq.1) goto 10
-     iborb=i1b(iorb)
-     isiorb=i1si(iorb)
-     nmut=i1mu(iorb)
+    do i=1,mxsize
+       rhotup(i)  =0.0_PREC
+       rhotdown(i)=0.0_PREC
+    enddo
 
-     call exocc (iorb,ocup,ocdown)
+    !     calculate total densities due to up and down spins
+    do iorb=1,norb
+       if (inhyd(iorb).eq.1) goto 10
+       iborb=i1b(iorb)
+       isiorb=i1si(iorb)
+       nmut=i1mu(iorb)
 
-     call prod2 (isiorb,psi(iborb),psi(iborb),wk1)
-     call scal (isiorb,ocup,wk1,ione)
+       call exocc (iorb,ocup,ocdown)
 
-     call prod2 (isiorb,psi(iborb),psi(iborb),wk2)
-     call scal (isiorb,ocdown,wk2,ione)
+       call prod2 (isiorb,psi(iborb),psi(iborb),wk1)
+       call scal (isiorb,ocup,wk1,ione)
 
-     !        store total spin densities
-     call add(isiorb,wk1,rhotup)
-     call add(isiorb,wk2,rhotdown)
-10   continue
-  enddo
+       call prod2 (isiorb,psi(iborb),psi(iborb),wk2)
+       call scal (isiorb,ocdown,wk2,ione)
 
-  !     calculate (nabla rho nabla rho)
-  ! FIXME
-  call nfng (rhotup,rhotup,wk0,wk1,wk2,wk3,wk4,wk5,wk6,wk7)
-  call copy(mxsize,wk7,ione,grhotup,ione)
+       !        store total spin densities
+       call add(isiorb,wk1,rhotup)
+       call add(isiorb,wk2,rhotdown)
+10     continue
+    enddo
 
-  call nfng (rhotdown,rhotdown,wk0,wk1,wk2,wk3,wk4,wk5,wk6,wk7)
-  call copy(mxsize,wk7,ione,grhotdown,ione)
+    !     calculate (nabla rho nabla rho)
+    ! FIXME
+    call nfng (rhotup,rhotup,wk0,wk1,wk2,wk3,wk4,wk5,wk6,wk7)
+    call copy(mxsize,wk7,ione,grhotup,ione)
 
-  do i=1,mxsize
-     rhotup(i)   =two*rhotup(i)
-     rhotdown(i) =two*rhotdown(i)
-     grhotup(i)  =four*grhotup(i)
-     grhotdown(i)=four*grhotdown(i)
-  enddo
+    call nfng (rhotdown,rhotdown,wk0,wk1,wk2,wk3,wk4,wk5,wk6,wk7)
+    call copy(mxsize,wk7,ione,grhotdown,ione)
 
-  !     total exchange energy is calculated as
-  !     Ex(rhoup,rhodown)=(1/2)Ex(2*rhoup)+(1/2)Ex(2*rhodown)
+    do i=1,mxsize
+       rhotup(i)   =two*rhotup(i)
+       rhotdown(i) =two*rhotdown(i)
+       grhotup(i)  =four*grhotup(i)
+       grhotdown(i)=four*grhotdown(i)
+    enddo
 
-  expw86=fdften(alphaf)*(  half*expw86sup(wgt2,rhotup,grhotup,wk0,wk1) &
-       + half*expw86sup(wgt2,rhotdown,grhotdown,wk0,wk1))
+    !     total exchange energy is calculated as
+    !     Ex(rhoup,rhodown)=(1/2)Ex(2*rhoup)+(1/2)Ex(2*rhodown)
 
-end function expw86
+    expw86=fdften(alphaf)*(  half*expw86sup(wgt2,rhotup,grhotup,wk0,wk1) &
+         + half*expw86sup(wgt2,rhotdown,grhotdown,wk0,wk1))
+
+  end function expw86
+end module expw86_m

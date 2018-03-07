@@ -8,6 +8,8 @@ PROGRAM  x2dhf
   use scf
   use commons8
 
+  use doSCF_m
+  
   implicit none
 
   character*80 :: datetime

@@ -16,13 +16,12 @@ subroutine fvwnsupcs (rhot,rhotup,rhotdown,wk0,wk1,wk2,wk3,wk4,wk5,wk6,wk7,wk8,w
   use params
   use discret
   use commons8
+  use dftauxfun_m
 
   implicit none
   integer :: i
   real (PREC) :: ck1,cl1,cm1,cn1,const16,const76,const56,constx,constxp,g1,g2,x,xderrhot
   real (PREC), dimension(*) :: wk0,wk1,wk2,wk3,wk4,wk5,wk6,wk7,wk8,wk9,wk10,rhot,rhotup,rhotdown
-
-  real (PREC), external :: qvwn,qvwnderx
 
   parameter(ck1=0.03109070_PREC,cl1=-0.104980_PREC,cm1=3.727440_PREC,cn1=12.93520_PREC, &
        const16=1.0_PREC/6.0_PREC,const76=7.0_PREC/6.0_PREC,const56=5.0_PREC/6.0_PREC)

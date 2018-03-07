@@ -18,6 +18,13 @@ subroutine printResults (cw_orb,cw_coul,cw_exch,cw_suppl,cw_sctch)
   use discret
   use commons8
 
+  use blas_m
+  use etotal_m
+  use checksym_m
+  use checkortho_m
+  use checkpot_m
+  use etotalDFT_m
+
   implicit none
   integer :: i,ibeg,iorb,inuclder,jorb,k,ngrid
 

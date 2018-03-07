@@ -12,43 +12,48 @@
 !     evaluates multipole moment contributions to the boundary values of
 !     Coulomb potential for a given orbital at imu=mxnmu, inu=(nn1-1)/2 (Pi/2)
 
-subroutine coulAsymptCont(iorb,pot)
-  use params
-  use discret
-  use scf
-  use commons8
-
+module coulAsymptCont_m
   implicit none
-  integer :: i,iorb,itt,j,kk,kxk,m,n
-  real (PREC) :: costh,pe,rr,xr,xrr
-  real (PREC), dimension(10) :: dome,pottmp
-  real (PREC), dimension(*) :: pot
+contains
+  subroutine coulAsymptCont(iorb,pot)
+    use params
+    use discret
+    use scf
+    use commons8
 
-!     potentials are calculated for ni=Pi/2
+    implicit none
+    integer :: i,iorb,itt,j,kk,kxk,m,n
+    real (PREC) :: costh,pe,rr,xr,xrr
+    real (PREC), dimension(10) :: dome,pottmp
+    real (PREC), dimension(*) :: pot
 
-  j=mxnmu
-  itt=(j-1)*nni
-  i=(nni-1)/2
-  kk=i+itt
-  rr=sqrt(vxisq(j)+vetasq(i)-1.0_PREC)
-  costh=veta(i)*vxi(j)/rr
-  xr=1.0_PREC/(rr*r2)
+    !     potentials are calculated for ni=Pi/2
 
-  dome(1)=costh
-  dome(2)=(3.0_PREC*costh*costh-1.0_PREC)*0.50_PREC
-  do n=2,mpole-1
-     dome(n+1)=(dble(2*n+1)*costh*dome(n)-dble(n)*dome(n-1))/dble(n+1)
-  enddo
+    j=mxnmu
+    itt=(j-1)*nni
+    i=(nni-1)/2
+    kk=i+itt
+    rr=sqrt(vxisq(j)+vetasq(i)-1.0_PREC)
+    costh=veta(i)*vxi(j)/rr
+    xr=1.0_PREC/(rr*r2)
 
-  pe=0.0_PREC
-  xrr=xr
-  do m=1,mpole
-     xrr=xrr*xr
-     kxk=iorb+(m-1)*norb
-     pe=pe+cmulti(kxk)*dome(m)*xrr
-     pottmp(m)=r2*vxi(j)*(pe+xr)
-  enddo
+    dome(1)=costh
+    dome(2)=(3.0_PREC*costh*costh-1.0_PREC)*0.50_PREC
+    do n=2,mpole-1
+       dome(n+1)=(dble(2*n+1)*costh*dome(n)-dble(n)*dome(n-1))/dble(n+1)
+    enddo
 
-  write(*,1000) iorn(iorb),bond(iorb),gut(iorb),pottmp(1),(pottmp(m)-pottmp(m-1),m=2,mpole),pottmp(mpole)
+    pe=0.0_PREC
+    xrr=xr
+    do m=1,mpole
+       xrr=xrr*xr
+       kxk=iorb+(m-1)*norb
+       pe=pe+cmulti(kxk)*dome(m)*xrr
+       pottmp(m)=r2*vxi(j)*(pe+xr)
+    enddo
+
+    write(*,1000) iorn(iorb),bond(iorb),gut(iorb),pottmp(1),(pottmp(m)-pottmp(m-1),m=2,mpole),pottmp(mpole)
 1000 format(/i4,1x,a8,a1,3x,/4e13.5/5e13.5)
-end subroutine coulAsymptCont
+  end subroutine coulAsymptCont
+end module coulAsymptCont_m
+

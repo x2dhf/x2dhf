@@ -16,6 +16,9 @@ subroutine nfng(f,g,fmu,fni,gmu,gni,wk0,wk1,wk2,wk3)
   use discret
   use commons8
 
+  use diffmu_m
+  use diffnu_m
+
   implicit none
   integer :: i,ii,isym,j
   real (PREC) :: t1,z

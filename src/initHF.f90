@@ -20,6 +20,9 @@ subroutine initHF (psi,pot,excp,f2,f4,wgt2,wk0)
   use params
   use discret
   use commons8
+  use factor_m
+  use flp_m
+  use plegendg_m
 
   implicit none
 
@@ -38,8 +41,6 @@ subroutine initHF (psi,pot,excp,f2,f4,wgt2,wk0)
   real (PREC), dimension(ngridpts) :: rhf1,rhf2,phf1t,phf2t
   real (PREC), dimension(nhforb) :: ehf1,qc1,ehf2,qc2
   real (PREC), dimension(nhforb,ngridpts) :: phf1,phf2
-
-  real (PREC), external :: factor,flp,plegendg
 
   character*8 :: atom1,term1,atom2,term2
 

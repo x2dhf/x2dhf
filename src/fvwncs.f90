@@ -17,6 +17,7 @@ subroutine fvwncs (psi,f4,rhot,rhotup,rhotdown,grhot,grhotup,grhotdown, &
   use params
   use discret
   use commons8
+  use blas_m
 
   implicit none
   integer :: i,iborb,iorb,isiorb,nmut

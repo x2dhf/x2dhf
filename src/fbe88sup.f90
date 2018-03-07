@@ -17,14 +17,15 @@ subroutine fbe88sup (rhot,grhot,wk,wk0,wk1,wk2,wk3,wk4,wk5,wk6,wk7)
   use params
   use discret
   use commons8
-
+  use fdftpot_m
+  use blas_m
+  
   implicit none
   integer :: i
   real (PREC) :: ash,bbeta,const13,const43,const53, &
        g1,g3,f,fm1,s,s2,t1,t2,t3
 
   real (PREC), dimension(*) :: wk,wk0,wk1,wk2,wk3,wk4,wk5,wk6,wk7,rhot,grhot
-  real (PREC), external :: fdftpot
   parameter (const13=1.0_PREC/3.0_PREC,const43=4.0_PREC/3.0_PREC, &
        const53=5.0_PREC/3.0_PREC,bbeta=0.0042)
 

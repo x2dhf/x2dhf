@@ -15,6 +15,8 @@
 subroutine scmc (psi,pot,excp,e,f0,wgt1,wgt2,wk0,wk1,wk2,wk3,wk4,wk5,wk6,wk7,wk8,wk9,wk10,wk11,wk12,wk13)
   use params
   use commons8
+  use blas_m
+  use dftex_m
 
   implicit none
   integer ::         ibex,iborb,iborb1,iborb2,ibpot,ibpot1,ibpot2,iex,iex1,iorb,iorb1,iorb2,ipe1,ipe2,&
@@ -23,8 +25,6 @@ subroutine scmc (psi,pot,excp,e,f0,wgt1,wgt2,wk0,wk1,wk2,wk3,wk4,wk5,wk6,wk7,wk8
   real (PREC) :: ehfex,eps,oc,oc1,oc2,ocx1,ocx2,w,wdcoul,wex1,wex2
   real (PREC), dimension(*) :: psi,pot,excp,e,f0,wgt1,wgt2,wk0,wk1,wk2,wk3,wk4,wk5,wk6,&
        wk7,wk8,wk9,wk10,wk11,wk12,wk13
-
-  real (PREC), external :: dot
 
   data eps /1.e-7_PREC/
 

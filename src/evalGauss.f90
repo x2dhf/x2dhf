@@ -1,16 +1,17 @@
-module evalGauss
+module evalGauss_m
   use params
   use discret
   use commons8
   implicit none
 
 contains
-  subroutine evaluate(bf)
+  subroutine evalGauss(bf)
+    use plegendg_m
+    implicit none
 
     integer :: ic1, igp, imu, in, inioff, ipb, l1, m1
     real (PREC) :: costh1, d1, expt, fnorm, r1, z, psi1
     real (PREC), dimension(:,:) :: bf
-    real (PREC), external :: plegendg
 
     ! Sanity check
     if(size(bf,1) .ne. nni*mxnmu .or. size(bf,2) .ne. npbasis) then
@@ -94,5 +95,5 @@ contains
           enddo
        enddo
     enddo
-  end subroutine evaluate
-end module evalGauss
+  end subroutine evalGauss
+end module evalGauss_m

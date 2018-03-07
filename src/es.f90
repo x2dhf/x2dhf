@@ -12,7 +12,6 @@
 ! *                                                                          *
 ! * This routine is part of the GRASP2 package (ver. 1.00, 17 Jan 1992)      *
 ! *                                                                          *
-subroutine es (f,s2f,s3f)
 ! *                                                                          *
 ! *   ----------------   SECTION 01   SUBPROGRAM 14   ----------------       *
 ! *   EVALUATE THE SUM OF THE SERIES                                         *
@@ -30,26 +29,31 @@ subroutine es (f,s2f,s3f)
 ! *                                                                          *
 ! ****************************************************************************
 
-  use params
-
+module es_m
   implicit none
-  integer :: n
-  real (PREC) :: en,enf,f,fase,obn,s2f,s3f,s2last,term2,term3
+contains
+  subroutine es (f,s2f,s3f)
+    use params
 
-  n = 0
-  s2f = zero
-  s3f = zero
-  fase = one
-1 n = n+1
-  en = dble(n)
-  obn = one/en
-  fase = -fase
-  enf = exp (en*f)
-  term2 = fase*enf*obn*obn
-  term3 = term2*obn
-  s2last = s2f
-  s2f = s2f+term2
-  s3f = s3f+term3
-  if (abs (s2f) .ne. abs (s2last)) goto 1
+    implicit none
+    integer :: n
+    real (PREC) :: en,enf,f,fase,obn,s2f,s3f,s2last,term2,term3
 
-end subroutine es
+    n = 0
+    s2f = zero
+    s3f = zero
+    fase = one
+1   n = n+1
+    en = dble(n)
+    obn = one/en
+    fase = -fase
+    enf = exp (en*f)
+    term2 = fase*enf*obn*obn
+    term3 = term2*obn
+    s2last = s2f
+    s2f = s2f+term2
+    s3f = s3f+term3
+    if (abs (s2f) .ne. abs (s2last)) goto 1
+
+  end subroutine es
+end module es_m

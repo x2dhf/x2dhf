@@ -17,6 +17,7 @@ subroutine fock (iorb,psi,pot,excp,e,f0,f1,f2,f4,fock1,fock2,wk1,wk2)
   use discret
   use scf
   use commons8
+  use blas_m
 
   implicit none
   integer :: i,ibexp,iborb,iborb1,ibpot,ibpot1,idexp,iorb,iorb1,ipc,kex,ngexp,ngorb,ngorb1,ngpot,ngpot1,norb2,ngrid

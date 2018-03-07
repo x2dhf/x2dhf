@@ -11,18 +11,22 @@
 ! ### plaguer ###
 !    Evaluates and returns a value of the Laguerre polynomial
 
-function plaguer(n,l,cz,cr)
-  use params
-
+module plaguer_m
   implicit none
-  integer :: n,l,lp,np
-  real (PREC) :: plaguer
-  real (PREC) :: cz,cr,x
-  real (PREC), external :: hypg1f1
+contains
+  function plaguer(n,l,cz,cr)
+    use params
 
-  np=n-l-1
-  lp=2*l+2
-  x=cz*cr/dble(n)
-  plaguer=cr**dble(l)*exp(-x)*hypg1f1(-np,lp,x+x)
+    implicit none
+    integer :: n,l,lp,np
+    real (PREC) :: plaguer
+    real (PREC) :: cz,cr,x
+    real (PREC), external :: hypg1f1
 
-end function plaguer
+    np=n-l-1
+    lp=2*l+2
+    x=cz*cr/dble(n)
+    plaguer=cr**dble(l)*exp(-x)*hypg1f1(-np,lp,x+x)
+
+  end function plaguer
+end module plaguer_m

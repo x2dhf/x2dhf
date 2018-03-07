@@ -9,6 +9,7 @@ function zz2(i,j)
   use params
   use discret
   use commons8
+  use es_m
 
   implicit none
   integer :: i,j

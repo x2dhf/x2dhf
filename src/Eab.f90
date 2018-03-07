@@ -17,6 +17,7 @@ subroutine Eab (iorb,psi,pot,excp,e,f0,wgt1,wgt2,wk0,wk1,wk2,wk3)
   use params
   use scf
   use commons8
+  use Eab1HF_m
 
   implicit none
 

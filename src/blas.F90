@@ -13,117 +13,121 @@
 !     This is simplified replacement for BLAS routines: dcopy, daxpy, dscal,
 !     ddot, mxv. Note that ix and iy are ignored and are set to 1.
 
-function  dot(n,dx,ix,dy,iy)
-  use params
+module blas_m
   implicit none
-  integer :: ix,iy,n
-  real (PREC) :: dot
-  real (PREC), dimension(*) :: dx,dy
+contains
+  function  dot(n,dx,ix,dy,iy)
+    use params
+    implicit none
+    integer :: ix,iy,n
+    real (PREC) :: dot
+    real (PREC), dimension(*) :: dx,dy
 
 #ifdef HAVE_BLAS
-  DOUBLE PRECISION, EXTERNAL :: ddot
+    DOUBLE PRECISION, EXTERNAL :: ddot
 
-  dot=ddot(n,dx,ix,dy,iy)
+    dot=ddot(n,dx,ix,dy,iy)
 #else
-  integer :: i
+    integer :: i
 
-  dot=0.0_PREC
-  do i=1,n
-     dot=dot+dx(i)*dy(i)
-  enddo
+    dot=0.0_PREC
+    do i=1,n
+       dot=dot+dx(i)*dy(i)
+    enddo
 #endif
 
-end function dot
+  end function dot
 
 
-subroutine  copy(n,dx,ix,dy,iy)
-  use params
-  implicit none
-  integer :: ix,iy,n
-  real (PREC), dimension(*) :: dx,dy
+  subroutine  copy(n,dx,ix,dy,iy)
+    use params
+    implicit none
+    integer :: ix,iy,n
+    real (PREC), dimension(*) :: dx,dy
 
 #ifdef HAVE_BLAS
-  call dcopy(n,dx,ix,dy,iy)
+    call dcopy(n,dx,ix,dy,iy)
 #else
-  integer::i
+    integer::i
 
-  do i=1,n
-     dy(i)=dx(i)
-  enddo
+    do i=1,n
+       dy(i)=dx(i)
+    enddo
 #endif
 
-end subroutine copy
+  end subroutine copy
 
-subroutine  axpy(n,da,dx,ix,dy,iy)
-  use params
-  implicit none
-  integer :: ix,iy,n
-  real (PREC) :: da
-  real (PREC), dimension(*) :: dx,dy
+  subroutine  axpy(n,da,dx,ix,dy,iy)
+    use params
+    implicit none
+    integer :: ix,iy,n
+    real (PREC) :: da
+    real (PREC), dimension(*) :: dx,dy
 
 #ifdef HAVE_BLAS
-  call daxpy(n,da,dx,ix,dy,iy)
+    call daxpy(n,da,dx,ix,dy,iy)
 #else
-  integer :: i
+    integer :: i
 
-  do i=1,n
-     dy(i)=da*dx(i)+dy(i)
-  enddo
+    do i=1,n
+       dy(i)=da*dx(i)+dy(i)
+    enddo
 #endif
-end subroutine axpy
+  end subroutine axpy
 
-subroutine  scal(n,da,dx,ix)
-  use params
-  implicit none
-  integer :: ix,n
-  real (PREC) :: da
-  real (PREC), dimension(*) :: dx
+  subroutine  scal(n,da,dx,ix)
+    use params
+    implicit none
+    integer :: ix,n
+    real (PREC) :: da
+    real (PREC), dimension(*) :: dx
 
 #ifdef HAVE_BLAS
-  call dscal(n,da,dx,ix)
+    call dscal(n,da,dx,ix)
 #else
-  integer :: i
+    integer :: i
 
-  do i=1,n
-     dx(i)=da*dx(i)
-  enddo
+    do i=1,n
+       dx(i)=da*dx(i)
+    enddo
 #endif
 
-end subroutine scal
+  end subroutine scal
 
-!     Multiplies the matrix DX(nr,nc) times the vector DV(nc) and stores
-!     the result in the vector DY(nr) (simplified version of DGEMV)
-!
-subroutine gemv (nr1,nc,dx,dv,dvr)
-  use params
-  implicit none
-  integer :: nc, nr1
-  real (PREC), dimension(nr1,*) :: dx
-  real (PREC), dimension(*) :: dv,dvr
+  !     Multiplies the matrix DX(nr,nc) times the vector DV(nc) and stores
+  !     the result in the vector DY(nr) (simplified version of DGEMV)
+  !
+  subroutine gemv (nr1,nc,dx,dv,dvr)
+    use params
+    implicit none
+    integer :: nc, nr1
+    real (PREC), dimension(nr1,*) :: dx
+    real (PREC), dimension(*) :: dv,dvr
 
 #ifdef HAVE_BLAS
-  character :: trans = 'n'
-  integer :: M, N
-  double precision :: alpha = 1.0, beta = 0.0
-  integer :: lda
-  integer :: incx = 1, incy = 1
+    character :: trans = 'n'
+    integer :: M, N
+    double precision :: alpha = 1.0, beta = 0.0
+    integer :: lda
+    integer :: incx = 1, incy = 1
 
-  ! Matrix size
-  M = nr1
-  N = nc
-  lda = M
+    ! Matrix size
+    M = nr1
+    N = nc
+    lda = M
 
-  call dgemv(trans, M, N, alpha, dx, lda, dv, incx, beta, dvr, incy)
+    call dgemv(trans, M, N, alpha, dx, lda, dv, incx, beta, dvr, incy)
 #else
-  integer :: inc, inr
-  real (PREC) :: s
+    integer :: inc, inr
+    real (PREC) :: s
 
-  do inr=1,nr1
-     s=0.0_PREC
-     do inc=1,nc
-        s=s+dx(inr,inc)*dv(inc)
-     enddo
-     dvr(inr)=s
-  enddo
+    do inr=1,nr1
+       s=0.0_PREC
+       do inc=1,nc
+          s=s+dx(inr,inc)*dv(inc)
+       enddo
+       dvr(inr)=s
+    enddo
 #endif
-end subroutine gemv
+  end subroutine gemv
+end module blas_m

@@ -4,6 +4,9 @@ subroutine nuclder1(iorb,psi,dznu,dzmu,dernu,dermu,wk2,wk3,wk4,wk5)
   use solver
   use commons8
 
+  use diffmu_m
+  use diffnu_m
+  
   implicit none
   integer :: i,i1beg,imu,inu,iorb,iprt,nmut,ngorb,ngpot
 

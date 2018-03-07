@@ -17,12 +17,14 @@ subroutine hydrogenOrbB (orbital,n2,l2,m2,ez2)
   use params
   use discret
   use commons8
+  use factor_m
+  use plaguer_m
+  use plegendg_m
 
   implicit none
   integer :: igp,imu,in,inioff,n2,l2,m2
 
   real (PREC) :: costh2,ez2,fn2,r2t,rr,shn2,z
-  real (PREC), external :: factor,plaguer,plegendg
 
   real (PREC), dimension(*) :: orbital
 

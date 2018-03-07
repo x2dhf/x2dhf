@@ -60,56 +60,59 @@
 !     density to the left and right of the grid boundaries. See prepfix
 !     for detailes.
 
-subroutine diffmu (n,f,fd)
-  use params
-  use discret
-  use commons8
-
+module diffmu_m
   implicit none
-  integer :: j,n,n9,nni8
+contains
+  subroutine diffmu (n,f,fd)
+    use params
+    use discret
+    use commons8
+    use blas_m
 
-  real (PREC), dimension(nni+8,*) :: f,fd
+    implicit none
+    integer :: j,n,n9,nni8
 
-  data n9/9/
+    real (PREC), dimension(nni+8,*) :: f,fd
 
-
-  !     The following loop runs now till j=mxnmu so that the derivatives are
-  !     also defined in the tail region, i.e. for (i,mxnmu-3),...,(i,mxnmu)
-  !     To this end the fill routine provides extra values for
-  !     (i,mxnmu+1),...,(i,mxnmu+4) points.
-
-
-  nni8=nni+8
-  do j=1,n
-     !         call mxv(f(1,j),nni8,dmu(1,j),n9,fd(1,j+4))
-     call gemv (nni8,n9,f(1,j),dmu(1,j),fd(1,j+4))
-  enddo
-
-end subroutine diffmu
+    data n9/9/
 
 
+    !     The following loop runs now till j=mxnmu so that the derivatives are
+    !     also defined in the tail region, i.e. for (i,mxnmu-3),...,(i,mxnmu)
+    !     To this end the fill routine provides extra values for
+    !     (i,mxnmu+1),...,(i,mxnmu+4) points.
 
-subroutine diff1mu (n,f,fd)
-  use params
-  use discret
-  use commons8
 
-  implicit none
-  integer :: j,n,n9,nni8
+    nni8=nni+8
+    do j=1,n
+       !         call mxv(f(1,j),nni8,dmu(1,j),n9,fd(1,j+4))
+       call gemv (nni8,n9,f(1,j),dmu(1,j),fd(1,j+4))
+    enddo
+  end subroutine diffmu
 
-  real (PREC), dimension(nni+8,*) :: f,fd
+  subroutine diff1mu (n,f,fd)
+    use params
+    use discret
+    use commons8
+    use blas_m
 
-  data n9/9/
+    implicit none
+    integer :: j,n,n9,nni8
 
-  !     The following loop runs now till j=mxnmu so that the derivatives are
-  !     also defined in the tail region, i.e. for (i,mxnmu-3),...,(i,mxnmu)
-  !     To this end the fill routine provides extra values for
-  !     (i,mxnmu+1),...,(i,mxnmu+4) points.
+    real (PREC), dimension(nni+8,*) :: f,fd
 
-  nni8=nni+8
-  do j=1,n
-     !         call mxv(f(1,j),nni8,d1mu(1,j),n9,fd(1,j+4))
-     call gemv (nni8,n9,f(1,j),d1mu(1,j),fd(1,j+4))
-  enddo
+    data n9/9/
 
-end subroutine diff1mu
+    !     The following loop runs now till j=mxnmu so that the derivatives are
+    !     also defined in the tail region, i.e. for (i,mxnmu-3),...,(i,mxnmu)
+    !     To this end the fill routine provides extra values for
+    !     (i,mxnmu+1),...,(i,mxnmu+4) points.
+
+    nni8=nni+8
+    do j=1,n
+       !         call mxv(f(1,j),nni8,d1mu(1,j),n9,fd(1,j+4))
+       call gemv (nni8,n9,f(1,j),d1mu(1,j),fd(1,j+4))
+    enddo
+
+  end subroutine diff1mu
+end module diffmu_m

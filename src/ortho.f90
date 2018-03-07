@@ -16,6 +16,7 @@ subroutine ortho (iorb1,psi,f4,wgt2,wk0)
   use params
   use commons8
   use qsort
+  use blas_m
 
   implicit none
   integer :: ibeg1,ibeg3,iorb1,iorb2,iorb3,ira,jor,jor1,ngrid
@@ -23,7 +24,6 @@ subroutine ortho (iorb1,psi,f4,wgt2,wk0)
   integer, dimension(maxorb) :: index,istp
   real (PREC), dimension(maxorb) :: ovla,ovla1
   real (PREC), dimension(*) :: psi,f4,wgt2,wk0
-  real (PREC), external :: dot
 
   if (ifix(iorb1).ne.0) return
 

@@ -17,6 +17,7 @@ subroutine flypsupcs (rhot,rhotup,rhotdown,wk0,wk1,wk2,wk3,wk4,wk5,wk6,wk7,wk8,w
   use params
   use discret
   use commons8
+  use blas_m
 
   implicit none
   integer :: i

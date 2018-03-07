@@ -25,74 +25,78 @@
 !     This routine differentiates a function over ni variable.
 !     the function is imersed in the array f(nni+6,nmut+6)
 
-subroutine diffnu (n,f,fd,wtran1,wtran2)
-  use params
-  use discret
-  use commons8
-
+module diffnu_m
   implicit none
-  integer :: j,n,n8,nni8,n9
+contains
+  subroutine diffnu (n,f,fd,wtran1,wtran2)
+    use params
+    use discret
+    use commons8
+    use blas_m
 
-  real (PREC), dimension(nni+8,n+8) :: f,fd
-  real (PREC), dimension(n+8,nni+8) :: wtran1,wtran2
+    implicit none
+    integer :: j,n,n8,nni8,n9
 
-  data n9/9/
+    real (PREC), dimension(nni+8,n+8) :: f,fd
+    real (PREC), dimension(n+8,nni+8) :: wtran1,wtran2
 
-  !     To allow for the differentiation over ni variable in the form
-  !     of matrix times vector the array f has to be transposed first.
-  !     Results of differentiation will be stored directly
-  !     column-wise in another matrix which means doing back tranposition
-  !     before returning to calling routine.
+    data n9/9/
 
-  nni8=nni+8
-  n8=n+8
-  call gmtran (f,wtran1,nni8,n8)
+    !     To allow for the differentiation over ni variable in the form
+    !     of matrix times vector the array f has to be transposed first.
+    !     Results of differentiation will be stored directly
+    !     column-wise in another matrix which means doing back tranposition
+    !     before returning to calling routine.
 
-  !     FC3, ifort: error while passing 9 to a subroutine
+    nni8=nni+8
+    n8=n+8
+    call gmtran (f,wtran1,nni8,n8)
 
-  do j=1,nni
-     !         call mxv (wtran1(1,j),n8,dni(1,j),n9,wtran2(1,j+4))
-     call gemv (n8,n9,wtran1(1,j),dni(1,j),wtran2(1,j+4))
-  enddo
+    !     FC3, ifort: error while passing 9 to a subroutine
 
-  call gmtran(wtran2,fd,n8,nni8)
+    do j=1,nni
+       !         call mxv (wtran1(1,j),n8,dni(1,j),n9,wtran2(1,j+4))
+       call gemv (n8,n9,wtran1(1,j),dni(1,j),wtran2(1,j+4))
+    enddo
 
-end subroutine diffnu
+    call gmtran(wtran2,fd,n8,nni8)
 
-subroutine diff1nu (n,f,fd,wtran1,wtran2)
-  use params
-  use discret
-  use commons8
+  end subroutine diffnu
 
-  implicit none
-  integer :: j,n,n8,nni8,n9
+  subroutine diff1nu (n,f,fd,wtran1,wtran2)
+    use params
+    use discret
+    use commons8
+    use blas_m
+    
+    implicit none
+    integer :: j,n,n8,nni8,n9
 
-  real (PREC), dimension(nni+8,n+8) :: f,fd
-  real (PREC), dimension(n+8,nni+8) :: wtran1,wtran2
+    real (PREC), dimension(nni+8,n+8) :: f,fd
+    real (PREC), dimension(n+8,nni+8) :: wtran1,wtran2
 
-  data n9/9/
+    data n9/9/
 
-!     To allow for the differentiation over ni variable in the form
-!     of matrix times vector the array f has to be transposed first.
-!     Results of differentiation will be stored directly
-!     column-wise in another matrix which means doing back tranposition
-!     before returning to calling routine.
+    !     To allow for the differentiation over ni variable in the form
+    !     of matrix times vector the array f has to be transposed first.
+    !     Results of differentiation will be stored directly
+    !     column-wise in another matrix which means doing back tranposition
+    !     before returning to calling routine.
 
-  nni8=nni+8
-  n8=n+8
+    nni8=nni+8
+    n8=n+8
 
-  call gmtran (f,wtran1,nni8,n8)
+    call gmtran (f,wtran1,nni8,n8)
 
-  !     FC3, ifort: error while passing 9 to a subroutine
+    !     FC3, ifort: error while passing 9 to a subroutine
 
-  do j=1,nni
-     !         call mxv (wtran1(1,j),n8,d1ni(1,j),n9,wtran2(1,j+4))
-     call gemv (n8,n9,wtran1(1,j),d1ni(1,j),wtran2(1,j+4))
+    do j=1,nni
+       !         call mxv (wtran1(1,j),n8,d1ni(1,j),n9,wtran2(1,j+4))
+       call gemv (n8,n9,wtran1(1,j),d1ni(1,j),wtran2(1,j+4))
 
-  enddo
+    enddo
 
-  call gmtran(wtran2,fd,n8,nni8)
+    call gmtran(wtran2,fd,n8,nni8)
 
-end subroutine diff1nu
-
-
+  end subroutine diff1nu
+end module diffnu_m

@@ -18,6 +18,13 @@ subroutine prepSCF (cw_sor,cw_orb,cw_coul,cw_exch,cw_suppl,cw_sctch)
   use discret
   use commons8
 
+  use checkortho_m
+  use etotal_m
+  use etotalDFT_m
+  use eabDFT_m
+  use ea_m
+  use norm_m
+
   implicit none
   integer :: i,iorb,iprtlev0,jorb
 

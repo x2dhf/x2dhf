@@ -17,6 +17,7 @@ subroutine exchMom (iorb1,iorb2,psi,f4,wgt2,d1,d2,d3,d4,d5,d6,d7,d8,wk1,wk2)
   use discret
   use scf
   use commons8
+  use blas_m
 
   implicit none
   integer :: i,ibeg1,ibeg2,iorb1,iorb2,idel,ido,ipc,mu,ni,ngrid
@@ -26,8 +27,6 @@ subroutine exchMom (iorb1,iorb2,psi,f4,wgt2,d1,d2,d3,d4,d5,d6,d7,d8,wk1,wk2)
   real (PREC), dimension(10) ::  dome
   real (PREC), dimension(nni,mxnmu) :: d1(nni,mxnmu),d2(nni,mxnmu),d3(nni,mxnmu),d4(nni,mxnmu),&
        d5(nni,mxnmu),d6(nni,mxnmu),d7(nni,mxnmu),d8(nni,mxnmu)
-
-  real (PREC), external :: dot
 
   !     iorb2>=iorb1
 
