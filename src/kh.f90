@@ -123,7 +123,7 @@ contains
     end do
     ! Normalization
     AM_HK_ZSimpson = AM_HK_ZSimpson * dt / 6.0_PREC
-    
+
     return
   end function AM_HK_ZSimpson
 end module kh

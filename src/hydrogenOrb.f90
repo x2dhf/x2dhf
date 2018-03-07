@@ -17,7 +17,7 @@ module hydrogenOrb_m
   implicit none
 contains
 
-  
+
   subroutine hydrogenOrbA (orbital,n1,l1,m1,ez1)
     use params
     use discret
@@ -77,7 +77,7 @@ contains
     use plaguer_m
     use plegendg_m
     use normalization
-    
+
     implicit none
     integer :: igp,imu,in,inioff,n2,l2,m2
 

@@ -219,7 +219,7 @@ contains
           enddo
 00091     continue
           iadint2(i)=mup-4
-          do k=kbeg,kend 
+          do k=kbeg,kend
              write (*,*) 'FIXME'
              call abort
              !           call lpcoeffq(mup,k,coeffq)

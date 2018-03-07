@@ -66,20 +66,20 @@ contains
           g3=d*d*f1*f1*rhot(i)**(-const13) -d*f1-c
 
           wk10(i)=                                                     &
-               
+
                                 ! See documentation for the derivation of these terms
                                 !        term (1)
                -a*d/three*rh*f1*f1-a*f1                                &
-               
+
                                 !        term (2)
                -a*b*cf*f1*g0*rhot(i)**(const53)*(g2+const83)           &
-               
+
                                 !        term (3)
                -a*b*19.0_PREC/18.0_PREC*f1*g0*rhotup(i)                        &
-               
+
                                 !        term (4)
                -a*b*1.0_PREC/72.0_PREC*f1*g0*g2*(42.0_PREC*rhotup(i)+59.0_PREC*rhotdown(i)/rhot(i)) &
-               
+
                                 !        term (5)
                -a*b*7.0_PREC/24.0_PREC*f1*g0/rhot(i)*rhotdown(i)*( g2*(d/three*f1*rh+g1-1.0_PREC)+g3*rh/9.0_PREC )
 

@@ -22,7 +22,7 @@ contains
     use memory
     use commons8
     use util
-    
+
     use blas_m
     use pottf_m
     use prepwexch_m

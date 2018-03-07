@@ -26,7 +26,7 @@ contains
 
     use writea32f_m
     use wtdexch1f_m
-    
+
     implicit none
 
     integer :: i,ierr,iorb1,iorb2,ioffset,j,k

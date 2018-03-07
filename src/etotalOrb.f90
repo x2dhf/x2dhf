@@ -22,7 +22,7 @@ contains
     use discret
     use commons8
     use util
-    
+
     use blas_m
     use diffmu_m
     use diffnu_m

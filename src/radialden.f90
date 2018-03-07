@@ -24,7 +24,7 @@ contains
 
     use zeroArray_m
     use prtden_m
-    
+
     implicit none
     integer :: i,iborb,iorb,iunit,ngorb
     real (PREC) :: coo

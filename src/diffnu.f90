@@ -69,10 +69,10 @@ contains
     use params
     use discret
     use commons8
-    
+
     use blas_m
     use gmtran_m
-    
+
     implicit none
     integer :: j,n,n8,nni8,n9
 

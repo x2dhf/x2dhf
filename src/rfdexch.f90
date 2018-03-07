@@ -19,7 +19,7 @@ contains
     use params
     use commons8
     use rrec_m
-    
+
     implicit none
     integer :: i3beg,iadd,iorb1,iorb2,irec,k,ngrid
     real (PREC), dimension(*) :: excp

@@ -36,7 +36,7 @@ contains
     use putout_m
     use testn2f_m
     use testnfng_m
-    
+
     implicit none
     integer :: i,iborb,ibpot,iorb,isiorb,isipot,isym,nmut,norb2
 

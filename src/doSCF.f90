@@ -42,9 +42,9 @@ contains
     use schedSOR_m
     use scmc_m
     use writeDisk_m
-    use writeDisk4dd_m  
+    use writeDisk4dd_m
     use wtdexch_m
-    
+
     implicit none
     integer :: i,iasympt,ibeg,ic,iend,imomen,inde,indn,iorb,istat,modv,nei,next,noenergydec,nonormdec,nthren
     real (PREC) :: ddmax,denmax,ddmaxprev,dnmaxprev,dnomax,thren,thrno,time1,time2,tscf

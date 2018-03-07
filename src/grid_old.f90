@@ -24,7 +24,7 @@ contains
 
     integer :: i, ib, ig, ie
     real (PREC) :: rinfig_p, xmi0
-    
+
     ibmu_p(1)=1
     iemu_p(1)=nmu_p(1)
     mxnmu_p=nmu_p(1)

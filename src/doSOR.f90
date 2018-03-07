@@ -27,7 +27,7 @@ contains
     use orbSOR_m
     use orbMCSOR_m
     use tail_m
-    
+
     implicit none
     integer :: iorb
     integer, dimension(*) :: cw_sor

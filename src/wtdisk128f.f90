@@ -26,7 +26,7 @@ contains
 
     use writea128f_m
     use wtdexch1f_m
-    
+
     implicit none
     integer :: i,iorb1,iorb2,ioffset,j,k
     real (PREC), dimension(*) :: cw_orb,cw_coul,cw_exch

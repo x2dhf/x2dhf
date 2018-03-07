@@ -187,7 +187,7 @@ contains
     use commons8
     use factor_m
     use factor2_m
-    
+
     implicit none
     integer :: i,ib,ibc,ibp,icount,ifbo,jfbo,ilines,iorb,iprint0,iprint1,iprint2, &
          l1,m1,m1abs,nexpon,nfborb

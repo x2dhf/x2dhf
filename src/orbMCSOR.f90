@@ -36,7 +36,7 @@ contains
     use putin4_m
     use putout_m
     use putout34_m
-    
+
     implicit none
     integer :: i,iborb,iborb1,ig,ii,ij,ioffs1,ioffst,iorb,itr1,itr2,j,nmut
 

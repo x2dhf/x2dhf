@@ -26,7 +26,7 @@ contains
     use initHF_m
     use initGauss_m
     use initPot_m
-    
+
     implicit none
 
     integer :: iorb

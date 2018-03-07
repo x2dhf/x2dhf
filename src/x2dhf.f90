@@ -21,8 +21,8 @@ PROGRAM  x2dhf
   use initOrbPot_m
   use prepSCF_m
   use printResults_m
-  
-  
+
+
   implicit none
 
   character*80 :: datetime

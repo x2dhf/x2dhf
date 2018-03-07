@@ -21,7 +21,7 @@ contains
     use discret
     use commons8
     use util
-    
+
     use blas_m
     use exocc_m
     use dftauxfun_m

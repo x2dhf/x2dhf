@@ -24,7 +24,7 @@ contains
     use exocc_m
     use fdften_m
     use multf4_m
-    
+
     implicit none
     integer :: i,iborb,iorb,isiorb,nmut
     real (PREC) :: exxalpha
