@@ -93,9 +93,7 @@ contains
           call fbe88(psi,f4,wk8,wk9,wk10,wk11,wk12,wk13,excp,fock2,wk2,wk3,wk4,wk5,wk6,wk7)
           ! PW86
        elseif (idftex.eq.3) then
-          write (*,*) 'FIXME'
-          call abort
-          !call fpw86(psi,f4,wk8,wk9,wk10,wk11,wk12,wk13,excp,fock2,wk2,wk3,wk4,wk5,wk6,wk7)
+          call fpw86(psi,f4,wk8,wk9,wk10,wk11,wk12,wk13,excp,fock2,wk2,wk3,wk4,wk5,wk6,wk7)
           ! PW91
        elseif (idftex.eq.4) then
           write(*,'(/"Error: PW91 exchange potential is not supported")')

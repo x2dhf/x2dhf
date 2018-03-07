@@ -29,7 +29,7 @@ contains
     implicit none
     integer :: i,iborb,iorb,isiorb,nmut
     real (PREC) :: ocdown,ocup
-    real (PREC), dimension(:) :: psi,f4,wk0,wk1,wk2,wk3,wk4,wk5,wk6,wk7, &
+    real (PREC), dimension(*) :: psi,f4,wk0,wk1,wk2,wk3,wk4,wk5,wk6,wk7, &
          rhot,rhotup,rhotdown,grhot,grhotup,grhotdown
 
     do i=1,mxsize
@@ -46,14 +46,10 @@ contains
 
        call exocc (iorb,ocup,ocdown)
 
-       write (*,*) 'FIXME'
-       call abort
-       !call prod2 (isiorb,psi(iborb),psi(iborb),wk1)
+       call prod2 (isiorb,psi(iborb),psi(iborb),wk1)
        call scal (isiorb,ocup,wk1,ione)
 
-       write (*,*) 'FIXME'
-       call abort
-       !call prod2 (isiorb,psi(iborb),psi(iborb),wk2)
+       call prod2 (isiorb,psi(iborb),psi(iborb),wk2)
        call scal (isiorb,ocdown,wk2,ione)
 
        !        store total densities
