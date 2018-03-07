@@ -1,5 +1,4 @@
 ! ***************************************************************************
-! *                                                                         *
 ! *   Copyright (C) 1996 Leif Laaksonen, Dage Sundholm                      *
 ! *   Copyright (C) 1996-2010 Jacek Kobus <jkob@fizyka.umk.pl>              *
 ! *                                                                         *
@@ -16,18 +15,19 @@
 module rfun_int_m
   implicit none
 contains
+
   subroutine rfun_int (norb_p,cw_orb,cw_coul,cw_exch,wk8,wk16,cw_sctch)
     use params
     use discret
     use scf
     use commons8
+
     use dointerp_m
     use reada8_m
     use reada16_m
 
     implicit none
 
-    !  integer :: i,ierr,ii,ioffset,iorb1,iorb2,j,k,norbt
     integer :: i,ica,idel,ierr,ioffset,iorb1,iorb2,ipex,isym,j,k,norb_p
 
     integer, dimension(60) :: i1b_p,i2b_p,i1e_p,i2e_p,i1si_p,i2si_p,i1ng_p,i2ng_p,i1mu_p,i2mu_p
@@ -36,6 +36,7 @@ contains
     real (PREC), dimension(*) :: wk8,cw_orb,cw_coul,cw_exch,cw_sctch
 
     real (PREC16), dimension(*) :: wk16
+    real (PREC), dimension(:), allocatable :: fbefore
 
     read (iinp11,err=1000) i1b_p,i2b_p,i3b_p,i1e_p,i2e_p,i3e_p, &
          i1si_p,i2si_p,i3si_p,i1ng_p,i2ng_p,i3ng_p,i1mu_p,i2mu_p,i3mu_p
@@ -43,8 +44,10 @@ contains
     ioffset=norb-norb_p
     ica=1
     write(iout6,1100)
-01100 format('... interpolating orbitals:',/6x,$)
+01100 format(' ... interpolating orbitals:',/,'  ',$)
 01110 format(i4,$)
+
+    allocate(fbefore(nni_p*nmu_p(1)))
 
     do i=1,norb_p
        write(iout6,1110) i
@@ -62,7 +65,7 @@ contains
              stop 'rfun 8'
           endif
           do j=1,i1si_p(i+ioffset)
-             cw_sctch(i5b(1)+j-1)=wk8(j)
+             fbefore(j)=wk8(j)
           enddo
        endif
 
@@ -73,11 +76,11 @@ contains
              stop 'rfun 16'
           endif
           do j=1,i1si_p(i+ioffset)
-             cw_sctch(i5b(1)+j-1)=wk16(j)
+             fbefore(j)=wk16(j)
           enddo
        endif
 
-       call dointerp (ica,i1mu_p(i),i1mu(i),cw_sctch(i5b(1)),cw_orb(i1b(i+ioffset)))
+       call dointerp (ica,nmu_p(1),nmu(1),fbefore,cw_orb(i1b(i+ioffset)))
 
        if (ierr.ne.0) then
           write(iout6,*) 'error detected when reading orbital',i
@@ -106,7 +109,8 @@ contains
     ica=2
     isym=1
     write(iout6,1102)
-01102 format('... interpolating Coulomb potentials:',/6x,$)
+01102 format(' ... interpolating Coulomb potentials:',/,'  ',$)
+
     do i=1,norb_p
        write(iout6,1110) i
        if (lengthfp.eq.8) then
@@ -116,7 +120,7 @@ contains
              stop 'rfun 8'
           endif
           do j=1,i2si_p(i+ioffset)
-             cw_sctch(i5b(1)+j-1)=wk8(j)
+             fbefore(j)=wk8(j)
           enddo
        endif
        if (lengthfp.eq.16) then
@@ -126,11 +130,11 @@ contains
              stop 'rfun 16'
           endif
           do j=1,i2si_p(i+ioffset)
-             cw_sctch(i5b(1)+j-1)=wk16(j)
+             fbefore(j)=wk16(j)
           enddo
        endif
 
-       call dointerp (ica,i2mu_p(i),i2mu(i),cw_sctch(i5b(1)),cw_coul(i2b(i+ioffset)))
+       call dointerp (ica,nmu_p(1),nmu(1),fbefore,cw_coul(i2b(i+ioffset)) )
 
        if (ierr.ne.0) then
           write(iout6,*) 'error detected when reading coulomb potential',i
@@ -144,14 +148,12 @@ contains
        write(*,*) 'rfun_int: disk file without extension retrieved '
        write(*,*) '      '
        rewind iinp13
+       deallocate(fbefore)
        return
     endif
 
     if (imethod.eq.1) then
        ica=3
-
-       !        to interpolate exchange potentials they have to be read in as a single file
-
        if (iform.eq.0.or.iform.eq.2) then
           write(*,'("rfun_int: cannot interpolate exchange potentials when they are being retrieved as " &
                & "separate files")')
@@ -159,7 +161,7 @@ contains
        endif
 
        write(iout6,1104)
-01104  format('... interpolating exchange potentials for orbitals:',/6x,$)
+01104  format(' ... interpolating exchange potentials for orbitals:',/,'  ',$)
        do iorb1=1,norb_p
           write(iout6,1110) iorb1
 
@@ -183,7 +185,7 @@ contains
                    stop 'rfun 8'
                 endif
                 do j=1,i3si_p(k)
-                   cw_sctch(i5b(1)+j-1)=wk8(j)
+                   fbefore(j)=wk8(j)
                 enddo
              endif
              if (lengthfp.eq.16) then
@@ -193,12 +195,11 @@ contains
                    stop 'rfun 16'
                 endif
                 do j=1,i3si_p(k)
-                   cw_sctch(i5b(1)+j-1)=wk16(j)
+                   fbefore(j)=wk16(j)
                 enddo
              endif
 
-             call dointerp(ica,i3mu_p(k),i3mu(k),cw_sctch(i5b(1)),cw_exch(i3b(k)))
-
+             call dointerp (ica,nmu_p(1),nmu(1),fbefore,cw_exch(i3b(k)))
              if (ierr.ne.0) then
                 write(iout6,*) 'error detected when reading exchange potential',iorb1,iorb2,k
                 stop 'rfun_int'
@@ -212,7 +213,7 @@ contains
                    stop 'rfun 8'
                 endif
                 do j=1,i3si_p(k)
-                   cw_sctch(i5b(1)+j-1)=wk8(j)
+                   fbefore(j)=wk8(j)
                 enddo
              endif
              if (lengthfp.eq.16) then
@@ -222,11 +223,12 @@ contains
                    stop 'rfun 16'
                 endif
                 do j=1,i3si_p(k)
-                   cw_sctch(i5b(1)+j-1)=wk16(j)
+                   fbefore(j)=wk16(j)
                 enddo
              endif
 
-             call dointerp (ica,i3mu_p(k),i3mu(k),cw_sctch(i5b(1)),cw_exch(i3b(k)+i3si(k)))
+             call dointerp (ica,nmu_p(1),nmu(1),fbefore,cw_exch(i3b(k)+i3si(k)))
+
              if (ierr.ne.0) then
                 write(iout6,*) 'error detected when reading exchange potential',iorb1,iorb2,k
                 stop 'rfun_int'
@@ -239,6 +241,7 @@ contains
        rewind iinp13
     endif
 
+    deallocate(fbefore)
     return
 01000 continue
     write(*,*) '... error detected when retrieving the disk file ... '
