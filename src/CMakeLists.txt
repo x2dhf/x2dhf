@@ -1,22 +1,21 @@
 # Main program
 
 add_executable(x2dhf blas.F90 card.f90 checkOrbSym.f90 checkOrtho.f90
-checkPot.f90 checkSym.f90 commons16.f90 commons8.f90 contrib.f90
-contriborbDFT.f90 contriborb.f90 coulAsymptCont.f90 coulAsympt.f90
-coulMCSOR.f90 coulMom.f90 coulSOR.f90 dftauxfun.f90 dftex.f90 dgamit.f
-diffmu.f90 diffnu.f90 discret.f90 dointerp.f90 dointerp_mu.f90
-dointerp_nu.f90 doSCF.f90 doSOR.f90 Eab1DFT.f90 Eab1HF.f90 Eab2DFT.f90
-EabDFT.f90 Eab.f90 EaDFT.f90 Ea.f90 eclyptot.f90 ecvwntot.f90
-ehemsic.f90 es.f90 etotalDFT.f90 etotal.f90 etotalGauss.f90
-etotalOrb.f90 evalGauss.f90 exbe88.f90 exbe88sup.f90
-exchAsymptCont.f90 exchAsympt.f90 exchMCSOR.f90 exchMom.f90
-exchSOR.f90 excont.f90 exint.f90 exocc.f90 expw86.f90 expw86sup.f90
-expw91.f90 expw91sup.f90 extinorg.f90 exxalpha.f90 factor2.f90
-factor.f90 fbe88.f90 fbe88sup.f90 fdften.f90 fdftpot.f90 fermi.f90
-flp.f90 flypcs.f90 flypsupcs.f90 fockDFT.f90 fock.f90 fockform.f90
-fpw86.f90 fpw86sup.f90 fvwncs.f90 fvwnsupcs.f90 getCpuTime.f90
-getDateTime.f90 gmtran.f90 grid_old.f90 hydrogenOrb.f90 hypg1f1.f90
-hypg2f1.f90 inCard.f90 inFloat.f90 inInt.f90 initAddr.f90
+checkPot.f90 checkSym.f90 commons16.f90 commons8.f90 contriborbDFT.f90
+contriborb.f90 coulAsymptCont.f90 coulAsympt.f90 coulMCSOR.f90
+coulMom.f90 coulSOR.f90 dftauxfun.f90 dftex.f90 dgamit.f diffmu.f90
+diffnu.f90 discret.f90 dointerp.f90 dointerp_mu.f90 dointerp_nu.f90
+doSCF.f90 doSOR.f90 Eab1DFT.f90 Eab1HF.f90 Eab2DFT.f90 EabDFT.f90
+Eab.f90 EaDFT.f90 Ea.f90 eclyptot.f90 ecvwntot.f90 ehemsic.f90 es.f90
+etotalDFT.f90 etotal.f90 etotalGauss.f90 etotalOrb.f90 evalGauss.f90
+exbe88.f90 exbe88sup.f90 exchAsymptCont.f90 exchAsympt.f90
+exchMCSOR.f90 exchMom.f90 exchSOR.f90 excont.f90 exint.f90 exocc.f90
+expw86.f90 expw86sup.f90 expw91.f90 expw91sup.f90 extinorg.f90
+exxalpha.f90 factor2.f90 factor.f90 fbe88.f90 fbe88sup.f90 fdften.f90
+fdftpot.f90 fermi.f90 flp.f90 flypcs.f90 flypsupcs.f90 fockDFT.f90
+fock.f90 fockform.f90 fpw86.f90 fpw86sup.f90 fvwncs.f90 fvwnsupcs.f90
+getCpuTime.f90 getDateTime.f90 gmtran.f90 grid_old.f90 hydrogenOrb.f90
+hypg1f1.f90 hypg2f1.f90 inCard.f90 inFloat.f90 inInt.f90 initAddr.f90
 initArrays.f90 initCBlocks.f90 initDisk.f90 initExWeights.f90
 initGauss.f90 initHF.f90 initHyd.f90 initMesh.f90 initOrbPot.f90
 initPot.f90 initSuppl.f90 inputData.f90 inStr.f90 interpolq.f90 kh.f90
