@@ -45,6 +45,8 @@ contains
 
     !     Initialization of molecular orbitals
     if (ini.eq.4.) then
+       ! If OED method is chosen only the highest orbital is
+       ! initialized
        norbt=1
     else
        norbt=norb
