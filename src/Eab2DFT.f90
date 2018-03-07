@@ -21,9 +21,8 @@ subroutine Eab2DFT(iorb1,iorb2,psi,pot,excp,wgt2,wk0,wk1)
 
   implicit none
 
-! ?????????????????
   integer :: length
-  integer :: i,iborb,ibpot,iorb1,iorb2,iborb1,isiorb1,iborb2,iorb,ipc1,ipc2,ipc12,ipc21,isiorb2,isipot,ngrid,nmut
+  integer :: i,iborb,ibpot,iorb1,iorb2,iborb1,isiorb1,iborb2,iorb,ipc12,ipc21,isiorb2,isipot,ngrid,nmut
   real (PREC) :: engo1,engo2,engoprv1,engoprv2,oc,wtwoel
   real (PREC), dimension(*) :: psi,pot,excp,wgt2,wk0,wk1
   real (PREC), external :: dot
@@ -74,18 +73,18 @@ subroutine Eab2DFT(iorb1,iorb2,psi,pot,excp,wgt2,wk0,wk1)
   call prod (ngrid,psi(iborb1),wk1)
   wtwoel=dot(ngrid,wgt2,ione,wk1,ione)
 
-  engo(ipc1)= wtwoel
-  engo(ipc2)= wtwoel
+  engo(ipc12)= wtwoel
+  engo(ipc21)= wtwoel
 
   ! FIXME
   !        Damping factors are set to 0 by default (obsolete).
 
-  engo(ipc1)=sflagra*((1.0_PREC-dflagra)*engo1+dflagra*engoprv1)
-  engo(ipc2)=sflagra*((1.0_PREC-dflagra)*engo2+dflagra*engoprv2)
+  engo(ipc12)=sflagra*((1.0_PREC-dflagra)*engo1+dflagra*engoprv1)
+  engo(ipc21)=sflagra*((1.0_PREC-dflagra)*engo2+dflagra*engoprv2)
 
   if (iprint(48).ne.0) then
      write(*,'(a8,i4,e16.6,i4,a8,i4,a8,2e16.8)') 'Eab2DFT: ', &
-          lmtype,sflagra,iorn(iorb),bond(iorb1),iorn(iorb1),bond(iorb1),engo(ipc1),engo(ipc2)
+          lmtype,sflagra,iorn(iorb),bond(iorb1),iorn(iorb1),bond(iorb1),engo(ipc12),engo(ipc21)
   endif
 
 end subroutine Eab2DFT
