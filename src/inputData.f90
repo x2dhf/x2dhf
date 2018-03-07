@@ -27,7 +27,7 @@ contains
 
     real (PREC) :: clo,cloe,co12,fmfield,ftmp,ftmp1,ftmp2,tmp1,tmp2,totchar,totq,z1t,z2t
 
-    parameter (nmethods=5,nlabels=43,maxflags=40)
+    parameter (nmethods=5,nlabels=42,maxflags=40)
     character*4 cdftext(10),cdftcorrt(10)
     character*8 clabel,clabel1,clabel2,char8
     character*8 labellc(nlabels),cmethod(nmethods)
@@ -43,7 +43,7 @@ contains
          'orbpot','order','potgsz','potgszg','poth3',&
          'potkh','print','prtevery','scf','scfexch',&
          'sor','sormcsor','stop','title','xalpha',&
-         'potharm', 'pothook','out4dd'/
+         'potharm', 'pothook'/
 
 
     data cdftext /'lda','b88','pw86','pw91','x','x','x','x','x','x'/
@@ -950,11 +950,6 @@ contains
        else
           goto 1700
        endif
-       goto 5
-    endif
-
-    if (clabel.eq.'out4dd') then
-       iout4dd=1
        goto 5
     endif
 

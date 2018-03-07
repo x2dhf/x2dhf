@@ -28,8 +28,6 @@ contains
     inout64=0
     inout128=0
 
-    iout4dd=0
-
     !     2dhf_input.dat is assumed
     idat=0
 

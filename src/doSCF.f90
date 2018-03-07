@@ -42,7 +42,6 @@ contains
     use schedSOR_m
     use scmc_m
     use writeDisk_m
-    use writeDisk4dd_m
     use wtdexch_m
 
     implicit none
@@ -607,9 +606,6 @@ contains
     if (nobckup.ge.0) then
        call writeDisk(cw_orb,cw_coul,cw_exch)
     endif
-
-    if (iout4dd==1) call writeDisk4dd(cw_orb,cw_coul,cw_suppl(i4b(5)),cw_suppl(i4b(9)),&
-         cw_sctch(i5b( 1)),cw_sctch(i5b(2)),cw_sctch(i5b( 3)),cw_sctch(i5b( 4)))
 
 
     return

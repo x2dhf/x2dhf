@@ -94,7 +94,7 @@ module commons8
 
 
       integer :: ifefield,iharm2xy,magfield,inclorb,idump,iinterp,imethod,ipot,ienterm,inoterm,iftail,ifermi,iplot
-      integer :: inout32,inout64,inout128,inpform,ioutform,iout4dd
+      integer :: inout32,inout64,inout128,inpform,ioutform
 
       integer :: io,ir, maxscf,nobckup,islat,idft,idftex,idftcorr,iscmc,ihomon,ibreak,icanon,ilagra, &
            nenlast,nnolast,nscf2skip,maxsor1,maxsor2,maxsor3,lsor,ipoiss,ialtsweeps,isstart,isstop, &
