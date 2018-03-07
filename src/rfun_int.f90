@@ -77,9 +77,7 @@ contains
           enddo
        endif
 
-       write (*,*) 'FIXME'
-       call abort
-       !call dointerp (ica,i1mu_p(i),i1mu(i),cw_sctch(i5b(1)),cw_orb(i1b(i+ioffset)),cw_sctch(i5b(2)) )
+       call dointerp (ica,i1mu_p(i),i1mu(i),cw_sctch(i5b(1)),cw_orb(i1b(i+ioffset)))
 
        if (ierr.ne.0) then
           write(iout6,*) 'error detected when reading orbital',i
@@ -132,9 +130,7 @@ contains
           enddo
        endif
 
-       write (*,*) 'FIXME'
-       call abort
-       !call dointerp (ica,i2mu_p(i),i2mu(i),cw_sctch(i5b(1)),cw_coul(i2b(i+ioffset)),cw_sctch(i5b(2)) )
+       call dointerp (ica,i2mu_p(i),i2mu(i),cw_sctch(i5b(1)),cw_coul(i2b(i+ioffset)))
 
        if (ierr.ne.0) then
           write(iout6,*) 'error detected when reading coulomb potential',i
@@ -201,9 +197,7 @@ contains
                 enddo
              endif
 
-             write (*,*) 'FIXME'
-             call abort
-             !call dointerp(ica,i3mu_p(k),i3mu(k),cw_sctch(i5b(1)),cw_exch(i3b(k)),cw_sctch(i5b(2)) )
+             call dointerp(ica,i3mu_p(k),i3mu(k),cw_sctch(i5b(1)),cw_exch(i3b(k)))
 
              if (ierr.ne.0) then
                 write(iout6,*) 'error detected when reading exchange potential',iorb1,iorb2,k
@@ -232,9 +226,7 @@ contains
                 enddo
              endif
 
-             write (*,*) 'FIXME'
-             call abort
-             !call dointerp (ica,i3mu_p(k),i3mu(k),cw_sctch(i5b(1)),cw_exch(i3b(k)+i3si(k)),cw_sctch(i5b(2)) )
+             call dointerp (ica,i3mu_p(k),i3mu(k),cw_sctch(i5b(1)),cw_exch(i3b(k)+i3si(k)))
              if (ierr.ne.0) then
                 write(iout6,*) 'error detected when reading exchange potential',iorb1,iorb2,k
                 stop 'rfun_int'
