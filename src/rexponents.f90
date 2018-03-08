@@ -12,11 +12,6 @@
 !
 !     Reads exponents and contraction coefficients from
 !     a GAUSSIAN94 output obtained with gfinput keyword
-!
-!     Warning!
-!     Basis functions of g, h and higher symmertries are not allowed
-!     Uncontracted basis set must be used
-!
 module rexponents_m
   implicit none
 contains
@@ -186,7 +181,7 @@ contains
                 enddo
              enddo
              !              define g-type orbitals (g0,g1,g-1,g2,g-2,g3,g-3,g4,g-4)`
-          elseif (symlab.eq.'g       ') then
+          elseif (trim(symlab).eq.'G') then
              do j=1,ncf
                 read (7,'(A)') line
                 read (line, *) expon(j), dcoef(j,5)
@@ -212,7 +207,7 @@ contains
                 enddo
              enddo
              !              define h-type orbitals (h0,h1,h-1,h2,h-2,h3,h-3,h4,h-4,h5,h-5)`
-          elseif (symlab.eq.'h       ') then
+          elseif (trim(symlab).eq.'H') then
              do j=1,ncf
                 read (7,'(A)') line
                 read (line, *) expon(j), dcoef(j,6)
