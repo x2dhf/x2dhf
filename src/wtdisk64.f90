@@ -74,12 +74,12 @@ contains
     ioffset=ioffset+maxorb*(maxorb+1)/2
 
     do i=1,maxorb
-       i8tmp(ioffset+i)=i1si(i)
+       i8tmp(ioffset+i)=mxsize
     enddo
     ioffset=ioffset+maxorb
 
     do i=1,maxorb
-       i8tmp(ioffset+i)=i2si(i)
+       i8tmp(ioffset+i)=mxsize
     enddo
     ioffset=ioffset+maxorb
 
@@ -124,7 +124,7 @@ contains
 
     !   add orbitals
     do i=1,norb
-       i8tmp1=i1si(i)
+       i8tmp1=mxsize
        do j=1,i8tmp1
           r8mxsize(j)=cw_orb(i1b(i)+j-1)
        enddo
@@ -213,12 +213,12 @@ contains
     !   write out Coulomb potentials
 
     do i=1,norb
-       i8tmp1=i2si(i)
+       i8tmp1=mxsize
        do j=1,i8tmp1
           r8mxsize(j)=cw_coul(i2b(i)+j-1)
        enddo
        call writea64(i8out22,i8tmp1,r8mxsize,ierr)
-       !       call writea(i8out22,i2si(i),cw_coul(i2b(i)),ierr)
+       !       call writea(i8out22,mxsize,cw_coul(i2b(i)),ierr)
 
        if (ierr.ne.0) then
           write(iout6,*) 'error detected when writing coulomb potential',i
@@ -234,16 +234,16 @@ contains
           do iorb1=1,norb
              do iorb2=iorb1,norb
                 k=iorb1+iorb2*(iorb2-1)/2
-                i8tmp1=i3si(k)
+                i8tmp1=mxsize
 
                 if (iorb1.eq.iorb2.and.ll(iorb1).eq.0) goto 50
 
-                do j=1,i3si(k)
+                do j=1,mxsize
                    r8mxsize(j)=cw_exch(i3b(k)+j-1)
                 enddo
 
                 call writea64(i8out23,i8tmp1,r8mxsize,ierr)
-                !                call writea(i8out23,i3si(k),cw_exch(i3b(k)),ierr)
+                !                call writea(i8out23,mxsize,cw_exch(i3b(k)),ierr)
 
                 if (ierr.ne.0) then
                    write(iout6,*) 'error detected when writing exchange potential',iorb1,iorb2,k
@@ -252,8 +252,8 @@ contains
                 if (iorb1.eq.iorb2) goto 50
                 if (ll(iorb1).eq.0.or.ll(iorb2).eq.0) goto 50
 
-                do j=1,i3si(k)
-                   r8mxsize(j)=cw_exch(i3b(k)+i3si(k)+j-1)
+                do j=1,mxsize
+                   r8mxsize(j)=cw_exch(i3b(k)+mxsize+j-1)
                 enddo
                 call writea64(i8out23,i8tmp1,r8mxsize,ierr)
                 if (ierr.ne.0) then

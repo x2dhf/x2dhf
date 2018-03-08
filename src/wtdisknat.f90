@@ -47,7 +47,7 @@ contains
     !   add orbitals
 
     do i=1,norb
-       call writea(iout21,i1si(i),cw_orb(i1b(i)),ierr)
+       call writea(iout21,mxsize,cw_orb(i1b(i)),ierr)
        if (ierr.ne.0) then
           write(iout6,*) 'error detected when writing orbital',i
           stop 'wtdisknat'
@@ -70,7 +70,7 @@ contains
 
     !   write out Coulomb potentials
     do i=1,norb
-       call writea(iout22,i2si(i),cw_coul(i2b(i)),ierr)
+       call writea(iout22,mxsize,cw_coul(i2b(i)),ierr)
        if (ierr.ne.0) then
           write(iout6,*) 'error detected when writing coulomb potential',i
           stop 'wtdisknat'
@@ -84,14 +84,14 @@ contains
              do iorb2=iorb1,norb
                 k=iorb1+iorb2*(iorb2-1)/2
                 if (iorb1.eq.iorb2.and.ll(iorb1).eq.0) goto 50
-                call writea(iout23,i3si(k),cw_exch(i3b(k)),ierr)
+                call writea(iout23,mxsize,cw_exch(i3b(k)),ierr)
                 if (ierr.ne.0) then
                    write(iout6,*) 'error detected when writing exchange potential',iorb1,iorb2,k
                    stop 'wtdisknat'
                 endif
                 if (iorb1.eq.iorb2) goto 50
                 if (ll(iorb1).eq.0.or.ll(iorb2).eq.0) goto 50
-                call writea(iout23,i3si(k),cw_exch(i3b(k)+i3si(k)),ierr)
+                call writea(iout23,mxsize,cw_exch(i3b(k)+mxsize),ierr)
                 if (ierr.ne.0) then
                    write(iout6,*) 'error detected when writing exchange potential',iorb1,iorb2,k
                    stop 'wtdisknat'

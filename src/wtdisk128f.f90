@@ -70,17 +70,17 @@ contains
     ioffset=ioffset+maxorb*(maxorb+1)/2
 
     do i=1,maxorb
-       i8tmp(ioffset+i)=i1si(i)
+       i8tmp(ioffset+i)=mxsize
     enddo
     ioffset=ioffset+maxorb
 
     do i=1,maxorb
-       i8tmp(ioffset+i)=i2si(i)
+       i8tmp(ioffset+i)=mxsize
     enddo
     ioffset=ioffset+maxorb
 
     do i=1,maxorb*(maxorb+1)/2
-       i8tmp(ioffset+i)=i3si(i)
+       i8tmp(ioffset+i)=mxsize
     enddo
     ioffset=ioffset+maxorb*(maxorb+1)/2
 
@@ -124,8 +124,8 @@ contains
     !   add orbitals
     iout8=i8out21
     do i=1,norb,1
-       i8tmp1=i1si(i)
-       do j=1,i1si(i)
+       i8tmp1=mxsize
+       do j=1,mxsize
           r16mxsize(j)=cw_orb(i1b(i)+j-1)
        enddo
        call writea128f(i8out21,i8tmp1,r16mxsize,ierr8)
@@ -211,12 +211,11 @@ contains
     !   write out Coulomb potentials
 
     do i=1,norb
-       do j=1,i2si(i)
+       do j=1,mxsize
           r16mxsize(j)=cw_coul(i2b(i)+j-1)
        enddo
-       i8tmp1=i2si(i)
+       i8tmp1=mxsize
        call writea128f(i8out22,i8tmp1,r16mxsize,ierr8)
-       !       call writea(i8out22,i2si(i),cw_coul(i2b(i)),ierr)
 
        if (ierr8.ne.0) then
           write(iout6,*) 'error detected when writing coulomb potential',i
