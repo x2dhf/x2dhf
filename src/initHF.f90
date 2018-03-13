@@ -94,7 +94,8 @@ contains
        endif
 
     endif
-
+    close(ouf2dhf1)
+    
     !     read HF functions for centre B
 
     if (z2.ne.zero) then
@@ -132,7 +133,8 @@ contains
           enddo
        endif
     endif
-
+    close(ouf2dhf2)
+    
     !     loop over orbitals
 
     do iorb=1,norb
