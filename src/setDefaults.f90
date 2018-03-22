@@ -16,7 +16,7 @@ contains
 
     implicit none
 
-    integer :: i
+    integer :: i,j
 
     !     no=isum=norb
     !     iexd=maxorb
@@ -156,6 +156,8 @@ contains
 
     iplot=0
 
+    ifliporb=0
+    fliporbthresh=1.e-2_PREC
     ilagra=0
     sflagra=1.0_PREC
     dflagra=0.0_PREC
@@ -199,7 +201,13 @@ contains
        lagraon(i)=0
     enddo
 
-
+    do i=1,maxorb
+       do j=1,maxorb
+          nlmf(i,j)=0
+          nfliporb(i,j)=0
+       enddo
+    enddo
+    
     do i=1,1000
        idbg(i)=0
        iprint(i)=0

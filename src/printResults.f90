@@ -88,21 +88,21 @@ contains
     if (iprint16.eq.0) then
        write(*,*)
        write(*,'(" total energy contributions: ")')
-       write(*,'("     nuclear-electron attraction energy = ",f20.12)') ennucel
-       write(*,'("     kinetic energy                     = ",f20.12)') enkin
-       write(*,'("     one electron energy                = ",f20.12)') enkin+ennucel
+       write(*,'("     nuclear-electron attraction energy = ",f22.12)') ennucel
+       write(*,'("     kinetic energy                     = ",f22.12)') enkin
+       write(*,'("     one electron energy                = ",f22.12)') enkin+ennucel
 
        if (islat.eq.0) then
           ! FIXME print DFT functional used
-          write(*,'("     coulomb energy                     = ",f20.12)') encoul
-          write(*,'("     exchange energy                    = ",f20.12)') enexch
+          write(*,'("     coulomb energy                     = ",f22.12)') encoul
+          write(*,'("     exchange energy                    = ",f22.12)') enexch
        end if
 
        ! FIXME print DFT functional used
-       write(*,'("     nuclear repulsion energy           = ",f20.12)') z1*z2/r
-       write(*,'("     coulomb energy (DFT)               = ",f20.12)') encouldft
-       write(*,'("     exchange energy (DFT)              = ",f20.12)') enexchdft
-       write(*,'("     correlation energy (DFT)           = ",f20.12)') edftcorr
+       write(*,'("     nuclear repulsion energy           = ",f22.12)') z1*z2/r
+       write(*,'("     coulomb energy (DFT)               = ",f22.12)') encouldft
+       write(*,'("     exchange energy (DFT)              = ",f22.12)') enexchdft
+       write(*,'("     correlation energy (DFT)           = ",f22.12)') edftcorr
     else
 
        write(*,*)
@@ -138,7 +138,7 @@ contains
             cw_sctch(i5b(13)),cw_sctch(i5b(14)))
        write(*,*)
        if (iprint16.eq.0) then
-          write(*,'("     exchange energy: LDA               = ",f20.12)') enexchdft
+          write(*,'("     exchange energy: LDA               = ",f22.12)') enexchdft
        else
           write(*,'("     exchange energy: LDA               = ",f28.22)') enexchdft
        endif
@@ -154,7 +154,7 @@ contains
             cw_sctch(i5b(13)),cw_sctch(i5b(14)))
 
        if (iprint16.eq.0) then
-          write(*,'("     exchange energy: B88               = ",f20.12)') enexchdft
+          write(*,'("     exchange energy: B88               = ",f22.12)') enexchdft
        else
           write(*,'("     exchange energy: B88               = ",f28.22)') enexchdft
        endif
@@ -170,7 +170,7 @@ contains
             cw_sctch(i5b(13)),cw_sctch(i5b(14)))
 
        if (iprint16.eq.0) then
-          write(*,'("     exchange energy: PW86              = ",f20.12)') enexchdft
+          write(*,'("     exchange energy: PW86              = ",f22.12)') enexchdft
        else
           write(*,'("     exchange energy: PW86              = ",f28.22)') enexchdft
        endif
@@ -186,7 +186,7 @@ contains
             cw_sctch(i5b(13)),cw_sctch(i5b(14)))
 
        if (iprint16.eq.0) then
-          write(*,'("     exchange energy: PW91              = ",f20.12)') enexchdft
+          write(*,'("     exchange energy: PW91              = ",f22.12)') enexchdft
        else
           write(*,'("     exchange energy: PW91              = ",f28.22)') enexchdft
        endif
@@ -203,7 +203,7 @@ contains
             cw_sctch(i5b(13)),cw_sctch(i5b(14)))
 
        if (iprint16.eq.0) then
-          write(*,'("     correlation energy: LYP            = ",f20.12)') edftcorr
+          write(*,'("     correlation energy: LYP            = ",f22.12)') edftcorr
        else
           write(*,'("     correlation energy: LYP            = ",f28.22)') edftcorr
        endif
@@ -219,7 +219,7 @@ contains
             cw_sctch(i5b(13)),cw_sctch(i5b(14)))
 
        if (iprint16.eq.0) then
-          write(*,'("     correlation energy: VWN            = ",f20.12)') edftcorr
+          write(*,'("     correlation energy: VWN            = ",f22.12)') edftcorr
        else
           write(*,'("     correlation energy: VWN            = ",f28.22)') edftcorr
        endif
@@ -300,7 +300,8 @@ contains
 
     !     check symmetry of orbitals in homonuclear case
 
-    if (abs(z1-z2).lt.homolevl.and.ibreak.eq.0) call checkSym(cw_orb)
+!    if (abs(z1-z2).lt.homolevl.and.ibreak.eq.0) call checkSym(cw_orb)
+    if (abs(z1-z2).lt.homolevl) call checkSym(cw_orb)
 
     !      call orbtails (cw_orb,cw_coul,cw_exch,cw_suppl,cw_sctch)
 

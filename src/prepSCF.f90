@@ -48,6 +48,18 @@ contains
 
     !     see routine initOrbPot for the explanation of the following command
 
+    ! flip pairs of orbitals 
+    if (ifliporb.eq.1) then
+       do iorb=1,norb
+          do jorb=iorb,1,-1
+             if (nfliporb(iorb,jorb).ne.0) then
+                write(iout6,16110) iorn(iorb),bond(iorb),gut(iorb),iorn(jorb),bond(jorb),gut(jorb)
+                call fliporb(iorb,jorb,cw_orb,cw_coul,cw_sctch(i5b(1)))
+             endif
+          enddo
+       enddo
+    endif
+
     !     check orhogonality of orbitals
     if (iprint(30).ne.0) then
        print *,''
@@ -126,5 +138,7 @@ contains
     endif
     call prttoten
 
+16110 format(" ... flipping orbitals: ",i4,1x,a8,a1,3x,i4,1x,a8,a1)
+    
   end subroutine prepSCF
 end module prepSCF_m

@@ -44,7 +44,7 @@ contains
     use wtdexch_m
 
     implicit none
-    integer :: i,iasympt,ibeg,ic,iend,imomen,inde,indn,iorb,istat,modv,nei,next,noenergydec,nonormdec,nthren
+    integer :: i,iasympt,ibeg,ic,iend,imomen,inde,indn,iorb,istat,j,modv,nei,next,noenergydec,nonormdec,nthren
     real (PREC) :: ddmax,denmax,ddmaxprev,dnmaxprev,dnomax,thren,thrno,time1,time2,tscf
 
     integer, dimension(*) :: cw_sor
@@ -311,7 +311,7 @@ contains
              if (modv.eq.0) then
                 if (iform.eq.0.or.iform.eq.2) then
 
-                   !                  calculate 'intermidiate' total energy
+                   !                  calculate 'intermediate' total energy
 
                    call getCpuTime(time1)
                    call etotalOrb (iorb,cw_orb,cw_coul,cw_exch,cw_suppl(i4b( 4)),cw_suppl(i4b( 5)),cw_suppl(i4b(13)),&
@@ -503,6 +503,26 @@ contains
           endif
        endif
 
+       ! When flipping of orbitals is on then flip (i,j) pair if nfliporb(i,j)=1 or
+       ! abs(denmax) is less then fliporbthresh
+
+       if (ifliporb.eq.1) then
+          do i=norb,1,-1
+             do j=i-1,1,-1
+                if (mgx(6,i).ne.mgx(6,j)) goto 222
+                if (eng(i).lt.eng(j)) goto 222
+                if (ige(i).ne.ige(j)) goto 222
+                if (nfliporb(i,j).eq.1.or.abs(denmax).lt.fliporbthresh) then
+                   write(iout6,16110) iorn(i),bond(i),gut(i),iorn(j),bond(j),gut(j)
+                   call fliporb(i,j,cw_orb,cw_coul,cw_sctch(i5b(1)))
+                endif
+222             continue
+             enddo
+          enddo
+       endif
+
+
+
        if ( thrno.ne.0.0_PREC ) then
           if (exlorb.eq.0.and.dnomax.lt.thrno) then
              write(*,*) '          '
@@ -618,6 +638,7 @@ contains
 15000 format(/'   scf  orbital',11x,'   energy  ',12x,'energy diff ',7x,'1-norm',9x,'overlap')
 15100 format(i5,i4,1x,a8,a1,2x,e22.16,3e16.2)
 15110 format(i5,i4,1x,a8,a1,3x,e22.16,2e16.2,i5)
+16110 format(" ... flipping orbitals: ",i4,1x,a8,a1,3x,i4,1x,a8,a1)
 25000 format(/'  iter.   orbital',24x,'   energy  ',19x,'energy diff.',7x,'1-norm')
 25100 format(i5,i4,1x,a8,a1,2x,e44.32,3e16.2)
   end subroutine doSCF

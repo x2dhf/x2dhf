@@ -27,7 +27,7 @@ contains
 
     real (PREC) :: clo,cloe,co12,fmfield,ftmp,ftmp1,ftmp2,tmp1,tmp2,totchar,totq,z1t,z2t
 
-    parameter (nmethods=5,nlabels=42,maxflags=40)
+    parameter (nmethods=5,nlabels=43,maxflags=40)
     character*4 cdftext(10),cdftcorrt(10)
     character*8 clabel,clabel1,clabel2,char8
     character*8 labellc(nlabels),cmethod(nmethods)
@@ -37,7 +37,7 @@ contains
 
     data labellc /'break','config','conv','debug','dft',&
          'exchio','fefield','fermi','fix','fixorb',&
-         'fixcoul','fixexch','gauss','grid','homo',&
+         'fixcoul','fixexch','fliporb','gauss','grid','homo',&
          'initial','inout','interp','lcao','lagra',&
          'mcsor','method','multipol','nuclei','omega',&
          'orbpot','order','potgsz','potgszg','poth3',&
@@ -1135,6 +1135,30 @@ contains
           endif
           nlmf(norb-id1+1,norb-id2+1)=1
           nlmf(norb-id2+1,norb-id1+1)=1
+       enddo
+
+       goto 5
+    endif
+
+    if (clabel.eq.'fliporb') then
+       !        label label label label label label label label label label label label label 
+       !        label: fliporb
+
+       ifliporb=1
+       do i=1,maxorb*(maxorb-1)/2
+          call inInt(itmp1)
+          if (itmp1.ne.inpiexit) then
+             id1=itmp1
+          else
+             goto 5
+          endif
+          call inInt(itmp1)
+          if (itmp1.ne.inpiexit) then
+             id2=itmp1
+          else
+             goto 1700
+          endif
+          nfliporb(norb-id1+1,norb-id2+1)=1
        enddo
 
        goto 5

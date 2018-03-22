@@ -179,8 +179,8 @@ contains
 
     !     ige(i)=1 ungerade
     !     ige(i)=2 gerade or heteronuclear case
-    !     if break is on
 
+    !     if break is on this symmetry must be ignored (see below)
     if (ibreak.eq.1) then
        do i=1,norb
           gut(i)=spac
@@ -284,6 +284,7 @@ contains
        if (gut(i).eq.'g'.and.orbsym(i).eq.phi)   ihomo(i)=-1
     enddo
 
+    ! If ibreak=1 then for all orbitals ige=2 and Ci symmetry does not effect orthogonalization (see orthog)
     do ial=1,norb
        ige(ial)=2
        if (gut(ial).eq.'u') ige(ial)=1

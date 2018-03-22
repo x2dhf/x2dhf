@@ -43,6 +43,7 @@ contains
        if (nonorthog(iorb1,iorb3).eq.1) go to 101
 
        ngrid= min (i1si(iorb1),i1si(iorb3))
+
        if (mgx(6,iorb3).ne.mgx(6,iorb1)) go to 101
        if (ige(iorb3).ne.ige(iorb1)) go to 101
 
@@ -113,4 +114,30 @@ contains
     call scal (ngrid,ano,psi(ibeg1),ione)
 
   end subroutine ortho
+
+  subroutine fliporb (iorb1,iorb2,psi,coul,wk0)
+    use params
+    use commons8
+    use discret
+    use util
+    use blas_m
+
+    implicit none
+    integer :: ibeg1,ibeg2,iorb1,iorb2
+    real (PREC), dimension(*) :: coul,psi,wk0
+
+    ibeg1 = i1b (iorb1)
+    ibeg2 = i1b (iorb2)
+
+    call copy (mxsize,psi(ibeg1),ione,wk0,ione)
+    call copy (mxsize,psi(ibeg2),ione,psi(ibeg1),ione)
+    call copy (mxsize,wk0,ione,psi(ibeg2),ione)
+
+    call copy (mxsize,coul(ibeg1),ione,wk0,ione)
+    call copy (mxsize,coul(ibeg2),ione,coul(ibeg1),ione)
+    call copy (mxsize,wk0,ione,coul(ibeg2),ione)
+
+
+  end subroutine fliporb
+
 end module ortho_m

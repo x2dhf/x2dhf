@@ -8,13 +8,14 @@ module commons8
   ! ainfcm: bohr radius in cm
   data ainfcm/0.529177249e-08_PREC/
 
-  character*2, dimension(0:100) :: element
+  character*2, dimension(0:118) :: element
   data element/ &
        ' ','H ','He','Li','Be','B ','C ','N ','O ','F ','Ne','Na','Mg','Al','Si','P ','S ','Cl','Ar','K ','Ca',&
        'Sc','Ti','V ','Cr','Mn','Fe','Co','Ni','Cu','Zn','Ga','Ge','As','Se','Br','Kr','Rb','Sr','Y ','Zr',&
        'Nb','Mo','Tc','Ru','Rh','Pd','Ag','Cd','In','Sn','Sb','Te','I ','Xe','Cs','Ba','La','Ce','Pr','Nd',&
        'Pm','Sm','Eu','Gd','Tb','Dy','Ho','Er','Tm','Yb','Lu','Hf','Ta','W ','Re','Os','Ir','Pt','Au','Hg',&
-       'Tl','Pb','Bi','Po','At','Rn','Fr','Ra','Ac','Th','Pa','U ','Np','Pu','Am','Cm','Bk','Cf','Es','Fm'/
+       'Tl','Pb','Bi','Po','At','Rn','Fr','Ra','Ac','Th','Pa','U ','Np','Pu','Am','Cm','Bk','Cf','Es','Fm',&
+       'Md','No','Lr','Rf','Db','Sg','Bh','Hs','Mt','Ds','Rg','Cn','Nh','Fl','Mc','Lv','Ts','Og' /
 
 
   !   atomic masses of most abundant isotopes extracted from
@@ -93,13 +94,14 @@ module commons8
       integer :: nexchp,norb,nel,nexch
 
 
-      integer :: ifefield,iharm2xy,magfield,inclorb,idump,iinterp,imethod,ipot,ienterm,inoterm,iftail,ifermi,iplot
-      integer :: inout32,inout64,inout128,inpform,ioutform
+      integer :: ifefield,iharm,iharm2,iharm3,iharm2xy,magfield,inclorb,idump,iinterp,imethod,&
+           ipot,ipotdft,ienterm,inoterm,iftail,ifermi,iplot
+      integer :: inout32,inout64,inout128,inpform,ioutform,iout4dd,iout4dft
 
       integer :: io,ir, maxscf,nobckup,islat,idft,idftex,idftcorr,iscmc,ihomon,ibreak,icanon,ilagra, &
            nenlast,nnolast,nscf2skip,maxsor1,maxsor2,maxsor3,lsor,ipoiss,ialtsweeps,isstart,isstop, &
            isstep,mpole,iprtlev,ioo,iomega,icase,mulast, &
-           ngrids_p,nni_p,mxnmu_p,mxsize_p,npbasis,lmtype,iscf
+           ngrids_p,nni_p,mxnmu_p,mxsize_p,npbasis,lmtype,iscf,ifliporb
 
       integer ::  iexlorb,iexlcoul,iexlexp,iform
 
@@ -120,6 +122,7 @@ module commons8
       integer, dimension(60,60) :: i3btv,i3xind,i3xpair,i3brec,i3xk,i3breck,nlmf,nlm,nonorthog
       integer, dimension(9,60) :: mgx
       integer, dimension(240,240) :: imagn
+      integer, dimension(60,60) :: nfliporb
 
 
       character*4, dimension(10) :: cdftex,cdftcorr
@@ -130,10 +133,11 @@ module commons8
 
       ! equivalence(header_p,dtarr1(1))
       ! equivalence(datetime_p,dtarr2(1))
-
+      ! adding harm
       real (PREC) :: hni,hni_p
-      real (PREC) :: homolevl,homoallign,ffield,fgrad,zcutoff,harm2xy,gammaf,z1atmass,z2atmass
-
+!      real (PREC) :: homolevl,homoallign,ffield,fgrad,zcutoff,harm,gammaf,z1atmass,z2atmass
+      real (PREC) :: homolevl,homoallign,ffield,fgrad,zcutoff,harm,harm2xy,gammaf,z1atmass,z2atmass,fliporbthresh
+      
       real (PREC) :: facmul,exlorb,exlcoul,exlexp,alphaf,diver,trelax,tortho,trayl,tmomen,tlagra,ttoten,sflagra,dflagra,&
            vkt,vnt,evt,epott,etot,virrat,etotFN,ictot,iready,hallign
 
@@ -144,13 +148,8 @@ module commons8
 
       integer :: mpot, nsimp
 
-
-
       real (PREC), dimension(12) :: calp
       real (PREC), dimension(60) :: eza1,eza2,co1,co2,area,wstorthog,qxm,occ,sign,demax,vk,vn,eng,engi,engt,pnc,div
-
-
-
 
       real (PREC), dimension(maxbasis) :: fngau2,shngau,primexp,coeff
 

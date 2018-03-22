@@ -276,7 +276,7 @@ contains
     call separator
 
 
-1000 format(10x,a2,'(',f5.2,')',3x,a2,' (',f5.2,')',3x,'R =',f9.5,' bohr =',f8.5,' angstroms')
+1000 format(10x,a2,'(',f6.2,')',3x,a2,' (',f6.2,')',3x,'R =',f10.6,' bohr =',f10.6,' angstroms')
 1401 format(/3x,'finite nuclei (Fermi nuclear charge distribution):',/10x,'atomic masses:', d16.9,' ( ',a2,')',d16.9,' ( ',a2,')')
 1402 format(/3x,'finite nuclei (Gauss nuclear charge distribution):',/10x,'atomic masses:', d16.9,' ( ',a2,')',d16.9,' ( ',a2,')')
 1001 format(3x,'method: HFS','  (alpha = ',f10.5,')')
