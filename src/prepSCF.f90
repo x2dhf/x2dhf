@@ -54,16 +54,14 @@ contains
        if (ifliporb.eq.1) then
           do i=norb,1,-1
              do j=i-1,1,-1
-                if (mgx(6,i).ne.mgx(6,j)) goto 222
-                if (eng(i).lt.eng(j).and.nfliporb(i,j).eq.0) goto 222
-                if (ige(i).ne.ige(j)) goto 222
+                if (mgx(6,i).ne.mgx(6,j)) cycle
+                if (eng(i).lt.eng(j).and.nfliporb(i,j).eq.0) cycle
+                if (ige(i).ne.ige(j)) cycle
                 write(iout6,16110) iorn(i),bond(i),gut(i),iorn(j),bond(j),gut(j)
                 call fliporb(i,j,cw_orb,cw_coul,cw_sctch(i5b(1)))
-222          continue
              enddo
           enddo
-       enddo
-    endif
+       endif
 
     !     check orhogonality of orbitals
     if (iprint(30).ne.0) then

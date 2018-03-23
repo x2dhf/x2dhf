@@ -509,14 +509,13 @@ contains
        if (ifliporb.eq.1) then
           do i=norb,1,-1
              do j=i-1,1,-1
-                if (mgx(6,i).ne.mgx(6,j)) goto 222
-                if (ige(i).ne.ige(j)) goto 222
-                if (eng(i).lt.eng(j)) goto 222
+                if (mgx(6,i).ne.mgx(6,j)) cycle
+                if (ige(i).ne.ige(j)) cycle
+                if (eng(i).lt.eng(j)) cycle
                 if (abs(denmax).lt.fliporbthresh) then
                    write(iout6,16110) iorn(i),bond(i),gut(i),iorn(j),bond(j),gut(j)
                    call fliporb(i,j,cw_orb,cw_coul,cw_sctch(i5b(1)))
                 endif
-222             continue
              enddo
           enddo
        endif
