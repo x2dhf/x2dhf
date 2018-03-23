@@ -35,7 +35,7 @@ contains
     use mpolemom_m
 
     implicit none
-    integer :: i,iorb,iprtlev0,jorb
+    integer :: i,iorb,iprtlev0,j,jorb
 
     integer, dimension(*) :: cw_sor
     real (PREC), dimension(*) :: cw_orb,cw_coul,cw_exch,cw_suppl,cw_sctch
@@ -48,14 +48,19 @@ contains
 
     !     see routine initOrbPot for the explanation of the following command
 
-    ! flip pairs of orbitals 
-    if (ifliporb.eq.1) then
-       do iorb=1,norb
-          do jorb=iorb,1,-1
-             if (nfliporb(iorb,jorb).ne.0) then
-                write(iout6,16110) iorn(iorb),bond(iorb),gut(iorb),iorn(jorb),bond(jorb),gut(jorb)
-                call fliporb(iorb,jorb,cw_orb,cw_coul,cw_sctch(i5b(1)))
-             endif
+       ! When flipping of orbitals is on then flip (i,j) pair if nfliporb(i,j)=1 or
+       ! abs(denmax) is less then fliporbthresh
+
+       if (ifliporb.eq.1) then
+          do i=norb,1,-1
+             do j=i-1,1,-1
+                if (mgx(6,i).ne.mgx(6,j)) goto 222
+                if (eng(i).lt.eng(j).and.nfliporb(i,j).eq.0) goto 222
+                if (ige(i).ne.ige(j)) goto 222
+                write(iout6,16110) iorn(i),bond(i),gut(i),iorn(j),bond(j),gut(j)
+                call fliporb(i,j,cw_orb,cw_coul,cw_sctch(i5b(1)))
+222          continue
+             enddo
           enddo
        enddo
     endif

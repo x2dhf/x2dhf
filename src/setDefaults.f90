@@ -157,7 +157,7 @@ contains
     iplot=0
 
     ifliporb=0
-    fliporbthresh=1.e-2_PREC
+    fliporbthresh=1.e0_PREC
     ilagra=0
     sflagra=1.0_PREC
     dflagra=0.0_PREC
