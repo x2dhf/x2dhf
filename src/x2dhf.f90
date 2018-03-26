@@ -233,10 +233,6 @@ PROGRAM  x2dhf
        write(*,'(1x,a7,a80)') 'stop:  ',datetime
        call separator
 
-      if (next.eq.1) then
-         goto 100
-      else
-         stop 'x2dhf'
-      endif
+       if (next.eq.1) goto 100
 
 end program x2dhf
