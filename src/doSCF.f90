@@ -45,7 +45,7 @@ contains
 
     implicit none
     integer :: i,iasympt,ibeg,ic,iend,imomen,inde,indn,iorb,istat,j,modv,nei,next,noenergydec,nonormdec,nthren
-    real (PREC) :: ddmax,denmax,ddmaxprev,dnmaxprev,dnomax,thren,thrno,time1,time2,tscf
+    real (PREC) :: ddmax,denmax,ddmaxprev,dnmaxprev,dnomax,dovmax,etotprev,thren,thrno,time1,time2,tscf
 
     integer, dimension(*) :: cw_sor
 
@@ -59,6 +59,8 @@ contains
     ic=0
     thren=10.0_PREC**dble(-ienterm)
     thrno=10.0_PREC**dble(-inoterm)
+
+    etotprev=etot
 
     !    the SCF procedure starts here: set some parameters and go
 
@@ -353,10 +355,10 @@ contains
 
        indn=1
        dnomax=0.0_PREC
+       dovmax=0.0_PREC
 
        if (norb.gt.0) then
           do nei=1,norb
-             !           if(ifix(nei).eq.0) then
              if (abs(demaxt(nei)).ge.abs(denmax)) then
                 denmax=demaxt(nei)
                 inde=nei
@@ -364,6 +366,12 @@ contains
              !           endif
           enddo
 
+          do nei=1,norb
+             if (abs(wstorthog(nei)).ge.abs(dovmax)) then
+                dovmax=wstorthog(nei)
+             endif
+          enddo
+          
           do nei=1,norb
              if(ifix(nei).eq.0) then
                 if (abs(area(nei)-1.0_PREC).ge.dnomax) then
@@ -611,6 +619,9 @@ contains
              else
                 write(iout6,6101)  etot
              endif
+             write(iout6,6102)  abs(etot-etotprev),denmax,dnomax,dovmax 
+             etotprev=etot
+
           endif
        endif
 
@@ -632,8 +643,9 @@ contains
 
     return
 
-6100 format(1x,'total energy: ',e26.16)
-6101 format(1x,'total energy: ',e38.28)
+6100 format(1x,'total energy:   ',e26.16)
+6101 format(1x,'total energy:   ',e38.28)
+6102 format(1x,'diff-Etot/Eorb/1-norm/overlap: ',e11.2,e16.2,e16.2,e16.2)
 15000 format(/'   scf  orbital',11x,'   energy  ',12x,'energy diff ',7x,'1-norm',9x,'overlap')
 15100 format(i5,i4,1x,a8,a1,2x,e22.16,3e16.2)
 15110 format(i5,i4,1x,a8,a1,3x,e22.16,2e16.2,i5)
