@@ -168,12 +168,12 @@ contains
     if (rd.gt.1.d-06) then
        write(iout6,*) 'mismatch in bond length:'
        write(iout6,*) 'input=',r, 'disk=',r_p
-
-    elseif (z1d.gt.1.d-06) then
+    endif
+    if (z1d.gt.1.d-06) then
        write(iout6,*) 'Warning! mismatch in Z1:'
        write(iout6,*) 'input=',z1, 'disk=',z1_p
-
-    elseif (z2d.gt.1.d-06) then
+    endif
+    if(z2d.gt.1.d-06) then
        write(iout6,*) 'Warning! mismatch in Z2:'
        write(iout6,*) 'input=',z2, 'disk=',z2_p
     endif
