@@ -93,9 +93,9 @@ contains
           enddo
        endif
 
+       close(ouf2dhf1)
     endif
-    close(ouf2dhf1)
-    
+
     !     read HF functions for centre B
 
     if (z2.ne.zero) then
@@ -132,9 +132,10 @@ contains
              write(*,'(20e24.16)') rhf2(j),(phf2(i,j),i=1,nwf2)
           enddo
        endif
+
+       close(ouf2dhf2)
     endif
-    close(ouf2dhf2)
-    
+
     !     loop over orbitals
 
     do iorb=1,norb
