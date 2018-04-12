@@ -179,9 +179,5 @@ contains
        igs=igs+ngsize(ig)
     enddo
 
-    !     determine coefficients of interpolation polynomials
-
-    if (ngrids.gt.1) call interpolq
-
   end subroutine initMesh
 end module initMesh_m
