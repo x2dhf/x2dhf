@@ -57,8 +57,6 @@ contains
        call prod(mxsize,psi,wk3)
     endif
 
-    if (nel.lt.2) return
-
     !     calculate first contributions from one particle operators and
     !     Coulomb potential contributions within the same shell
 
@@ -130,6 +128,15 @@ contains
 10     continue
     enddo
 
+    evt=woneel
+    etot=evt+z1*z2/r
+
+    if (nel.eq.1) return
+
+    wndc =zero
+    wex=zero
+    wcorr=zero
+
     !     contribution from coulomb interaction within the same shell
 
     !     calculate the coulomb potential contribution from all orbitals
@@ -164,9 +171,6 @@ contains
 
     !     DFT exchange energy corrections
 
-    wex=0.0_PREC
-    wcorr=0.0_PREC
-
     if     (idftex.eq.1) then
        wex=exxalpha(psi,wgt2,rhot,rhotup,rhotdown,grhot,grhotup,grhotdown,wk0,wk1,wk2,wk3,wk10,wk11,wk12,wk13)
        !         call ehemsic(psi,pot,wgt2,wk1,wk0)
@@ -189,7 +193,6 @@ contains
 
     evt=woneel+wndc+wex+wcorr
 
-    engt(1)=evt
     etot=evt+z1*z2/r
     virrat=evt/vkt
 
