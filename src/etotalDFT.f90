@@ -66,6 +66,8 @@ contains
     vkt=zero
     woneel=zero
     wndc =zero
+    wex=zero
+    wcorr=zero
 
     do iorb=1,norb
        if (inhyd(iorb).eq.1) goto 10
@@ -130,15 +132,18 @@ contains
 
     evt=woneel
     etot=evt+z1*z2/r
+    virrat=evt/vkt
+    enkin=vkt
+    ennucel=vnt
+    encoul=wndc
+    enexch=wex
 
-    if (nel.eq.1) return
+    encouldft=wndc
+    enexchdft=wex
 
-    wndc =zero
-    wex=zero
-    wcorr=zero
+    edftcorr=wcorr
 
     !     contribution from coulomb interaction within the same shell
-
     !     calculate the coulomb potential contribution from all orbitals
     !     (include 1/2 factor )
 
@@ -168,13 +173,15 @@ contains
        wndc=wndc+w
 30     continue
     enddo
-
+    encoul=wndc
+    encouldft=wndc    
+    
+    if (nel.eq.1) return
+    
     !     DFT exchange energy corrections
 
     if     (idftex.eq.1) then
        wex=exxalpha(psi,wgt2,rhot,rhotup,rhotdown,grhot,grhotup,grhotdown,wk0,wk1,wk2,wk3,wk10,wk11,wk12,wk13)
-       !         call ehemsic(psi,pot,wgt2,wk1,wk0)
-
     elseif (idftex.eq.2) then
        wex=exbe88(psi,wgt2,rhot,rhotup,rhotdown,grhot,grhotup,grhotdown,wk0,wk1,wk2,wk3,wk10,wk11,wk12,wk13)
     elseif (idftex.eq.3) then
@@ -190,7 +197,6 @@ contains
     elseif (idftcorr.eq.2) then
        wcorr=ecvwntot(psi,wgt2,rhot,rhotup,rhotdown,grhot,grhotup,grhotdown,wk0,wk1,wk2,wk3,wk10,wk11,wk12,wk13)
     endif
-
     evt=woneel+wndc+wex+wcorr
 
     etot=evt+z1*z2/r
