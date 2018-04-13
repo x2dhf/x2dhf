@@ -43,6 +43,9 @@ contains
        !        orbitals modified so far (note the reverse order of relaxation
        !        in scf)
        ifirst=iorb
+    else
+       write (*,*) 'Error in exchMCSOR.'
+       call abort
     endif
 
     ngorb=i1si(iorb)

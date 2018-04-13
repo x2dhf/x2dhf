@@ -720,7 +720,7 @@ contains
        call inFloat(tmp2)
        if (tmp2.ne.0.0_PREC) then
           !           nnu nmu R_infty
-          n=tmp1
+          n=nint(tmp1)
           nmu(ngrids)=nmucalc(n)
           rgrid(ngrids)=tmp2
        else

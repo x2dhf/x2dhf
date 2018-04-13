@@ -23,7 +23,7 @@ contains
     use vpoly1q_m
 
     implicit none
-    integer :: i,imu,ini_p,k,nmuall,nni_first,nni_last
+    integer :: i,imu,ini_p,k,nmuall
 
     real (PREC), dimension(nni_p,nmuall) :: fbefore
     real (PREC), dimension(nni,nmuall) :: fafter
