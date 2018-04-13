@@ -32,7 +32,7 @@ contains
 
     implicit none
     integer :: i,i1beg1,i1beg,i2beg,i2beg1,i3beg,ibeg,ihc,im,imax,in,iorb,iorb1,ioutmat, &
-         ipc,ipe,isym,kex,ngex,ngorb,ngorb1,ngpot,ngpot1,ngrid,ngrid2,nmut
+         ipc,isym,kex,ngex,ngorb,ngorb1,ngpot,ngpot1,ngrid,ngrid2,nmut
     real (PREC) :: oc,w,w1,w2,wk2max,wtwoel
     real (PREC), dimension(*) :: psi,pot,excp,e,f0,wgt1,wgt2,wk0,wk1,wk2,wk3,f4
 
@@ -77,14 +77,10 @@ contains
 
     call add (ngorb,wk0,wk1)
 
-    if (ipe.eq.0) then
+    if (mm(iorb).eq.0) then
        call copy (ngorb,f0,ione,wk0,ione)
     else
-
-       !        e enter the expression with minus sign which is already
-       !        incorporated in e
-
-       w=dble(ipe*ipe)
+       w=dble(mm(iorb)*mm(iorb))
        call copy (ngorb,f0,ione,wk0,ione)
        call axpy (ngorb,w,e,ione,wk0,ione)
     endif
@@ -156,7 +152,7 @@ contains
                    call prodas (ngrid2,-oc,psi(i1beg1),excp(i3beg+ngex),wk0)
                 endif
              else
-                if ((ipe.gt.0).and.(ilc(ihc).gt.0)) then
+                if ((mm(iorb).gt.0).and.(ilc(ihc).gt.0)) then
                    ngrid2=min(ngorb1,ngex,ngorb)
                    oc=gec(kex)
                    call prodas (ngrid2,-oc,psi(i1beg1),excp(i3beg),wk0)
