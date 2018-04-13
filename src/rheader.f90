@@ -90,10 +90,10 @@ contains
 
        else
           read(iinp11,err=1000) i8tmp1,i8tmp2,i8tmp
-          ngrids_p=i8tmp1
-          nni_p   =i8tmp2
+          ngrids_p=int(i8tmp1)
+          nni_p   =int(i8tmp2)
           do i=1,10
-             nmu_p(i)=i8tmp(i)
+             nmu_p(i)=int(i8tmp(i))
           enddo
        endif
 
@@ -133,9 +133,9 @@ contains
           nexch  =nexch_p
        else
           read(iinp11,err=1000) i8tmp1,i8tmp2,i8tmp3
-          norb_p =i8tmp1
-          nel_p  =i8tmp2
-          nexch_p=i8tmp3
+          norb_p =int(i8tmp1)
+          nel_p  =int(i8tmp2)
+          nexch_p=int(i8tmp3)
           nexch  =nexch_p
        endif
     endif
