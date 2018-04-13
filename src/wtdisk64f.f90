@@ -119,7 +119,7 @@ contains
     !     add orbitals
     do i=1,norb
        i8tmp1=mxsize
-       do j=1,i8tmp1
+       do j=1,int(i8tmp1)
           r8mxsize(j)=cw_orb(i1b(i)+j-1)
        enddo
        call writea64f(i8out21,i8tmp1,r8mxsize,ierr)
@@ -207,7 +207,7 @@ contains
 
     do i=1,norb
        i8tmp1=mxsize
-       do j=1,i8tmp1
+       do j=1,int(i8tmp1)
           r8mxsize(j)=cw_coul(i2b(i)+j-1)
        enddo
        call writea64f(i8out22,i8tmp1,r8mxsize,ierr)
