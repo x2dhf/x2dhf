@@ -49,6 +49,7 @@ contains
     !     see routine initOrbPot for the explanation of the following command
 
     !     check orhogonality of orbitals
+
     if (iprint(30).ne.0) then
        print *,''
        print *,'orthogonality of orbitals:'
@@ -84,6 +85,8 @@ contains
           iprtlev=iprtlev0
        endif
 
+
+       
        !        calculate diagonal and off-diagonal Lagrange multipliers
        do iorb=norb,1,-1
           if (iform.eq.0.or.iform.eq.2) call rfdexch(iorb,cw_exch)

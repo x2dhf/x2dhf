@@ -24,7 +24,8 @@ contains
     use exocc_m
     use fdften_m
     use multf4_m
-
+    use zeroArray_m
+    
     implicit none
     integer :: i,iborb,iorb,isiorb,nmut
     real (PREC) :: exxalpha
@@ -34,10 +35,8 @@ contains
 
     parameter (const43=4.0_PREC/3.0_PREC)
 
-    do i=1,mxsize
-       rhotup(i)  =0.0_PREC
-       rhotdown(i)=0.0_PREC
-    enddo
+    call zeroArray(mxsize,rhotup)
+    call zeroArray(mxsize,rhotdown)
 
     !     calculate total densities due to up and down spins
     do iorb=1,norb
@@ -47,7 +46,7 @@ contains
        nmut=i1mu(iorb)
 
        call exocc (iorb,ocup,ocdown)
-
+       
        call prod2 (isiorb,psi(iborb),psi(iborb),wk1)
        call scal (isiorb,ocup,wk1,ione)
 
@@ -71,7 +70,6 @@ contains
     call multf4(rhotup)
 
     w=dot(mxsize,wgt2,ione,rhotup,ione)
-
     exxalpha=fdften(alphaf)*w
 
   end function exxalpha

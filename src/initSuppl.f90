@@ -389,42 +389,5 @@ contains
        enddo
     enddo
 
-    ! FIXME obsolete in version 2.0
-    if (ngrids.ne.1) then
-
-       !        initialize arrays dc1 and dc2
-
-       !        in order to check lagrpol use two ajasent grids with equal step size
-       !        and compare coefficients with those of the Stirling formulae
-
-       call lagrpolq (dc1,dc2)
-
-       !        modify dmu array at the grid boundary region
-       !        derivative coeff. from 8th-order Lagrange interpolation formula
-       !        are stored in dc2(ngbound,imu,k) and dc1(ngbound,imu,k),
-       !        where ngbound is the number of
-       !        the grid boundaries (1 for 1-2, 2 for 2-3 etc), imu is one of the 7
-       !        intergrid mu values and k points to a derivative coefficient.
-
-       do ig=1,ngrids-1
-          ib=iemu(ig)-3
-          ie=iemu(ig)+3
-          imu=0
-          do i=ib,ie
-             imu=imu+1
-             do k=1,9
-                !                 a2(k)=dc2(ig,imu,k)/(hmu(ig)*hmu(ig))
-                !                 a1(k)=dc1(ig,imu,k)/hmu(ig)
-                a2(k)=dc2(ig,imu,k)
-                a1(k)=dc1(ig,imu,k)
-             enddo
-
-             do k=1,9
-                dmu(k,i)=a2(k)+borb(1,i)*a1(k)
-             enddo
-          enddo
-       enddo
-    endif
-
   end subroutine initSuppl
 end module initSuppl_m

@@ -175,8 +175,8 @@ contains
     enddo
     encoul=wndc
     encouldft=wndc    
-    
-    if (nel.eq.1) return
+
+    !    if (nel.eq.1) return
     
     !     DFT exchange energy corrections
 

@@ -26,10 +26,16 @@ contains
     character*8 ::  alpha,beta
     data alpha,beta /'+','-'/
 
-    ocup  =0.0_PREC
-    ocdown=0.0_PREC
+    if (nel.eq.1) then
+       ocup=one
+       ocdown=zero
+       return
+    endif
+    
+    ocup=zero
+    ocdown=zero
 
-    ipe =mgx(6,iorb)
+    ipe=mgx(6,iorb)
     ip=4*(iorb-1)
 
     if(ipe.eq.0) then
@@ -40,8 +46,8 @@ contains
 
     do i=1,iend
        if(spin(ip+i).ne.alpha.and.spin(ip+i).ne.beta) goto 10
-       if(spin(ip+i).eq.alpha) ocup  =ocup+1.0_PREC
-       if(spin(ip+i).eq.beta ) ocdown=ocdown+1.0_PREC
+       if(spin(ip+i).eq.alpha) ocup  =ocup+one
+       if(spin(ip+i).eq.beta ) ocdown=ocdown+one
 00010  continue
     enddo
 
