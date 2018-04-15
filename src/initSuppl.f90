@@ -14,7 +14,6 @@ contains
     use commons8
     use kh, only: poth3, potkh
 
-    use lagrpolq_m
     use plegendg_m
     use zz1_m
     use zz1g_m
