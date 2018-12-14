@@ -37,8 +37,6 @@ contains
     integer, dimension(*) :: cw_sor
     real (PREC), dimension(*) :: psi,pot,excp,rhs,bpot,d,f3,g,lhs,wk2
 
-    if (ifix(iorb).eq.1) return
-
     if (nel.eq.1) return
 
     !   prepare right-hand side of Poisson's equation
