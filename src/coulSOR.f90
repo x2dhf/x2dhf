@@ -97,8 +97,8 @@ contains
                 call putin2 (nni,nmu(ig),pot(iborb),wk2)
 
                 do itr2=1,maxsorpot(iorb)
-                   call sor (wk2,lhs(ioffs1),rhs(ioffs1),bpot(ioffs1),d(ioffs1),cw_sor(iadext(ig+ngrids)),cw_sor(iadnor(ig+ngrids)),&
-                        cw_sor(iadex1(ig+ngrids)),cw_sor(iadex2(ig+ngrids)),cw_sor(iadex3(ig+ngrids)))
+                   call sor (wk2,lhs(ioffs1),rhs(ioffs1),bpot(ioffs1),d(ioffs1),cw_sor(iadext(ig+ngrids)),&
+                        cw_sor(iadnor(ig+ngrids)),cw_sor(iadex1(ig+ngrids)),cw_sor(iadex2(ig+ngrids)),cw_sor(iadex3(ig+ngrids)))
                 enddo
                 call putout (nni,nmu(ig),pot(iborb),wk2)
              elseif (ig.ne.1.and.ig.ne.i1ng(iorb)) then
