@@ -32,7 +32,6 @@ contains
     if (ifix(iorb1).ne.0) return
 
     jor=0
-    jor1=0
     ibeg1 = i1b (iorb1)
 
     !    orbitals are stored in reverse order
@@ -54,11 +53,9 @@ contains
        call prod  (ngrid,f4,wk0)
 
        ovla(jor)=dot (ngrid,wgt2,ione,wk0,ione)
+       ovla1(jor)=abs(ovla(jor))
 
-       jor1=jor1+1
-       ovla1(jor1)=abs(ovla(jor))
-
-       !        print overlap integrals
+       ! print overlap integrals
        if (iprint(20).ne.0) then
           write(*,60) iorn(iorb1),bond(iorb1),gut(iorb1),iorn(iorb3),bond(iorb3),gut(iorb3),ovla(jor)
 60        format(4x,' <',i2,1x,a5,1x,a1,1x,'|',1x,i2,1x,a5,1x,a1,1x,'> = ',e10.2)
@@ -72,14 +69,13 @@ contains
 101    continue
     enddo
 
-    !     determine the worst nonorthogonality for a given orbital
-    if (jor1.gt.0) then
+    ! determine the worst nonorthogonality for a given orbital
+    if (jor.gt.0) then
        call quicksort(jor1,ovla1,index)
-       wstorthog(iorb1)=ovla1(index(1))
+       wstorthog(iorb1)=ovla1(index(jor))
     endif
 
-    !     start orthogonalization
-
+    ! start orthogonalization
     if (jor.eq.0) return
 
     ano=zero
@@ -92,7 +88,6 @@ contains
     !     normalize the orthogonalized orbital isa  but be sure the
     !     unorthogonalized isa was normalized otherwise use <isa/isa>
     !     instead of 1. in ano
-
     ano=sqrt(one+ano)/(one-ano*ano)
     ngrid = i1si(iorb1)
     call scal (ngrid,ano,psi(ibeg1),ione)
