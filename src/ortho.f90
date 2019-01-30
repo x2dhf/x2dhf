@@ -23,7 +23,7 @@ contains
     use blas_m
 
     implicit none
-    integer :: ibeg1,ibeg3,iorb1,iorb2,iorb3,ira,jor,jor1,ngrid
+    integer :: ibeg1,ibeg3,iorb1,iorb2,iorb3,ira,jor,ngrid
     real (PREC) :: ano
     integer, dimension(maxorb) :: index,istp
     real (PREC), dimension(maxorb) :: ovla,ovla1
@@ -71,7 +71,7 @@ contains
 
     ! determine the worst nonorthogonality for a given orbital
     if (jor.gt.0) then
-       call quicksort(jor1,ovla1,index)
+       call quicksort(jor,ovla1,index)
        wstorthog(iorb1)=ovla1(index(jor))
     endif
 
