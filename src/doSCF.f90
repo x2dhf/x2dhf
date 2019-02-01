@@ -324,15 +324,13 @@ contains
              endif
           endif
 
-          !     Sometimes a lengthy calculation needs to be stoped earlier.
-          !     kill <pid> will do the job but you risk that the data being
-          !     written will be lost. To avoid this and force the program to end
-          !     gracefully make
-          !        touch stop_x2dhf
-          !     or simply
-          !        ./xhf stop
-
-          !     If this file is detected the program ends.
+          ! Sometimes a lengthy calculation needs to be stopped earlier.  kill <pid> will
+          ! do the job but you risk that the data being written will be lost. To avoid
+          ! this and force the program to end gracefully make
+          !   touch stop_x2dhf
+          ! or simply
+          !   ./xhf stop
+          ! If this file is detected the program ends.
 
           inquire (file ='stop_x2dhf',exist=stop_x2dhf)
           if (stop_x2dhf) goto 110

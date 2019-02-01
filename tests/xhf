@@ -33,13 +33,13 @@ message () {
 
 rm_2dhf_input () {
     for file in $INPUT_TMP.dat $INPUT_TMP.orb $INPUT_TMP.coul $INPUT_TMP.exch; do
-	[ -e $file ] || [ -h file ] && rm -f $file  
+	[[ -e $file ]] || [[ -h file ]] && rm -f $file  
     done;
 }
 
 rm_2dhf_output () {
      for file in $OUTPUT_TMP.dat $OUTPUT_TMP.orb $OUTPUT_TMP.coul $OUTPUT_TMP.exch; do
- 	[ -e $file ] || [ -h $file ] && rm -f $file  >& /dev/null;
+ 	[[ -e $file ]] || [[ -h $file ]] && rm -f $file  >& /dev/null;
      done;
 }
 
@@ -148,10 +148,10 @@ case "$system" in
 	cp $OUTPUT_TMP.coul $OUTPUT_TMP-checkpoint.coul  >& /dev/null 
 	cp $OUTPUT_TMP.exch $OUTPUT_TMP-checkpoint.exch  >& /dev/null
 
-	fort=`ls fort.* `
+	fort=$(ls fort.*)
 	for file in $fort; do 
 	    echo "$file"
-	    ext=`echo $file | sed s/"fort."// `
+	    ext=$(echo $file | sed s/"fort."//)
 	    cp $file fort-checkpoint.$ext >& /dev/null
 	done;
 	    
@@ -164,7 +164,7 @@ case "$system" in
         rm -f *.dat *.orb *.coul *.exch *.fort.* fort.* fort-checkpoint.* stop_x2dhf *~ >& /dev/null
 
     # remove all zero byte files
-	fort=`ls * >& /dev/null`
+	fort=$(ls * >& /dev/null)
 	for file in $fort; do
 	    if [[ ! -s $file ]]; then
 		rm -f $file >& /dev/null 
@@ -189,7 +189,7 @@ case "$system" in
 
     mkgauss)
     # creats symbolic links gauss94*
-	if [ "$2" != "" ]; then
+	if [[ "$2" != "" ]]; then
 	    rm -f gaussian.out gaussian.pun
             ln -s $2.out gaussian.out
 	    ln -s $2.pun gaussian.pun
@@ -210,9 +210,9 @@ case "$system" in
             mv $2.exch $3.exch >& /dev/null
 
 	    if [[ -e $2.fort.$FIRST_FORT_FILE  && -s $2.fort.$FIRST_FORT_FILE ]]; then
-		fort=`ls $2.fort.*`
+		fort=$(ls $2.fort.*)
 		for file in $fort; do 
-		    ext=`echo $file | sed s/"$2.fort."// `
+		    ext=$(echo $file | sed s/"$2.fort."//)
 		    mv $file ${3}.fort.$ext >& /dev/null
 		done;
 	    fi
@@ -234,9 +234,9 @@ case "$system" in
             cp $2.exch $3.exch >& /dev/null
 
 	    if [[ -e $2.fort.$FIRST_FORT_FILE  && -s $2.fort.$FIRST_FORT_FILE ]]; then
-		fort=`ls $2.fort.*`
+		fort=$(ls $2.fort.*)
 		for file in $fort; do 
-		    ext=`echo $file | sed s/"$2.fort."// `
+		    ext=$(echo $file | sed s/"$2.fort."//)
 		    cp $file ${3}.fort.$ext >& /dev/null
 		done;
 	    fi
@@ -261,7 +261,6 @@ case "$system" in
 	[[ $verbose == "1" ]] && message "wait ... removing temporary files ..."
 
 	rm -f $INPUT_TMP.dat $INPUT_TMP.orb $INPUT_TMP.coul $INPUT_TMP.exch >& /dev/null
-
 	rm -f $OUTPUT_TMP.dat $OUTPUT_TMP.orb $OUTPUT_TMP.coul $OUTPUT_TMP.exch >& /dev/null
 	rm -f fort.* >& /dev/null
 	exit
@@ -315,11 +314,7 @@ esac
 
 [[ ! -h x2dhf ]] && ln -s ../src/x2dhf .
 
-[[ ! -h x2dhf ]] && ln -s ../src/x2dhf .
-
-
 [[ -e stop_x2dhf ]] && rm stop_x2dhf >& /dev/null
-
 
 # get rid of 2dhf_* leftovers first (to avoid messing up the input and output files)
 
@@ -343,25 +338,25 @@ if [[ $3 != "" ]]; then
     #   orbpot noexch
     #   orbpot nodat
    
-    init1=`grep -iP '^\s*init' $system.data | gawk '{print $2}'`
-    init2=`grep -iP '^\s*orbpot' $system.data | gawk '{print $2}'`
+    init1=$(grep -iP '^\s*init' $system.data | gawk '{print $2}')
+    init2=$(grep -iP '^\s*orbpot' $system.data | gawk '{print $2}')
+
+    # FIXME
+    #     if [[ $init1 != '' && $init1 != '5' && $init1 != '55' && $init1 != '6' ]]; then
+    # 	message "Warning: check arguments on initial/orbpot card"
+    # 	exit
+    #     fi
 
 
-#     if [[ $init1 != '' && $init1 != '5' && $init1 != '55' && $init1 != '6' ]]; then
-# 	message "Warning: check arguments on initial/orbpot card"
-# 	exit
-#     fi
-
-
-#     if [[ $init2 != "" && $init2 != "old" && $init2 != "noexch" && $init2 != "nodat" ]]; then
-# 	message "Warning: check arguments on initial/orbpot card"
-# 	exit
-#     fi
-
-# make symbolic links to temporary output files needed by x2dhf
+    #     if [[ $init2 != "" && $init2 != "old" && $init2 != "noexch" && $init2 != "nodat" ]]; then
+    # 	message "Warning: check arguments on initial/orbpot card"
+    # 	exit
+    #     fi
+    
+    # make symbolic links to temporary output files needed by x2dhf
 
     for file in $3.dat $3.orb $3.coul $3.exch; do
-	ext=`echo $file | sed s/${3}'.'// `
+	ext=$(echo $file | sed s/${3}'.'//)
 	if [ ! -e $file ]; then
 	    touch $file
 	fi
@@ -369,19 +364,16 @@ if [[ $3 != "" ]]; then
     done;
 
 
-# check if fort files are present
+    # check if fort files are present
 
     if [ -e $2.fort.$FIRST_FORT_FILE ]; then
 
-# move $2.fort.* files into their fort.* ones
+	# move $2.fort.* files into their fort.* ones
 
 	tf="${2}.fort."
-
-#   set fort = `ls ${tf}* >& /dev/null`
-#   set fort = `ls ${tf}* `
 	
-# this trick must be used to circumvent deficiences of tcsh shell
-	fortCount=`sh -c "ls ${tf}*" |wc -l`
+	# this trick must be used to circumvent deficiences of tcsh shell
+	fortCount=$(sh -c "ls ${tf}*" |wc -l)
 
 	if [[ $fortCount != 0 ]]; then
 	    for ((n=1; n<=$fortCount; n++)); do
@@ -390,49 +382,28 @@ if [[ $3 != "" ]]; then
 	    done;
 	fi
     fi
-# move $2.* input files into their $INPUT_TMP.* counterparts
+    # move $2.* input files into their $INPUT_TMP.* counterparts
 
     for file in $2.dat $2.orb $2.coul $2.exch; do
-	ext=`echo $file | sed s/${2}'.'// `
-	if [ ! -e $file ]; then
+	ext=$(echo $file | sed s/${2}'.'//)
+	if [[ ! -e $file ]]; then
 	    touch $file >& /dev/null
 	fi
 	ln -s $file $INPUT_TMP.$ext  >& /dev/null
     done;
 
-# 	if [ ! -e fort.$FIRST_FORT_FILE ] ; then
-# 	    ext=`echo $file | sed s/${2}'.'// `
-# 	    message "Warning: file $2.$ext is missing"
-# 	fi
-
 else
-# move $2.* input files into their $INPUT_TMP.* counterparts
+    # move $2.* input files into their $INPUT_TMP.* counterparts
 
     for file in $2.dat $2.orb $2.coul $2.exch; do
-	ext=`echo $file | sed s/${2}'.'// `
-	if [ ! -e $file ]; then
+	ext=$(echo $file | sed s/${2}'.'//)
+	if [[ ! -e $file ]]; then
 	    touch $file >& /dev/null
 	fi
 	ln -s $file $OUTPUT_TMP.$ext  >& /dev/null
     done;
 
-# for init 1 no symbolic links are created to fort files
-
-#     if [ ! -e fort.$FIRST_FORT_FILE ] ; then
-# 	ext=`echo $file | sed s/${2}'.'// `
-# 	message "Warning: file $2.$ext is missing"
-#     fi
-
 fi
-
-#  envoke x2dhf program
-#	nice +19 ./x2dhf < $system.data  
-#	/usr/bin/snice +20 ./x2dhf < $system.data  
-
-
-
-#/bin/nice -n 19 ./x2dhf < $system.data  
-
 
 #/bin/nice -n 19 ./$sepBinary < $system.data  
 chrt -o 0  ./$sepBinary < $system.data  
@@ -443,18 +414,13 @@ cat /proc/cpuinfo | grep 'model name'| gawk -F: '{print $2}' | sed s/\ Inte/Inte
 echo ""
 echo "////////////////////////////////////////////////////////////////////////////////////////////////"
 
-# if [[ $sepBinary != "x2dhf" ]]; then
-#     rm -f $sepBinary
-# fi
-
-
 if [[ $3 == '' ]]; then
 
 # if fort.* files were formed move them to their $2.for.* counterparts 
 
     if [[ -e fort.$FIRST_FORT_FILE && -s fort.$FIRST_FORT_FILE ]]; then
 
-	fortCount=`sh -c "ls fort.*" |wc -l`
+	fortCount=$(sh -c "ls fort.*" |wc -l)
 	if [[ $fortCount != 0 ]]; then
 	    for ((n=1; n<=$fortCount; n++)); do
 		m=$(($n+$FIRST_FORT_FILE-1));
@@ -474,11 +440,9 @@ if [[ $3 == '' ]]; then
 
 else
 
-# if fort.* files were formed move them to their $3.for.* counterparts 
-
+    # if fort.* files were formed move them to their $3.for.* counterparts 
     if [[ -e fort.$FIRST_FORT_FILE && -s fort.$FIRST_FORT_FILE ]]; then
-
-	fortCount=`sh -c "ls fort.*" |wc -l`
+	fortCount=$(sh -c "ls fort.*" |wc -l)
 	if [[ $fortCount != 0 ]]; then
 	    for ((n=1; n<=$fortCount; n++)); do
 		m=$(($n+$FIRST_FORT_FILE-1));
@@ -501,14 +465,13 @@ else
 	    rm -f $3.exch >& /dev/null
 	fi
     fi
-
-
 fi
 
+[[ -e stop_x2dhf ]] && rm stop_x2dhf >& /dev/null
 
 clean_exit
     
-[[ -e stop_x2dhf ]] && rm stop_x2dhf >& /dev/null
+
 
 
 
