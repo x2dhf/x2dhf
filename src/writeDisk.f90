@@ -53,7 +53,7 @@ contains
     write(iout24,formint) ngrids,nni,nmu
     write(iout24,formfp64) r,rgrid
     write(iout24,formfp64) z1,z2
-    write(iout24,formint) norb,nel,nexch
+    write(iout24,formint) norb,nelInput,nexch
 
     call flush(iout24)
 

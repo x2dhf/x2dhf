@@ -224,7 +224,6 @@ contains
 
        idump=0
        call initDisk (cw_orb,cw_coul,cw_exch,cw_sctch(i5b(1)))
-       print *,'... initializing exchange potentials ...'
        call initPot(cw_orb,cw_coul,cw_exch,cw_suppl(i4b(7)),cw_suppl(i4b(9)),cw_sctch(i5b(1)))
 
     elseif (ini.eq.55) then

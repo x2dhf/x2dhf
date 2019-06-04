@@ -41,14 +41,14 @@ contains
     if (imethod.eq.2.or.ini.eq.4) return
 
     print *,'... initializing Coulomb potentials ...'
-
+    
     if (ini.ne.6) then
-       !        Initialization of Coulomb potentials
+       ! Initialization of Coulomb potentials
        slim=1.0_PREC
        zc1= 2.0_PREC
        zc2= 2.0_PREC
 
-       !        loop over orbitals
+       ! loop over orbitals
 
        do iorb=1,norb
           if (inhyd(iorb).eq.0) goto 10

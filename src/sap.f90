@@ -9099,7 +9099,8 @@ function sap_pot(Z,r) result(V)
  1.17999964757312e+02, 1.17999971973185e+02, 1.17999979021295e+02, 1.17999985224391e+02, 1.17999990261696e+02, &
  1.17999994065839e+02, 1.17999996729630e+02, 1.17999998433747e+02, 1.17999999396760e+02, 1.18000000000000e+02, &
  1.18000000000000e+02/), shape(sap_potential))
- if(Z < 1) then
+
+  if(Z < 1) then
     V=0.0
  else if(Z+1 > size(sap_potential,2)) then
     V=0.0
@@ -9121,19 +9122,19 @@ function sap_pot(Z,r) result(V)
           exit
        end if
     end do
-    print *, posleft
+    !print *, posleft
 
     if(posleft + lip_order > size(sap_potential,1)) then
        posleft = posleft - (posleft + lip_order) + size(sap_potential,1)
     end if
-    print *, posleft
+    !print *, posleft
 
     do i=1,lip_order
        xi(i) = sap_potential(posleft+i-1,1)
        yi(i) = sap_potential(posleft+i-1,Z+1)
     end do
-    print *, 'xi = ', xi
-    print *, 'yi = ', yi
+    !print *, 'xi = ', xi
+    !print *, 'yi = ', yi
 
     V = 0.0_8
     do i=1,lip_order
@@ -9145,5 +9146,8 @@ function sap_pot(Z,r) result(V)
        V = V + yi(i)*li
     end do
  end if
+
+! print *,"sap: r,V,rV = ",r,V,r*V
+ 
 end function sap_pot
 end module sap_potential_m

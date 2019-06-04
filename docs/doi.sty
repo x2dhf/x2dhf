@@ -1,0 +1,98 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{doi}[2018/09/09 handle doi numbers]
+
+%% This style file is based original code written by Heiko Oberdiek 
+%% and published on comp.text.tex. It was packaged with permission  
+%% as a style file by Maarten Sneep, with some minor changes suggested 
+%% by Bruno Voisin to accomodate the Apple pdf framework
+%%
+%% This code is placed under the LPPL.
+%%
+%% Original discussion on Google under:
+%% http://groups.google.com/group/comp.text.tex/msg/922919daa207d613
+%%
+%% Comments and bug reports may be submitted via
+%% https://github.com/ho-tex/doi/issues
+%%
+%% You can hyperlink DOI numbers to dx.doi.org. Some publishers have elected to 
+%% use some nasty characters in their doi numbering scheme (<, >, ; have all 
+%% been spotted). This will either upset (La)TeX, or your pdf reader. This style 
+%% file contains a user-level command \doi{}, which takes a doi number, 
+%% and creates a hyperlink from it. The format of the doi can be controlled by 
+%% redefining the \doitext command, which does not take an argument (unlike the
+%% command with the same name in the doipubmed package). 
+%%
+%% Note: the \doi{} command connot be used within other macros.
+ 
+%% Change history:
+%% December 15, 2003: original code posted on Usenet (see link above)
+%% Somewhere in 2005: Bruno Voisin suggests some changes to accomodate the 
+%%     Apple pdf framework on the Tex on Mac OS X mailing list.
+%% April 2007: Maarten packages the lot, and Karl Ove Hufthammer fixes a 
+%%     few bugs introduced by Maarten (oops).
+%%     A \doitext command is added, following the example from doipubmed.
+%%     Some comments are added to make the code a little more readable.
+%% July 2007: Michael Orlov sends in a patch to correctly handle underscores.
+%% September 2018: David Carlisle for "Oberdiek Package Support Group"
+%%     Move to github https://github.com/ho-tex/doi/issues
+%%     Add macro defaulting to new
+%%     https://doi.org/ URL but may be set to old http://dx.doi.org/
+%%
+
+
+%% We need hyperref, but you probably want to load hyperref 
+%% beforehand, or set some options later on.
+\RequirePackage{hyperref}
+
+%% To change the default prefix, redefine this command within your own code.
+%% It takes no argument, which is different from the doipubmed package.
+\newcommand{\doitext}{doi:}
+
+%% To change the default DOI URL resoloution URL, redefine this command
+%% within your own code.
+%% Previous versions of this package always used http://dx.doi.org/ but
+%% The preferred address is now as given here, https://doi.org/
+\newcommand{\doiurl}{https://doi.org/}
+
+%% The meat of the code.
+%% The first command opens a group, and changes a few catcodes.
+\newcommand*{\doi}{% 
+  \begingroup 
+  \lccode`\~=`\#\relax 
+  \lowercase{\def~{\#}}%
+  \lccode`\~=`\_\relax
+  \lowercase{\def~{\_}}%
+  \lccode`\~=`\<\relax 
+  \lowercase{\def~{\textless}}%
+  \lccode`\~=`\>\relax 
+  \lowercase{\def~{\textgreater}}%
+  \lccode`\~=0\relax 
+  \catcode`\#=\active 
+  \catcode`\_=\active 
+  \catcode`\<=\active 
+  \catcode`\>=\active 
+  \@doi
+}
+
+%% This is the actual command which processes the argument, with the catcodes 
+%% set in the previous command
+%% it closes the group, and spits out the url.
+\def\@doi#1{% 
+  \let\#\relax
+  \let\_\relax
+  \let\textless\relax 
+  \let\textgreater\relax 
+  \edef\x{\toks0={{#1}}}% 
+  \x
+  \edef\#{\@percentchar23}%
+  \edef\_{_}%
+  \edef\textless{\@percentchar3C}% instead of {\string<} for Apple
+  \edef\textgreater{\@percentchar3E}% instead of {\sting>} for Apple
+  \edef\x{\toks2={\noexpand\href{\doiurl#1}}}% 
+  \x
+  \edef\x{\endgroup\doitext\the\toks2 \the\toks0}%
+  \x
+}
+
+%% That's all folks.
+\endinput

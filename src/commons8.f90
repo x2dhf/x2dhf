@@ -91,7 +91,7 @@ module commons8
       character*8, dimension(4*maxorb)  :: spin
       character*8, dimension(5*maxorb)  :: spn
 
-      integer :: nexchp,norb,nel,nexch
+      integer :: nexchp,norb,nel,nexch,nelInput
 
 
       integer :: ifefield,iharm2xy,magfield,inclorb,idump,iinterp,imethod,ipot,ienterm,inoterm,iftail,ifermi,iplot

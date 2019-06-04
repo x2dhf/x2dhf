@@ -15,6 +15,7 @@ contains
     use kh, only: poth3, potkh
 
     use plegendg_m
+    use sap_potential_m
     use zz1_m
     use zz1g_m
     use zgsz1_m
@@ -31,6 +32,7 @@ contains
     real (PREC) :: atw1,atw2,costh,precis1,r1,rr,rr2,w1,w2,w4,w5,w6,w7,w8,w9,w10,wj1,wj2,wmup,xrr,wktmp,&
          xxplusyy,xxplusyy2,xy2,z,z1t,z2t,zcm
 
+    real (PREC) :: r1t, r2t
     real (PREC), dimension(nni,mxnmu) :: borb,bpot,d,e,f0,f1,f2,f3,f4,g,wjac1,wjac2
     real (PREC), dimension(mxsize) :: wgt1,wgt2
 
@@ -80,6 +82,10 @@ contains
        zcm=0.0_PREC
     endif
 
+    izz1=nint(z1)
+    izz2=nint(z2)
+
+    
     wj1 =-r*pii/2.0_PREC
     wj2 = r*r*pii/2.0_PREC
     xrr=half*r
@@ -149,15 +155,25 @@ contains
                 xxplusyy2=(r/2.0_PREC)*vxi1(i)*veta1(j)
                 f0(j,i)=-f1(j,i)*potkh(z,xxplusyy2,mpot,epspot,ompot,v0pot,apot,nsimp,precis1)
              elseif (ipot.eq.5) then
-                !                 OED - Green, Sellin, Zachor model potential
+                ! OED - Green, Sellin, Zachor model potential
                 z1t=zgsz1(i,j)
                 z2t=zgsz2(i,j)
                 f0(j,i)=r*(vxi(i)*(z1t+z2t)+veta(j)*(z2t-z1t))
              elseif (ipot.eq.55) then
-                !                 OED - Green, Sellin, Zachor model potential + finite Gauss nucleus model
+                ! OED - Green, Sellin, Zachor model potential + finite Gauss nucleus model
                 z1t=zgsz1g(i,j)
                 z2t=zgsz2g(i,j)
                 f0(j,i)=r*(vxi(i)*(z1t+z2t)+veta(j)*(z2t-z1t))
+
+             elseif (ipot.eq.66) then
+                ! OED - SAP due to Susi Lethola                
+                r1t=(r/2.0_PREC)*(vxi(i)+veta(j))
+                r2t=(r/2.0_PREC)*(vxi(i)-veta(j))
+
+                z1t=sap_pot(izz1,r1t)
+                z2t=sap_pot(izz2,r2t)
+
+                f0(j,i)=r*(vxi(i)*(z1-z1t+z2-z2t)+veta(j)*((z2-z2t)-(z1-z1t)))
 
              elseif (ipot.eq.9) then
                 !                 harmonic potential (Hook's atom, harmonium) located at A centre

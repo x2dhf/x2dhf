@@ -743,6 +743,17 @@ $V_0=1.0$. Set $a>0$ and $V>0$ to choose its smoothed variant.
 \end{itemize}
 \end{description}
 
+\item \textbf{POTSAP}
+\begin{description}
+\item[Format:] \textbf{potsap} \\ When the OED method is chosen then
+  this label selects a model potential due to S.Lethola.%
+  \footnote{S. Lehtola, "Assessment of Initial Guesses for Self-Consistent Field
+    Calculations. Superposition of Atomic Potentials: Simple yet Efficient",
+    J. Chem. Theory Comput. 15, 1593 (2019). DOI: 10.1021/acs.jctc.8b01089} For a given
+  atom this potential produces HF-like orbitals but it has been found useful in finding
+  good starting orbitals for any molecular system.
+\end{description}
+
 
 \item \textbf{PRINT}
 \begin{description}
@@ -1249,8 +1260,11 @@ Use \ft{./xhf -h|help} to get the complete list of available options.
 
   \verbatiminput{../examples/ne/ne-b.data}
 
-  One can also use HF method with some model potential, e.g. the model
-  potential of Green, Sellin, Zachor (label POTGSZ).
+  One can also use HF method with some model potential, e.g. the model potential of Green,
+  Sellin, Zachor (label POTGSZ) or the Superposition of Atomic Potentials due to Susi
+  Lethola (POTSAP).
+  % The latter potential provides much better initial orbital estimates
+  % for small internuclear distances.
 
 \item Choose smaller values of the relaxation parameters ($1.7\leq
   \omega\leq 1.85$) to avoid divergences in the first few dozens of

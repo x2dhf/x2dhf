@@ -87,6 +87,7 @@ contains
           isymOrb(i)=-1
        endif
     enddo
+    nelInput=nel
 
     !     hni - step in ni variable
     !     hmu - step in mu variable
