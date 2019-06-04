@@ -82,9 +82,10 @@ contains
        zcm=0.0_PREC
     endif
 
-    izz1=nint(z1)
-    izz2=nint(z2)
-
+    if (ipot.eq.66) then
+       izz1=nint(z1)
+       izz2=nint(z2)
+    endif
     
     wj1 =-r*pii/2.0_PREC
     wj2 = r*r*pii/2.0_PREC
@@ -170,10 +171,10 @@ contains
                 r1t=(r/2.0_PREC)*(vxi(i)+veta(j))
                 r2t=(r/2.0_PREC)*(vxi(i)-veta(j))
 
-                z1t=sap_pot(izz1,r1t)
-                z2t=sap_pot(izz2,r2t)
+                z1t=z1-sap_pot(izz1,r1t)
+                z2t=z2-sap_pot(izz2,r2t)
 
-                f0(j,i)=r*(vxi(i)*(z1-z1t+z2-z2t)+veta(j)*((z2-z2t)-(z1-z1t)))
+                f0(j,i)=r*(vxi(i)*(z1t+z2t)+veta(j)*(z2t-z1t))
 
              elseif (ipot.eq.9) then
                 !                 harmonic potential (Hook's atom, harmonium) located at A centre
