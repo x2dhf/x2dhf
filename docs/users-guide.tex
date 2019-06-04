@@ -20,6 +20,7 @@
 \usepackage{amsmath,amssymb}
 \usepackage{moreverb}
 \usepackage{doi}
+\usepackage[version=3]{mhchem}
 \newcommand{\clearemptydoublepage}{\newpage{\pagestyle{empty}\cleardoublepage}}
 \parindent 0cm
 
@@ -671,9 +672,25 @@ system.\footnote{In this type of calculations convergence rates differ
   Zachor.\footnote{A. E. S. Green, D. L. Sellin and A. S. Zachor,
     \textsl{Analytic Independent-Particle Model for Atoms},
     Phys. Rev. \textbf{184} (1969) 1-9. \doi{10.1103/PhysRev.184.1}}
-  For a given atom this potential produces HF-like orbitals but it has
-  been found useful in finding decent starting orbitals for any
-  molecular system.
+  For a given atom this potential produces HF-like orbitals and it has
+  been found useful in finding decent starting orbitals for diatomic
+  molecules as well.\footnote{J. E. Whalen and A. E. S. Green,
+    \textsl{Analytic Independent Particle Model for Molecules},
+    Am. J. Phys. \textbf{40}, (1972) 1484. \doi{10.1119/1.1986874};
+    K. J. Miller and A. E. S. Green, \textsl{Energy levels and
+      potential energy curves for H2, N2, and O2 with an independent
+      particle model}, J. Chem. Phys. \textbf{60}, (1974)
+    2617. \doi{10.1063/1.1681415}; T. Sawada, P. S. Ganas, and
+    A. E. S. Green, \textsl{Elastic scattering of electrons from
+      \ce{N2}}, Phys. Rev. A \textbf{9}, (1974)
+    1130. \doi{10.1103/PhysRevA.9.1130}} Note, however, that the
+  superposition of atomic potentials (SAP) guess\footnote{S. Lehtola,
+    \textsl{Assessment of Initial Guesses for Self-Consistent Field
+      Calculations. Superposition of Atomic Potentials: Simple yet
+      Efficient}, J. Chem. Theory Comput. \textbf{15}, (2019)
+    1593-1604. \doi{10.1021/acs.jctc.8b01089}} (keyword:
+  \textbf{potsap}) is much more accurate, as it is not restricted to a
+  simple analytic form.
 \end{description}
 
 
@@ -743,6 +760,20 @@ $V_0=1.0$. Set $a>0$ and $V>0$ to choose its smoothed variant.
 \end{itemize}
 \end{description}
 
+\item \textbf{POTSAP}
+\begin{description}
+\item[Format:] \textbf{potsap} \\ When the OED method is chosen, this
+  label selects a pretabulated, screened atomic exchange potential
+  that has been found to reproduce superb results in molecular
+  calculations.\footnote{S. Lehtola, \textsl{Assessment of Initial
+      Guesses for Self-Consistent Field Calculations. Superposition of
+      Atomic Potentials: Simple yet Efficient}, J. Chem. Theory
+    Comput. \textbf{15}, (2019)
+    1593-1604. \doi{10.1021/acs.jctc.8b01089}} The potentials of the
+  present implementation\footnote{S. Lehtola, to be published.} are
+  from highly accurate finite element calculations carried out with
+  the \textsc{HelFEM} program.
+\end{description}
 
 \item \textbf{PRINT}
 \begin{description}
