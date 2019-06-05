@@ -112,7 +112,7 @@ contains
        ! imethod=3 -- hfs
        ! imethod=4 -- dft
        ! imethod=5 -- scmc
-       
+
        call inStr(char8)
 
        ihit=0
@@ -244,7 +244,7 @@ contains
        call inFloat(v0pot)
        ifermi=3
        ipot=3
-       if (imethod/=2) goto 1740              
+       if (imethod/=2) goto 1740
        goto 5
     endif
 
@@ -271,7 +271,7 @@ contains
        endif
        ifermi=4
        ipot=4
-       if (imethod/=2) goto 1740              
+       if (imethod/=2) goto 1740
        goto 5
     endif
 
@@ -294,7 +294,7 @@ contains
        !        Green, Sellin, Zachor model potential + finite Gauss nucleus model
 
        ipot=55
-       if (imethod/=2) goto 1740       
+       if (imethod/=2) goto 1740
        goto 5
     endif
 
@@ -302,14 +302,14 @@ contains
        !        label label label label label label label label label label label label label
        !        label: potsap
 
-       !        Susi Lethola: Superposition of Atomic Potentials 
+       !        Susi Lehtola: Superposition of Atomic Potentials
 
        ipot=66
-       if (imethod/=2) goto 1740              
+       if (imethod/=2) goto 1740
        goto 5
     endif
 
-    
+
     if (clabel.eq.'pothook') then
        !        label label label label label label label label label label label label label
        !        label: pothook
@@ -318,7 +318,7 @@ contains
 
        call inFloat(hook)
        ipot=9
-       if (imethod/=2) goto 1740                     
+       if (imethod/=2) goto 1740
        goto 5
     endif
 
@@ -332,7 +332,7 @@ contains
        !        harmonic potential
 
        ipot=10
-       if (imethod/=2) goto 1740                     
+       if (imethod/=2) goto 1740
        goto 5
     endif
 
@@ -1906,11 +1906,11 @@ contains
 
 01740 write(iout6,'("Error: this potential cannot be used with ",a3," method! Try OED instead.")') cmethod(imethod)
     goto 2000
-    
+
 1900 write(iout6,1532) clabel,(labellc(i),i=1,nlabels)
 01532 format(/,'Error: label "',a8,'" is not supported. ',/,/,'Try one of the following:',/,10(8x,a8,2x,a8,2x,a8,2x,a8,2x,a8/)//)
     goto 2000
-    
+
 1905 write(iout6,1534)
 01534 format(/,'Error: label TITLE is missing. ')
     write(iout6,*)

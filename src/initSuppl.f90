@@ -86,7 +86,7 @@ contains
        izz1=nint(z1)
        izz2=nint(z2)
     endif
-    
+
     wj1 =-r*pii/2.0_PREC
     wj2 = r*r*pii/2.0_PREC
     xrr=half*r
@@ -167,7 +167,7 @@ contains
                 f0(j,i)=r*(vxi(i)*(z1t+z2t)+veta(j)*(z2t-z1t))
 
              elseif (ipot.eq.66) then
-                ! OED - SAP due to Susi Lethola                
+                ! OED - SAP due to Susi Lehtola
                 r1t=(r/2.0_PREC)*(vxi(i)+veta(j))
                 r2t=(r/2.0_PREC)*(vxi(i)-veta(j))
 
