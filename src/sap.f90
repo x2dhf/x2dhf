@@ -36,14 +36,16 @@ contains
 !  DOI: 10.1021/acs.jctc.8b01089
 !
 !  This function evaluates the repulsive part of the LDA exchange-only
-!  potential of a neutral atom. The potentials have been calculated for
-!  the ground-states of spherically symmetric atoms at the non-relativistic
+!  potential of a neutral atom. The effective charge must be therefore 
+!  calculated as Z-sap_pot(Z,r). The potentials have been calculated
+!  for the ground-states of spherically symmetric atoms at the non-relativistic
 !  level of theory, using accurate finite-element calculations as described
 !  in
 !
 !  S. Lehtola, "Fully numerical Hartree-Fock and density functional
 !  calculations. I. Atoms", Int J Quantum Chem. e25945 (2019). 
 !  DOI: 10.1002/qua.25945
+
 function sap_pot(Z,r) result(V)
  implicit none
  integer, intent(in) :: Z
