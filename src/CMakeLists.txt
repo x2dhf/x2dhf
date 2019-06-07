@@ -17,7 +17,7 @@ fock.f90 fockform.f90 fpw86.f90 fpw86sup.f90 fvwncs.f90 fvwnsupcs.f90
 getCpuTime.f90 getDateTime.f90 gmtran.f90 grid_old.f90 hydrogenOrb.f90
 hypg1f1.f90 hypg2f1.f90 inCard.f90 inFloat.f90 inInt.f90 initAddr.f90
 initArrays.f90 initCBlocks.f90 initDisk.f90 initExWeights.f90
-initGauss.f90 initHF.f90 initHyd.f90 initMesh.f90 initOrbPot.f90
+initGauss.f90 initHF.f90 initHyd.f90 initLDA.f90 initMesh.f90 initOrbPot.f90
 initPot.f90 initSuppl.f90 inputData.f90 inStr.f90 kh.f90
 leexact1.f90 locenergy.f90 lpcoeff.f90 lpcoeffq.f90
 lpderq.f90 mcsor.f90 memory.f90 mesh.f90 meshsize.f90 mpoleMom.f90

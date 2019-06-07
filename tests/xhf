@@ -75,11 +75,22 @@ Usage:
               creats symbolic links gaussian.out and gaussian.pun that point to the <file>.out 
               and <file>.pun files, respectively
 
+
+       xhf mk1dlda <file1> [<file2>]
+              creats symbolic links 1dlda_centreA.orb and 1dlda_centreB.orb that point to the
+              <file1> and <file2> files, respectively, with contain radial LDA orbitals for atoms A
+              and B used to generate SAP potentials (see initLDA and sap routines for detailes);
+	      if file2 is missing file1 is used
+
+
        xhf rm1dhf
               removes symbolic links 1dhf_centreA and 1dhf_centreB
 
        xhf rmgauss 
               removes symbolic links gaussian.out and gaussian.pun
+
+       xhf rm1dlda
+              removes symbolic links 1dlda_centreA and 1dlda_centreB
 
        xhf rmtmp
               removes current temporary files ($INPUT_TMP.*, $OUTPUT_TMP and fort.*) 
@@ -186,6 +197,20 @@ case "$system" in
         ;;
 
 
+    mk1dlda)
+    # creats symbolic links 1dlda_centreA, etc
+	if [[ "$2" != "" && "$3" != "" ]]; then
+            ln -s $2 1dlda_centreA.orb >& /dev/null 
+	    ln -s $3 1dlda_centreB.orb >& /dev/null 
+	elif [[ "$2" != "" && "$3" == "" ]]; then
+	    ln -s $2 1dlda_centreA.orb >& /dev/null 
+	    ln -s $2 1dlda_centreB.orb >& /dev/null 
+	else
+	    usage "Error: missing argument"
+	fi
+	exit
+        ;;
+
 
     mkgauss)
     # creats symbolic links gauss94*
@@ -254,6 +279,11 @@ case "$system" in
 	exit
         ;;
 
+    rm1dlda)
+    # removes symbolic links 1dlda_centreA and 1dlda_centreB
+        rm -f 1dlda_centreA.orb 1dlda_centreB.orb
+	exit
+        ;;
 
     rmtmp)
     # removes all current temporary files  ($INPUT_TMP.*, $OUTPUT_TMP and fort.*) 

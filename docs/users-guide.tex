@@ -277,6 +277,15 @@ This format may be needed when interpolation between grids is attempted.
   files (2dhf\_\-input.\-orb, 2dhf\_\-input.\-coul and 2dhf\_input.exch, respectively) created in
   a previous run. Data defining the case are retrieved from a 2dhf\_input.\-dat textfile.
 
+\item $lda$ -- radial LDA orbitals for the centre A and B
+  obtained from the \textsc{HelFEM} program%
+\footnote{S.Lehtola, \textsl{Fully numerical Hartree-Fock and density functional
+    calculations. I. Atoms}, Int. J. Quantum Chem. \doi{10.1002/qua.25945}}
+ are retrieved from disk files
+  1dlda\-\_centreA.\-orb and 1dlda\-\_centreB.\-orb, respectively, and
+  Coulomb and exchange potentials are initialized as in the
+  \textsl{hydrogen} case (see lda\_orbitals directory and routine \ft{initLDA} for details).
+
 \item $qrhf$ -- radial Hartree--Fock orbitals for the centre A and B
   obtained from the qrhf program\footnote{J. Kobus and Ch. Froese
     Fischer, \textsl{Quasi-Relativistic Hartree--Fock program for
@@ -1111,6 +1120,11 @@ formula (see \ft{initCBlocks} and \ft{setomega} for details).
 
 \verbatiminput{../examples/dft/be-2.data}
 
+\newpage
+
+\item HFS calculations for Kr atom initialized with LDA numerical orbitals.
+
+\verbatiminput{../examples/kr/kr.data}
 
 \newpage
 

@@ -848,6 +848,8 @@ contains
           ini=6
        elseif (clabel.eq.'qrhf') then
           ini=11
+       elseif (clabel.eq.'lda') then
+          ini=12
        elseif (clabel.eq.'nodat') then
           ini=55
        else

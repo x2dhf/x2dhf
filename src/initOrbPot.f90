@@ -21,10 +21,11 @@ contains
     use commons8
     use prepGauss
 
-    use initHyd_m
     use initDisk_m
-    use initHF_m
     use initGauss_m
+    use initHF_m
+    use initHyd_m
+    use initLDA_m
     use initPot_m
 
     implicit none
@@ -166,6 +167,12 @@ contains
        call initHF (cw_orb,cw_coul,cw_exch,cw_suppl(i4b(7)),cw_suppl(i4b(9)),cw_suppl(i4b(14)),cw_sctch(i5b(1)))
        idump=1
 
+    elseif (ini.eq.12) then
+
+       !        'lda
+       call initLDA (cw_orb,cw_coul,cw_exch,cw_suppl(i4b(7)),cw_suppl(i4b(9)),cw_suppl(i4b(14)),cw_sctch(i5b(1)))
+       idump=1
+       
     elseif (ini.eq.2) then
 
        !        'gauss'
