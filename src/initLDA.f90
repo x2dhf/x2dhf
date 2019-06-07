@@ -30,41 +30,64 @@ contains
     implicit none
 
     integer ::  igp,ihf1,ihf2,ilabel,imu,in,inioff,iord,ishift,mxmax1,mxmax2, &
-         nhforb,ngridpts,nwf1,nwf2,ouf2dhf1,ouf2dhf2
+         nwf1,nwf2,ouf2dhf1,ouf2dhf2
     integer :: i,j,iorb,l1,m1,n1,l2,m2,n2,ns,np,nd,nf
     real (PREC) :: costh1,costh2,psi1,psi2,psi1prev,psi2prev,shn1,shn2,r1t,r2t,rr,xnorm, &
-         z,zhf1,zhf2
+         z
+    integer :: zlda1, zlda2
 
-    parameter (nhforb=20,ngridpts=500,iord=3,ouf2dhf1=8,ouf2dhf2=9)
+    parameter (iord=3,ouf2dhf1=8,ouf2dhf2=9)
 
-    integer, dimension(nhforb) :: nhf1,lhf1,nhf2,lhf2
+    integer, dimension(:), allocatable :: nhf1,lhf1,nhf2,lhf2
 
     real (PREC), dimension(*) :: psi,pot,excp,f2,f4,wgt2,wk0
-    real (PREC), dimension(ngridpts) :: rhf1,rhf2,phf1t,phf2t
-    real (PREC), dimension(nhforb) :: ehf1,qc1,ehf2,qc2
-    real (PREC), dimension(nhforb,ngridpts) :: phf1,phf2
+    real (PREC), dimension(:), allocatable :: rhf1,rhf2,phf1t,phf2t
+    real (PREC), dimension(:), allocatable :: ehf1,qc1,ehf2,qc2
+    real (PREC), dimension(:,:), allocatable :: phf1,phf2
 
-    character*8 :: atom1,term1,atom2,term2
+    ! Where to find the orbitals and the file name to read
+    character*512 :: x2dhfdir, orbdir, filename
+    logical :: file_exists
 
     ! Initialization of molecular orbitals
-
     print *,'... initializing molecular orbitals from LDA functions ...'
+
+    ! Get the location of x2dhf
+    call get_environment_variable("X2DHF_DIRECTORY", x2dhfdir)
+    ! Orbital directory is
+    if(len(x2dhfdir)>0) then
+       orbdir = trim(x2dhfdir) // "/lda_orbitals/"
+    else
+       orbdir = "./"
+    end if
+
 
     ilabel=0
 
     ! read LDA functions for centre A
     if (z1.ne.zero) then
-       open(ouf2dhf1,file='1dlda_centreA.orb',form='formatted',status='old')
+       zlda1=nint(z1)
+       filename = trim(orbdir) // trim(element(zlda1)) // '_orbs.dat'
+       ! Check if file exists
+       inquire(file=filename, exist=file_exists)
+       if(.not. file_exists) then
+          print *,'Cannot open file ',trim(filename),'. Did you set X2DHF_DIRECTORY?'
+          stop
+       end if
+
+       open(ouf2dhf1,file=filename,form='formatted',status='old')
 
        read(ouf2dhf1,*) mxmax1,nwf1
 
-       if (mxmax1.gt.ngridpts) then
-          write(*,*) "Error: too many grid points in the 1dLDA data", &
-               &           " for centre A -- increase the value of ngridpts parameter"
-          stop 'initLDA'
-       endif
+       ! Allocate memory
+       allocate(lhf1(nwf1))
+       allocate(nhf1(nwf1))
+       allocate(rhf1(mxmax1))
+       allocate(phf1t(mxmax1))
+       allocate(ehf1(nwf1))
+       allocate(qc1(nwf1))
+       allocate(phf1(nwf1,mxmax1))
 
-       zhf1=z1
        read(ouf2dhf1,*) (lhf1(i),i=1,nwf1)
 
        ! Principle quantum numbers of LDA orbitals are not included in data files. Since
@@ -93,7 +116,7 @@ contains
              nhf1(i)=nf
           endif
        enddo
-       
+
        read(ouf2dhf1,*) (qc1(i),i=1,nwf1)
        read(ouf2dhf1,*) (ehf1(i),i=1,nwf1)
        read(ouf2dhf1,*) rhf1(1),(phf1(i,1),i=1,nwf1)
@@ -103,7 +126,7 @@ contains
        enddo
 
        if (iprint(220).ne.0) then
-          write(*,'(" Orbitals on centre Z1 (Z=",f4.0,"):")') zhf1
+          write(*,'(" Orbitals on centre Z1 (Z=",i4,"):")') zlda1
           write(*,'(13x,"n",4x,"l",9x,"e")')
           do i=1,nwf1
              !nhf1(i)=mgx(1,nwf1-i+1)
@@ -119,22 +142,32 @@ contains
 
     endif
     close(ouf2dhf1)
-    
+
     ! read LDA functions for centre B
 
     if (z2.ne.zero) then
-       open(ouf2dhf2,file='1dlda_centreB.orb',form='formatted',status='old')
+       zlda2=nint(z2)
+       filename = trim(orbdir) // trim(element(zlda2)) // '_orbs.dat'
+       ! Check if file exists
+       inquire(file=filename, exist=file_exists)
+       if(.not. file_exists) then
+          print *,'Cannot open file ',trim(filename),'. Did you set X2DHF_DIRECTORY?'
+          stop
+       end if
 
+       open(ouf2dhf2,file=filename,form='formatted',status='old')
        read(ouf2dhf2,*) mxmax2,nwf2
 
-       if (mxmax2.gt.ngridpts) then
-          write(*,*) "Error: too many grid points in the 1dLDA data", &
-               " for centre B -- increase the value of ngridpts parameter"
-          stop 'initLDA'
-       endif
+       ! Allocate memory
+       allocate(lhf2(nwf2))
+       allocate(nhf2(nwf2))
+       allocate(rhf2(mxmax2))
+       allocate(phf2t(mxmax2))
+       allocate(ehf2(nwf2))
+       allocate(qc2(nwf2))
+       allocate(phf2(nwf2,mxmax2))
 
-       zhf2=z2
-       read(ouf2dhf2,*) (lhf2(i),i=1,nwf2)       
+       read(ouf2dhf2,*) (lhf2(i),i=1,nwf2)
 
        ns=0
        np=0
@@ -169,7 +202,7 @@ contains
 
        if (iprint(220).ne.0) then
           write(*,*)
-          write(*,'(" Orbitals on centre Z2 (Z=",f4.0,"):")') zhf2
+          write(*,'(" Orbitals on centre Z2 (Z=",i4,"):")') zlda2
           write(*,'(13x,"n",4x,"l",9x,"e")')
           do i=1,nwf2
              nhf2(i)=mgx(4,nwf2-i+1)
@@ -185,7 +218,7 @@ contains
        endif
     endif
     close(ouf2dhf2)
-    
+
     !     loop over orbitals
 
     do iorb=1,norb
@@ -200,7 +233,7 @@ contains
        shn1=(-1.0_PREC)**dble(m1)/sqrt(4.0_PREC*pii)*sqrt((2*l1+1)*factor(l1-m1)/factor(l1+m1))
        if (m1.eq.0) shn1=1.0_PREC/sqrt(4.0_PREC*pii)*sqrt((2*l1+1)*factor(l1-m1)/factor(l1+m1))
 
-       if (co1(iorb).ne.0.0_PREC) then
+       if ((co1(iorb).ne.zero) .and. (z1 .ne. zero)) then
           ihf1=0
           do i=1,nwf1
              if (nhf1(i).eq.n1.and.lhf1(i).eq.l1) ihf1=i
@@ -224,7 +257,7 @@ contains
 
        shn2=(-1.0_PREC)**dble(m2)/sqrt(4.0_PREC*pii)*sqrt((2*l2+1)*factor(l2-m2)/factor(l2+m2))
 
-       if (co2(iorb).ne.0.0_PREC) then
+       if ((co2(iorb).ne.zero) .and. (z2 .ne. zero)) then
           ihf2=0
           do i=1,nwf2
              if (nhf2(i).eq.n2.and.lhf2(i).eq.l2) ihf2=i
@@ -247,8 +280,8 @@ contains
 
        !        loop over grid points
 
-       psi1prev=0.0_PREC
-       psi2prev=0.0_PREC
+       psi1prev=zero
+       psi2prev=zero
        do imu=1,mxnmu
           inioff=(imu-1)*nni
           do in=1,nni
@@ -259,8 +292,8 @@ contains
              ! and B and cosine of the polar angles costh1 and costh2
              ! between z axis and the vectors _r1 and _r2
 
-             psi1=0.0_PREC
-             psi2=0.0_PREC
+             psi1=zero
+             psi2=zero
 
              rr=(r/2.0_PREC)*sqrt(vxisq(imu)+vetasq(in)-1.0_PREC)
              z=(r/2.0_PREC)*vxi(imu)*veta(in)
@@ -271,40 +304,43 @@ contains
              ! on both the nuclei
 
              if (r1t.lt.precis) then
-                costh1=0.0_PREC
+                costh1=zero
              else
                 costh1=(z+r/2.0_PREC)/r1t
              endif
              !
              if (r2t.lt.precis) then
-                costh2=0.0_PREC
+                costh2=zero
              else
                 costh2=-(z-r/2.0_PREC)/r2t
              endif
 
-             ! calculate radial part of the LDA orbital 
-
-             if     (co1(iorb).ne.0.0_PREC) then
-                if (r1t.ge.rhf1(mxmax1)) then
-                   psi1=0.0_PREC
-                elseif (r1t.ge.precis) then
-                   psi1=flp(iord,mxmax1,rhf1,phf1t,r1t)*shn1*plegendg(l1,m1,costh1)
-                   psi1prev=psi1
-                else
-                   psi1=psi1prev
+             ! calculate radial part of the LDA orbital
+             if(z1 .ne. zero) then
+                if     (co1(iorb).ne.zero) then
+                   if (r1t.ge.rhf1(mxmax1)) then
+                      psi1=zero
+                   elseif (r1t.ge.precis) then
+                      psi1=flp(iord,mxmax1,rhf1,phf1t,r1t)*shn1*plegendg(l1,m1,costh1)
+                      psi1prev=psi1
+                   else
+                      psi1=psi1prev
+                   endif
                 endif
-             endif
+             end if
 
-             if (co2(iorb).ne.0.0_PREC) then
-                if (r2t.ge.rhf2(mxmax2)) then
-                   psi2=0.0_PREC
-                elseif (r2t.ge.precis) then
-                   psi2=flp(iord,mxmax2,rhf2,phf2t,r2t)*shn2*plegendg(l2,m2,costh2)
-                   psi2prev=psi2
-                else
-                   psi2=psi2prev
+             if(z2 .ne. zero) then
+                if (co2(iorb).ne.zero) then
+                   if (r2t.ge.rhf2(mxmax2)) then
+                      psi2=zero
+                   elseif (r2t.ge.precis) then
+                      psi2=flp(iord,mxmax2,rhf2,phf2t,r2t)*shn2*plegendg(l2,m2,costh2)
+                      psi2prev=psi2
+                   else
+                      psi2=psi2prev
+                   endif
                 endif
-             endif
+             end if
              psi(igp)=co1(iorb)*psi1+co2(iorb)*psi2
           enddo
        enddo

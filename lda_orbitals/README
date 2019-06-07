@@ -1,0 +1,15 @@
+These are atomic orbitals from exchange-only LDA calculations using
+five 15-node radial elements with HelFEM with full spherical
+averaging, which should give a good starting point for calculations in
+x2dhf.
+
+The format used for the data is
+
+(number of radial points) (number of orbitals)
+[ angular momenta of the orbitals ]
+[ orbital occupation numbers ]
+[ orbital energies ]
+[[ radius1 orbital11 orbital12 orbital13 ... orbital1N ]]
+
+7 June 2019
+Susi Lehtola

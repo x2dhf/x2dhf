@@ -279,12 +279,16 @@ This format may be needed when interpolation between grids is attempted.
 
 \item $lda$ -- radial LDA orbitals for the centre A and B
   obtained from the \textsc{HelFEM} program%
-\footnote{S.Lehtola, \textsl{Fully numerical Hartree-Fock and density functional
-    calculations. I. Atoms}, Int. J. Quantum Chem. \doi{10.1002/qua.25945}}
- are retrieved from disk files
-  1dlda\-\_centreA.\-orb and 1dlda\-\_centreB.\-orb, respectively, and
-  Coulomb and exchange potentials are initialized as in the
-  \textsl{hydrogen} case (see lda\_orbitals directory and routine \ft{initLDA} for details).
+\footnote{S.Lehtola, \textsl{Fully numerical Hartree-Fock and density
+    functional calculations. I. Atoms}, Int. J. Quantum
+  Chem. \doi{10.1002/qua.25945}} are retrieved from disk. You need to
+set the environment value X2DHF\_DIRECTORY to the root of your x2dhf
+installation, after which the program will read the orbitals from the
+lda-orbitals/ subdirectory. If you don't set X2DHF\_DIRECTORY, the
+program will try to find the orbitals from the current working
+directory. The Coulomb and exchange potentials are initialized as in
+the \textsl{hydrogen} case (see lda\_orbitals directory and routine
+\ft{initLDA} for details).
 
 \item $qrhf$ -- radial Hartree--Fock orbitals for the centre A and B
   obtained from the qrhf program\footnote{J. Kobus and Ch. Froese
