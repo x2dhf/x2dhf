@@ -1,0 +1,4 @@
+./xhf kr kr          > kr.lst
+./xhf kr-1 kr-1      > kr-1.lst
+./xhf kr-2 kr-1 kr-2 > kr-1.lst
+

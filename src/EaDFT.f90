@@ -37,8 +37,6 @@ contains
     real (PREC) :: w,woneel,wtwoel
     real (PREC), dimension(*) :: psi,pot,excp,e,f0,wgt1,wgt2,wk0,wk1,wk2,wk3
 
-    if (ifix(iorb).eq.1) return
-
     call zeroArray(mxsize,wk0)
     call zeroArray(mxsize,wk1)
 
