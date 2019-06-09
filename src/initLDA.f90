@@ -90,7 +90,7 @@ contains
 
        read(ouf2dhf1,*) (lhf1(i),i=1,nwf1)
 
-       ! Principle quantum numbers of LDA orbitals are not included in data files. Since
+       ! Principal quantum numbers of LDA orbitals are not included in data files. Since
        ! orbitals are ordered according to their symmetry (s-type orbitals go first, then
        ! p-type ones, and so on) their principal quantum numbers can be easily assigned.
 
@@ -129,7 +129,6 @@ contains
           write(*,'(" Orbitals on centre Z1 (Z=",i4,"):")') zlda1
           write(*,'(13x,"n",4x,"l",9x,"e")')
           do i=1,nwf1
-             !nhf1(i)=mgx(1,nwf1-i+1)
              write(*,'(4x,3i5,e16.6)') i,nhf1(i),lhf1(i), ehf1(i)
           enddo
        endif
@@ -170,9 +169,9 @@ contains
        read(ouf2dhf2,*) (lhf2(i),i=1,nwf2)
 
        ns=0
-       np=0
-       nd=0
-       nf=0
+       np=1
+       nd=2
+       nf=3
        do i=1,nwf2
           if (lhf2(i)==0) then
              ns=ns+1
@@ -205,7 +204,6 @@ contains
           write(*,'(" Orbitals on centre Z2 (Z=",i4,"):")') zlda2
           write(*,'(13x,"n",4x,"l",9x,"e")')
           do i=1,nwf2
-             nhf2(i)=mgx(4,nwf2-i+1)
              write(*,'(4x,3i5,e16.6)') i,nhf2(i),lhf2(i), ehf2(i)
           enddo
 
@@ -240,7 +238,7 @@ contains
              !if (lhf1(i).eq.l1) ihf1=i
           enddo
           if (ihf1.eq.0) then
-             print *,"initLDA: no proper atomic orbital for centre Z1 found"
+             write (*,'(a,i2,a,i2,a)') "initLDA: could not find orbital with n=",n1,", l=",l1," on Z1"
              stop 'initLDA'
           endif
 
@@ -264,7 +262,7 @@ contains
              !if (lhf2(i).eq.l2) ihf2=i
           enddo
           if (ihf2.eq.0) then
-             print *,"initLDA: no proper atomic orbital for centre Z2 found"
+             write (*,'(a,i2,a,i2,a)') "initLDA: could not find orbital with n=",n2,", l=",l2," on Z2"
              stop 'initLDA'
           endif
 
