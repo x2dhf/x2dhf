@@ -1,0 +1,15 @@
+TITLE Be LDA+SAP
+METHOD  oed
+NUCLEI  4.0  0.0  2.386  
+CONFIG  0
+  2 sigma  end
+grid 95 40.0   
+orbpot lda
+potsap
+lcao4lda
+ 1.0   0.0
+ 1.0   0.0 
+SCF 200 10 6 8 1
+fixorb 
+print 220 ! 222
+stop

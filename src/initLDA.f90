@@ -20,13 +20,14 @@ contains
     use params
     use discret
     use commons8
-
     use factor_m
     use flp_m
+    use memory
     use norm94_m
     use initPot_m
     use plegendg_m
-
+    use zeroArray_m
+    
     implicit none
 
     integer ::  igp,ihf1,ihf2,ilabel,imu,in,inioff,iord,ishift,mxmax1,mxmax2, &
@@ -115,8 +116,107 @@ contains
              nf=nf+1
              nhf1(i)=nf
           endif
-       enddo
+       enddo                       
 
+       if (.not.lcaoIncl) then
+          i=1
+          iorb=norb
+          do while (iorb>=1)
+             if (i>nwf1) exit
+
+             ! sigma orbitals
+             if (lhf1(i)==0) then
+                if (co1(iorb)==zero) goto 101
+                mgx(1,iorb)=nhf1(i)
+                mgx(2,iorb)=0
+                mgx(3,iorb)=0
+                i=i+1
+                goto 101
+             endif
+
+             if (lhf1(i)==1) then
+                if (co1(iorb)==zero) goto 101
+                mgx(1,iorb)=nhf1(i)
+                mgx(2,iorb)=1
+                mgx(3,iorb)=0
+                iorb=iorb-1
+             endif
+             
+             if (lhf1(i)==2) then
+                if (co1(iorb)==zero) goto 101
+                mgx(1,iorb)=nhf1(i)
+                mgx(2,iorb)=2
+                mgx(3,iorb)=0
+                iorb=iorb-1
+             endif
+             
+             if (lhf1(i)==3) then
+                if (co1(iorb)==zero) goto 101
+                mgx(1,iorb)=nhf1(i)
+                mgx(2,iorb)=3
+                mgx(3,iorb)=0
+                iorb=iorb-1
+             endif
+             
+             ! pi orbitals
+             if (lhf1(i)==1) then
+                if (co1(iorb)==zero) goto 101
+                mgx(1,iorb)=nhf1(i)
+                mgx(2,iorb)=1
+                mgx(3,iorb)=1
+                i=i+1
+                goto 101
+             endif
+             
+             if (lhf1(i)==2) then
+                if (co1(iorb)==zero) goto 101
+                mgx(1,iorb)=nhf1(i)
+                mgx(2,iorb)=2
+                mgx(3,iorb)=1
+                iorb=iorb-1
+             endif
+             
+             if (lhf1(i)==3) then
+                if (co1(iorb)==zero) goto 101
+                mgx(1,iorb)=nhf1(i)
+                mgx(2,iorb)=3
+                mgx(3,iorb)=1
+                iorb=iorb-1
+             endif
+             
+             ! delta orbitals
+             if (lhf1(i)==2) then
+                if (co1(iorb)==zero) goto 101
+                mgx(1,iorb)=nhf1(i)
+                mgx(2,iorb)=2
+                mgx(3,iorb)=2
+                i=i+1
+                goto 101
+             endif
+             
+             if (lhf1(i)==3) then
+                if (co1(iorb)==zero) goto 101
+                mgx(1,iorb)=nhf1(i)
+                mgx(2,iorb)=3
+                mgx(3,iorb)=2
+                iorb=iorb-1
+                goto 101
+             endif
+                
+             ! phi orbitals
+             if (lhf1(i)==3) then
+                if (co1(iorb)==zero) goto 101
+                mgx(1,iorb)=nhf1(i)
+                mgx(2,iorb)=3
+                mgx(3,iorb)=3
+                i=i+1
+                goto 101
+             endif
+101          continue
+             iorb=iorb-1
+          enddo
+       endif
+       
        read(ouf2dhf1,*) (qc1(i),i=1,nwf1)
        read(ouf2dhf1,*) (ehf1(i),i=1,nwf1)
        read(ouf2dhf1,*) rhf1(1),(phf1(i,1),i=1,nwf1)
@@ -126,10 +226,11 @@ contains
        enddo
 
        if (iprint(220).ne.0) then
+          write(*,*)
           write(*,'(" Orbitals on centre Z1 (Z=",i4,"):")') zlda1
           write(*,'(13x,"n",4x,"l",9x,"e")')
           do i=1,nwf1
-             write(*,'(4x,3i5,e16.6)') i,nhf1(i),lhf1(i), ehf1(i)
+             write(*,'(4x,3i5,e16.6)') i,nhf1(i),lhf1(i),ehf1(i)
           enddo
        endif
 
@@ -172,7 +273,7 @@ contains
        np=1
        nd=2
        nf=3
-       do i=1,nwf2
+       do i=1,nwf2                               
           if (lhf2(i)==0) then
              ns=ns+1
              nhf2(i)=ns
@@ -191,6 +292,105 @@ contains
           endif
        enddo
 
+       if (.not.lcaoIncl) then
+          i=1
+          iorb=norb
+          do while (iorb>=1)
+             if (i>nwf2) exit
+
+             ! sigma orbitals
+             if (lhf2(i)==0) then
+                if (co2(iorb)==zero) goto 102
+                mgx(4,iorb)=nhf2(i)
+                mgx(5,iorb)=0
+                mgx(6,iorb)=0
+                i=i+1
+                goto 102
+             endif
+             
+             if (lhf2(i)==1) then
+                if (co2(iorb)==zero) goto 102
+                mgx(4,iorb)=nhf2(i)
+                mgx(5,iorb)=1
+                mgx(6,iorb)=0
+                iorb=iorb-1
+             endif
+             
+             if (lhf2(i)==2) then
+                if (co2(iorb)==zero) goto 102
+                mgx(4,iorb)=nhf2(i)
+                mgx(5,iorb)=2
+                mgx(6,iorb)=0
+                iorb=iorb-1
+             endif
+             
+             if (lhf2(i)==3) then
+                if (co2(iorb)==zero) goto 102
+                mgx(4,iorb)=nhf2(i)
+                mgx(5,iorb)=3
+                mgx(6,iorb)=0
+                iorb=iorb-1
+             endif
+             
+             ! pi orbitals
+             if (lhf2(i)==1) then
+                if (co2(iorb)==zero) goto 102
+                mgx(4,iorb)=nhf2(i)
+                mgx(5,iorb)=1
+                mgx(6,iorb)=1
+                i=i+1
+                goto 102
+             endif
+             
+             if (lhf2(i)==2) then
+                if (co2(iorb)==zero) goto 102
+                mgx(4,iorb)=nhf2(i)
+                mgx(5,iorb)=2
+                mgx(6,iorb)=1
+                iorb=iorb-1
+             endif
+             
+             if (lhf2(i)==3) then
+                if (co2(iorb)==zero) goto 102
+                mgx(4,iorb)=nhf2(i)
+                mgx(5,iorb)=3
+                mgx(6,iorb)=1
+                iorb=iorb-1
+             endif
+             
+             ! delta orbitals
+             if (lhf2(i)==2) then
+                if (co2(iorb)==zero) goto 102
+                mgx(4,iorb)=nhf2(i)
+                mgx(5,iorb)=2
+                mgx(6,iorb)=2
+                i=i+1
+                goto 102
+             endif
+             
+             if (lhf2(i)==3) then
+                if (co2(iorb)==zero) goto 102
+                mgx(4,iorb)=nhf2(i)
+                mgx(5,iorb)=3
+                mgx(6,iorb)=2
+                iorb=iorb-1
+                goto 102
+             endif
+             
+             ! phi orbitals
+             if (lhf2(i)==3) then
+                if (co2(iorb)==zero) goto 102
+                mgx(4,iorb)=nhf2(i)
+                mgx(5,iorb)=3
+                mgx(6,iorb)=3
+                i=i+1
+                goto 102
+             endif
+102          continue
+             iorb=iorb-1
+          enddo
+       endif
+
        read(ouf2dhf2,*) (qc2(i),i=1,nwf2)
        read(ouf2dhf2,*) (ehf2(i),i=1,nwf2)
        read(ouf2dhf2,*) rhf2(1),(phf2(i,1),i=1,nwf2)
@@ -204,9 +404,8 @@ contains
           write(*,'(" Orbitals on centre Z2 (Z=",i4,"):")') zlda2
           write(*,'(13x,"n",4x,"l",9x,"e")')
           do i=1,nwf2
-             write(*,'(4x,3i5,e16.6)') i,nhf2(i),lhf2(i), ehf2(i)
+             write(*,'(4x,3i5,e16.6)') i,nhf2(i),lhf2(i),ehf2(i)
           enddo
-
        endif
 
        if (iprint(222).ne.0) then
@@ -217,17 +416,15 @@ contains
     endif
     close(ouf2dhf2)
 
-    !     loop over orbitals
+    ! loop over orbitals
 
     do iorb=1,norb
-
        ishift=i1b(iorb)-1
        n1=mgx(1,iorb)
        l1=mgx(2,iorb)
        m1=mgx(3,iorb)
 
-       !        normalization factor for spherical harmonics
-
+       ! normalization factor for spherical harmonics
        shn1=(-1.0_PREC)**dble(m1)/sqrt(4.0_PREC*pii)*sqrt((2*l1+1)*factor(l1-m1)/factor(l1+m1))
        if (m1.eq.0) shn1=1.0_PREC/sqrt(4.0_PREC*pii)*sqrt((2*l1+1)*factor(l1-m1)/factor(l1+m1))
 
@@ -235,10 +432,9 @@ contains
           ihf1=0
           do i=1,nwf1
              if (nhf1(i).eq.n1.and.lhf1(i).eq.l1) ihf1=i
-             !if (lhf1(i).eq.l1) ihf1=i
           enddo
           if (ihf1.eq.0) then
-             write (*,'(a,i2,a,i2,a)') "initLDA: could not find orbital with n=",n1,", l=",l1," on Z1"
+             print *,"initLDA: no proper atomic orbital for centre Z1 found"
              stop 'initLDA'
           endif
 
@@ -251,8 +447,7 @@ contains
        l2=mgx(5,iorb)
        m2=mgx(6,iorb)
 
-       !        normalization factor for spherical harmonics
-
+       ! normalization factor for spherical harmonics
        shn2=(-1.0_PREC)**dble(m2)/sqrt(4.0_PREC*pii)*sqrt((2*l2+1)*factor(l2-m2)/factor(l2+m2))
 
        if ((co2(iorb).ne.zero) .and. (z2 .ne. zero)) then
@@ -262,7 +457,7 @@ contains
              !if (lhf2(i).eq.l2) ihf2=i
           enddo
           if (ihf2.eq.0) then
-             write (*,'(a,i2,a,i2,a)') "initLDA: could not find orbital with n=",n2,", l=",l2," on Z2"
+             print *,"initLDA: no proper atomic orbital for centre Z2 found"
              stop 'initLDA'
           endif
 
@@ -353,9 +548,15 @@ contains
 1115      format(i4,1x,a8,a1,3x,e22.16,2e16.2)
        endif
     enddo
-
-    ! initialize Coulomb and exchange potentials
-
-    call initPot(psi,pot,excp,f2,f4,wk0)
+    write(*,*)
+    
+    ! initialize Coulomb and exchange potentials unless OED method is chosen 
+    if (imethod/=2) then
+       print *,'... setting exchange potential to zero...'
+       call zeroArray(length3,excp)
+    else
+       call initPot(psi,pot,excp,f2,f4,wk0)
+    endif
+    
   end subroutine initLDA
 end module initLDA_m

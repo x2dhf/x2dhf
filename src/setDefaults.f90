@@ -138,6 +138,9 @@ contains
     omegasfOrb=0.979_PREC
     omegasfPot=0.996_PREC
 
+    ! in case LDA orbitals are used to start DFT calculation make the overrelaxation less
+    ! aggressive and thus more stable
+    omegasf4lda=0.95
 
     !     skip nscf2skip iterations before starting the search for
     !     saturation; examine the last nenlast and nnolast iterations in case

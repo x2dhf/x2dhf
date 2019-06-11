@@ -1,0 +1,164 @@
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+                         FINITE DIFFERENCE 2D HARTREE-FOCK  (version 2.1)
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+ ... start of input data ...
+  title Be LDA+SAP                                                                
+  method  oed                                                                     
+  nuclei  4.0  0.0  2.386                                                         
+  config  0                                                                       
+  2 sigma  end                                                                    
+  grid 95 40.0                                                                    
+  orbpot lda                                                                      
+  potsap                                                                          
+  lcao4lda                                                                        
+  1.0   0.0                                                                       
+  1.0   0.0                                                                       
+  scf 200 10 6 8 1                                                                
+  fixorb                                                                          
+  print 220 ! 222                                                                 
+  stop                                                                            
+ ... end of input data ...
+ 
+
+   molecular system: 
+
+          Be( 4.00)      ( 0.00)   R =  2.38600 bohr = 1.26262 angstroms
+
+   method: OED
+
+
+   electronic configuration:
+
+           2  sigma      + - 
+           1  sigma      + - 
+
+
+          total charge            =   0
+          number of
+              electrons           =   4
+              orbitals            =   2
+              Coulomb potentials  =   2
+              exchange potentials =   1
+
+   grid:
+          nu (h_nu)  =   91  (0.03491)
+          mu (h_mu)  =  127  (0.03338)
+          R_infinity =   40.00
+
+   scf: 
+          thresholds
+              scf iterations           =    200
+              orbital energy           = 1.00E- 6
+              orbital norm             = 1.00E- 8
+              multipole moments recalc = 1.15E+00
+
+          orbitals are kept frozen
+          Coulomb potentials are relaxed
+
+          multipole expansion coefficients =  4
+
+   (mc)sor:
+          sor method used for relaxing orbitals and potentials
+          ordering: middle 
+
+                            (mc)sor iterations
+                            orbital  potentials
+             2 sigma           10        10
+             1 sigma           10        10
+
+          overrelaxation parameters:   orbitals       potentials 
+                                        1.826       1.863   1.863
+
+   machine accuracy      =    0.11E-15
+
+   constants: 
+               pi        =    0.3141592653589793E+01
+               bohr      =    0.5291772490000000E+00 angstroms
+
+
+   memory usage:
+          text+data                                      0.9 MB 
+          bss (common block contributions)              96.9 MB
+          dynamical allocation                           3.6 MB 
+              orbitals + Coulomb potentials              0.0 MB
+              exchange potentials                        0.0 MB
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+ ... initializing molecular orbitals from LDA functions ...
+
+ Orbitals on centre Z1 (Z=   4):
+             n    l         e
+        1    1    0   -0.379318E+01
+        2    2    0   -0.170029E+00
+
+ Normalization of LCAOs
+   2 sigma       0.1000019658488196E+01
+   1 sigma       0.1000037973600944E+01
+
+ ... initializing Lagrange multipliers ...
+
+ total energy:                 -0.7922765451109949E+01
+ total electronic energy:      -0.7922765451109949E+01
+ virial ratio:                 -0.1556872238962313E+01
+
+   scf  orbital              energy              energy diff        1-norm         overlap
+    1   1 sigma      -.3791561666429009E+01        0.20E-05        0.38E-04        0.00E+00
+    1   2 sigma      -.1698210591259651E+00        0.20E-05        0.20E-04        0.00E+00
+           
+ ... orbital energy threshold reached reached ...
+ ... writing functions to disk (current precision) ...
+
+ total energy:                 -0.7922765451109949E+01
+ total electronic energy:      -0.7922765451109949E+01
+ virial ratio:                 -0.1556872238962313E+01
+
+ total energy contributions: 
+     nuclear-electron attraction energy =     -22.150024231101
+     kinetic energy                     =      14.227258779991
+     one electron energy                =      -7.922765451110
+     coulomb energy                     =       0.000000000000
+     exchange energy                    =      -0.000000000000
+     nuclear repulsion energy           =       0.000000000000
+     coulomb energy (DFT)               =       0.000000000000
+     exchange energy (DFT)              =       0.000000000000
+     correlation energy (DFT)           =       0.000000000000
+
+       orbital               energy                     1-norm
+   2 sigma          -0.1698210591259651E+00           -0.20E-04
+   1 sigma          -0.3791561666429009E+01           -0.38E-04
+
+
+ total energy uncertainty due to orbital norms not being equal 1:
+     absolute = +/-0.29E-03,  relative = +/-0.37E-02%
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+ cpu summary (sec):
+    Lagrange multipliers                       0.00
+    normalization+orthogonalization            0.00
+    multipole moments                          0.00
+    relaxation of orb. and pot.                0.00
+    total energy                               0.00
+    all SCF iterations                         0.00
+    single SCF iteration                       0.00
+
+
+
+ start: 2019/06/11  13:20:26.50                                                         
+ stop:  2019/06/11  13:20:26.53                                                         
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+Linux scobie 5.1.6-200.fc29.x86_64 x86_64 x86_64 GNU/Linux
+Intell(R) Core(TM) i5-4200U CPU @ 1.60GHz
+
+////////////////////////////////////////////////////////////////////////////////////////////////

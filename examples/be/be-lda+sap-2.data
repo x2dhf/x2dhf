@@ -1,0 +1,12 @@
+TITLE Be LDA+SAP
+METHOD  dft
+dft lda
+NUCLEI  4.0  0.0  2.386  
+CONFIG  0
+  2 sigma  end
+grid 95 40.0   
+!orbpot lda
+orbpot old
+SCF 2 10 10 8 1
+fixorb 
+stop

@@ -1,0 +1,189 @@
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+                         FINITE DIFFERENCE 2D HARTREE-FOCK  (version 2.1)
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+ ... start of input data ...
+  title Be LDA+SAP                                                                
+  method  dft                                                                     
+  dft lda                                                                         
+  nuclei  4.0  0.0  2.386                                                         
+  config  0                                                                       
+  2 sigma  end                                                                    
+  grid 95 40.0                                                                    
+  orbpot old                                                                      
+  scf 2 10 10 8 1                                                                 
+  fixorb                                                                          
+  stop                                                                            
+ ... end of input data ...
+ 
+
+   molecular system: 
+
+          Be( 4.00)      ( 0.00)   R =  2.38600 bohr = 1.26262 angstroms
+
+   method: DFT and 
+                    lda  functional (alpha =    0.66667)
+
+   electronic configuration:
+
+           2  sigma      + - 
+           1  sigma      + - 
+
+
+          total charge            =   0
+          number of
+              electrons           =   4
+              orbitals            =   2
+              Coulomb potentials  =   2
+              exchange potentials =   1
+
+   grid:
+          nu (h_nu)  =   91  (0.03491)
+          mu (h_mu)  =  127  (0.03338)
+          R_infinity =   40.00
+
+   scf: 
+          thresholds
+              scf iterations           =      2
+              orbital energy           = 1.00E-10
+              orbital norm             = 1.00E- 8
+              multipole moments recalc = 1.15E+00
+
+          orbitals are kept frozen
+          Coulomb potentials are relaxed
+
+          multipole expansion coefficients =  4
+
+   (mc)sor:
+          sor method used for relaxing orbitals and potentials
+          ordering: middle 
+
+                            (mc)sor iterations
+                            orbital  potentials
+             2 sigma           10        10
+             1 sigma           10        10
+
+          overrelaxation parameters:   orbitals       potentials 
+                                        1.922       1.961   1.961
+
+   machine accuracy      =    0.11E-15
+
+   constants: 
+               pi        =    0.3141592653589793E+01
+               bohr      =    0.5291772490000000E+00 angstroms
+
+
+   memory usage:
+          text+data                                      0.9 MB 
+          bss (common block contributions)              96.9 MB
+          dynamical allocation                           3.5 MB 
+              orbitals + Coulomb potentials              0.0 MB
+              exchange potentials                        0.0 MB
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+ ... retrieving data from disk ...
+     file with heading:  Be LDA+SAP                                                                     
+     created on: 2019/06/11  13:20:26.52                                                         
+
+ total energy:                 -0.2127609374093815E+02
+ total electronic energy:      -0.2127609374093815E+02
+ virial ratio:                 -0.1495445754516029E+01
+
+   scf  orbital              energy              energy diff        1-norm         overlap
+    1   1 sigma      -.3791561666429009E+01        0.20E-09        0.38E-04        0.00E+00
+    1   2 sigma      -.1698210591259651E+00        0.20E-09        0.20E-04        0.00E+00
+    2   1 sigma      -.3791561666429009E+01        0.20E-09        0.38E-04        0.00E+00
+    2   2 sigma      -.1698210591259651E+00        0.20E-09        0.20E-04        0.00E+00
+           
+ ... scf iteration limit reached ... 
+ ... writing functions to disk (current precision) ...
+
+ total energy:                 -0.1793249375047321E+02
+ total electronic energy:      -0.1793249375047321E+02
+ virial ratio:                 -0.1260432106267262E+01
+
+ total energy contributions: 
+     nuclear-electron attraction energy =     -33.225449715043
+     kinetic energy                     =      14.227258779991
+     one electron energy                =     -18.998190935052
+     nuclear repulsion energy           =       0.000000000000
+     coulomb energy (DFT)               =       3.343599990465
+     exchange energy (DFT)              =      -2.277902805886
+     correlation energy (DFT)           =       0.000000000000
+
+       orbital               energy                     1-norm
+   2 sigma          -0.1698210591259651E+00           -0.20E-04
+   1 sigma          -0.3791561666429009E+01           -0.38E-04
+
+
+ total energy uncertainty due to orbital norms not being equal 1:
+     absolute = +/-0.65E-03,  relative = +/-0.36E-02%
+
+ multipole moments relative to geometrical centre:
+
+                                    electronic (au/Debye-Ang^k)   total (au/Debye-Ang^k)
+     dipole (Mu_z, k=1)                0.0000000000000000E+00     -0.4772000000000001E+01
+                                       0.0000000000000000E+00     -0.1212930258000000E+02
+
+     quadrupole (Theta_zz, k=2)        0.0000000000000000E+00      0.5692996000000003E+01
+                                       0.0000000000000000E+00      0.7657331309086595E+01
+
+     octopole (Omega_zzz, k=3)         0.0000000000000000E+00     -0.6791744228000005E+01
+                                       0.0000000000000000E+00     -0.4834138021571048E+01
+
+     hexadecapole (Phi_zzzz, k=4)      0.0000000000000000E+00      0.8102550864004007E+01
+                                       0.0000000000000000E+00      0.3051832220432735E+01
+
+
+ multipole moments relative to centre of mass:
+
+      centre     atomic weight       z
+        Be        9.01218220      -1.1930
+                  0.00000000       1.1930
+  centre-of-mass              -1.19300000000000
+
+
+                                    electronic (au/Debye-Ang^k)   total (au/Debye-Ang^k)
+     dipole (Mu_z, k=1)               -0.2386875120867103E-05     -0.2386875120867103E-05
+                                      -0.6066875641590771E-05     -0.6066875641590771E-05
+
+     quadrupole (Theta_zz, k=2)        0.3651538097189551E-05      0.3651538097189551E-05
+                                       0.4911480176331061E-05      0.4911480176331061E-05
+
+     octopole (Omega_zzz, k=3)        -0.2321672376812958E-04     -0.2321672376812958E-04
+                                      -0.1652489306666325E-04     -0.1652489306666325E-04
+
+     hexadecapole (Phi_zzzz, k=4)     -0.8911452654112228E-05     -0.8911452654112228E-05
+                                      -0.3356505722352361E-05     -0.3356505722352361E-05
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+ cpu summary (sec):
+    Lagrange multipliers                       0.00
+    normalization+orthogonalization            0.00
+    multipole moments                          0.00
+    relaxation of orb. and pot.                0.01
+    total energy                               0.00
+    all SCF iterations                         0.01
+    single SCF iteration                       0.00
+
+
+
+ start: 2019/06/11  13:20:26.60                                                         
+ stop:  2019/06/11  13:20:26.63                                                         
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+Linux scobie 5.1.6-200.fc29.x86_64 x86_64 x86_64 GNU/Linux
+Intell(R) Core(TM) i5-4200U CPU @ 1.60GHz
+
+////////////////////////////////////////////////////////////////////////////////////////////////

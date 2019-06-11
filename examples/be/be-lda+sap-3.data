@@ -1,0 +1,12 @@
+TITLE Be LDA+SAP
+METHOD  hf
+NUCLEI  4.0  0.0  2.386  
+CONFIG  0
+        2 sigma  end
+!grid 35 25.0
+grid 95 40.0   
+orbpot noexch
+SCF 200 10 6 8 1
+fixorb 
+fixcoul
+stop

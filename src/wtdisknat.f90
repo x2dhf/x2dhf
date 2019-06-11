@@ -119,6 +119,14 @@ contains
           write(iout6,*) 'error detected when writing local exchange potential'
           stop 'wtdisknat'
        endif
+
+    elseif (imethod.eq.2) then
+       call writea(iout23,mxsize,cw_exch(length3-mxsize),ierr)
+       if (ierr.ne.0) then
+          write(iout6,*) 'error detected when writing local exchange potential'
+          stop 'wtdisknat 6'
+       endif
+
     endif
 
     rewind(iout21)

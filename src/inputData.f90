@@ -70,7 +70,11 @@ contains
     icompLExp=0
     icompLAdd=0
 
-    write(*,*) '  ... start of input data ...'
+    lcaoIncl=.false.
+    ldaIncl=.false.
+    omegaIncl=.false.
+    
+    write(*,*) '... start of input data ...'
 
     !     read the title of a current case (thus must be the first input card)
 
@@ -99,7 +103,59 @@ contains
        if (itmp.ne.inpiexit) then
           inclorb=itmp
        endif
+       lcaoIncl=.true.
+
+       ! skip lcao info when 'orbpot old'
+       if (ini==5) then
+          do iorb=1,norb
+             call inCard
+          enddo
+          goto 5
+       endif
+
+       if (ini==12) then
+          write(iout6,*) 'Error: lcao4lda must only be used with LDA starting orbitals.'
+          stop 'inputData'
+       endif
+       
        goto 900
+    endif
+
+
+    if (clabel.eq.'lcao4lda') then
+
+       if (icompLEnc.ne.5) goto 1610
+       !         icompLEnc=icompLEnc+1
+       icompLAdd=icompLAdd+1
+
+       inclorb=1
+       ! skip lcao info when 'orbpot old'
+       if (ini==5) then
+          do iorb=1,norb
+             call inCard
+          enddo
+          goto 5
+       endif
+
+       if (ini==12) then
+          do iorb=1,norb
+             call inCard
+             call inFloat(co1(iorb))
+             call inFloat(co2(iorb))
+          enddo
+          
+          do iorb=1,norb
+             co12=abs(co1(iorb))+abs(co2(iorb))
+             co1(iorb)=co1(iorb)/co12
+             co2(iorb)=co2(iorb)/co12
+          enddo
+          lcaoIncl=.false.
+       else
+          write(iout6,*) 'Error: lcao4lda must only be used with LDA starting orbitals.'
+          stop 'inputData'
+       endif
+
+       goto 5
     endif
 
     if (clabel.eq.'method') then
@@ -850,6 +906,7 @@ contains
           ini=11
        elseif (clabel.eq.'lda') then
           ini=12
+          ldaIncl=.true.
        elseif (clabel.eq.'nodat') then
           ini=55
        else
@@ -1204,6 +1261,7 @@ contains
 
        !        new format
 
+       omegaIncl=.true.
        call inFloat(ftmp1)
        call inFloat(ftmp2)
        if (ftmp1.ne.0.0_PREC.or.ftmp2.ne.0.0_PREC) then
@@ -1250,7 +1308,7 @@ contains
                 endif
              endif
           else
-             !              omega values cannot be set automatically for subgrids
+             ! omega values cannot be set automatically for subgrids
              if (ngrids.gt.1) goto 1700
           endif
        endif
@@ -1660,9 +1718,8 @@ contains
        enddo
 
        next=1
-
-       write(*,*) '  ... end of input data  ...'
-       write(*,*)'        '
+       write(*,*) '... end of input data ...'
+       write(*,*) ''
        goto 1000
     endif
 
@@ -1688,8 +1745,8 @@ contains
           if (mgx(3,iorb).ne.0) nons_t=nons_t+1
        enddo
 
-       write(*,*) '  ... end of input data  ...'
-       write(*,*)'        '
+       write(*,*) '... end of input data ...'
+       write(*,*) ''
        goto 1000
     endif
 
@@ -1754,7 +1811,7 @@ contains
        write(iout6,*) 'Error: incompatible parameters - no LCAO data present'
        stop 'inputData'
     endif
-
+  
     if (imethod.eq.2) then
        iexlcoul=1
        exlcoul=dble(iexlcoul)
@@ -1766,8 +1823,7 @@ contains
 
     if (inclorb.eq.2) then
 
-       !           'hydrogen' initialization with screening
-
+       ! 'hydrogen' initialization with screening
        do iorb=1,norb
           call inCard
           call inFloat(co1(iorb))
@@ -1795,7 +1851,7 @@ contains
 
     elseif (inclorb.eq.1) then
 
-       !           'hydrogen' initialization without screening
+       ! 'hydrogen' initialization without screening
 
        do iorb=1,norb
           call inCard
@@ -1905,6 +1961,7 @@ contains
     goto 2000
 
 01720 write(iout6,*) 'Error: too many items - see User''s guide'
+    goto 2000
 
 01740 write(iout6,'("Error: this potential cannot be used with ",a3," method! Try OED instead.")') cmethod(imethod)
     goto 2000

@@ -290,11 +290,11 @@ contains
        if (gut(ial).eq.'u') ige(ial)=1
     enddo
 
-    !     set (more or less) optimal value of omega for orbitals ovforb(1)< 0
-    !     by scaling the optimal value for potentials
+    ! set (more or less) optimal value of omega for orbitals ovforb(1)< 0
+    ! by scaling the optimal value for potentials
 
-    !     in case of convergence problems decrease this value explicitely or
-    !     change the omega scaling factor accordingly
+    ! in case of convergence problems decrease this value explicitely or
+    ! change the omega scaling factor accordingly
 
     if (ovforb(1).lt.0._PREC) then
        ovforb(1)=omegasf*setOmega()
@@ -317,6 +317,12 @@ contains
        ovfexch(1)=ovfcoul(1)
     endif
 
+    if (.not.omegaIncl.and.ldaIncl) then
+       ovforb(1)=omegasf4lda*ovforb(1)
+       ovfcoul(1)=omegasf4lda*ovfcoul(1)
+       ovfexch(1)=ovfcoul(1)
+    endif
+    
     !     initialize array calp of coefficients of associated Legendre
     !     functions needed by mulex and multi routines
 

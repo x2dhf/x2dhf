@@ -91,6 +91,7 @@ module commons8
       character*8, dimension(4*maxorb)  :: spin
       character*8, dimension(5*maxorb)  :: spn
 
+      logical lcaoIncl,ldaIncl,omegaIncl
       integer :: nexchp,norb,nel,nexch,nelInput
 
 
