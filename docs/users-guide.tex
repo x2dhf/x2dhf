@@ -580,14 +580,37 @@ The mixing coefficients are normalized so that $|c_A|+|c_B|=1$
 \end{description}
 
 
+\item \textbf{LCAO4LDA}
+\begin{description}
+\item[Format:] \textbf{lcao4lda} \\ If the source of orbitals is declared as
+  \textsl{lda} then this card must be present. In such a case the initialization of
+  each of the orbitals has to be defined in~terms of the linear combination of LDA
+  orbitals. For each orbital include a card of the following format
+  (make sure that the order of orbitals should match the order specified under the
+  \textbf{config} label):
+
+\begin{description}
+\item[Format:] $c_A \;\;\;\;c_B$ \\
+where
+\begin{itemize}
+\item[] $c_A$ -- relative mixing coefficient for a LDA orbital on the
+                    $Z_A$ centre (real),
+\item[] $c_B$  -- relative mixing coefficient for a LDA orbital on the
+  $Z_B$ centre (real).
+\end{itemize}  
+\end{description}
+\end{description}
+
+
 \item \textbf{MCSOR}
 \begin{description}
 \item[Format:] \textbf{mcsor} $[\;i_1\;[\;i_2\;]\;]$\\
 Selects the MCSOR method for solving the Poisson equations for orbitals and potentials
 (default) and changes the value of the MCSOR relaxation sweeps during a single SCF
 cycle for orbitals ($i_1$) and potentials ($i_2$); by default $i_1=i_2=10$.
-
 \end{description}
+
+
 \item \textbf{METHOD}
 \begin{description}
 \item[Format:] \textbf{method} $c$\\
