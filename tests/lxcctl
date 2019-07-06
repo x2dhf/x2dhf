@@ -1,0 +1,196 @@
+#!/bin/bash                                                                                                         
+
+###########################################################################
+#                                                                         #
+#   Copyright (C) 2019 Jacek Kobus <jkob@fizyka.umk.pl>                   #
+#                                                                         #     
+#   This program is free software; you can redistribute it and/or modify  #
+#   it under the terms of the GNU General Public License version 2 as     #
+#   published by the Free Software Foundation.                            #
+#                                                                         #
+###########################################################################
+
+
+system="fh"
+#grid="grid 247 50.0"
+grid="grid 169 45.0"
+
+title="title FH"
+nuclei="nuclei 9.0  1.0  1.7328"
+omega="omega 1.8 1.8"
+
+bold=$(tput bold)
+normal=$(tput sgr0)
+
+prog=$(echo $0 | sed -e 's/\.\///')
+
+function help {
+
+    cat <<EOF
+
+${bold}NAME${normal}
+       lxcctl - test x2dhf support for the libxc functionals 
+
+${bold}SYNOPSIS${normal}
+
+       $prog help|-h|--help
+       $prog clean|cleanal|list
+       $prog hf
+       $prog xcFunc1 [ xcFunc2 [ xcFunc3 [ ... ] ] ] 
+       $prog all|lda|gga|hyb
+
+${bold}USAGE${normal}
+
+       $prog hf
+          generates HF orbitals and potentials for FH system.
+
+       $prog xcFunc1 [ xcFunc2 [ xcFunc3 [ ... ] ] ] 
+          calculate the energy contribution due to selected functionl(s)
+
+       $prog lda|gga|hyb
+          calculates energy contributions due to LDA|GGA|HYB functionals from libxc library
+          for the FH electron density.
+
+       $prog all
+          calculates energy contributions due to all the functionals.
+
+       $prog list 
+          lists all the functionals from libxc library that are supported by x2dhf program
+
+       $prog clean 
+          removes all the $system*.lst files.
+
+       $prog cleanall 
+          removes all the $system*.lst and $system*.dat, $system*.orb*, $system*.coul and $system*.exch files.
+
+${bold}COPYRIGHT${normal}
+       Copyright © 2019 <jkob@fizyka.umk.pl> GNU GPL
+
+EOF
+    exit
+    
+}
+
+function execLXCFuncs {
+    
+    for lxcFunc in $lxcFuncs
+    do
+	cat <<EOF > $system-lxc.data
+$title 
+method hf
+dft $lxcFunc
+$nuclei
+config 0
+  1 pi                                                                            
+  3 sigma  end                                                                    
+$grid
+orbpot old 
+scf 0 10 3 14 1                                                             
+stop                    
+
+EOF
+
+	2>/dev/null ./xhf $system-lxc  $system-hf $system-1 > $system-lxc-$lxcFunc.lst
+	status=$(grep "Error: missing or incorrect entry" $system-lxc-$lxcFunc.lst)
+	if [[ $status == "" ]]
+	then
+	    result=$(grep 'exchange-correlation energy' $system-lxc-$lxcFunc.lst | gawk -F= '{print $2}')
+	    (LANG=en_US; printf "%-30s %-18.12e\n" $lxcFunc $result)
+	else
+	    (LANG=en_US; printf "%-30s %-18s\n" $lxcFunc "error")
+	fi
+    done
+}
+
+[[ $1 == "help" || $1 == "-h" || $1 == "--help" ]] && help
+
+kinds="
+lda 
+gga
+hyb
+"
+case=${1:-all}
+
+if [[ $case == "clean" ]]
+then
+    rm $system-lxc-*.lst
+    exit
+fi
+
+if [[ $case == "clean" ]]
+then
+    rm $system-lxc-*.lst
+    rm $system*.dat $system*.orb $system*.coul $system*.exch
+    exit
+fi
+
+
+if [[ $case == "hf" ]]
+then
+    
+    cat <<EOF > $system-hf.data
+$title 
+method hf
+$nuclei
+config 0
+  1 pi                                                                            
+  3 sigma  end                                                                    
+$grid
+orbpot lda
+scf 2000 10 10 14 1                                                             
+!$omega
+stop                    
+
+EOF
+
+    if [[ ! -e $system-hf.lst ]]
+    then 
+	./xhf $system-hf  $system-1 $system-hf  > $system-hf.lst
+    else
+	echo "$system-hf.lst exists ... skipping HF part ..."
+    fi
+    exit
+fi
+
+if [[ $case == "list" ]]
+then
+    for kind in $kinds
+    do
+	lxcFuncs=$(grep -P "\s+\'${kind}_" ../src/commons8.f90 | gawk '{print $1}' | sed -e "s/[',!]//g")
+	for lxcFunc in $lxcFuncs
+	do
+	    echo $lxcFunc
+	done
+    done
+    exit
+fi
+
+if [[ $case == "all" ]]
+then
+    
+   for kind in $kinds
+   do
+       lxcFuncs=$(grep -P "\s+\'${kind}_" ../src/commons8.f90 | gawk '{print $1}' | sed -e "s/[',!]//g")
+       execLXCFuncs
+   done
+   exit
+fi
+
+if [[ $case == 'lda' || $case == 'gga' || $case == 'hyb' ]]
+then
+    
+    lxcFuncs=$(grep -P "\s+\'${case}_" ../src/commons8.f90 | gawk '{print $1}' | sed -e "s/[',!]//g")
+    execLXCFuncs
+    exit
+fi
+
+
+while (( $# > 0 ))
+do
+    lxcFuncs=$1
+    execLXCFuncs
+    shift
+done
+
+exit
+

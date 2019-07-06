@@ -2,7 +2,7 @@
 
 ###########################################################################
 #                                                                         #
-#   Copyright (C) 1996-2009 Jacek Kobus <jkob@fizyka.umk.pl>              #
+#   Copyright (C) 1996-2019 Jacek Kobus <jkob@fizyka.umk.pl>              #
 #                                                                         #     
 #   This program is free software; you can redistribute it and/or modify  #
 #   it under the terms of the GNU General Public License version 2 as     #
@@ -12,7 +12,11 @@
 
 # running x2dhf program
 
-system=$1
+INPUT_TMP="2dhf_input"
+OUTPUT_TMP="2dhf_output"
+
+#  see ./src/rrec for the choice of 31
+FIRST_FORT_FILE=31
 
 if [[ -z $X2DHF_DIRECTORY ]]
 then
@@ -20,14 +24,6 @@ then
     export X2DHF_DIRECTORY
 fi
 
-
-
-
-INPUT_TMP="2dhf_input"
-OUTPUT_TMP="2dhf_output"
-
-#  see ./src/rrec for the choice of 31
-FIRST_FORT_FILE=31
 
 
 verbose=0
@@ -75,10 +71,10 @@ Usage:
        xhf clean
               removes all orbital and potential files plus zero-size files
 
-       xhf mk1dhf <file1> <file2>
+       xhf mk1dhf <file1> [<file2>]
               creats symbolic links 1dhf_centreA.orb and 1dhf_centreB.orb that point to the
               <file1> and <file2> files, respectively, with contain radial orbitals for atoms A
-              and B obtained from qrhf program
+              and B obtained from qrhf program; if file2 is missing file1 is used
 
        xhf mkgauss <file>
               creats symbolic links gaussian.out and gaussian.pun that point to the <file>.out 
@@ -110,15 +106,18 @@ Usage:
        xhf virt <file-vsigma> <file-vpi> <file-vdelta> <file-vphi>
 	      makes symbolic links of the given files with virtual orbitals to their default names
 
-       xhf <input_data_prefix> <output_file_prefix> 
+       xhf [-s] <input_data_prefix> <output_file_prefix> 
               runs the x2dhf program for input data read from the <input_data_prefix>.data file;
               orbitals and potentials are saved in the <output_file_prefix>.[dat|orb|coul|exch] 
               files 
 
-       xhf <input_data_prefix> <input_file_prefix> <output_file_prefix> 
+       xhf [-s] <input_data_prefix> <input_file_prefix> <output_file_prefix> 
               runs the x2dhf program for input data read from the <input_data_prefix>.data file;
               orbitals and potentials are retrieved from <input_file_prefix>.[dat|orb|coul|exch] 
               files and are saved into the <output_file_prefix>.[dat|orb|coul|exch] files 
+
+       If option -s is used the program name is set to x2dhf-<input_data_prefix> instead of x2dhf 
+       in order to help distinguishing which binary belongs to which case. 
 
 
 Jacek Kobus <jkob@fizyka.umk.pl>
@@ -129,7 +128,7 @@ EOF
     exit
 }
 
-sepBinary="x2dhf"
+binary="x2dhf"
 
 clean_exit()
 {
@@ -141,7 +140,7 @@ clean_exit()
 
 trap "clean_exit" EXIT
 
-while getopts "hiv" Option
+while getopts "hsv" Option
 do
   case $Option in
       h ) usage;;
@@ -149,15 +148,19 @@ do
       # use separate (soft-linked x2dhf binary) when envoking the program to ease case
       # identification
 
-      i ) shift
-          sepBinary="x2dhf"-$system
-          ln -s x2dhf $sepBinary
-	  ;;
+      s ) slink=yes;;
 
       v ) verbose=1; shift ;;
   esac
 done
 
+shift $((OPTIND-1))
+
+system=$1
+
+sepBinary="x2dhf"-$system
+#ln -s $binary $sepBinary >& /dev/null
+ln $binary $sepBinary >& /dev/null 
 
 case "$system" in
 
@@ -168,7 +171,7 @@ case "$system" in
 	cp $OUTPUT_TMP.coul $OUTPUT_TMP-checkpoint.coul  >& /dev/null 
 	cp $OUTPUT_TMP.exch $OUTPUT_TMP-checkpoint.exch  >& /dev/null
 
-	fort=$(ls fort.*)
+	fort=`ls fort.* `
 	for file in $fort; do 
 	    echo "$file"
 	    ext=$(echo $file | sed s/"fort."//)
@@ -197,14 +200,55 @@ case "$system" in
     mk1dhf)
     # creats symbolic links 1dhf_centreA, etc
 	if [[ "$2" != "" && "$3" != "" ]]; then
-            ln -s $2 1dhf_centreA.orb
-	    ln -s $3 1dhf_centreB.orb
+            ln -s $2 1dhf_centreA.orb >& /dev/null 
+	    ln -s $3 1dhf_centreB.orb >& /dev/null
+	elif [[ "$2" != "" && "$3" == "" ]]; then
+	    ln -s $2 1dhf_centreA.orb >& /dev/null 
+	    ln -s $2 1dhf_centreB.orb >& /dev/null 
 	else
 	    usage "Error: missing argument"
 	fi
 	exit
         ;;
 
+
+
+    mkgauss)
+    # creats symbolic links gauss94*
+	if [ "$2" != "" ]; then
+	    rm -f gaussian.out gaussian.pun
+            ln -s $2.out gaussian.out >& /dev/null 
+	    ln -s $2.pun gaussian.pun >& /dev/null 
+	else
+	    usage "Error: missing argument"
+	fi
+	exit
+        ;;
+
+
+    mkfinal)
+    # 
+	if [[ "$2" != "" && "$3" != "" ]]; then
+	    for ext in dat orb coul exch; do
+		ln -s $2.$ext $3.$ext >& /dev/null 
+	    done
+	else
+	    usage "Error: missing argument"
+	fi
+	exit
+        ;;
+
+    mkfinallst)
+    # 
+	if [[ "$2" != "" && "$3" != "" ]]; then
+	    for ext in lst; do
+		ln -s $2.$ext $3.$ext >& /dev/null 
+	    done
+	else
+	    usage "Error: missing argument"
+	fi
+	exit
+        ;;
 
     mk1dlda)
     # creats symbolic links 1dlda_centreA, etc
@@ -221,17 +265,7 @@ case "$system" in
         ;;
 
 
-    mkgauss)
-    # creats symbolic links gauss94*
-	if [[ "$2" != "" ]]; then
-	    rm -f gaussian.out gaussian.pun
-            ln -s $2.out gaussian.out
-	    ln -s $2.pun gaussian.pun
-	else
-	    usage "Error: missing argument"
-	fi
-	exit
-        ;;
+    
 
     move)
     # moves input into output files
@@ -348,12 +382,13 @@ case "$system" in
 	ln -s $2.orb 2dhf_vphi.orb
 	exit
 	;;    
-
 esac
 
-[[ ! -h x2dhf ]] && ln -s ../src/x2dhf .
+[[ ! -h x2dhf ]] && ln -s ../src/x2dhf . >& /dev/null 
+
 
 [[ -e stop_x2dhf ]] && rm stop_x2dhf >& /dev/null
+
 
 # get rid of 2dhf_* leftovers first (to avoid messing up the input and output files)
 
@@ -380,11 +415,6 @@ if [[ $3 != "" ]]; then
     init1=$(grep -iP '^\s*init' $system.data | gawk '{print $2}')
     init2=$(grep -iP '^\s*orbpot' $system.data | gawk '{print $2}')
 
-    # FIXME
-    #     if [[ $init1 != '' && $init1 != '5' && $init1 != '55' && $init1 != '6' ]]; then
-    # 	message "Warning: check arguments on initial/orbpot card"
-    # 	exit
-    #     fi
 
 
     #     if [[ $init2 != "" && $init2 != "old" && $init2 != "noexch" && $init2 != "nodat" ]]; then
@@ -446,6 +476,7 @@ fi
 
 #/bin/nice -n 19 ./$sepBinary < $system.data  
 chrt -o 0  ./$sepBinary < $system.data  
+
 #  ./$sepBinary < $system.data  
 
 uname -nsrpio

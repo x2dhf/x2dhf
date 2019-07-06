@@ -70,7 +70,8 @@ contains
        else
           do j=1,nni
              z=(half*r)*vxi(i)*veta(j)
-             wk0(ii+j)=wk0(ii+j)*((half*r*vxi1(i)*veta1(j)*vxi(i))**2 + (vxi(i)*z-half*r*veta(j))**2)/vxi1(i)**2
+             wk0(ii+j)=wk0(ii+j)*((half*r*vxi1(i)*veta1(j)*vxi(i))**2&
+                  + (vxi(i)*z-half*r*veta(j))**2)/vxi1(i)**2
           enddo
        endif
     enddo
@@ -85,13 +86,13 @@ contains
              wk1(ii+j)=0.0_PREC
           else
              z=(half*r)*vxi(i)*veta(j)
-             wk1(ii+j)=wk1(ii+j)*((half*r*vxi1(i)*veta1(j)*veta(j))**2 + (half*r*vxi(i)-veta(j)*z)**2)/veta1(j)**2
+             wk1(ii+j)=wk1(ii+j)*((half*r*vxi1(i)*veta1(j)*veta(j))**2 &
+                  + (half*r*vxi(i)-veta(j)*z)**2)/veta1(j)**2
           endif
        enddo
     enddo
 
-
-    !   calculate df/dmu dg/dni+ df/dni dg/dmu term (wk2)
+    ! calculate df/dmu dg/dni+ df/dni dg/dmu term (wk2)
 
     call prod2(mxsize,fmu,gni,wk2)
     call prod2(mxsize,fni,gmu,wk3)
@@ -122,7 +123,7 @@ contains
           else
              wk3(ii+j)=wk3(ii+j)*(four/t1)**2
           endif
-          !          write (*,'(2i4,e15.4)') i,j, wk3(ii+j)
+          ! write (*,'(2i4,e15.4)') i,j, wk3(ii+j)
        enddo
     enddo
 

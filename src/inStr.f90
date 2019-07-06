@@ -46,4 +46,45 @@ contains
 11  guf=ibufr
 
   end subroutine inStr
+
+  subroutine inStr4lxc(guf)
+
+    use params
+    use card
+
+    implicit none
+
+    integer :: i,maxibuf,n,nstrt
+    parameter (maxibuf=30)
+    character*1 iblnk
+    character*30 :: ibufr,guf
+
+    character*1, dimension(maxibuf) :: ibuf
+    character*1, dimension(60) :: iall
+
+    equivalence (ibuf(1),ibufr)
+
+    data iblnk/' '/
+    data iall/'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j','k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't',&
+         'u', 'v', 'w', 'x', 'y', 'z', '-', '-', '-', ' ',&
+         'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J','K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T',&
+         'U', 'V', 'W', 'X', 'Y', 'Z', '-', '-', '-', ' '/
+
+    do i=1,maxibuf
+       ibuf(i)=iblnk
+    enddo
+    jrec = jrec + 1
+    if(jrec .gt. jump) goto 11
+    n = inumb(jrec)
+    nstrt = istrt(jrec)
+    if (n.gt.maxibuf) n=maxibuf
+    do i = 1,n
+       ibuf(i) = ia(nstrt)
+       nstrt = nstrt + 1
+    enddo
+
+11  guf=ibufr
+
+  end subroutine inStr4lxc
+
 end module inStr_m

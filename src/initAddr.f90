@@ -136,6 +136,7 @@ contains
        do  iorb2=iorb1,norb
           k=iorb1+iorb2*(iorb2-1)/2
           ilc(k)=0
+          i3si(k)=0
           i3xk(iorb1,iorb2)=0
           i3xk(iorb2,iorb1)=0
           if (iorb1.eq.iorb2.and.ll(iorb1).eq.0) goto 50

@@ -39,11 +39,11 @@ contains
     data caseinp,psiinp,coulinp,exchinp /'2dhf_input.dat', '2dhf_input.orb','2dhf_input.coul','2dhf_input.exch'/
     data caseout,psiout,coulout,exchout /'2dhf_output.dat', '2dhf_output.orb','2dhf_output.coul','2dhf_output.exch'/
 
-    !        the program works on a set of standard input and output files
-    !        containing orbitals, Coulomb potentials (with extentions orb
-    !        and coul, respectively), exchange potentials (a file with
-    !        extension exch or file fort.31, fort.32, ...) and a text file
-    !        with data defining the case (*.dat)
+    !  The program works on a set of standard input and output files
+    !  containing orbitals, Coulomb potentials (with extentions orb
+    !  and coul, respectively), exchange potentials (a file with
+    !  extension exch or file fort.31, fort.32, ...) and a text file
+    !  with data defining the case (*.dat).
 
     !        open separate files for reading and writing data defining a case
     open(iinp14,file=caseinp, status='unknown',form='formatted')
@@ -117,7 +117,7 @@ contains
        if (inpform.eq.0) then
           open(11,file=psiinp, status='unknown',form='unformatted')
           open(12,file=coulinp,status='unknown',form='unformatted')
-          open(13,file=exchinp,status='unknown',form='unformatted')
+          open(13,file=exchinp,status='old',form='unformatted')
           rewind(13)
        else
           open(11,file=psiinp, status='unknown',form='formatted')
@@ -146,13 +146,13 @@ contains
 
 
     if (ini.eq.1) then
-       !        'hydrogen'
+       ! 'hydrogen'
 
-       !        to initialize properly functions and orbital energies in the case of
-       !        the HFS calculations islat (which is nonzero) parameter has to be kept
-       !        zero before the program reaches the doSCF routine.
+       ! to initialize properly functions and orbital energies in the case of
+       ! the HFS calculations islat (which is nonzero) parameter has to be kept
+       ! zero before the program reaches the doSCF routine.
 
-       !         if (islat.ne.0) islat=0
+       ! if (islat.ne.0) islat=0
 
        call initHyd (cw_orb,cw_coul,cw_exch,cw_suppl(i4b(7)),cw_suppl(i4b(9)),cw_suppl(i4b(14)),cw_sctch(i5b(1)))
        idump=1
@@ -172,9 +172,9 @@ contains
        !        'lda
        call initLDA (cw_orb,cw_coul,cw_exch,cw_suppl(i4b(7)),cw_suppl(i4b(9)),cw_suppl(i4b(14)),cw_sctch(i5b(1)))
        idump=1
-       
-    elseif (ini.eq.2) then
+       !idat=1
 
+    elseif (ini.eq.2) then
        !        'gauss'
 
        !  initial values of orbitals are provided by the GAUSSIAN program
@@ -227,7 +227,7 @@ contains
 
     elseif (ini.eq.6) then
 
-       !        'noexch'
+       ! 'noexch'
 
        idump=0
        call initDisk (cw_orb,cw_coul,cw_exch,cw_sctch(i5b(1)))

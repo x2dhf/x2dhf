@@ -78,13 +78,13 @@ contains
 
        if (inpform.eq.0) then
           if (lengthfp.eq.8) then
-             call reada8(iinp11,i1si(i),wk8,ierr)
+             call reada8(iinp11,mxsize,wk8,ierr)
              if (ierr.ne.0) then
                 write(iout6,*) 'error detected when reading orbital',i
                 !              stop 'rfun 8'
                 write(iout6,*) 'continue with crossed fingers ...'
              endif
-             do j=1,i1si(i)
+             do j=1,mxsize
                 cw_orb(i1b(i)+j-1)=wk8(j)
              enddo
           endif

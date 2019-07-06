@@ -28,6 +28,7 @@ contains
     use etotal_m
     use etotalgauss_m
     use etotalDFT_m
+    use etotalLXC_m    
     use locenergy_m
     use nuclder_m
     use prttoten_m
@@ -70,14 +71,25 @@ contains
             cw_sctch(i5b(10)),cw_sctch(i5b(11)),cw_sctch(i5b(12)),   &
             cw_sctch(i5b(13)),cw_sctch(i5b(14)))
     else
-       call etotalDFT (cw_orb,cw_coul,cw_exch,                       &
-            cw_suppl(i4b( 4)),cw_suppl(i4b( 5)),cw_suppl(i4b(13)),   &
-            cw_suppl(i4b(14)),                                       &
-            cw_sctch(i5b( 1)),cw_sctch(i5b( 2)),cw_sctch(i5b( 3)),   &
-            cw_sctch(i5b( 4)),cw_sctch(i5b( 5)),cw_sctch(i5b( 6)),   &
-            cw_sctch(i5b( 7)),cw_sctch(i5b( 8)),cw_sctch(i5b( 9)),   &
-            cw_sctch(i5b(10)),cw_sctch(i5b(11)),cw_sctch(i5b(12)),   &
-            cw_sctch(i5b(13)),cw_sctch(i5b(14)))
+       if (lxcFuncs>0) then
+          call etotalLXC (cw_orb,cw_coul,cw_exch,                       &
+               cw_suppl(i4b( 4)),cw_suppl(i4b( 5)),cw_suppl(i4b(13)),   &
+               cw_suppl(i4b(14)),                                       &
+               cw_sctch(i5b( 1)),cw_sctch(i5b( 2)),cw_sctch(i5b( 3)),   &
+               cw_sctch(i5b( 4)),cw_sctch(i5b( 5)),cw_sctch(i5b( 6)),   &
+               cw_sctch(i5b( 7)),cw_sctch(i5b( 8)),cw_sctch(i5b( 9)),   &
+               cw_sctch(i5b(10)),cw_sctch(i5b(11)),cw_sctch(i5b(12)),   &
+               cw_sctch(i5b(13)),cw_sctch(i5b(14)))
+       else
+          call etotalDFT (cw_orb,cw_coul,cw_exch,                       &
+               cw_suppl(i4b( 4)),cw_suppl(i4b( 5)),cw_suppl(i4b(13)),   &
+               cw_suppl(i4b(14)),                                       &
+               cw_sctch(i5b( 1)),cw_sctch(i5b( 2)),cw_sctch(i5b( 3)),   &
+               cw_sctch(i5b( 4)),cw_sctch(i5b( 5)),cw_sctch(i5b( 6)),   &
+               cw_sctch(i5b( 7)),cw_sctch(i5b( 8)),cw_sctch(i5b( 9)),   &
+               cw_sctch(i5b(10)),cw_sctch(i5b(11)),cw_sctch(i5b(12)),   &
+               cw_sctch(i5b(13)),cw_sctch(i5b(14)))
+       endif
     endif
 
     if (ifermi.eq.2.and.iprint(590).ne.0) call etotalGauss
@@ -101,8 +113,9 @@ contains
        ! FIXME print DFT functional used
        write(*,'("     nuclear repulsion energy           = ",f20.12)') z1*z2/r
        write(*,'("     coulomb energy (DFT)               = ",f20.12)') encouldft
-       write(*,'("     exchange energy (DFT)              = ",f20.12)') enexchdft
-       write(*,'("     correlation energy (DFT)           = ",f20.12)') edftcorr
+       !write(*,'("     exchange energy (DFT)              = ",f20.12)') enexchdft
+       !write(*,'("     correlation energy (DFT)           = ",f20.12)') edftcorr
+       write(*,'("     exchange-correlation energy (DFT)  = ",f20.12)') enexchdft
     else
 
        write(*,*)
@@ -112,8 +125,9 @@ contains
        write(*,'("     one electron energy                = ",f28.22)') enkin+ennucel
        if (islat.eq.0) then
           ! FIXME print DFT functional used
-          write(*,'("     coulomb energy                     = ",f28.22)') encoul
-          write(*,'("     exchange energy                    = ",f28.22)') enexch
+          !write(*,'("     coulomb energy                     = ",f28.22)') encoul
+          !write(*,'("     exchange energy                    = ",f28.22)') enexch
+          write(*,'("     exchange-correlation energy (DFT)  = ",f28.22)') enexchdft
        end if
 
        ! FIXME print DFT functional used
@@ -122,7 +136,6 @@ contains
        write(*,'("     exchange energy (DFT)              = ",f28.22)') enexchdft
        write(*,'("     correlation energy (DFT)           = ",f28.22)') edftcorr
     endif
-
 
     if (idft.eq.1) then
        islat=1

@@ -286,7 +286,7 @@ initialized unless OED method is chosen (see routine \ft{initLDA} for details). 
 the mixing coefficients must be defined via the \textbf{lcao4lda} label. In case you do
 not use \textsl{xhf} script to run the x2dhf program you need to set the environment value
 X2DHF\_DIRECTORY to the root of your x2dhf installation, after which the program will read
-the orbitals from the lda\_orbitals subdirectory . If you don't set X2DHF\_DIRECTORY, the
+the orbitals from the lda\_orbitals subdirectory. If you don't set X2DHF\_DIRECTORY, the
 program will try to find the orbitals from the current working directory.
 
 \item $qrhf$ -- radial Hartree--Fock orbitals for the centre A and B
@@ -370,33 +370,70 @@ The following additional labels can be specified in any order:
 %and every $incrmu$ column is printed.
 \end{description}
 
+\newpage
 
 \item \textbf{DFT}
 \begin{description}
-\item[Format:] \textbf{dft}  $[\;c_1\;]\;\; [\;c_2\;]$ \\
+\item[Format:] \textbf{dft}  $[\;c_1\;]\;\; [\;c_2\;]\;\; [\;c_3\;]$ \ldots \\
 \begin{itemize}
-\item[$c_1:$] specifies the type of DFT exchange potential to be used in
-  Fock equations
-\begin{itemize}
-\item $c_1=lda$ -- the local density approximation with the potential
+\item[$c_i:$] specifies the type of DFT exchange-correlation functional(s) to be used in
+  Fock equations. Any of the suitable LDA, GGA and hybryd functionals implemented in Libxc
+  library%
+  \footnote{Susi Lehtola, Conrad Steigemann, Micael J.T. Oliveira, and Miguel
+    A.L. Marques, \textsl{Recent developments in Libxc - A comprehensive library of
+      functionals for density functional theory}, Software X 7, 1 (2018)} can in principle
+  be used, e.g. lda\_x, lda\_c\_wigner, lda\_c\_xalpha, lda\_c\_vwn, gga\_x\_gam,
+  gga\_c\_gam, etc (see commons8.f90 for the full list of supported functionals or use
+  \texttt{lxcctl} utility to generate the list of available functionals and also to test
+  them).
+
+  \bigskip
+  
+  For a backward compatibility the following functionals can also be selected:
+  \begin{itemize}
+
+\item $lda$ -- the local density approximation with the potential
 \begin{equation*}
          V_X(\alpha)=-\frac{3}{2} \alpha \left(\frac{3}{\pi}\right)^{1/3} 2^{-2/3}
                 \sum_{\sigma} \rho_{\sigma}^{1/3}
 \end{equation*}
 where $\alpha$ is by default set to 2/3 (the Slater exchange
-potential). To change this value use the \textbf{xalpha} label.
+potential). \linebreak[4] To change this value use the \textbf{xalpha} label.
+This functional is equivalent to \textsl{lda\_x} one of the Libxc library.
 
-\item $c_1=b88$ -- the Becke exchange potential
+If \textsl{xalpha} parameter is set to 1/3 then \textsl{lda} functional is equivalent to
+\textsl{lda\_c\_xalpha} one.
+% HF orbitals: dft lda xalpha=2/3    == dft LDA_X 
+%              dft lda xalpha=1-2/3  == dft lda_c_xalpha
+%              dft lda xalpha=1      == dft LDA_X + lda_c_xalpha
 
-\end{itemize}
+\item $b88$ -- the Becke exchange potential; this functional is equivalent to
+\textsl{gga\_x\_b88} one from Libxc library
 
-\item[$c_2:$] selects the type of correlation potential to be used in
-  Fock equations
+  % When the Becker exchange potential is used the SFC process diverges!
+  % The exchange energy calculated with HF orbitals for a set of test cases turns out to
+  % be correct (see Table 1 in Becke's paper)
 
-\begin{itemize}
-\item $c_2=lyp$ -- the correlation potential of Lee, Yang and Parr
+  % dft gga_x_b88 SCF process is divergent
+  % dft gga_x_pw91 ok
+  % dft gga_c_lyp  ok
+  % dft gga_c_p86  ok
 
-\item $c_2=vwn$ -- the correlation potential of Vosko, Wilk and Nusair
+\item $pw86$ -- the exchange functional of Perdew and Wang; this functional is equivalent to
+\textsl{gga\_x\_pw86} one from Libxc library
+
+\item $pw91$ -- the exchange functional of Perdew and Wang; this functional is equivalent to
+\textsl{gga\_x\_pw91} one from Libxc library
+
+\item $lyp$ -- the correlation potential of Lee, Yang and Parr; this functional is equivalent to
+\textsl{gga\_c\_lyp} one from Libxc library
+
+\item $vwn$ -- the correlation potential of Vosko, Wilk and Nusair;
+  this functional is equivalent to \textsl{lda\_c\_vwn} one from Libxc library%
+    \footnote{In case the Hartree-Fock orbitals of the FH molecule are used to calculate
+      the correlation contribution the functiona \textsl{vwn} gives -0.699579 while
+      \textsl{lda\_c\_vwn} gives a slightly smaller value, namely, -0.704211.}
+
 \end{itemize}
 \end{itemize}
 \end{description}
@@ -520,7 +557,7 @@ of homonuclear molecules in order to improve SCF/SOR convergence.
 \item[Format:] \textbf{interp} $[\; {\rm iord}_\nu^{\rm orb}$ ${\rm
     iord}_\mu^{\rm orb}$ ${\rm iord}_\nu^{\rm coul}$ ${\rm
     iord}_\mu^{\rm coul}$ ${\rm iord}_\nu^{\rm exch}$ ${\rm
-    iord}_\mu^{\rm exch} ]$\\ Use this label to change the grid
+    iord}_\mu^{\rm exch} ]$\\ Use this label to~change the grid
   between separate runs of the program. The interpolation order in the
   $\nu$ and $\mu$ directions used for the orbitals, Coulomb potential
   and exchange potentials can be set with the six optional
@@ -569,7 +606,7 @@ a screening parameter if $i=2$ (real)
   In case when the source of orbitals is declared as \textsl{old} and all orbitals are
   already defined this flag can be used in DFT calculations to generate virtual orbitals
   for some sort of a local potential build from a given subset of orbitals that are kept
-  frozen during the SCF process (see \fb{fixorb} label)
+  frozen during the SCF process (see \fb{fixorb} label).
 
 \item[] $i_2$ -- a number of successive over-relaxations for a given orbital
 (integer); if omitted is set to 10
@@ -610,7 +647,6 @@ Selects the MCSOR method for solving the Poisson equations for orbitals and pote
 cycle for orbitals ($i_1$) and potentials ($i_2$); by default $i_1=i_2=10$.
 \end{description}
 
-
 \item \textbf{METHOD}
 \begin{description}
 \item[Format:] \textbf{method} $c$\\
@@ -618,7 +654,7 @@ Select the type of calculation.
 \begin{itemize}
 \item[$c$:] HF -- the Hartree--Fock method
 \item[$c$:] DFT -- the Hartree--Fock method with the $X\alpha$ exchange
-  potential ($\alpha=2/3$); see the \fb{dft} label to choose
+  potential ($\alpha=2/3$); see the \fb{dft} label to~choose
   another exchange or correlation potential
 
 \item[$c$:] HFS -- the Hartree--Fock-Slater method (Hartree--Fock with the

@@ -1,7 +1,5 @@
 ! ### inputData ###
-!
-!     Handles the input to x2DHF.
-
+! Handles the input to x2DHF.  
 module inputData_m
   implicit none
 contains
@@ -21,18 +19,21 @@ contains
 
     implicit none
 
+    logical lxcFuncFound
     integer :: i,icompLAdd,icompLEnc,icompLExp,id1,id2,iform_t,ig,ihit,inpiexit,&
-         inzero,iopenshell,iorb,iput,iput1,isum,isum0,isum1,itmp,itmp1,itmp2,itotq,izz1,izz2,j,mgi,mt,n,nbsym,next,&
-         nmethods,nmutot,nlabels,no,nonortho,maxflags,ni_t,mu_t,no_t,nons_t
+         inzero,iopenshell,iorb,iput,iput1,isum,isum0,isum1,itmp,itmp1,itmp2,itotq,&
+         izz1,izz2,j,j1,j2,mgi,mt,n,nbsym,next,nmethods,nmutot,nlabels,no,nonortho,maxflags,&
+         ni_t,mu_t,no_t,nons_t
 
-    real (PREC) :: clo,cloe,co12,fmfield,ftmp,ftmp1,ftmp2,tmp1,tmp2,totchar,totq,z1t,z2t
+    real (PREC) :: clo,cloe,co12,fmfield,ftmp,ftmp1,ftmp2,tmp1,tmp2,totchar,totq,z1t,z2t 
 
     parameter (nmethods=5,nlabels=43,maxflags=40)
     character*4 cdftext(10),cdftcorrt(10)
     character*8 clabel,clabel1,clabel2,char8
     character*8 labellc(nlabels),cmethod(nmethods)
     character*8 sigma,pi,delta,phi,space,angstrom,endl,guttmp
-
+    character*30 char30
+    
     integer, dimension(maxflags) :: id
 
     data labellc /'break','config','conv','debug','dft',&
@@ -221,8 +222,7 @@ contains
     endif
 
     if (clabel.eq.'dft') then
-
-       !        label label label label label label label label label label label label label
+       !        label label label label label label label label label label label label label 
        !        label: dft [lda|b88] [lyp] [vwn]
 
        !        if the DFT method is used one can choose exchange and correlation
@@ -234,52 +234,74 @@ contains
        !        PW91) and correlation (LYP) contributions to total energy at the
        !        end of SCF process
 
-
        idft=1
-       call inStr(char8)
 
-       if (char8.ne.endl) then
-          idftex=0
-          idftcorr=0
-          do i=1,10
-             if (char8.eq.cdftex(i)) idftex=i
-             if (char8.eq.cdftcorr(i)) idftcorr=i
+       call inStr4lxc(char30)
+       if (trim(char30).ne."") then
+          lxcFuncs=0
+          do j1=1,nlxclabels
+             lxcFuncFound=.false.
+             do j2=1,nlxclabels
+                if (trim(char30)==lxclabels(j2)) then
+                   lxcFuncs=lxcFuncs+1
+                   lxcFuncs2use(lxcFuncs)=lxcnumbs(j2)
+                   lxcFuncFound=.true.
+                endif
+                if (lxcFuncFound) exit
+             enddo
+             if (lxcFuncFound) call inStr4lxc(char30)
+             if (trim(char30).eq."") exit
           enddo
-          if (idftex.eq.0.and.idftcorr.eq.0) goto 1700
-
-          call inStr(char8)
-          if (char8.ne.endl) then
+          
+          if (lxcFuncs>0) then
+             islat=1
+             imethod=4
+             idft=0
+             go to 5
+          else
+             char8=trim(char30)
+             idftex=0
+             idftcorr=0
              do i=1,10
                 if (char8.eq.cdftex(i)) idftex=i
                 if (char8.eq.cdftcorr(i)) idftcorr=i
              enddo
+             if (idftex.eq.0.and.idftcorr.eq.0) goto 1700
+             
+             call inStr(char8)
+             if (char8.ne.endl) then
+                do i=1,10
+                   if (char8.eq.cdftex(i)) idftex=i
+                   if (char8.eq.cdftcorr(i)) idftcorr=i
+                enddo
+                if (idftex.eq.0.and.idftcorr.eq.0) goto 1700
+             endif
           endif
-          if (idftex.eq.0.and.idftcorr.eq.0) goto 1700
        endif
 
-       if (idftex.ne.0.or.idftcorr.ne.0) idft=0
+       if (lxcFuncs.ne.0.or.idftex.ne.0.or.idftcorr.ne.0) idft=0
 
-       !        some functionas are only valid for closed shell configurations
+       ! some functionas are only valid for closed shell configurations
 
        if (idftex.gt.4) goto 1700
        if (idftcorr.gt.2) goto 1700
 
-       if (idftex.ne.0) then
+       if (idftex.ne.0) then 
           islat =1
           imethod=4
        endif
-
-       if (idftcorr.ne.0) then
+       
+       if (idftcorr.ne.0) then 
           islat=1
           imethod=4
           if (idftex.eq.0) idftex=1
        endif
        goto 5
     endif
-
+    
     if (clabel.eq.'xalpha') then
 
-       !        label label label label label label label label label label label label label
+       !        label label label label label label label label label label label label label 
        !        label: xalpha
        !
        !        alphaf - if alphaf is not zero a DFT energy functional is used
@@ -364,22 +386,18 @@ contains
        if (imethod/=2) goto 1740
        goto 5
     endif
-
-
+    
     if (clabel.eq.'pothook') then
        !        label label label label label label label label label label label label label
        !        label: pothook
 
-       !        harmonic potential (Hook's atom, harmonium)
+       !        harmonic potential (Hook's atom, harmonium) 
 
        call inFloat(hook)
        ipot=9
        if (imethod/=2) goto 1740
        goto 5
     endif
-
-
-
 
     if (clabel.eq.'potharm') then
        !        label label label label label label label label label label label label label

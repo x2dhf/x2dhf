@@ -29,16 +29,23 @@ contains
     use printElConf_m
     use separator_m
 
+    use xc_f90_types_m
+    use xc_f90_lib_m
+    
     implicit none
 
-    integer :: ib,ie,ig,ior,iorb,ip,izz1,izz2,isizeint,isizereal
+    integer :: i,ib,ie,ig,ior,iorb,ip,izz1,izz2,isizeint,isizereal
     integer :: lengtht,length0,maxorb2,mm3,omb
 
     real (PREC) ::  heta,hxibeg,hxiend,rinfig
 
-    !     calculate the total length of working arrays (in bytes)
-    !     system under consideration
-
+    integer :: func_id
+    TYPE(xc_f90_pointer_t) :: xc_func
+    TYPE(xc_f90_pointer_t) :: xc_info
+    character(len=120) :: name, kind1, family, ref
+    
+    ! calculate the total length of working arrays (in bytes)
+    ! system under consideration
 
     izz1=nint(z1)
     izz2=nint(z2)
@@ -70,26 +77,87 @@ contains
     if (imethod.eq.3) write(iout6,1001) alphaf
     if (imethod.eq.4) then
        write(iout6,1002)
-       if (idftex.eq.1) then
-          write(iout6,1003) cdftex(idftex),alphaf
+       if (lxcFuncs==0) then
+          if (idftex.eq.1) then
+             write(iout6,1003) cdftex(idftex),alphaf
+          elseif(idftex>1) then
+             write(iout6,1004) cdftex(idftex)
+          endif
+          
+          if (idftcorr.ne.0) then
+             write(iout6,1005) cdftcorr(idftcorr)
+          endif
        else
-          write(iout6,1004) cdftex(idftex)
-       endif
 
-       if (idftcorr.ne.0) then
-          write(iout6,1005) cdftcorr(idftcorr)
+          do func_id=1,lxcFuncs
+             
+             call xc_f90_func_init(xc_func, xc_info, lxcFuncs2use(func_id), XC_UNPOLARIZED)
+             call xc_f90_info_name(xc_info, name)
+             
+             select case(xc_f90_info_kind(xc_info))
+             case (XC_EXCHANGE)
+                write(kind1, '(a)') 'an exchange functional'
+             case (XC_CORRELATION)
+                write(kind1, '(a)') 'a correlation functional'
+             case (XC_EXCHANGE_CORRELATION)
+                write(kind1, '(a)') 'an exchange-correlation functional'
+             case (XC_KINETIC)
+                write(kind1, '(a)') 'a kinetic energy functional'
+             case default
+                write(kind1, '(a)') 'of unknown kind1'
+             end select
+             
+             select case (xc_f90_info_family(xc_info))
+             case (XC_FAMILY_LDA);
+                write(family,'(a)') "LDA"
+             case (XC_FAMILY_GGA);
+                write(family,'(a)') "GGA"
+             case (XC_FAMILY_HYB_GGA);
+                write(family,'(a)') "Hybrid GGA"
+             case (XC_FAMILY_MGGA);
+                write(family,'(a)') "MGGA"
+             case (XC_FAMILY_HYB_MGGA);
+                write(family,'(a)') "Hybrid MGGA"
+             case default;
+                write(family,'(a)') "unknown"
+             end select
+             
+             ! write(*,'("The functional ''", a, "'' is ", a, ", it belongs to the ''", a, &
+             !      "'' family and is defined in the reference(s):")') &
+             !      trim(name), trim(kind1), trim(family)
+             
+             
+             write(*,'("         functional = ", a)') trim(name)
+             write(*,'("               kind = ", a)') trim(kind1)
+             write(*,'("             family = ", a)') trim(family)
+             write(*,'("       reference(s) = ",$)') 
+
+             i=0
+             do while (i<=4)
+                call xc_f90_info_refs(xc_info, i, ref)
+                if     (i==-1) then
+                   exit
+                elseif (i== 1) then
+                   write(*, '(a,i1,2a)') '[', i, '] ', trim(ref)
+                else
+                   write(*, '(22x,a,i1,2a)') '[', i, '] ', trim(ref)
+                endif
+             end do
+             
+             call xc_f90_func_end(xc_func)
+             write (*,*)
+          enddo
        endif
     endif
+
     if (imethod.eq.5) then
        write(iout6,1006)
     endif
 
-
-
     if (ifefield.eq.1) write(iout6,1300) ffield
     if (iharm2xy.eq.1) write(iout6,1310) harm2xy
 
-    !     its electronic configuration
+    ! its electronic configuration
 
     call printElConf
 
@@ -280,7 +348,7 @@ contains
 1401 format(/3x,'finite nuclei (Fermi nuclear charge distribution):',/10x,'atomic masses:', d16.9,' ( ',a2,')',d16.9,' ( ',a2,')')
 1402 format(/3x,'finite nuclei (Gauss nuclear charge distribution):',/10x,'atomic masses:', d16.9,' ( ',a2,')',d16.9,' ( ',a2,')')
 1001 format(3x,'method: HFS','  (alpha = ',f10.5,')')
-1002 format(3x,'method: DFT and ')
+1002 format(3x,'method: DFT     ')
 1003 format(3x,'                 ',a4,' functional',' (alpha = ',f10.5,')')
 1004 format(3x,'                 ',a4,' functional')
 1005 format(3x,'                 ',a4,' functional')
