@@ -27,6 +27,7 @@ contains
 
     use fock_m
     use fockDFT_m
+    use fockLXC_m
     use orbAsymptDet_m
     use orbAsymptSet_m
     use putin_m
@@ -51,10 +52,14 @@ contains
     !   the diagonal part of the differentiation operator in lhs
 
     if (islat.eq.0) then
-       !      call fock (iorb,psi,pot,excp,e,f0,f1,f2,f4,wk0,wk1,wk2,wk3)
+       ! call fock (iorb,psi,pot,excp,e,f0,f1,f2,f4,wk0,wk1,wk2,wk3)
        call fock (iorb,psi,pot,excp,e,f0,f1,f2,f4,fock1,rhs,wk1,wk2)
+    elseif (lxcFuncs>0) then
+       ! use exchange-correlation functionals from libxc
+       call fockLXC(iorb,psi,pot,excp,e,f0,f1,f2,f4,fock1,rhs, &
+            wk0,wk1,wk2,wk3,wk4,wk5,wk6,wk7,wk8,wk9,fock2,lhs)
     else
-       !      DFT exchange approximation is used
+       ! use self-coded exchange-correlation functionals
        call fockDFT(iorb,psi,pot,excp,e,f0,f1,f2,f4,fock1,rhs, &
             wk0,wk1,wk2,wk3,wk4,wk5,wk6,wk7,wk8,wk9,fock2,lhs)
     endif
