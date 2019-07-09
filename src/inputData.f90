@@ -16,13 +16,14 @@ contains
     use inStr_m
     use nmucalc_m
     use nnucalc_m
+    use xc_f90_types_m
+    use xc_f90_lib_m
 
     implicit none
 
-    logical lxcFuncFound
     integer :: i,icompLAdd,icompLEnc,icompLExp,id1,id2,iform_t,ig,ihit,inpiexit,&
          inzero,iopenshell,iorb,iput,iput1,isum,isum0,isum1,itmp,itmp1,itmp2,itotq,&
-         izz1,izz2,j,j1,j2,mgi,mt,n,nbsym,next,nmethods,nmutot,nlabels,no,nonortho,maxflags,&
+         izz1,izz2,j,j1,mgi,mt,n,nbsym,next,nmethods,nmutot,nlabels,no,nonortho,maxflags,&
          ni_t,mu_t,no_t,nons_t
 
     real (PREC) :: clo,cloe,co12,fmfield,ftmp,ftmp1,ftmp2,tmp1,tmp2,totchar,totq,z1t,z2t 
@@ -36,6 +37,10 @@ contains
     
     integer, dimension(maxflags) :: id
 
+    TYPE(xc_f90_pointer_t) :: xc_func
+    TYPE(xc_f90_pointer_t) :: xc_info
+
+    
     data labellc /'break','config','conv','debug','dft',&
          'exchio','fefield','fermi','fix','fixorb',&
          'fixcoul','fixexch','gauss','grid','homo',&
@@ -74,6 +79,7 @@ contains
     lcaoIncl=.false.
     ldaIncl=.false.
     omegaIncl=.false.
+    mt=0
     
     write(*,*) '... start of input data ...'
 
@@ -239,18 +245,24 @@ contains
        call inStr4lxc(char30)
        if (trim(char30).ne."") then
           lxcFuncs=0
-          do j1=1,nlxclabels
-             lxcFuncFound=.false.
-             do j2=1,nlxclabels
-                if (trim(char30)==lxclabels(j2)) then
-                   lxcFuncs=lxcFuncs+1
-                   lxcFuncs2use(lxcFuncs)=lxcnumbs(j2)
-                   lxcFuncFound=.true.
-                endif
-                if (lxcFuncFound) exit
-             enddo
-             if (lxcFuncFound) call inStr4lxc(char30)
-             if (trim(char30).eq."") exit
+          do j1=1,2
+             lxcFuncs=lxcFuncs+1
+             lxcFuncs2use(lxcFuncs)=xc_f90_functional_get_number(trim(char30))
+             if (lxcFuncs2use(lxcFuncs)<=0) then
+                write(*,*) "Error! ",trim(char30),": no such libxc functional found"
+                stop "inputData"
+             endif
+
+             call xc_f90_func_init(xc_func, xc_info, lxcFuncs2use(lxcFuncs), XC_UNPOLARIZED)
+             select case (xc_f90_info_family(xc_info))
+             case(XC_FAMILY_LDA, XC_FAMILY_GGA, XC_FAMILY_HYB_GGA)
+                call inStr4lxc(char30)
+                if (trim(char30).eq."") exit
+             case default
+                write(*,*) "Error! ", trim(char30),": unsupported libxc functional"
+                stop 'inputData'
+             end select
+             call xc_f90_func_end(xc_func)
           enddo
           
           if (lxcFuncs>0) then

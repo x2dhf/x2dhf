@@ -91,13 +91,15 @@ stop
 EOF
 
 	2>/dev/null ./xhf $system-lxc  $system-hf $system-1 > $system-lxc-$lxcFunc.lst
-	status=$(grep "Error: missing or incorrect entry" $system-lxc-$lxcFunc.lst)
+	#status=$(grep "Error: missing or incorrect entry" $system-lxc-$lxcFunc.lst)
+	status=$(grep -P 'Error! xc.+: no such libxc functional found' $system-lxc-$lxcFunc.lst)
 	if [[ $status == "" ]]
 	then
 	    result=$(grep 'exchange-correlation energy' $system-lxc-$lxcFunc.lst | gawk -F= '{print $2}')
 	    (LANG=en_US; printf "%-30s %-18.12e\n" $lxcFunc $result)
 	else
-	    (LANG=en_US; printf "%-30s %-18s\n" $lxcFunc "error")
+	    (LANG=en_US; printf "%-30s %-18s\n" $lxcFunc "no such libxc functional found")
+	    ../bin/xc-info $lxcFunc
 	fi
     done
 }
@@ -107,7 +109,8 @@ EOF
 kinds="
 lda 
 gga
-hyb
+hyb\_lda
+hyb\_gga
 "
 case=${1:-all}
 
@@ -156,7 +159,7 @@ if [[ $case == "list" ]]
 then
     for kind in $kinds
     do
-	lxcFuncs=$(grep -P "\s+\'${kind}_" ../src/commons8.f90 | gawk '{print $1}' | sed -e "s/[',!]//g")
+	lxcFuncs=$(grep -Pi "^#define\s+XC\_${kind}" ../include/xc_funcs.h | gawk '{print $2}')
 	for lxcFunc in $lxcFuncs
 	do
 	    echo $lxcFunc
@@ -170,7 +173,7 @@ then
     
    for kind in $kinds
    do
-       lxcFuncs=$(grep -P "\s+\'${kind}_" ../src/commons8.f90 | gawk '{print $1}' | sed -e "s/[',!]//g")
+       lxcFuncs=$(grep -Pi "^#define\s+XC\_${kind}" ../include/xc_funcs.h | gawk '{print $2}')
        execLXCFuncs
    done
    exit
@@ -178,12 +181,19 @@ fi
 
 if [[ $case == 'lda' || $case == 'gga' || $case == 'hyb' ]]
 then
-    
-    lxcFuncs=$(grep -P "\s+\'${case}_" ../src/commons8.f90 | gawk '{print $1}' | sed -e "s/[',!]//g")
+
+    [[ $case == "hyb" ]] && case=hyb_lda
+    lxcFuncs=$(grep -Pi "^#define\s+XC\_${case}" ../include/xc_funcs.h | gawk '{print $2}')
     execLXCFuncs
+
+    if [[ $case == "hyb_lda" ]]
+    then
+	case=hyb_gga
+	lxcFuncs=$(grep -Pi "^#define\s+XC\_${case}" ../include/xc_funcs.h | gawk '{print $2}')
+	execLXCFuncs
+    fi
     exit
 fi
-
 
 while (( $# > 0 ))
 do
