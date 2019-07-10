@@ -25,7 +25,7 @@ cmake .. \
       -DCMAKE_BUILD_TYPE=Release \
       -DCMAKE_Fortran_FLAGS_RELEASE:STRING="-DNDEBUG" 
 
-sed -i -e "s/\-o x2dhf *$/\-o x2dhf \-L $X2DHF\/lib \-lxcf90 \-lxc \n/" src/CMakeFiles/x2dhf.dir/link.txt
+sed -i -e "s/\-o x2dhf *$/\-o x2dhf \-L $X2DHF\/lib64 \-lxcf90 \-lxc \n/" src/CMakeFiles/x2dhf.dir/link.txt
 #tail src/CMakeFiles/x2dhf.dir/link.txt
 make -j ${npar} install VERBOSE=1
 cd ..
