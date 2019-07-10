@@ -44,17 +44,24 @@ all: be bef bf_g94 bo c c1d2 c3p1 c+ c2a c2b c2c dft f2 fh-0 fh-m1 fh-m2 fh-p1 f
 
 fall: be bef bf_g94 bo c c1d2 c3p1 c+ c2a c2b c2c dft f2 h2 li2 n2 ne o2 oed-h3 oed-kh oed-th+89 oed-z10-6 scmc
 
+test: be bef bf_g94
+
+
 be: ../examples/be/be.data ../examples/be/be-1.data
-	$(XHF) $(EXAMPLES_DIR)/$@/$@   $@-1        | tee $@.lst
-	$(XHF) $(EXAMPLES_DIR)/$@/$@-1 $@-1 $@-2 | tee $@-1.lst
+	cp $(EXAMPLES_DIR)/$@/$@.data .
+	cp $(EXAMPLES_DIR)/$@/$@-1.data .
+	$(XHF) $@   $@-1      | tee $@.lst
+	$(XHF) $@-1 $@-1 $@-2 | tee $@-1.lst
 
 bef: ../examples/bef/bef.data
-	$(XHF) $(EXAMPLES_DIR)/$@/$@ $@-1 | tee $@.lst
+	cp $(EXAMPLES_DIR)/$@/$@.data .
+	$(XHF) $@ $@-1 | tee $@.lst
 
 bf_g94: ../examples/bf/bf_g94.data
+	cp $(EXAMPLES_DIR)/bf/$@.data .
 	cp $(EXAMPLES_DIR)/bf/$@.pun gaussian.pun
 	cp $(EXAMPLES_DIR)/bf/$@.out gaussian.out
-	$(XHF) $(EXAMPLES_DIR)/bf/$@ $@-1 | tee $@.lst
+	$(XHF) $@ $@-1 | tee $@.lst
 
 bo: ../examples/bo/bo.data
 	cp $(EXAMPLES_DIR)/bo/$@.pun gaussian.pun
