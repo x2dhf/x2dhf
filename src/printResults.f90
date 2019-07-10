@@ -172,37 +172,37 @@ contains
           write(*,'("     exchange energy: B88               = ",f28.22)') enexchdft
        endif
 
-       idftex=3
-       call etotalDFT (cw_orb,cw_coul,cw_exch,                      &
-            cw_suppl(i4b( 4)),cw_suppl(i4b( 5)),cw_suppl(i4b(13)),  &
-            cw_suppl(i4b(14)),                                      &
-            cw_sctch(i5b( 1)),cw_sctch(i5b( 2)),cw_sctch(i5b( 3)),  &
-            cw_sctch(i5b( 4)),cw_sctch(i5b( 5)),cw_sctch(i5b( 6)),  &
-            cw_sctch(i5b( 7)),cw_sctch(i5b( 8)),cw_sctch(i5b( 9)),  &
-            cw_sctch(i5b(10)),cw_sctch(i5b(11)),cw_sctch(i5b(12)),  &
-            cw_sctch(i5b(13)),cw_sctch(i5b(14)))
+       ! idftex=3
+       ! call etotalDFT (cw_orb,cw_coul,cw_exch,                      &
+       !      cw_suppl(i4b( 4)),cw_suppl(i4b( 5)),cw_suppl(i4b(13)),  &
+       !      cw_suppl(i4b(14)),                                      &
+       !      cw_sctch(i5b( 1)),cw_sctch(i5b( 2)),cw_sctch(i5b( 3)),  &
+       !      cw_sctch(i5b( 4)),cw_sctch(i5b( 5)),cw_sctch(i5b( 6)),  &
+       !      cw_sctch(i5b( 7)),cw_sctch(i5b( 8)),cw_sctch(i5b( 9)),  &
+       !      cw_sctch(i5b(10)),cw_sctch(i5b(11)),cw_sctch(i5b(12)),  &
+       !      cw_sctch(i5b(13)),cw_sctch(i5b(14)))
 
-       if (iprint16.eq.0) then
-          write(*,'("     exchange energy: PW86              = ",f20.12)') enexchdft
-       else
-          write(*,'("     exchange energy: PW86              = ",f28.22)') enexchdft
-       endif
+       ! if (iprint16.eq.0) then
+       !    write(*,'("     exchange energy: PW86              = ",f20.12)') enexchdft
+       ! else
+       !    write(*,'("     exchange energy: PW86              = ",f28.22)') enexchdft
+       ! endif
 
-       idftex=4
-       call etotalDFT (cw_orb,cw_coul,cw_exch,                      &
-            cw_suppl(i4b( 4)),cw_suppl(i4b( 5)),cw_suppl(i4b(13)),  &
-            cw_suppl(i4b(14)),                                      &
-            cw_sctch(i5b( 1)),cw_sctch(i5b( 2)),cw_sctch(i5b( 3)),  &
-            cw_sctch(i5b( 4)),cw_sctch(i5b( 5)),cw_sctch(i5b( 6)),  &
-            cw_sctch(i5b( 7)),cw_sctch(i5b( 8)),cw_sctch(i5b( 9)),  &
-            cw_sctch(i5b(10)),cw_sctch(i5b(11)),cw_sctch(i5b(12)),  &
-            cw_sctch(i5b(13)),cw_sctch(i5b(14)))
+       ! idftex=4
+       ! call etotalDFT (cw_orb,cw_coul,cw_exch,                      &
+       !      cw_suppl(i4b( 4)),cw_suppl(i4b( 5)),cw_suppl(i4b(13)),  &
+       !      cw_suppl(i4b(14)),                                      &
+       !      cw_sctch(i5b( 1)),cw_sctch(i5b( 2)),cw_sctch(i5b( 3)),  &
+       !      cw_sctch(i5b( 4)),cw_sctch(i5b( 5)),cw_sctch(i5b( 6)),  &
+       !      cw_sctch(i5b( 7)),cw_sctch(i5b( 8)),cw_sctch(i5b( 9)),  &
+       !      cw_sctch(i5b(10)),cw_sctch(i5b(11)),cw_sctch(i5b(12)),  &
+       !      cw_sctch(i5b(13)),cw_sctch(i5b(14)))
 
-       if (iprint16.eq.0) then
-          write(*,'("     exchange energy: PW91              = ",f20.12)') enexchdft
-       else
-          write(*,'("     exchange energy: PW91              = ",f28.22)') enexchdft
-       endif
+       ! if (iprint16.eq.0) then
+       !    write(*,'("     exchange energy: PW91              = ",f20.12)') enexchdft
+       ! else
+       !    write(*,'("     exchange energy: PW91              = ",f28.22)') enexchdft
+       ! endif
 
        idftex=0
        idftcorr=1

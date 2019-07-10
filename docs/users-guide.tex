@@ -2,9 +2,9 @@
 \documentclass[12pt,a4paper]{article}
 %\input ijmpc.sty
 \hoffset -1.0cm
-%\voffset -1.5in
-\textwidth 16.0cm
-\textheight 20.0cm
+\voffset -0.5in
+\textwidth 15.0cm
+\textheight 23.0cm
 \newcommand{\beq}{\begin{equation}}
 \newcommand{\eeq}{\end{equation}}
 \newcommand{\cl} {\centerline}
@@ -34,6 +34,8 @@
 \begin{document}
 
 \thispagestyle{empty}
+
+\vspace*{4cm}
 \begin{center}
 
 {\Large\bf Jacek Kobus\\[20pt]}
@@ -47,7 +49,7 @@ Hartree--Fock Program}
 
 \vskip 0.5cm
 
-{\large version 2.2 }
+{\large version 2.3 }
 \end{center}
 
 \clearemptydoublepage
@@ -57,8 +59,8 @@ Hartree--Fock Program}
 
 %% ***************************************************************************
 %% *                                                                         *
-%% *   Copyright (C) 1996-2008 Jacek Kobus <jkob@fizyka.umk.pl>              *
-%% *                 2018-     Susi Lehtola                                  *
+%% *   Copyright (C) 1996-2019 Jacek Kobus <jkob@fizyka.umk.pl>              *
+%% *                 2018-2019 Susi Lehtola <susi.lehtola@alumni.helsinki.fi>*
 %% *                                                                         *
 %% *   This program is free software; you can redistribute it and/or modify  *
 %% *   it under the terms of the GNU General Public License version 2 as     *
@@ -370,11 +372,9 @@ The following additional labels can be specified in any order:
 %and every $incrmu$ column is printed.
 \end{description}
 
-\newpage
-
 \item \textbf{DFT}
 \begin{description}
-\item[Format:] \textbf{dft}  $[\;c_1\;]\;\; [\;c_2\;]\;\; [\;c_3\;]$ \ldots \\
+\item[Format:] \textbf{dft}  $[\;c_1\;]\;\; [\;c_2\;]$ \\
 \begin{itemize}
 \item[$c_i:$] specifies the type of DFT exchange-correlation functional(s) to be used in
   Fock equations. Any of the suitable LDA, GGA and hybryd functionals implemented in Libxc
@@ -382,10 +382,9 @@ The following additional labels can be specified in any order:
   \footnote{Susi Lehtola, Conrad Steigemann, Micael J.T. Oliveira, and Miguel
     A.L. Marques, \textsl{Recent developments in Libxc - A comprehensive library of
       functionals for density functional theory}, Software X 7, 1 (2018)} can in principle
-  be used, e.g. lda\_x, lda\_c\_wigner, lda\_c\_xalpha, lda\_c\_vwn, gga\_x\_gam,
-  gga\_c\_gam, etc (see commons8.f90 for the full list of supported functionals or use
-  \texttt{lxcctl} utility to generate the list of available functionals and also to test
-  them).
+  be used, e.g. xc\_lda\_x, xc\_lda\_c\_wigner, xc\_lda\_c\_xalpha, xc\_gga\_c\_gam, etc;
+  use \texttt{lxcctl list} utility to generate the list of available functionals (this
+  utility can also be used to test the functionals, see \texttt{lxcctl help}).
 
   \bigskip
   
@@ -402,13 +401,13 @@ potential). \linebreak[4] To change this value use the \textbf{xalpha} label.
 This functional is equivalent to \textsl{lda\_x} one of the Libxc library.
 
 If \textsl{xalpha} parameter is set to 1/3 then \textsl{lda} functional is equivalent to
-\textsl{lda\_c\_xalpha} one.
+\textsl{xc\_lda\_c\_xalpha} one.
 % HF orbitals: dft lda xalpha=2/3    == dft LDA_X 
 %              dft lda xalpha=1-2/3  == dft lda_c_xalpha
 %              dft lda xalpha=1      == dft LDA_X + lda_c_xalpha
 
 \item $b88$ -- the Becke exchange potential; this functional is equivalent to
-\textsl{gga\_x\_b88} one from Libxc library
+\textsl{xc\_gga\_x\_b88} one from Libxc library
 
   % When the Becker exchange potential is used the SFC process diverges!
   % The exchange energy calculated with HF orbitals for a set of test cases turns out to
@@ -419,14 +418,14 @@ If \textsl{xalpha} parameter is set to 1/3 then \textsl{lda} functional is equiv
   % dft gga_c_lyp  ok
   % dft gga_c_p86  ok
 
-\item $pw86$ -- the exchange functional of Perdew and Wang; this functional is equivalent to
-\textsl{gga\_x\_pw86} one from Libxc library
+%% \item $pw86$ -- the exchange functional of Perdew and Wang; this functional is equivalent to
+%% \textsl{gga\_x\_pw86} one from Libxc library
 
-\item $pw91$ -- the exchange functional of Perdew and Wang; this functional is equivalent to
-\textsl{gga\_x\_pw91} one from Libxc library
+%% \item $pw91$ -- the exchange functional of Perdew and Wang; this functional is equivalent to
+%% \textsl{gga\_x\_pw91} one from Libxc library
 
 \item $lyp$ -- the correlation potential of Lee, Yang and Parr; this functional is equivalent to
-\textsl{gga\_c\_lyp} one from Libxc library
+\textsl{xc\_gga\_c\_lyp} one from Libxc library
 
 \item $vwn$ -- the correlation potential of Vosko, Wilk and Nusair;
   this functional is equivalent to \textsl{lda\_c\_vwn} one from Libxc library%
@@ -437,10 +436,9 @@ If \textsl{xalpha} parameter is set to 1/3 then \textsl{lda} functional is equiv
 \end{itemize}
 \end{itemize}
 \end{description}
-When the bare label is present and the method selected is HF then the
-exchange contributions (LDA, B88, PW86 and PW91) and the correlation
-contributions (LYP and VWN) to the total energy are calculated upon
-completion of the SCF iterations.
+When the bare label is present and the method selected is HF then the exchange
+contributions (LDA, B88) and the correlation contributions (LYP and VWN) to the total
+energy are calculated upon completion of the SCF iterations.
 
 \item \textbf{EXCHIO}
 \begin{description}
@@ -711,6 +709,8 @@ system.\footnote{In this type of calculations convergence rates differ
   set to a~near optimum value obtained from a~semiempirical formula (see \ft{initCBlocks}
   and \ft{setomega} for details).
 \end{description}
+
+\newpage
 
 \item \textbf{OMEGAOPT}
 \begin{description}

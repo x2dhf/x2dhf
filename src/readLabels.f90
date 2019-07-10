@@ -396,9 +396,11 @@ contains
        return
     endif
     
-    !if (lxcFuncs.ne.0.or.idftex.ne.0.or.idftcorr.ne.0) idft=0
+    if (char30(1:3)/="xc_") then
+       write(*,*) "Error! ",trim(char30),": unknown functional; try lda, b88, lyp or vwn"
+       stop 'read_dft'
+    endif
     
-          ! some functionas are only valid for closed shell configurations
     if (trim(char30).ne."") then
        lxcFuncs=0
        do j1=1,2
@@ -406,7 +408,7 @@ contains
           lxcFuncs2use(lxcFuncs)=xc_f90_functional_get_number(trim(char30))
           if (lxcFuncs2use(lxcFuncs)<=0) then
              write(*,*) "Error! ",trim(char30),": no such libxc functional found"
-             stop "inputData"
+             stop "read_dft"
           endif
           
           call xc_f90_func_init(xc_func, xc_info, lxcFuncs2use(lxcFuncs), XC_UNPOLARIZED)
@@ -416,7 +418,7 @@ contains
              if (trim(char30).eq."") exit
           case default
              write(*,*) "Error! ", trim(char30),": unsupported libxc functional"
-             stop 'inputData'
+             stop 'read_dft'
           end select
           call xc_f90_func_end(xc_func)
        enddo

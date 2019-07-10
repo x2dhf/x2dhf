@@ -34,7 +34,7 @@ module input_m
          'potharm', 'pothook','potsap'/
 
 
-    data cdftext /'lda','b88','pw86','pw91','x','x','x','x','x','x'/
+    data cdftext /'lda','b88','x','x','x','x','x','x','x','x'/
     data cdftcorrt /'lyp','vwn','x','x','x','x','x','x','x','x'/
 
     data angstrom/'angstrom'/,cmethod/'hf','oed','hfs','dft','scmc'/,&

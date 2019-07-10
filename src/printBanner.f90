@@ -10,7 +10,7 @@ contains
 
     write(*,1020)
 
-01020 format(//,25x,'FINITE DIFFERENCE 2D HARTREE-FOCK  (version 2.1)',//)
+01020 format(//,25x,'FINITE DIFFERENCE 2D HARTREE-FOCK  (version 2.3)',//)
 
   end subroutine printBanner
 end module printBanner_m
