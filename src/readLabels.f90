@@ -390,7 +390,7 @@ contains
        if (idftcorr.ne.0) then 
           islat=1
           imethod=4
-          if (idftex.eq.0) idftex=1
+          !if (idftex.eq.0) idftex=1
        endif
 
        return

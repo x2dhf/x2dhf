@@ -208,7 +208,7 @@ contains
     enexch=wex
 
     encouldft=wndc
-    enexchdft=wex
+    enexchdft=wex+wcorr
 
     edftcorr=wcorr
 
