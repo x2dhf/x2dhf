@@ -85,21 +85,37 @@ config 0
   3 sigma  end                                                                    
 $grid
 orbpot old 
-scf 0 10 3 14 1                                                             
+scf 100 10 3 14 1                                                             
+omega 1.2 1.2
 stop                    
 
 EOF
 
 	2>/dev/null ./xhf $system-lxc  $system-hf $system-1 > $system-lxc-$lxcFunc.lst
-	#status=$(grep "Error: missing or incorrect entry" $system-lxc-$lxcFunc.lst)
+
+	statusNaN=$(grep -P 'exchange-correlation energy.* = NaN' $system-lxc-$lxcFunc.lst)
+	statusAst=$(grep -P 'exchange\-correlation energy.*=\s+\*' $system-lxc-$lxcFunc.lst)
+	
+	if [[ $statusNaN != "" ]]
+	then
+	    (LANG=en_US; printf "%-30s %-30se\n" $lxcFunc NaN)
+	    continue
+	fi
+
+	if [[ $statusAst != "" ]]
+	then
+	    (LANG=en_US; printf "%-30s %-30se\n" $lxcFunc '***')
+	    continue
+	fi
+		
 	status=$(grep -P 'Error! xc.+: no such libxc functional found' $system-lxc-$lxcFunc.lst)
 	if [[ $status == "" ]]
 	then
 	    result=$(grep 'exchange-correlation energy' $system-lxc-$lxcFunc.lst | gawk -F= '{print $2}')
 	    (LANG=en_US; printf "%-30s %-18.12e\n" $lxcFunc $result)
 	else
-	    (LANG=en_US; printf "%-30s %-18s\n" $lxcFunc "no such libxc functional found")
-	    ../bin/xc-info $lxcFunc
+		(LANG=en_US; printf "%-30s %-18s\n" $lxcFunc "no such libxc functional found")
+		../bin/xc-info $lxcFunc
 	fi
     done
 }

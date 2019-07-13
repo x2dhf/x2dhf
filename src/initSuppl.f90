@@ -370,11 +370,11 @@ contains
        dni1(i)=w1*aa1(i)/hni
     enddo
 
-    !     Initialize arrays needed for fast (matrix times matrix) evaluation
-    !     of the first and second dervivative terms in the Laplasian (dmu, dnu) and
-    !     the first derivatives for gradients (d1mu, d1nu)
+    ! Initialize arrays needed for fast (matrix times matrix) evaluation
+    ! of the first and second dervivative terms in the Laplasian (dmu, dnu) and
+    ! the first derivatives for gradients (d1mu, d1nu)
 
-    !     derivatives over mu variable
+    ! derivatives over mu variable
     ib=1
     do ig=1,ngrids
        do k=1,9
