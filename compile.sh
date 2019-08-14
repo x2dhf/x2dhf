@@ -3,7 +3,7 @@
 # Fortran compiler to use
 export FC=gfortran
 # Compiler flags to use
-export FFLAGS="-O2 -Wall -ffree-line-length-none"
+export FFLAGS="-O2 -Wall -ffree-line-length-none -fmax-array-constructor=90000"
 
 # Installation directory
 export target=$(pwd) # this installs x2dhf under bin/ in the present directory

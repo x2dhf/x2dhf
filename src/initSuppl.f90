@@ -37,7 +37,6 @@ contains
     real (PREC), dimension(mxsize) :: wgt1,wgt2
 
     real (PREC), dimension(9) :: aa1,aa2,a1,a2
-    real (PREC), dimension(9,7,9) :: dc1,dc2
 
     !     Coefficients of the first and second derivatives taken from from
     !     the 8th-order Stirling interpolation formula
@@ -171,8 +170,9 @@ contains
                 r1t=(r/2.0_PREC)*(vxi(i)+veta(j))
                 r2t=(r/2.0_PREC)*(vxi(i)-veta(j))
 
-                z1t=z1-sap_pot(izz1,r1t)
-                z2t=z2-sap_pot(izz2,r2t)
+                ! Effective charges Z1(r1) and Z2(r2)
+                z1t=effective_charge(izz1,r1t)
+                z2t=effective_charge(izz2,r2t)
 
                 f0(j,i)=r*(vxi(i)*(z1t+z2t)+veta(j)*(z2t-z1t))
 
