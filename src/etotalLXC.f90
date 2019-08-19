@@ -204,15 +204,11 @@ contains
        case(XC_FAMILY_GGA)
           ! calculate nabla rho nabla rho 
           call nfng (rhot,rhot,wk0,wk1,wk2,wk3,rhotup,rhotdown,grhotdown,grhotup)
-          ! do i=1,mxsize
-          !    print *,i,grhotup(i)
-          ! enddo
           call xc_f90_gga_exc(xc_func, mxsize, rhot(1), grhotup(1), wk12(1))
        case(XC_FAMILY_HYB_GGA)
           ! calculate nabla rho nabla rho 
           call nfng (rhot,rhot,wk0,wk1,wk2,wk3,rhotup,rhotdown,grhotdown,grhotup)
           call xc_f90_gga_exc(xc_func, mxsize, rhot(1), grhotup(1), wk12(1))
-
        case default
           write(*,'("Error! Undefined libxc functional.")')
           stop 'etotalLXC'
