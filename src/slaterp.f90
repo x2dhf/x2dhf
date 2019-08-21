@@ -16,7 +16,7 @@
 module slaterp_m
   implicit none
 contains
-  subroutine slaterp(psi,pot,excp,f2,f4,wk0)
+  subroutine slaterp(psi,excp,f4)
     use params
     use discret
     use commons8
@@ -27,7 +27,7 @@ contains
     integer :: i,iborb1,iorb1,ngorb1
 
     real (PREC) :: const13,coo,xa
-    real (PREC), dimension(*) :: psi,pot,excp,f2,f4,wk0
+    real (PREC), dimension(*) :: psi,excp,f4
 
     parameter (const13=1.0_PREC/3.0_PREC)
 

@@ -1,0 +1,15 @@
+title Ne   R = 2.0
+method hf
+nuclei  10.0  0.0  2.0
+config  0
+1 pi
+2 sigma
+1 sigma   end
+!grid 169 30.0
+grid 269 30.0
+orbpot lda
+scf 3000 10 2 8 1
+omega 1.7
+fixorb
+stop
+

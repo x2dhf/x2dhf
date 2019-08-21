@@ -25,7 +25,7 @@ contains
     use commons8
     use blas_m
     use hydrogenOrb_m
-    use initPot_m
+    use initPotentials_m
     use zeroArray_m
 
     implicit none
@@ -43,9 +43,7 @@ contains
 
     print *,'... initializing orbitals from hydrogenic functions ...'
 
-    !     loop over orbitals
-
-    !      do iorb=1,norbt
+    ! loop over orbitals
     do iorb=1,norb
        if (inhyd(iorb).eq.0) cycle
        i1beg=i1b(iorb)
@@ -71,12 +69,10 @@ contains
        endif
     enddo
 
-    !01114 format(/1x,'  orbital        norm       (# primitive bf)')
-    !01115 format(1x,i2,1x,a5,e20.12,' (',i4,')')
-
     !  initialize Coulomb and exchange potentials
-
-    call initPot(psi,pot,excp,f2,f4,wk0)
+    !call initCoulombSAP(pot,f4)
+    call initCoulomb(pot,f4)
+    call initExchange(psi,excp,f4)
 
   end subroutine initHyd
 end module initHyd_m

@@ -24,7 +24,7 @@ contains
     use flp_m
     use memory
     use norm94_m
-    use initPot_m
+    use initPotentials_m
     use plegendg_m
     use qsort
     use zeroArray_m
@@ -686,14 +686,11 @@ contains
        endif
     enddo
     write(*,*)
-    
-    ! initialize Coulomb and exchange potentials unless OED method is chosen 
-    if (imethod/=2) then
-       print *,'... setting exchange potential to zero...'
-       call zeroArray(length3,excp)
-    else
-       call initPot(psi,pot,excp,f2,f4,wk0)
-    endif
-    
+
+    ! initialize Coulomb and exchange potentials 
+    call initCoulombSAP(pot,f4)
+    !call initCoulomb(pot,f4)
+    call initExchange(psi,excp,f4)
+
   end subroutine initLDA
 end module initLDA_m

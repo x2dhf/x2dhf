@@ -1,0 +1,11 @@
+TITLE Be R_inf=35.0 bohr  R = 2.3860 bohr
+METHOD  hf
+NUCLEI  4.0  0.0  2.386  
+CONFIG  0
+        2 sigma  end
+!grid 35 25.0
+grid 165 35.0   
+orbpot lda
+SCF 3000 10 8 8 1
+!print 78
+stop

@@ -26,7 +26,7 @@ contains
     use commons8
     use evalGauss_m
     use norm94_m
-    use initPot_m
+    use initPotentials_m
 
     implicit none
     integer :: i,igauss,igp,igrid,imu,in,inioff,iorb,ipb,ishift,m1, &
@@ -157,9 +157,9 @@ contains
 
     if (idbg(560).ne.0) stop 'inigauss'
 
-    !     initialize Coulomb and exchange potentials
-
-    call initPot(psi,pot,excp,f2,f4,wk0)
+    ! initialize Coulomb and exchange potentials
+    call initCoulomb(pot,f4)
+    call initExchange(psi,excp,f4)
 
 1114 format(/1x,'    orbital        norm      ')
 1115 format(1x,i3,1x,a8,a1,e20.12)

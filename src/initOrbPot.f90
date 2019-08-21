@@ -20,13 +20,12 @@ contains
     use discret
     use commons8
     use prepGauss
-
     use initDisk_m
     use initGauss_m
     use initHF_m
     use initHyd_m
     use initLDA_m
-    use initPot_m
+    use initPotentials_m
 
     implicit none
 
@@ -226,17 +225,16 @@ contains
        endif
 
     elseif (ini.eq.6) then
-
        !        'noexch'
-
        idump=0
        call initDisk (cw_orb,cw_coul,cw_exch,cw_sctch(i5b(1)))
-       call initPot(cw_orb,cw_coul,cw_exch,cw_suppl(i4b(7)),cw_suppl(i4b(9)),cw_sctch(i5b(1)))
+       !  initialize Coulomb and exchange potentials
+       !call initCoulombSAP(cw_coul,cw_suppl(i4b(9)))
+       call initCoulomb(cw_coul,cw_suppl(i4b(9)))
+       call initExchange(cw_orb,cw_exch,cw_suppl(i4b(9)))
 
     elseif (ini.eq.55) then
-
        !        'nodat'
-
        !        old format of input data is requested (skipping reading 2dhf_input.dat file)
        idat=1
        idump=0

@@ -61,7 +61,8 @@ function array_lookup(array, Z, x) result(y)
 
  integer :: i
  integer :: posleft, posright, posmiddle
- integer, parameter :: lip_order = 7
+ ! lip_order<=4 provides safe interpolation; higher values lead to +/-Infinity at some grid points
+ integer, parameter :: lip_order = 4
  real*8, dimension(lip_order) :: xi, yi
 
  if(Z < 1) then
@@ -86,7 +87,7 @@ function array_lookup(array, Z, x) result(y)
           exit
        end if
     end do
-    print *, posleft
+    !print *, posleft
 
     if(posleft + lip_order > size(array,1)) then
        posleft = posleft - (posleft + lip_order) + size(array,1)

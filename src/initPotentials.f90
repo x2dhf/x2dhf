@@ -8,15 +8,14 @@
 ! *   published by the Free Software Foundation.                            *
 ! *                                                                         *
 ! ***************************************************************************
-! ### initPot ###
+! ### initPotentials ###
+!     This routine initializes Coulomb potentials using the Thomas-Fermi model
+!      or SAP and exchange potentials via the local exchange or 1/r approximation
 
-!     This routine initializes Coulomb using the Thomas-Fermi model and
-!     exchange potentials via the local exchange or 1/r approximation
-
-module initPot_m
+module initPotentials_m
   implicit none
 contains
-  subroutine initPot (psi,pot,excp,f2,f4,wk0)
+  subroutine initCoulomb (pot,f4)
     use params
     use discret
     use memory
@@ -33,14 +32,12 @@ contains
     implicit none
 
     integer :: i3beg,igp,imu,in,inioff,iorb,iorb1,iorb2,iorb2t,irec,ishift,k,ngrid
-
     real (PREC) :: ch1,ch2,crt1,crt2,ez1,ez2,ra1,ra2,slim,vetat,vxit,zc1,zc2
-
-    real (PREC), dimension(*) :: psi,pot,excp,f2,f4,wk0
+    real (PREC), dimension(*) :: pot,f4
 
     if (imethod.eq.2.or.ini.eq.4) return
 
-    print *,'... initializing Coulomb potentials ...'
+    print *,'... initializing Coulomb potentials (pottf) ...'
     
     if (ini.ne.6) then
        ! Initialization of Coulomb potentials
@@ -65,8 +62,6 @@ contains
           crt1=abs(co1(iorb))
           crt2=abs(co2(iorb))
 
-          !           loop over grid points
-
           do imu=1,mxnmu
              inioff=(imu-1)*nni
              vxit=vxi(imu)
@@ -85,12 +80,38 @@ contains
        enddo
     endif
 
-    !     Initialization of exchange potentials
+
+  end subroutine initCoulomb
+
+  ! This routine initializes exchange potentials via the local exchange or 1/r approximation
+  subroutine initExchange (psi,excp,f4)
+    use params
+    use discret
+    use memory
+    use commons8
+    use util
+
+    use blas_m
+    use pottf_m
+    use prepwexch_m
+    use slaterp_m
+    use wtdexch_m
+    use zeroArray_m
+
+    implicit none
+
+    integer :: i3beg,igp,imu,in,inioff,iorb,iorb1,iorb2,iorb2t,irec,ishift,k,ngrid
+    real (PREC) :: ch1,ch2,crt1,crt2,ez1,ez2,ra1,ra2,slim,vetat,vxit,zc1,zc2
+    real (PREC), dimension(*) :: psi,excp,f4
+
+    if (imethod.eq.2.or.ini.eq.4) return
+
+    ! Initialization of exchange potentials
 
     call zeroArray(length3,excp)
 
     if (imethod.eq.3.or.imethod.eq.4.or.imethod.eq.5) then
-       call slaterp(psi,pot,excp,f2,f4,wk0)
+       call slaterp(psi,excp,f4)
        print *,'... initializing Slater exchange potential ...'
        return
     elseif (iform.eq.1.or.iform.eq.3) then
@@ -198,5 +219,73 @@ contains
        enddo
     endif
 
-  end subroutine initPot
-end module initPot_m
+  end subroutine initExchange
+  
+
+  subroutine initCoulombSAP (pot,f4)
+    USE, INTRINSIC :: IEEE_ARITHMETIC, ONLY: IEEE_IS_FINITE    
+    use params
+    use discret
+    use memory
+    use commons8
+    use util
+
+    use blas_m
+    use pottf_m
+    use prepwexch_m
+    use sap_potential_m
+    use slaterp_m
+    use wtdexch_m
+    use zeroArray_m
+
+    implicit none
+
+    integer :: i3beg,igp,imu,in,inioff,iorb,iorb1,iorb2,iorb2t,irec,ishift,iz1,iz2,k,ngrid
+    real (PREC) :: crt1,crt2,ra1,ra2,r1t,r2t,vetat,vxit
+    real (PREC), dimension(*) :: pot,f4
+
+    if (imethod.eq.2.or.ini.eq.4) return
+
+    print *,'... initializing Coulomb potentials (effective_coulomb_charge) ...'
+    
+    if (ini.ne.6) then
+       ! Initialization of Coulomb potentials
+
+       iz1=nint(z1)
+       iz2=nint(z2)
+       
+       do iorb=1,norb
+
+          ngrid=i1si(iorb)
+          ishift=i1b(iorb)-1
+
+          crt1=abs(co1(iorb))
+          crt2=abs(co2(iorb))
+
+          !  loop over grid points
+          do imu=1,mxnmu
+             inioff=(imu-1)*nni
+             vxit=vxi(imu)
+             do in=1,nni
+                igp=ishift+inioff+in
+                vetat=veta(in)
+                r1t=(r/2.0_PREC)*(vxi(imu)+veta(in))
+                r2t=(r/2.0_PREC)*(vxi(imu)-veta(in))
+                
+                pot(igp)=z1-effective_coulomb_charge(iz1,r1t)*crt1+&
+                     z2-effective_coulomb_charge(iz2,r2t)*crt2
+
+                if (.not.IEEE_IS_FINITE(pot(igp))) then
+                   print *,'initCoulombSAP',iorn(iorb),bond(iorb),imu,in,r1t,effective_coulomb_charge(iz1,r1t)
+                   pot(igp)=pot(igp-1)
+                endif
+             enddo
+          enddo
+          call prod(ngrid,f4,pot(i1b(iorb)))
+       enddo
+    endif
+
+
+  end subroutine initCoulombSAP
+
+end module initPotentials_m

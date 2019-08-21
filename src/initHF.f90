@@ -23,11 +23,10 @@ contains
     use params
     use discret
     use commons8
-
     use factor_m
     use flp_m
     use norm94_m
-    use initPot_m
+    use initPotentials_m
     use plegendg_m
 
     implicit none
@@ -270,7 +269,8 @@ contains
     enddo
 
     !  initialize Coulomb and exchange potentials
+    call initCoulomb(pot,f4)
+    call initExchange(psi,excp,f4)
 
-    call initPot(psi,pot,excp,f2,f4,wk0)
   end subroutine initHF
 end module initHF_m
