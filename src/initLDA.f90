@@ -16,7 +16,7 @@
 module initLDA_m
   implicit none
 contains
-  subroutine initLDA (psi,pot,excp,f2,f4,wgt2,wk0)
+  subroutine initLDA (psi,pot,excp,f4,wgt2,wk0)
     use params
     use discret
     use commons8
@@ -42,14 +42,14 @@ contains
 
     integer, dimension(:), allocatable :: nhf1,lhf1,nhf2,lhf2
 
-    real (PREC), dimension(*) :: psi,pot,excp,f2,f4,wgt2,wk0
+    real (PREC), dimension(*) :: psi,pot,excp,f4,wgt2,wk0
     real (PREC), dimension(:), allocatable :: rhf1,rhf2,phf1t,phf2t
     real (PREC), dimension(:), allocatable :: ehf1,qc1,ehf2,qc2
     real (PREC), dimension(:,:), allocatable :: phf1,phf2
     integer, dimension(maxorb,2) :: lcaomap
-    real (PREC), dimension(maxorb) :: eh,f4swap
-    real (PREC) :: ehc,ehmax
-    integer, dimension(maxorb) :: index,i4swap,tokens1,tokens2
+    real (PREC), dimension(maxorb) :: eh
+    real (PREC) :: ehc
+    integer, dimension(maxorb) :: tokens1,tokens2
     integer :: i1,i2,i1start,i2start
 
     ! Where to find the orbitals and the file name to read
@@ -675,13 +675,12 @@ contains
           endif
           call norm94 (iorb,psi,f4,wgt2,wk0,xnorm)
           !write (*,1115) iorn(iorb),bond(iorb),gut(iorb),xnorm
+!1115      format(i4,1x,a8,a1,3x,e22.16,2e16.2)
           if (lcaomap(iorb,1)/=0) ehc=ehf1(lcaomap(iorb,1))
           if (lcaomap(iorb,2)/=0) ehc=ehf2(lcaomap(iorb,2))
 
           write (*,1116) iorn(iorb),bond(iorb),gut(iorb),xnorm,&
                lcaomap(iorb,1),lcaomap(iorb,2),ehc,eh(iorb)
-1115      format(i4,1x,a8,a1,3x,e22.16,2e16.2)
-          !1116      format(i4,1x,a8,a1,3x,e22.16,2i6,e14.4)
 1116      format(i4,1x,a8,a1,3x,e22.16,2i6,2f14.4)
        endif
     enddo

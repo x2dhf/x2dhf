@@ -223,7 +223,7 @@ contains
   
 
   subroutine initCoulombSAP (pot,f4)
-    USE, INTRINSIC :: IEEE_ARITHMETIC, ONLY: IEEE_IS_FINITE    
+    !USE, INTRINSIC :: IEEE_ARITHMETIC, ONLY: IEEE_IS_FINITE    
     use params
     use discret
     use memory
@@ -242,8 +242,11 @@ contains
 
     integer :: i3beg,igp,imu,in,inioff,iorb,iorb1,iorb2,iorb2t,irec,ishift,iz1,iz2,k,ngrid
     real (PREC) :: crt1,crt2,ra1,ra2,r1t,r2t,vetat,vxit
+    real (PREC) :: infinity
     real (PREC), dimension(*) :: pot,f4
 
+    infinity=huge(one)
+    
     if (imethod.eq.2.or.ini.eq.4) return
 
     print *,'... initializing Coulomb potentials (effective_coulomb_charge) ...'
@@ -275,7 +278,8 @@ contains
                 pot(igp)=z1-effective_coulomb_charge(iz1,r1t)*crt1+&
                      z2-effective_coulomb_charge(iz2,r2t)*crt2
 
-                if (.not.IEEE_IS_FINITE(pot(igp))) then
+                !if (.not.IEEE_IS_FINITE(pot(igp))) then
+                if (abs(pot(igp))>infinity) then
                    print *,'initCoulombSAP',iorn(iorb),bond(iorb),imu,in,r1t,effective_coulomb_charge(iz1,r1t)
                    pot(igp)=pot(igp-1)
                 endif

@@ -20,7 +20,7 @@
 module initHyd_m
   implicit none
 contains
-  subroutine initHyd (psi,pot,excp,f2,f4,wgt2,wk0)
+  subroutine initHyd (psi,pot,excp,f4,wk0)
     use params
     use commons8
     use blas_m
@@ -33,11 +33,7 @@ contains
     integer :: i1beg,iorb,l1,l2,m1,m2,n1,n2,ngorb
     real (PREC) ez1,ez2
 
-    real (PREC), dimension(*) :: psi,pot
-    real (PREC), dimension(*) :: excp
-    real (PREC), dimension(*) :: f2,f4,wgt2
-    real (PREC), dimension(*) :: wk0
-
+    real (PREC), dimension(*) :: psi,pot,excp,f4,wk0
 
     !     Initialization of molecular orbitals
 

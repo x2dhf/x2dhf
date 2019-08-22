@@ -153,7 +153,7 @@ contains
 
        !         if (islat.ne.0) islat=0
 
-       call initHyd (cw_orb,cw_coul,cw_exch,cw_suppl(i4b(7)),cw_suppl(i4b(9)),cw_suppl(i4b(14)),cw_sctch(i5b(1)))
+       call initHyd (cw_orb,cw_coul,cw_exch,cw_suppl(i4b(9)),cw_sctch(i5b(1)))
        idump=1
        do iorb=1,norb
           inhyd(iorb)=inhydlcao(iorb)
@@ -163,13 +163,13 @@ contains
     elseif (ini.eq.11) then
 
        !        'qrhf
-       call initHF (cw_orb,cw_coul,cw_exch,cw_suppl(i4b(7)),cw_suppl(i4b(9)),cw_suppl(i4b(14)),cw_sctch(i5b(1)))
+       call initHF (cw_orb,cw_coul,cw_exch,cw_suppl(i4b(9)),cw_suppl(i4b(14)),cw_sctch(i5b(1)))
        idump=1
 
     elseif (ini.eq.12) then
 
        !        'lda
-       call initLDA (cw_orb,cw_coul,cw_exch,cw_suppl(i4b(7)),cw_suppl(i4b(9)),cw_suppl(i4b(14)),cw_sctch(i5b(1)))
+       call initLDA (cw_orb,cw_coul,cw_exch,cw_suppl(i4b(9)),cw_suppl(i4b(14)),cw_sctch(i5b(1)))
        idump=1
        
     elseif (ini.eq.2) then
@@ -205,7 +205,7 @@ contains
        !        case is being continued
 
        if (ini4.ne.0) then
-          call initHyd (cw_orb,cw_coul,cw_exch,cw_suppl(i4b(7)),cw_suppl(i4b(9)),cw_suppl(i4b(14)),cw_sctch(i5b(1)))
+          call initHyd (cw_orb,cw_coul,cw_exch,cw_suppl(i4b(9)),cw_sctch(i5b(1)))
           idump=1
        endif
 
@@ -220,7 +220,7 @@ contains
        call initDisk (cw_orb,cw_coul,cw_exch,cw_sctch(i5b(1)))
 
        if (ini4.ne.0) then
-          call initHyd (cw_orb,cw_coul,cw_exch,cw_suppl(i4b(7)),cw_suppl(i4b(9)),cw_suppl(i4b(14)),cw_sctch(i5b(1)))
+          call initHyd (cw_orb,cw_coul,cw_exch,cw_suppl(i4b(9)),cw_sctch(i5b(1)))
           idump=1
        endif
 

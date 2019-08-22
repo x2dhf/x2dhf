@@ -19,7 +19,7 @@
 module initHF_m
   implicit none
 contains
-  subroutine initHF (psi,pot,excp,f2,f4,wgt2,wk0)
+  subroutine initHF (psi,pot,excp,f4,wgt2,wk0)
     use params
     use discret
     use commons8
@@ -31,7 +31,6 @@ contains
 
     implicit none
 
-
     integer ::  igp,ihf1,ihf2,ilabel,imu,in,inioff,iord,ishift,mxmax1,mxmax2, &
          nhforb,ngridpts,nwf1,nwf2,ouf2dhf1,ouf2dhf2
     integer :: i,j,iorb,l1,m1,n1,l2,m2,n2
@@ -42,7 +41,7 @@ contains
 
     integer, dimension(nhforb) :: nhf1,lhf1,nhf2,lhf2
 
-    real (PREC), dimension(*) :: psi,pot,excp,f2,f4,wgt2,wk0
+    real (PREC), dimension(*) :: psi,pot,excp,f4,wgt2,wk0
     real (PREC), dimension(ngridpts) :: rhf1,rhf2,phf1t,phf2t
     real (PREC), dimension(nhforb) :: ehf1,qc1,ehf2,qc2
     real (PREC), dimension(nhforb,ngridpts) :: phf1,phf2
