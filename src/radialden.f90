@@ -58,7 +58,7 @@ contains
        !        internuclear axis (R/2<=z<=R_{\infty})
 
        open(iunit,file='density-B',status='replace',form='formatted')
-       call prtdenB(ione,i1mu(1),wk0,iunit)
+       call prtdenB(nni,i1mu(1),wk0,iunit)
        close(iunit)
     endif
 
