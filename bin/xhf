@@ -28,161 +28,162 @@ verbose=0
 help () {
     cat <<EOF | more
 ${bold}NAME${normal}
-      xhf - facilities the usage of the x2dhf program
+       xhf - facilities the usage of the x2dhf program
 
 ${bold}SYNOPSIS${normal}
-      xhf [-h|--help|help]
+       xhf [-h|--help|help]
 
-      xhf [-l|o|p|s|t] <input_data_prefix> [<input_file_prefix>] <output_file_prefix>
+       xhf [-l|o|p|s|t] <input_data_prefix> [<input_file_prefix>] <output_file_prefix>
 
-      xhf checkpoint|clean|stop
+       xhf checkpoint|clean|stop
 
-      xhf [-v] cp|copy <file1> <file2>
-      xhf [-v] mv|move <file1> <file2>
-      xhf [-v] rm|remove <file> 
+       xhf [-v] cp|copy <file1> <file2>
+       xhf [-v] mv|move <file1> <file2>
+       xhf [-v] rm|remove <file> 
 
-      xhf mk1dhf|mk1dlda <file1> [<file2>]
-      xhf rm1dhf|rm1dlda
+       xhf mk1dhf|mk1dlda <file1> [<file2>]
+       xhf rm1dhf|rm1dlda
 
-      xhf mkgauss <file>
-      xhf rmgauss 
+       xhf mkgauss <file>
+       xhf rmgauss 
 
-      xhf [-v] rmtmp
+       xhf [-v] rmtmp
 
-By default the program name is set to x2dhf-<input_data_prefix> and this
-name -- instead of the bare x2dhf one -- is used when running a particular
-case to help distinguish various concurrently running instances
-of the x2dhf program.
 
-The x2dhf binary itself is a hard link (by default or if option '-s' is
-used) to ../bin/x2dhf-s, i.e. the basic form of the program. However, if
-any of the options '-o|p|t' is used the x2dhf file is linked to
-../bin/x2dhf-openmp|pthread|tpool binary executables, respectively. By the
-way, if in addition option '-l' is used the x2dhf file is linked to the
-corresponding files ../bin/x2dhf-openmp|pthread|tpool-lxc.
+${bold}DESCRIPTION${normal}
+       By default the program name is set to x2dhf-<input_data_prefix> and
+       this name -- instead of the bare x2dhf one -- is used when running a
+       particular case to help distinguish various concurrently running
+       instances of the x2dhf program.
+
+       The x2dhf binary itself is a hard link (by default or if option '-s'
+       is used) to ../bin/x2dhf-s, i.e. the basic form of the
+       program. However, if any of the options '-o|p|t' is used the x2dhf
+       file is linked to ../bin/x2dhf-openmp|pthread|tpool binary
+       executables, respectively. By the way, if in addition option '-l' is
+       used the x2dhf file is linked to the corresponding files
+       ../bin/x2dhf-openmp|pthread|tpool-lxc.
 
 ${bold}OPTIONS${normal}
+       -I
+           Runs the x2dhf binary using the idle scheduling policy (SCHED_IDLE)
+           instead of the default batch one (SCHED_BATCH).
 
-      -I
-            Runs the x2dhf binary using the idle scheduling policy (SCHED_IDLE)
-            instead of the default batch one (SCHED_BATCH).
-
-      -g
-            Runs gprof to profile the x2dhf code compiled with '-pg' flag
+       -g
+           Runs gprof to profile the x2dhf code compiled with '-pg' flag
             (see the option '-g' of the x2dhfctl script).
 
-      -h|--help
-            Shows this help.
+       -h|--help
+           Shows this help.
 
-      -l
-            The hard-linked x2dhf-lxc binary is used when invoking the program
-            x2dhf; see the option '-l' of the x2dhfctl script.
+       -l
+           The hard-linked x2dhf-lxc binary is used when invoking the program
+           x2dhf; see the option '-l' of the x2dhfctl script.
 
-      -o
-            The hard-linked x2dhf-openmp binary is used when invoking the program
-            x2dhf; see the option '-o' of the x2dhfctl script. 
+       -o
+           The hard-linked x2dhf-openmp binary is used when invoking the program
+           x2dhf; see the option '-o' of the x2dhfctl script. 
 
-      -p
-            The hard-linked x2dhf-pthread binary is used when invoking the program
-            x2dhf; see the option '-p' of the x2dhfctl script. 
+       -p
+           The hard-linked x2dhf-pthread binary is used when invoking the program
+           x2dhf; see the option '-p' of the x2dhfctl script. 
 
-      -O
-            Runs the x2dhf binary using the normal scheduling policy (SCHED_OTHER)
-            instead of the default batch one (SCHED_BATCH).
+       -O
+           Runs the x2dhf binary using the normal scheduling policy (SCHED_OTHER)
+           instead of the default batch one (SCHED_BATCH).
 
-      -P
-            Show the list of pragma PRINT write statements.
+       -P
+           Show the list of pragma PRINT write statements.
 
-      -s
-            The hard-linked x2dhf-s binary is used when invoking the program x2dhf.
+       -s
+           The hard-linked x2dhf-s binary is used when invoking the program x2dhf.
 
-      -t
-            The hard-linked x2dhf-tpool binary is used when invoking the program
-            x2dhf, see the option '-t' of the x2dhfctl script. 
+       -t
+           The hard-linked x2dhf-tpool binary is used when invoking the program
+           x2dhf, see the option '-t' of the x2dhfctl script. 
 
-      -v
-            Verbose mode.
+       -v
+           Verbose mode.
 
 ${bold}POSITIONAL ARGUMENTS${normal}
 
-      xhf help
-            Prints this message.
+       xhf help
+           Prints this message.
 
-      xhf checkpoint
-            Copies 2dhf_output.* files into 2dhf_output-checkpoint.* 
+       xhf checkpoint
+           Copies 2dhf_output.* files into 2dhf_output-checkpoint.* 
 
-      xhf cp|copy <file1> <file2>
-            Copies <file1>.{dat,orb,coul,exch} files into corresponding 
-            <file2>.* ones.
+       xhf cp|copy <file1> <file2>
+           Copies <file1>.{dat,orb,coul,exch} files into corresponding 
+           <file2>.* ones.
 
-      xhf mv|move <file1> <file2>
-            Moves <file1>.{dat,orb,coul,exch} files into corresponding 
-            <file2>.* ones.
+       xhf mv|move <file1> <file2>
+           Moves <file1>.{dat,orb,coul,exch} files into corresponding 
+           <file2>.* ones.
 
-      xhf |rm remove <file> 
-            Removes <file>.{dat,orb,coul,exch} files.
+       xhf |rm remove <file> 
+           Removes <file>.{dat,orb,coul,exch} files.
 
-      xhf clean
-            Removes all orbital and potential files plus zero-size files
-            in the current directory.
+       xhf clean
+           Removes all orbital and potential files plus zero-size files
+           in the current directory.
 
-      xhf mk1dhf <file1> [<file2>]
-            Creates symbolic links 1dhf_centreA.orb and 1dhf_centreB.orb that
-            point to the <file1> and <file2> files, respectively, which contain 
-            radial orbitals for atoms A and B obtained from qrhf program; 
-            if file2 is missing file1 is used.
+       xhf mk1dhf <file1> [<file2>]
+           Creates symbolic links 1dhf_centreA.orb and 1dhf_centreB.orb that
+           point to the <file1> and <file2> files, respectively, which contain 
+           radial orbitals for atoms A and B obtained from qrhf program; 
+           if file2 is missing file1 is used.
 
-      xhf mkgauss <file>
-            Creates symbolic links gaussian.out and gaussian.pun that point 
-            to the <file>.out and <file>.pun files, respectively.
+       xhf mkgauss <file>
+           Creates symbolic links gaussian.out and gaussian.pun that point 
+           to the <file>.out and <file>.pun files, respectively.
 
-      xhf mkfinal <file1>  <file2> 
-            Creates symbolic links with prefix <files2> that point to the 
-            corresponding files with <file1> prefix. 
+       xhf mkfinal <file1>  <file2> 
+           Creates symbolic links with prefix <files2> that point to the 
+           corresponding files with <file1> prefix. 
 
-      xhf mk1dlda <file1> [<file2>]
-            Creates symbolic links 1dlda_centreA.orb and 1dlda_centreB.orb 
-            that point to the <file1> and <file2> files, respectively, 
-            with contain radial LDA orbitals for atoms A and B used to 
-            generate SAP potentials (see initLDA and sap routines for 
-            detailes); if file2 is missing file1 is used.
+       xhf mk1dlda <file1> [<file2>]
+           Creates symbolic links 1dlda_centreA.orb and 1dlda_centreB.orb 
+           that point to the <file1> and <file2> files, respectively, 
+           with contain radial LDA orbitals for atoms A and B used to 
+           generate SAP potentials (see initLDA and sap routines for 
+           detailes); if file2 is missing file1 is used.
 
-      xhf rm1dhf
-            Removes symbolic links 1dhf_centreA and 1dhf_centreB.
+       xhf rm1dhf
+           Removes symbolic links 1dhf_centreA and 1dhf_centreB.
 
-      xhf rmgauss 
-            Removes symbolic links gaussian.out and gaussian.pun.
+       xhf rmgauss 
+           Removes symbolic links gaussian.out and gaussian.pun.
 
-      xhf rm1dlda
-            Removes symbolic links 1dlda_centreA and 1dlda_centreB.
+       xhf rm1dlda
+           Removes symbolic links 1dlda_centreA and 1dlda_centreB.
 
-      xhf rmtmp
-            Removes current temporary files ($INPUT_TMP.*, $OUTPUT_TMP 
-            and fort.*). 
+       xhf rmtmp
+           Removes current temporary files ($INPUT_TMP.*, $OUTPUT_TMP 
+           and fort.*). 
 
-      xhf stop
-	    Stops a currently running x2dhf program.
+       xhf stop
+           Stops a currently running x2dhf program.
 
-      xhf tail [n]
-	    Show the last n (100 by default) lines of the newest output file 
-            (its .lst extenstion is assumed).
+       xhf tail [n]
+           Show the last n (100 by default) lines of the newest output file 
+           (its .lst extenstion is assumed).
 
+       xhf virt <file-vsigma> <file-vpi> <file-vdelta> <file-vphi>
+           Makes symbolic links of the given files with virtual orbitals 
+           to their default names
 
-      xhf virt <file-vsigma> <file-vpi> <file-vdelta> <file-vphi>
-	    Makes symbolic links of the given files with virtual orbitals 
-            to their default names
+       xhf [-l|o|p|s|t] <input_data_prefix> <output_file_prefix> 
+           Runs the x2dhf program for input data read from the
+           <input_data_prefix>.data file; orbitals and potentials are saved
+           in the <output_file_prefix>.[dat|orb|coul|exch] files.
 
-      xhf [-l|o|p|s|t] <input_data_prefix> <output_file_prefix> 
-            Runs the x2dhf program for input data read from the 
-            <input_data_prefix>.data file; orbitals and potentials are saved 
-            in the <output_file_prefix>.[dat|orb|coul|exch] files. 
-
-      xhf [-l|o|p|s|t] <input_data_prefix> <input_file_prefix> <output_file_prefix> 
-            Runs the x2dhf program for input data read from the 
-            <input_data_prefix>.data file; orbitals and potentials are retrieved 
-            from <input_file_prefix>.[dat|orb|coul|exch] files and are saved 
-            into the <output_file_prefix>.[dat|orb|coul|exch] files 
-
+       xhf [-l|o|p|s|t] <input_data_prefix> <input_file_prefix> <output_file_prefix> 
+           Runs the x2dhf program for input data read from the
+           <input_data_prefix>.data file; orbitals and potentials are
+           retrieved from <input_file_prefix>.[dat|orb|coul|exch] files and
+           are saved into the <output_file_prefix>.[dat|orb|coul|exch]
+           files
 
 ${bold}AUTHOR${normal}
        Jacek Kobus <jacek.kobus@umk.pl> 

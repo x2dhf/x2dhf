@@ -14,13 +14,11 @@ function help {
 cat <<EOF | less -r   
 
 ${bold}NAME${normal}
-      $prog - runs x2dhf for a predefined set of R values so that the
-      R-dependence of the total energy and orbital enegies can be easily
-      generated and plotted.
-
+       $prog - runs x2dhf for a predefined set of R values so that the
+       R-dependence of the total energy and orbital enegies can be easily
+       generated and plotted.
 
 ${bold}SYNOPSIS${normal}
-
        $prog -h|--help|help
 
        $prog lst|lst5|rm|status R
@@ -39,75 +37,74 @@ ${bold}SYNOPSIS${normal}
 
        $prog --plot etot|eorb [disp]
 
-
 ${bold}DESCRIPTION${normal}
+       This script can be used to automate 2D HF calculations of the
+       potential energy curve (PEC) for a given diatomic molecule.
 
-This script can be used to automate 2D HF calculations of the potential energy
-curve (PEC) for a given diatomic molecule.
+       It is assumed that this script is run in a separate directory, say,
+       lih-pec, that is going to hold 2DHF results for several internuclear
+       distances. Each set of results will be placed in separate
+       subdirectories, e.g. lih-1.0, lih-2.0, etc. (provided the TITLE card
+       reads "TITLE lih " and R values are specified as 1.0, 2.0, etc).
 
-It is assumed that this script is run in a separate directory, say, lih-pec,
-that is going to hold 2DHF results for several internuclear distances. Each set
-of results will be placed in separate subdirectories, e.g. lih-1.0, lih-2.0,
-etc. (provided the TITLE card reads, say, "TITLE lih " and R values are
-specified as 1.0, 2.0, etc).
+       This directory must contain data necessary to start the x2dhf
+       calculations. First of all it must contain input.data that will be
+       used (as the sort of a template) to perform calculation for a given
+       R value. In case 'orbpot qrhf' is specified the script expects also
+       the qrtf-a and qrhf-b files in the subdirectory, too. When 'orbpot
+       gauss' is used instead the appropriate gaussian.out and gaussian.pun
+       files should be copied there .
 
-This directory must contain data necessary to start the x2dhf
-calculations. First of all it must contain input.data that will be used (as a
-sort of template) to perform calculation for a given R value. In case 'orbpot
-qrhf' is specified the script expects also the qrtf-a and qrhf-b files in the
-subdirectory, too. When 'orbpot gauss' is used instead the appropriate
-gaussian.out and gaussian.pun files should be copied there .
+       By default the script expects to find x2dhf and xhf files in the
+       \$X2DHF_DIRECTORY/bin directory. Therefore the environment variable
+       has to be set accordingly (e.g. via `source .x2dhfrc`).
 
-By default the script expects to find x2dhf and xhf files in the
-$X2DHF_DIRECTORY/bin directory. Therefore the environment variable
-\$X2DHF_DIRECTORY has to be set accordingly.
+       In order to run a single case type:
+       # $prog init 2e0
 
-In order to run a single case type:
-# $prog init 2e0
+       To stop|continue the calculation type:
+       # $prog stop|cont 2e0
 
-To stop|continue the calculation type:
-# $prog stop|cont 2e0
+       To use the output functions of this case to start another type:
+       # $prog next 2.2e0 2e0
 
-To use the output functions of this case to start another type:
-# $prog next 2.2e0 2e0
+       Option '--all' can be used to perform certain actions for all
+       predefined set of R vales. Those are defined by adding (after the
+       stop card) the following two cards
 
-Option '--all' can be used to perform certain actions for all predefined set of
-R vales. Those are defined by adding (after the stop card) the following two 
-cards
+       rinit=1.0 1.5 
+       rnext=2.0 2.2 2.4 2.6 2.8 
+             3.0 4.0 5.0 6.0
 
-  rinit=1.0 1.5 
-  rnext=2.0 2.2 2.4 2.6 2.8 
-        3.0 4.0 5.0 6.0
+       The first is used to define those cases that will be started by
+       using the initial functions as defined by the orbpot label. The
+       second defines the cases which will use the preliminary or final
+       orbitals and potentials of the corresponding previous case (note
+       that the rnext card can be continued). That is the case R=2.0 is
+       started as soon as R=1.5 results are available, case R=2.2 when a
+       relatively stable functions for R=2.0 case are ready and so on. The
+       scfIters2wait variable determines how many SCF iterations are
+       expected to produce an output good enough to be used as a source of
+       initial orbitals and potentials for the next case.
 
-The first is used to define those cases that will be started by using the
-initial functions as defined by the orbpot label. The second defines the cases
-which will use the preliminary or final orbitals and potentials of the
-corresponding previous case (note that the rnext card can be continued). That is
-the case R=2.0 is started as soon as R=1.5 results are available, case R=2.2
-when a relatively stable functions for R=2.0 case are ready and so on. The
-scfIters2wait variable determines how many SCF iterations are expected to
-produce an output good enough to be used as a source of initial orbitals and
-potentials for the next case.
+       Just type 
+       # $prog --all init
+       to perform calculations for the (hopefully) whole set of defined R
+       values.
 
+       In order to check how the calculations proceed type
+       # $prog --all status|progress
 
+       To examine the status of a particular case use
+       # $prog status R
 
+       To examine a particular case, say R=2.4, in more detail use
+       # $prog lst 2.4
 
-Just type 
-# $prog --all init
-to perform calculations for the (hopefully) whole set of defined R values.
-
-In order to check how the calculations proceed type
-# $prog --all status|progress
-
-To examine the status of a particular case use
-# $prog status R
-
-To examine a particular case, say R=2.4, in more detail use
-# $prog lst 2.4
-
-There are several additional parameters defining the way the script works and
-plots are being generated. They are defined within the script and input data
-(consult the the script and examine test-sets/*-pec examples).
+       There are several additional parameters defining the way the script
+       works and plots are being generated. They are defined within the
+       script and input data (consult the the script and examine
+       test-sets/*-pec examples).
 
 ${bold}AUTHOR${normal}
        Jacek Kobus <jacek.kobus@umk.pl> 
@@ -115,7 +112,6 @@ ${bold}AUTHOR${normal}
 ${bold}COPYRIGHT${normal}
        SPDX-License-Identifier: GPL-2.0-or-later
        Copyright © 2023 Jacek Kobus
-
 
 EOF
 }

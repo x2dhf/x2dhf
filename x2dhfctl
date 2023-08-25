@@ -93,160 +93,157 @@ function help {
     cat <<EOF | more
 
 ${bold}NAME${normal}
-      x2dhfctl - builds (via cmake) various versions of the x2dhf program 
-                 and, if needed, also the Libxc library.
+       x2dhfctl - builds (via cmake) various versions of the x2dhf program 
+                  and, if needed, also the Libxc library.
 
 ${bold}SYNOPSIS${normal}
-     $prog help|-h|--help
+       x2dhfctl help|-h|--help
 
-     $prog [-b] [-g] [-i 8] [-l|L] [-o|p|q] [-r 16] [f95|gfortran]
-     $prog [-b] [-g] [-i 8] [-l|L] [-m] [-r 16] ifort
-     $prog log|showlog
+       x2dhfctl [-b] [-g] [-i 8] [-l|L] [-o|p|q] [-r 16] [f95|gfortran]
+       x2dhfctl [-b] [-g] [-i 8] [-l|L] [-m] [-r 16] ifort
+       x2dhfctl log|showlog
 
 ${bold}DESCRIPTION${normal}
+       This script employs the buildsystem generator CMake to facilitate the
+       building of various versions of the x2dhf program. The gfortran or
+       ifort compilers can be used. A multi-threaded versions of the program
+       can be build if the OpenMP or pthread support is available.
 
-     This script employs the buildsystem generator CMake to facilitate the
-     building of various versions of the x2dhf program. The gfortran or
-     ifort compilers can be used. A multi-threaded versions of the program
-     can be build if the OpenMP or pthread support is available.
+       The DFT support is facilitated via the libxc library. The lxcctl
+       script is provided to help test the support of the x2dhf program for
+       the various libxc functionals.
 
-     The DFT support is facilitated via the libxc library. The lxcctl
-     script is provided to help test the support of the x2dhf program for
-     the various libxc functionals.
-
-     
+       The test-sets/ directory contains the dozens of examples of the usage
+       of the program. Use testctl script to list and run the examples.
 
 ${bold}USAGE EXAMPLES${normal}
+       x2dhfctl -b [f95|gfortran]
+           Clears $BUILD/ directory and starts afresh to build a default version of
+           the x2dhf program using (by default) the gfortran compiler; the
+           executable x2dhf is copied to bin/ directory (run 'source .x2dhfrc' to
+           add \$PWD/bin to the PATH variable).
 
-     $prog -b [f95|gfortran]
-            Clears $BUILD/ directory and starts afresh to build a default version of
-            the x2dhf program using (by default) the gfortran compiler; the
-            executable x2dhf is copied to bin/ directory (run 'source .x2dhfrc' to
-            add \$PWD/bin to the PATH variable).
+       x2dhfctl -b ifort
+           Clears $BUILD/ directory and starts afresh using the ifort compiler to
+           build a default version of the x2dhf program; the executable x2dhf is
+           copied to bin/ directory.
 
-     $prog -b ifort
-            Clears $BUILD/ directory and starts afresh using the ifort compiler to
-            build a default version of the x2dhf program; the executable x2dhf is
-            copied to bin/ directory.
+       x2dhfctl -L
+           The $LIBXCVERSION version of the libxc library is downloaded to the
+           current directory, compiled and installed (see libxc/). Update the
+           value of \$LIBXCVERSION variable to install its latest version.
 
-     $prog -L
-            The $LIBXCVERSION version of the libxc library is downloaded to the
-            current directory, compiled and installed (see libxc/). Update the
-            value of \$LIBXCVERSION variable to install its latest version.
+       x2dhfctl -b -l
+           Clears $BUILD/ directory and builds afresh the x2dhf program with the
+           Libxc support added; the executable x2dhf is copied as x2dhf and
+           x2dhf-lxc to bin/ directory.
 
-     $prog -b -l
-            Clears $BUILD/ directory and builds afresh the x2dhf program with the
-            Libxc support added; the executable x2dhf is copied as x2dhf and
-            x2dhf-lxc to bin/ directory.
+       x2dhfctl -b -o
+           Clears $BUILD/ directory and builds afresh the x2dhf program with
+           the coulExchSOR and MCSOR routines parallelized using OpenMP directives.
+           The executable x2dhf is copied as x2dhf and x2dhf-openmp to bin/
+	   directory.
 
-     $prog -b -o
-            Clears $BUILD/ directory and builds afresh the x2dhf program with
-	    the coulExchSOR and MCSOR routines parallelized using OpenMP directives.
-	    The executable x2dhf is copied as x2dhf and x2dhf-openmp to bin/
-	    directory.
+       x2dhfctl -b -p
+           Clears $BUILD/ directory and builds afresh x2dhf program with the
+           multi-threaded versions of the coulExchSOR and MCSOR routines. The
+           executable x2dhf is copied as x2dhf and x2dhf-pthread to bin/
+           directory (tested on systems supporting the Native POSIX Threads
+           Library; the glibc releases 2.17 and 2.35).
 
-     $prog -b -p
-            Clears $BUILD/ directory and builds afresh x2dhf program with the
-            multi-threaded versions of the coulExchSOR and MCSOR routines. The
-            executable x2dhf is copied as x2dhf and x2dhf-pthread to bin/
-            directory (tested on systems supporting the Native POSIX Threads
-            Library; the glibc releases 2.17 and 2.35).
+       x2dhfctl -b -l -o|p
+           Clears $BUILD/ directory and builds afresh the x2dhf program with
+           LIBXC and OpenMP or pthread support added. The executable x2dhf is
+           copied as x2dhf and x2dhf-openmp-lxc (or x2dhf-pthread-lxc) to bin/
+ 	   directory.
 
-     $prog -b -l -o|p
-            Clears $BUILD/ directory and builds afresh the x2dhf program with
-	    LIBXC and OpenMP or pthread support added. The executable x2dhf is
-	    copied as x2dhf and x2dhf-openmp-lxc (or x2dhf-pthread-lxc) to bin/
-	     directory.
+       x2dhfctl -b -m ifort
+           Clears $BUILD/ directory and builds afresh the x2dhf program with the
+           coulExchSOR and MCSOR routines parallelized by means of MKL OpenMP
+           directives; the executable x2dhf is copied as x2dhf and x2dhf-mkl to
+           bin/ directory.
 
-     $prog -b -m ifort
-            Clears $BUILD/ directory and builds afresh the x2dhf program with the
-            coulExchSOR and MCSOR routines parallelized by means of MKL OpenMP
-            directives; the executable x2dhf is copied as x2dhf and x2dhf-mkl to
-            bin/ directory.
-
- 
 ${bold}OPTIONS${normal}
+       -a    
+           Switches on the '-Wall' option of the gfortran compiler.
 
-      -a    
-            Switches on the '-Wall' option of the gfortran compiler.
+       -b    
+           Starts a new build of the program by creating/cleaning $BUILD/ directory.
 
-      -b    
-            Starts a new build of the program by creating/cleaning $BUILD/ directory.
+       -B 
+           The BLAS library support is added (see blas.F90).
 
-      -B 
-            the BLAS library support is added (see blas.F90).
+       -D
+           Include additional print statements via DEBUG pragma. Use 'xhf -D' 
+           command to get the list of available printouts.
 
-      -D
-            Include additional print statements via DEBUG pragma. Use 'xhf -D' 
-            command to get the list of available printouts.
+       -e    
+           Switches on the '-ffpe-summary=none' option of the gfortran compiler.  
 
-      -e    
-            Switches on the '-ffpe-summary=none' option of the gfortran compiler.  
-
-      -f 
-            Forces the rebuilding of the libxc libraries (see -L option).
+       -f 
+           Forces the rebuilding of the libxc libraries (see -L option).
 
 
-      -g 
-            Turns on debugging options.
+       -g 
+           Turns on debugging options.
 
-      -i 8
-            Sets the length of integer variables to 8 bytes (4 is the default).
+       -i 8
+           Sets the length of integer variables to 8 bytes (4 is the default).
 
-      -l
-            The Libxc support is added provided that the libxc library is
-            available (see -L option). In addition, the x2dhf binary is saved as
-            x2dhf-lxc in bin/ directory.
+       -l
+           The Libxc support is added provided that the libxc library is
+           available (see -L option). In addition, the x2dhf binary is saved as
+           x2dhf-lxc in bin/ directory.
 
-      -L
-            The latest version of the libxc library is downloaded, compiled and
-            installed (use -f option to rebuild the library).
+       -L
+           The latest version of the libxc library is downloaded, compiled and
+           installed (use -f option to rebuild the library).
 
-      -M 
-            The Math Kernel Library support is added (requires the ifort compiler).
+       -M 
+           The Math Kernel Library support is added (requires the ifort compiler).
 
-      -o
-            OpenMP directives are included in coulExchSOR routine and the
-            relaxation of Colulomb and exchange potentials is parallelized. In
-            addition, the x2dhf binary is saved as x2dhf-openmp in bin/
-            directory.
+       -o
+           OpenMP directives are included in coulExchSOR routine and the
+           relaxation of Colulomb and exchange potentials is parallelized. In
+           addition, the x2dhf binary is saved as x2dhf-openmp in bin/
+           directory.
 
-            If the mcsor-o and mcsor-ce labels (cards) are used the relaxation of
-            orbitals and potentials is additionally parallelized since the MCSOR
-            routine is employed instead of the SOR one to relax a single
-            orbital/potential.
+           If the mcsor-o and mcsor-ce labels (cards) are used the relaxation of
+           orbitals and potentials is additionally parallelized since the MCSOR
+           routine is employed instead of the SOR one to relax a single
+           orbital/potential.
 
-      -O level
-            Set the level of optimisation (3 by default).
+       -O level
+           Set the level of optimisation (3 by default).
 
-      -p
-            Support for a multi-threaded (p-thread) version of the coulExchSORPT
-            routine is added. In addition, the x2dhf binary is saved as
-            x2dhf-pthread in bin/ directory.
+       -p
+           Support for a multi-threaded (p-thread) version of the coulExchSORPT
+           routine is added. In addition, the x2dhf binary is saved as
+           x2dhf-pthread in bin/ directory.
 
-      -P
-            Include additional print statements via the PRINT pragma. Use 
-            'xhf -P' command to get the list of available printouts.
+       -P
+           Include additional print statements via the PRINT pragma. Use 
+           'xhf -P' command to get the list of available printouts.
 
-      -r 16
-            Sets the length of floating-point numbers to 16 bytes (8 is the
-            default).
+       -r 16
+           Sets the length of floating-point numbers to 16 bytes (8 is the
+           default).
 
-      -t
-            Support for a multi-threaded (p-thread) version of coulExchSORPT and
-            MCSORPT routines is added. It is carried out through a pool of
-            pre-created threads at the beginning of the program (see
-            x2dhhf.F90). In addition, the x2dhf binary is saved as x2dhf-tpool
-            in bin/ directory.
+       -t
+           Support for a multi-threaded (p-thread) version of coulExchSORPT and
+           MCSORPT routines is added. It is carried out through a pool of
+           pre-created threads at the beginning of the program (see
+           x2dhhf.F90). In addition, the x2dhf binary is saved as x2dhf-tpool
+           in bin/ directory.
 
-      -T 0|1|2|3
-            Switches on tracing, i.e. extra printouts are included in the code
-            via TRACE, TRACE1, etc pragmas.
+       -T 0|1|2|3
+           Switches on tracing, i.e. extra printouts are included in the code
+           via TRACE, TRACE1, etc pragmas.
 
-      -X
-            Set pragma MUTEX (used in some C routines).
-      -v 
-            Turns on the verbose mode during compilation and linking. 
+       -X
+           Set pragma MUTEX (used in some C routines).
+       -v 
+           Turns on the verbose mode during compilation and linking. 
 
 ${bold}AUTHORS${normal}
        Jacek Kobus <jacek.kobus@umk.pl> 
