@@ -26,7 +26,7 @@ fi
 verbose=0
 
 help () {
-    cat <<EOF | more
+    cat <<EOF | less -r
 ${bold}NAME${normal}
        xhf - facilities the usage of the x2dhf program
 
@@ -106,7 +106,6 @@ ${bold}OPTIONS${normal}
            Verbose mode.
 
 ${bold}POSITIONAL ARGUMENTS${normal}
-
        xhf help
            Prints this message.
 

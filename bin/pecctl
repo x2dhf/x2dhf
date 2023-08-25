@@ -14,28 +14,28 @@ function help {
 cat <<EOF | less -r   
 
 ${bold}NAME${normal}
-       $prog - runs x2dhf for a predefined set of R values so that the
+       pecctl - runs x2dhf for a predefined set of R values so that the
        R-dependence of the total energy and orbital enegies can be easily
        generated and plotted.
 
 ${bold}SYNOPSIS${normal}
-       $prog -h|--help|help
+       pecctl -h|--help|help
 
-       $prog lst|lst5|rm|status R
-       $prog init R 
-       $prog stop R 
-       $prog cont R 
-       $prog next R old_R
+       pecctl lst|lst5|rm|status R
+       pecctl init R 
+       pecctl stop R 
+       pecctl cont R 
+       pecctl next R old_R
 
-       $prog --all init 
-       $prog --all stop
-       $prog --all cont
-       $prog --all lst|lst5|tot10
-       $prog --all progress|status
-       $prog --all rm|rminit|rmnext
-       $prog --all rmorbpot
+       pecctl --all init 
+       pecctl --all stop
+       pecctl --all cont
+       pecctl --all lst|lst5|tot10
+       pecctl --all progress|status
+       pecctl --all rm|rminit|rmnext
+       pecctl --all rmorbpot
 
-       $prog --plot etot|eorb [disp]
+       pecctl --plot etot|eorb [disp]
 
 ${bold}DESCRIPTION${normal}
        This script can be used to automate 2D HF calculations of the
@@ -60,13 +60,13 @@ ${bold}DESCRIPTION${normal}
        has to be set accordingly (e.g. via `source .x2dhfrc`).
 
        In order to run a single case type:
-       # $prog init 2e0
+       # pecctl init 2e0
 
        To stop|continue the calculation type:
-       # $prog stop|cont 2e0
+       # pecctl stop|cont 2e0
 
        To use the output functions of this case to start another type:
-       # $prog next 2.2e0 2e0
+       # pecctl next 2.2e0 2e0
 
        Option '--all' can be used to perform certain actions for all
        predefined set of R vales. Those are defined by adding (after the
@@ -88,18 +88,18 @@ ${bold}DESCRIPTION${normal}
        initial orbitals and potentials for the next case.
 
        Just type 
-       # $prog --all init
+       # pecctl --all init
        to perform calculations for the (hopefully) whole set of defined R
        values.
 
        In order to check how the calculations proceed type
-       # $prog --all status|progress
+       # pecctl --all status|progress
 
        To examine the status of a particular case use
-       # $prog status R
+       # pecctl status R
 
        To examine a particular case, say R=2.4, in more detail use
-       # $prog lst 2.4
+       # pecctl lst 2.4
 
        There are several additional parameters defining the way the script
        works and plots are being generated. They are defined within the
@@ -116,7 +116,7 @@ ${bold}COPYRIGHT${normal}
 EOF
 }
 
-[[ $1 == '-h' ]] && help && exit
+[[ -z "$1" || "$1" == "-h" || "$1" == "help" || "$1" == "--help" ]] && help && exit
 
 clean_exit()
 {

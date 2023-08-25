@@ -10,6 +10,9 @@
 
 testSetsDir=$X2DHF_DIRECTORY/$PWD
 
+bold=$(tput bold)
+normal=$(tput sgr0)
+
 F=
 testset=
 verbose=
@@ -21,6 +24,46 @@ debug3=
 debug4=
 debug5=
 debug6=
+
+help () {
+    cat <<EOF | less -r
+
+${bold}NAME${normal}
+       elpropctl - runs x2dhf for a predefined set of R values
+
+
+${bold}SYNOPSIS${normal}
+       elpropctl -h|--help|help
+
+       elpropctl lst|lst5|rm|status R
+       elpropctl init R 
+       elpropctl stop R 
+       elpropctl cont R 
+       elpropctl next R old_R
+
+${bold}DESCRIPTION${normal}
+       Runs x2dhf for a predefined set of R values so that the R-dependence
+       of the total energy and orbital enegies can be easily generated and
+       plotted.
+
+${bold}OPTIONS${normal}
+       -d 0|1|2|3|4|5
+           Set the level of debugging.
+
+       -f <field strength>
+          Set the strenght of the electric field in case the data is
+          not in the output.
+
+       -h|--help
+           Shows this help.
+
+       -t <test-set name>
+           Set the test-set to be used.
+
+EOF
+}      
+
+[[ -z "$1" || "$1" == "-h" || "$1" == "help" || "$1" == "--help" ]] && help && exit
 
 while getopts "d:f:ht:" option
 do
