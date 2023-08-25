@@ -10,88 +10,88 @@ function help {
     cat <<EOF
 
 ${bold}NAME${normal}
-      lxcctl - tests x2dhf support for the Libxc functionals 
+       lxcctl - tests x2dhf support for the Libxc functionals 
 
 ${bold}SYNOPSIS${normal}
+       lxcctl help|-h|--help
 
-      lxcctl help|-h|--help
+       lxcctl -s be|fh hf
+       lxcctl -s be|fh  dft xc_func
 
-      lxcctl -s be|fh hf
-      lxcctl -s be|fh  dft xc_func
+       lxcctl -s be|fh  xc_func1 [ xc_func2 [ xc_func3 [ ... ] ] ] 
+       lxcctl -s be|fh  all|lda|lda_x|gga|gga_c|gga_x|hyb_lda|hyb_gga|...
 
-      lxcctl -s be|fh  xc_func1 [ xc_func2 [ xc_func3 [ ... ] ] ] 
-      lxcctl -s be|fh  all|lda|lda_x|gga|gga_c|gga_x|hyb_lda|hyb_gga|...
+       lxcctl info xc_func
 
-      lxcctl info xc_func
+       lxcctl list
 
-      lxcctl list
-
-      lxcctl -s be|fh clean|cleanall
+       lxcctl -s be|fh clean|cleanall
 
 
 ${bold}OPTIONS${normal}
+       -f  
+           Forces solving HF equations afresh, i.e. the calculations overwrite 
+           any earlier generated orbital and potential files.
 
-      -f    Forces solving HF equations afresh, i.e. the calculations overwrite 
-            any earlier generated orbital and potential files.
+       -h   
+           Shows this help.
 
-      -h    Shows this help.
+       -n <maxscf>
+           Changes maxscf parameter from its default value of 2000 (see SCF 
+           input card of the x2dhf program).            
 
-      -n <maxscf>
-            Changes maxscf parameter from its default value of 2000 (see SCF 
-            input card of the x2dhf program).            
+       -s be|fh 
+           Selects the system for calculations; if omitted, the Be system 
+           is selected.
 
-      -s be|fh 
-            Selects the system for calculations; if omitted, the Be system 
-            is selected.
-
-      -v    Verbose mode.
+       -v
+           Verbose mode.
 
 
 ${bold}USAGE EXAMPLES${normal}
+       lxcctl -s be|fh hf
+           Runs the x2dhf program to generate HF orbitals and potentials for 
+           the Be or FH system.
 
-      lxcctl -s be|fh hf
-            Runs the x2dhf program to generate HF orbitals and potentials for 
-            the Be or FH system.
+       lxcctl dft xc_func
+           Starts x2dhf to performs DFT calculations for the selected functional 
+           and the default Be system.
 
-      lxcctl dft xc_func
-            Starts x2dhf to performs DFT calculations for the selected functional 
-            and the default Be system.
+       lxcctl -s be|fh status|tail
+           Shows the progress of the running program.
 
-      lxcctl -s be|fh status|tail
-            Shows the progress of the running program.
+       lxcctl stop
+           Stops the running program.
 
-      lxcctl stop
-            Stops the running program.
+       lxcctl xc_func1 [ xc_func2 [ xc_func3 [ ... ] ] ] 
+           Calculates energy contribution(s) for selected Libxc functional(s)
+           employing the electron density of the Be system.
 
-      lxcctl xc_func1 [ xc_func2 [ xc_func3 [ ... ] ] ] 
-            Calculates energy contribution(s) for selected Libxc functional(s)
-            employing the electron density of the Be system.
+       lxcctl -s fh |lda|lda_x|gga|gga_c|gga_x|hyb_lda|hyb_gga|...
+           Calculates energy contributions for specified subset of Libxc 
+           functionals employing the FH electron density.
 
-      lxcctl -s fh |lda|lda_x|gga|gga_c|gga_x|hyb_lda|hyb_gga|...
-            Calculates energy contributions for specified subset of Libxc 
-            functionals employing the FH electron density.
+       lxcctl -s fh all
+           Calculates energy contributions for all functionals defined in 
+           include/xc_funcs.h employing the FH electron density.
 
-      lxcctl -s fh all
-            Calculates energy contributions for all functionals defined in 
-            include/xc_funcs.h employing the FH electron density.
+       lxcctl list 
+           Lists all the functionals from Libxc library that are supported 
+           by x2dhf program.
 
-      lxcctl list 
-            Lists all the functionals from Libxc library that are supported 
-            by x2dhf program.
+       lxcctl info
+           Outputs information from xc-info program about all supported 
+           functionals (xc-info needs include/xc_funcs.h).
 
-      lxcctl info
-            Outputs information from xc-info program about all supported 
-            functionals (xc-info needs include/xc_funcs.h).
+       lxcctl info xc_func
+           Outputs information from xc-info program about xc_func functional. 
 
-      lxcctl info xc_func
-            Outputs information from xc-info program about xc_func functional. 
+       lxcctl clean 
+           Removes all the $system-lxc*.lst files.
 
-      lxcctl clean 
-            Removes all the $system-lxc*.lst files.
-
-      lxcctl cleanall 
-            Removes all *.lst, *.dat, *.orb, *.coul and *.exch files from
-            the current directory.
+       lxcctl cleanall 
+           Removes all *.lst, *.dat, *.orb, *.coul and *.exch files from
+           the current directory.
 
  
 ${bold}AUTHOR${normal}
