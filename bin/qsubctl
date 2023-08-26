@@ -1,17 +1,28 @@
 #!/bin/bash
 
+bold=$(tput bold)
+normal=$(tput sgr0)
+
 help() {
     cat <<EOF
-Usage: $(basename $0) -s|status 
-       $(basename $0) -q|queue 
-       $(basename $0) <test-set-id>
 
+${bold}NAME${normal}
+       qsubctl - submit a job to a PBS system
 
-Available queues on the gateway server:	  
-   small - 5 nodes, 64GB RAM each
-  medium - 7 nodes, 128GB RAM each
-   large - 9 nodes, 512GB RAM each
-     gpu - 2 nodes, 64GB RAM plus 2 A40 GPU cards per node
+${bold}SYNOPSIS${normal}
+       qsubctl -h|--help|help
+
+       qsubctl -s|status                                                                                     
+       qsubctl -q|queue                                                                                      
+       qsubctl <test-set-id> 
+
+${bold}AUTHOR${normal}
+       Jacek Kobus <jacek.kobus@umk.pl> 
+
+${bold}COPYRIGHT${normal}
+       SPDX-License-Identifier: GPL-2.0-or-later
+       Copyright © 2023 Jacek Kobus
+
 EOF
     exit
 }
@@ -50,9 +61,9 @@ cat <<EOF > /tmp/$job
 ##PBS -q medium
 #PBS -q small
 
-cd $HOME/github/x2dhf-v3/
+cd $HOME/github/2DHF/
 source .x2dhfrc
-cd $HOME/github/x2dhf-v3/tests
+cd $HOME/github/2DHF/tests
 testctl run $test
 EOF
 
@@ -60,26 +71,6 @@ qsub /tmp/$job
 
 exit
 
-
-cat <<EOF > /tmp/$job
-#PBS -m be
-#PBS -k oe
-#PBS -l nodes=1:ppn=12
-#PBS -l mem=20000mb
-#PBS -l walltime=200:0:0
-#PBS -N $job
-##PBS -q tasq
-#PBS -q small
-
-cd $HOME/github/x2dhf-v3/
-source .x2dhfrc
-cd $HOME/github/x2dhf-v3/tests/o2-elprop/set-01
-xhf input-1 output output-1 > current-1.lst 
-EOF
-
-qsub /tmp/$job
-
-exit
 
 
 
