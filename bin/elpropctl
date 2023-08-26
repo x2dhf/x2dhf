@@ -8,7 +8,7 @@
 # SPDX-License-Identifier: GPL-2.0+
 # Copyright (C) 2002-2023 Jacek Kobus 
 
-testSetsDir=$X2DHF_DIRECTORY/$PWD
+testSetsDir=$PWD
 
 bold=$(tput bold)
 normal=$(tput sgr0)
@@ -26,44 +26,85 @@ debug5=
 debug6=
 
 help () {
-    cat <<EOF | less -r
+    cat <<EOF 
 
 ${bold}NAME${normal}
-       elpropctl - runs x2dhf for a predefined set of R values
-
+       elpropctl - calculates (hyper)polarizabilities from x2dhf output data
 
 ${bold}SYNOPSIS${normal}
        elpropctl -h|--help|help
 
-       elpropctl lst|lst5|rm|status R
-       elpropctl init R 
-       elpropctl stop R 
-       elpropctl cont R 
-       elpropctl next R old_R
+       elpropctl [-d] [-f <F>] [-t <test-sets dirname>]
 
 ${bold}DESCRIPTION${normal}
-       Runs x2dhf for a predefined set of R values so that the R-dependence
-       of the total energy and orbital enegies can be easily generated and
-       plotted.
+       This script facilitates the calculation of polarizabilities and
+       hyperpolarizabilities from a series of calculations performed by
+       the x2dhf program by means of the elprop.pl script.  
+
+       The usage of the script is as follows:
+
+         elprop.pl [--field=F] file_m2 file_m1 file_p0 file_p1 file_p2 \\
+                                               [--deltae=f] [--deltaq=f]
+
+         elprop.pl [--field=F] --homo file_m2 file_m1 file_p0 \\
+                                               [--deltae=f] [--deltaq=f] 
+
+       where file_i are output files from the x2dhf program corresponding
+       to calculations with the external finite electric field strengths
+       -2F, -F, 0, +F and +2F, respectively. If possible, the F value is
+       extracted from the second of these files. Otherwise it must be
+       defined using the long option 'field'. For homonuclear systems
+       calculations for the -2F, -F and 0 field values need only be
+       performed. However, if available, results for the +F and +2F field
+       strengths are used to assess the accuracy of total energies and
+       multipole moments (see below).
+
+       In order to assess the accuracy of calculated electric properties
+       provide relative errors of total energies (deltae) and dipole
+       moments (deltaq).
+
+       The derivatives are evaluated by means of the 3 and 5-point central
+       differences formulae in order to assess the accuracy of calculations.
+
 
 ${bold}OPTIONS${normal}
-       -d 0|1|2|3|4|5
-           Set the level of debugging.
+       -d 1|2|3|4|5
+           Sets the level of debugging messages
 
-       -f <field strength>
-          Set the strenght of the electric field in case the data is
-          not in the output.
+       -f F
+           Sets the value of the '--field' option.
 
        -h|--help
            Shows this help.
 
-       -t <test-set name>
-           Set the test-set to be used.
+       -t <dirname>
+           Output files are taken not from the current directory (the default)
+           but form \$X2DHF_DIRECTORY/test-sets/<dirname> one.
+
+${bold}USAGE EXAMPLES${normal}
+       test-sets/ directory has many subdirectories of the form
+       <system>-elprop which contain output files necessary for calculating
+       electric properties. For example,  
+
+         elpropctl -t he-elprop
+
+         elpropctl -t ne-elprop
+
+         elpropctl -t kf-elprop
+
+${bold}AUTHOR${normal}
+       Jacek Kobus <jacek.kobus@umk.pl> 
+
+${bold}COPYRIGHT${normal}
+       SPDX-License-Identifier: GPL-2.0-or-later
+       Copyright © 1996-2023 Jacek Kobus
+
 
 EOF
+
 }      
 
-[[ -z "$1" || "$1" == "-h" || "$1" == "help" || "$1" == "--help" ]] && help && exit
+[[ "$1" == "-h" || "$1" == "help" || "$1" == "--help" ]] && help && exit
 
 while getopts "d:f:ht:" option
 do
@@ -87,7 +128,7 @@ done
 shift $((OPTIND-1))
 
 # It is assumed that the results of calculations for various values of the
-#   external electric field are stored according to the scheme
+# external electric field are stored according to the scheme
 
 #   0   set-01
 #  -F   set-02    
@@ -95,7 +136,10 @@ shift $((OPTIND-1))
 #  +F   set-04    
 # +2F   set-05    
 
-
+if [[ $testSetsDir =~ test-sets ]]
+then
+    lst=reference.lst
+fi
 
  res_0=${testSetsDir}/set-01/$lst
 res_m1=${testSetsDir}/set-02/$lst

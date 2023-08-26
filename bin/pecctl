@@ -14,9 +14,7 @@ function help {
 cat <<EOF | less -r   
 
 ${bold}NAME${normal}
-       pecctl - runs x2dhf for a predefined set of R values so that the
-       R-dependence of the total energy and orbital enegies can be easily
-       generated and plotted.
+       pecctl - runs x2dhf for a predefined set of R values
 
 ${bold}SYNOPSIS${normal}
        pecctl -h|--help|help
@@ -39,7 +37,10 @@ ${bold}SYNOPSIS${normal}
 
 ${bold}DESCRIPTION${normal}
        This script can be used to automate 2D HF calculations of the
-       potential energy curve (PEC) for a given diatomic molecule.
+       potential energy curve (PEC) for a given diatomic molecule.  It runs
+       x2dhf for a predefined set of R values so that the R-dependence of
+       the total energy and orbital enegies can be easily generated and
+       plotted.
 
        It is assumed that this script is run in a separate directory, say,
        lih-pec, that is going to hold 2DHF results for several internuclear
@@ -56,8 +57,8 @@ ${bold}DESCRIPTION${normal}
        files should be copied there .
 
        By default the script expects to find x2dhf and xhf files in the
-       \$X2DHF_DIRECTORY/bin directory. Therefore the environment variable
-       has to be set accordingly (e.g. via `source .x2dhfrc`).
+       ./bin directory. Therefore the environment variable has to be set
+       accordingly (e.g. via `source .x2dhfrc`).
 
        In order to run a single case type:
        # pecctl init 2e0
