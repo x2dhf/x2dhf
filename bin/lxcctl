@@ -7,7 +7,7 @@
 
 function help {
 
-    cat <<EOF
+    cat <<EOF |less -r
 
 ${bold}NAME${normal}
        lxcctl - tests x2dhf support for the Libxc functionals 
@@ -100,7 +100,6 @@ ${bold}AUTHOR${normal}
 ${bold}COPYRIGHT${normal}
        SPDX-License-Identifier: GPL-2.0-or-later
        Copyright © 2023 Jacek Kobus
-
 EOF
     exit
     

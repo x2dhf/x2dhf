@@ -26,7 +26,7 @@ debug5=
 debug6=
 
 help () {
-    cat <<EOF 
+    cat <<EOF | less -r
 
 ${bold}NAME${normal}
        elpropctl - calculates (hyper)polarizabilities from x2dhf output data
@@ -98,8 +98,6 @@ ${bold}AUTHOR${normal}
 ${bold}COPYRIGHT${normal}
        SPDX-License-Identifier: GPL-2.0-or-later
        Copyright © 1996-2023 Jacek Kobus
-
-
 EOF
 
 }      

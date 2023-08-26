@@ -28,55 +28,53 @@ function help {
     cat <<EOF | less -r
 
 ${bold}NAME${normal}
-      $(basename $0) - runs x2dhf for a predefined test set to check the correctness
-      of the program.
+       testctl - runs x2dhf for a predefined test set to check the correctness
+       of the program.
 
 ${bold}SYNOPSIS${normal}
+       testctl help|-h|--help
 
-      $prog help|-h|--help
+       testctl [-s] info
 
-      $prog [-s] info
+       testctl list [regexp]
 
-      $prog list [regexp]
+       testctl log
 
-      $prog log
+       testctl cat|catc|catr <test-set-id>
 
-      $prog cat|catc|catr <test-set-id>
+       testctl run <test-set-id>
 
-      $prog run <test-set-id>
+       testctl runall [regexp]
 
-      $prog runall [regexp]
+       testctl save <test-set-id>
 
-      $prog save <test-set-id>
-
-      $prog [-D1|2|3|4|5|6] elprop [<test-set>]
+       testctl [-D1|2|3|4|5|6] elprop [<test-set>]
 
 ${bold}USAGE EXAMPLES${normal}
+       Below <test-set-id> corresponds to a particular test found in
+       test-set directory, e.g. be/set-01, be/set-02 or licl/set-01.
+       <test-set> corresponds to the name a subdirectory, e.g. licl or o2.  
 
-      Below <test-set-id> corresponds to a particular test found in
-      test-set directory, e.g. be/set-01, be/set-02 or licl/set-01.
-      <test-set> corresponds to the name a subdirectory, e.g. licl or o2.  
+       testctl cat|catc <test-set-id> [current.lst]
+           Shows the output of the currently running or completed case.
 
-      $prog cat|catc <test-set-id> [current.lst]
-            Shows the output of the currently running or completed case.
+       testctl catr <test-set-id> [reference.lst]
+           Shows the reference output of the currently running or completed case.
 
-      $prog catr <test-set-id> [reference.lst]
-            Shows the reference output of the currently running or completed case.
+       testctl data <test-set-id>
+           Display the content of the input data for a given test.
 
-      $prog data <test-set-id>
-            Display the content of the input data for a given test.
+       testctl [-D2] elprop [<test-set>]
+           Use the reference outputs for different fefield values and
+           elprop.pl script to calculate various electrical properties of
+           a given system, if specified, or use the output data from
+           set-01, set-02, ..., set-05 subdirectories of a current
+           directory, otherwise. Add -D2 option to get an assesment of the
+           accuracy of the propeties.
 
-      $prog [-D2] elprop [<test-set>]
-            Use the reference outputs for different fefield values and
-            elprop.pl script to calculate various electrical properties of
-            a given system, if specified, or use the output data from
-            set-01, set-02, ..., set-05 subdirectories of a current
-            directory, otherwise. Add -D2 option to get an assesment of the
-            accuracy of the propeties.
-
-	    It is assumed that the results of calculations for various
-            values of the external electric field are stored according to
-            the scheme:
+           It is assumed that the results of calculations for various
+           values of the external electric field are stored according to
+           the scheme:
 
                0   set-01
               -F   set-02    
@@ -84,82 +82,80 @@ ${bold}USAGE EXAMPLES${normal}
               +F   set-04    
              +2F   set-05    
 
-      $prog info 
-            Outputs information about all available test sets.
+       testctl info 
+           Outputs information about all available test sets.
 
-      $prog [-s] info <test-set-id> | <perl-regexp>
-            Outputs information about <test-set-id> test set or a selected test
-            or tests' names matching a given Perl regular expression.
-            If option '-s' is used the status ("ready" or "unknown") is also given.
+       testctl [-s] info <test-set-id> | <perl-regexp>
+           Outputs information about <test-set-id> test set or a selected test
+           or tests' names matching a given Perl regular expression.
+           If option '-s' is used the status ("ready" or "unknown") is also given.
 
-      $prog list [<perl-regexp>]
-            Lists all available test sets or their subset selected by a given 
-            Perl-compatible regular expression (PCRE).
+       testctl list [<perl-regexp>]
+           Lists all available test sets or their subset selected by a given 
+           Perl-compatible regular expression (PCRE).
 
-      $prog lst <test-set-id>
-            Display the content of the reference output for a given test.
+       testctl lst <test-set-id>
+           Display the content of the reference output for a given test.
 
-      $prog ready <test-set-id>
-            Creates the status file (named 'status') with the message:
+       testctl ready <test-set-id>
+           Creates the status file (named 'status') with the message:
               ready ($(date "+%Y-%m-%d %H:%M:%S"))
 
-      $prog run <test-set-id>
-            Runs a given test.
+       testctl run <test-set-id>
+           Runs a given test.
 
-      $prog [-d] runall [<perl-regexp>]
-            Runs all available test sets or their subset selected by a given 
-            Perl-compatible regular expression (PCRE).
+       testctl [-d] runall [<perl-regexp>]
+           Runs all available test sets or their subset selected by a given 
+           Perl-compatible regular expression (PCRE).
 
+       testctl save <test-set-id>
+           Saves the output of a given test to its "home" directory.
 
-      $prog save <test-set-id>
-            Saves the output of a given test to its "home" directory.
+       testctl stop
+           Stops the x2dhf program.
 
-      $prog stop
-            Stops the x2dhf program.
+       testctl summary
+           Displays the content of the reference-result.log and
+           current-result.log files, i.e. the information printed upon
+           complition of a test run.
 
-      $prog summary
-            Displays the content of the reference-result.log and
-            current-result.log files, i.e. the information printed upon
-            complition of a test run.
-
-      $prog tail <test-set-id>
-            Shows the progress of the running program by printing the last
-            20 lines of current.lst.
+       testctl tail <test-set-id>
+           Shows the progress of the running program by printing the last
+           20 lines of current.lst.
 
 
 ${bold}OPTIONS${normal}
+       -b jobfile
+           Run $0 for a number of tests specified in a jobfile. 
 
-      -b jobfile
-         Run $0 for a number of tests specified in a jobfile. 
+       -c
+           Upon completion of the test its working directory
+           <test-set-id> is removed.
 
-      -c
-         Upon completion of the test its working directory
-         <test-set-id> is removed.
+       -C
+           Removes all test directories.
 
-      -C
-         Removes all test directories.
+       -d
+           Use the 'dry-run' mode.
 
-      -d
-         Use the 'dry-run' mode.
+       -D 1|2|3|4|5|6
+           Pass "--debug1", "--debug2", ... option to elprop.pl script.
 
-      -D 1|2|3|4|5|6
-         Pass "--debug1", "--debug2", ... option to elprop.pl script.
+       -h
+           Shows this help.
 
-      -h
-         Shows this help.
+       -p <test-set-id>
+           Copies orbitals and potentials from already completed test <test-set-id>
+           into the current one.
 
-      -p <test-set-id>
-         Copies orbitals and potentials from already completed test <test-set-id>
-         into the current one.
+       -q
+           The qsubctl script is used to submit the job to a PBS server.
 
-      -q
-         The qsubctl script is used to submit the job to a PBS server.
+       -s
+           Shows the status of a test (ready/unknown) when displaying the test info.
 
-      -s
-         Shows the status of a test (ready/unknown) when displaying the test info.
-
-      -v
-         Verbose mode.
+       -v
+           Verbose mode.
 
 ${bold}AUTHOR${normal}
        Jacek Kobus <jacek.kobus@umk.pl> 
@@ -167,7 +163,6 @@ ${bold}AUTHOR${normal}
 ${bold}COPYRIGHT${normal}
        SPDX-License-Identifier: GPL-2.0-or-later
        Copyright © 2023 Jacek Kobus
-
 EOF
     exit
     
@@ -496,7 +491,7 @@ function actionRunAll {
 			#echo $system/$set
 			#separator $sepCount >> $log
 			separator $sepCount $system/$set 
-			#2>1 $prog run $system/$set >> $log
+			#2>1 testctl run $system/$set >> $log
 			if [[ -z $qsub ]]
 			then
 			    $dryrun $0 run $system/$set
@@ -993,14 +988,14 @@ then
 
     for i in  ${testSets[@]}
     do
-	./$prog info $i
-	./$prog run $i
+	./testctl info $i
+	./testctl run $i
 	echo ""
     done
     exit
 fi
 
-echo "Error: unknown action $1 ... see $prog -h ..."
+echo "Error: unknown action $1 ... see testctl -h ..."
 
 exit
 
