@@ -40,7 +40,7 @@ PROGRAM  x2dhf
   integer (KIND=IPREC) :: max_num_threads_coulexch
   real (PREC) :: trelaxReal
   data i4,i8/4,8/
-  
+
 #if defined TPOOL  
   interface
      subroutine tpoolStop4mcsor ( cnthreads ) bind(c,name='tpoolStop4mcsor_')
@@ -172,6 +172,7 @@ PROGRAM  x2dhf
 
   call initArrays (supplptr,sorptr)
 
+
 #if ( defined PTHREAD )
   write(*,'("   PTHREAD: ",i2," extra threads (at most) will be used for ",&
        "relaxing Coulomb/exchange potentials")') maxpots     
@@ -181,7 +182,8 @@ PROGRAM  x2dhf
   endif
 #endif
 
-#if defined TPOOL  
+ 
+#if ( defined TPOOL )  
   ! nthreads determine how many threads are to be used when the
   ! parallelised version of the MCSOR method is used.
   if (lmcsorpt) then
@@ -197,7 +199,8 @@ PROGRAM  x2dhf
 
   call printCase
   call initOrbPot 
-  call scf 
+  call prepSCF
+  call SCF 
   call printResults 
 
   deallocate(orbptr)
