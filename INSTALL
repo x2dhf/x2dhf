@@ -7,8 +7,7 @@ The fresh installation is very simple: just run `./x2dhfctl -b` (see
 `./x2dhfctl -h` for more options). This will compile and build the program
 and install it in the ./bin directory.
 
-By default x2dhf is compiled using gfortran with '-O3' optimization flag.
+By default x2dhf is compiled using gfortran with '-O2' optimization flag.
 If you want to turn on all warnings, run `./x2dhf -b -a`.
-
 
 

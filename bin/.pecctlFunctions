@@ -50,19 +50,35 @@ function cont {
     runNext
 }
 
-
-
 function contALL {
 
     if [[ "$1" == "init" ]]
     then
 	shift
-
 	for r in $rinit
 	do
 	    newR=$r
 	    newDir=$system-$newR
-	    runInit
+
+	    if [[ -f $newDir/.status ]]; then
+		status=$(cat $newDir/.status)
+	    else
+		status=
+	    fi
+	    if [[ $status == "$message1" || $status == "$message5" ]]
+	    then
+		#lst=$pwd/$newDir/$system-$newR-$method-*.lst 	
+		nan=$(grep -P '(phi|delta|pi|sigma).*NaN' $newDir/$system-$newR*.lst)
+		if [[ -z $nan ]] 
+		then
+		    continue 
+		else
+		    echo "NaN detected in $lst ... quitting ..." 
+		    exit 1
+		fi    
+	    else
+		runInit
+	    fi
     	done 
 
 	oldR=$(echo $rinit | gawk '{print $NF}')
@@ -77,9 +93,8 @@ function contALL {
 	    else
 		status=
 	    fi
-#	    [[ "$status" == "running" ]] && echo "... already running for $oldR ..." 
-#	    [[ "$status" == "... orbital normalization threshold reached ..." ]] && echo "... already finished for $old ..." 
-	    
+	    #[[ "$status" == "running" ]] && echo "... already running for oldR ..." && exit 0
+						 
 	    if [[ -f $newDir/.status ]]
 	    then
 		status=$(cat $newDir/.status)
@@ -94,7 +109,7 @@ function contALL {
 		echo "... already finished for $newDir... quitting ..." && exit
             [[ "$status" == "NaN" ]] && echo "... NaNs found in $newDir ... quitting ..." && exit
 
-	    fwait 
+	    fwait
 	    runNext 
 	    oldR=$newR
 	    oldDir=$system-$oldR
@@ -102,9 +117,9 @@ function contALL {
 	exit
     fi
 
+    
     if [[ "$1" == "cont" ]]
     then
-
 	for r in $rinit
 	do
 	    newR=$r
@@ -119,6 +134,8 @@ function contALL {
 	    else
 		status=
 	    fi
+	    
+	    [[ "$status" == "completed" ]] && continue
 
 	    [[ "$status" == "running" ]] && \
 		echo "... already running for $newR ..." && continue 
@@ -153,7 +170,7 @@ function contALL {
             [[ "$status" == "NaN" ]] && echo "... NAN detected for $newR ..." && continue 
 
 	    runNext
-	    oldR=$newR
+	    oldR=$newR	    
 	done 
     fi
 
@@ -333,11 +350,6 @@ function progress {
     grep '/overlap' $newest | tail -n $ntail4progress
     echo
     cd - >& /dev/null
-
-
-
-
-
 }
 
 
@@ -443,17 +455,12 @@ function final {
     cd - >& /dev/null
 }
 
-
-
-
-
 function ftop {
     ps -elf | grep x2dhf-$system | grep -v grep
 }
 
 
 function fwait {
-
     maxwait=5
     for (( i=1; i<=$maxwait; i++ )); do 
 	if [[ ! -f $oldDir/.status ]]
@@ -465,7 +472,7 @@ function fwait {
 	fi
     done
 
-    stat=$(grep -iP "$message2|$message3|$message4" $oldDir/.status)
+    stat=$(grep -iP "$message2|$message3|$message4|$message5" $oldDir/.status)
     [[ -n $stat ]] && return
 
     stat=$(grep -iP "$message1" $oldDir/.status)
@@ -495,7 +502,11 @@ function init {
 	status=
     fi
 
-    [[ "$status" == "$message1" ]] && echo "... already running ... quitting ..." && exit
+    if [[ "$status" == "$message1" ]] 
+    then
+	[[ -z $omega ]] && echo "... already running ... quitting ..." && exit
+    fi
+
     if [[ "$optFORCE" == "no" ]]
     then 
 	[[ "$status" == "$message2"  || "$status" == "$message3" ]] \
@@ -505,6 +516,332 @@ function init {
 
     runInit $newR
 }
+
+function runOmega1 {
+    newR=$1
+    case=$2
+    newDir=$system-$case
+    inputData=input.data
+    if [[ -f $newDir/.status ]]
+    then
+	status=$(cat $newDir/.status)
+    else
+	status=
+    fi
+
+#     if [[ "$status" == "$message5" && $optFORCE == "no" ]]
+#     then
+# 	if [[ -z $omega ]]
+# 	then
+# 	    cat <<EOF 
+# ... status: completed ... 
+# ... use '--force' to reuse $newDir ...
+# EOF
+# 	    exit
+# 	fi
+#     fi
+    
+    if [[ "$status" == "$message1" ]] 
+    then
+	[[ -z $omega ]] && echo "... already running ... quitting ..." && exit
+    fi
+
+    if [[ "$optFORCE" == "no" ]]
+    then 
+	[[ "$status" == "$message2"  || "$status" == "$message3" || "$status" == "$message5" ]] \
+	    &&  echo "... already finished ... use '--force' to run this case " && exit
+    fi
+
+    #   - creates $system-$newR subdirectory
+    #   - creates input data file 
+    #   - performs initial run to obtain fairly good solution
+
+    [[ ! -d $pwd/$newDir ]] &&  mkdir $pwd/$newDir
+    cd $newDir >& /dev/null
+    resetCounter
+    genInputData  
+    input=$(basename -s .data $inputData)
+    setTarget
+
+    cat <<EOF > run4$method	
+     	xhf $input $target > $system-$newR.lst
+	echo "completed" > .status
+        rm -f .pid
+EOF
+
+    chmod +x run4$method
+
+    if [[ -z $optFG ]]
+    then
+	./run4$method &
+    else
+	./run4$method 
+    fi
+    
+    sleep $delay
+    jobname=x2dhf-$system.*\-$newR
+    pid=$(pgrep -f $jobname)
+    if [[ -n $pid ]]
+    then
+	echo "running" > .status
+	echo "$pid" > .pid 
+    fi
+    if [[ -z $omega ]]
+    then
+	printf "%12s %-40s\n"  "$newR:   " "A running"
+    else
+	printf "%12s %-40s\n"  "$newDir:   " "running"
+    fi
+    
+    cd - >& /dev/null
+}
+
+
+
+function runOmega1qsub {
+    newR=$1
+    case=$2
+    newDir=$system-$case
+    inputData=input.data
+    if [[ -f $newDir/.status ]]
+    then
+	status=$(cat $newDir/.status)
+    else
+	status=
+    fi
+
+    if [[ "$status" == "$message1" ]] 
+    then
+	echo "... already running ... quitting ..." && exit
+    fi
+
+    if [[ -z "$optFORCE" && "$status" == "$message5" ]]
+
+    then
+	echo "... already completed ... skipping ..."
+        echo "... use '--force' to run this case again " 
+    fi
+    
+    if [[ "$optFORCE" == "no" ]]
+    then 
+	[[ "$status" == "$message2"  || "$status" == "$message3" ]] \
+	    &&  echo "... already finished ... use '--force' to run this case " && exit
+    fi
+
+    #   - creates $system-$newR subdirectory
+    #   - creates input data file 
+    #   - performs initial run to obtain fairly good solution
+
+    [[ ! -d $pwd/$newDir ]] &&  mkdir $pwd/$newDir
+    cd $newDir >& /dev/null
+    resetCounter
+    genInputData  
+    input=$(basename -s .data $inputData)
+    setTarget
+
+    cat <<EOF > run4$method	
+     	xhf $input $target > $system-$newR.lst
+	echo "completed" > .status
+        rm -f .pid
+EOF
+
+job=$(mktemp)
+
+cat <<EOF > $job
+#PBS -m be
+#PBS -k oe
+#PBS -l nodes=$nodes:ppn=$ppn
+#PBS -l mem=$memory
+#PBS -l walltime=$walltime
+#PBS -N $job
+#PBS -q $queue
+
+cd $X2DHF_DIRECTORY
+source .x2dhfrc
+cd $PWD4OMEGACTL/$newDir
+bash ./run4$method
+
+EOF
+
+qsub $job
+
+    sleep $delay
+    jobname=x2dhf-$system.*\-$newR
+    pid=$(pgrep -f $jobname)
+    if [[ -n $pid ]]
+    then
+	echo "running" > .status
+	echo "$pid" > .pid 
+    fi
+    if [[ -z $omega ]]
+    then
+	printf "%12s %-40s\n"  "$newR:   " "A running"
+    else
+	printf "%12s %-40s\n"  "$newDir:   " "running"
+    fi
+    
+    cd - >& /dev/null
+}
+
+
+
+function runOmega2 {
+    newR=$1
+    case=$2
+    newDir=$system-$case
+    inputData=input.data
+    if [[ -f $newDir/.status ]]
+    then
+	status=$(cat $newDir/.status)
+    else
+	status=
+    fi
+
+    if [[ "$status" == "$message1" ]] 
+    then
+	[[ -z $omega ]] && echo "... already running ... quitting ..." && exit
+    fi
+
+    if [[ "$optFORCE" == "no" ]]
+    then 
+	[[ "$status" == "$message2"  || "$status" == "$message3" ]] \
+	    &&  echo "... already finished ... use '--force' to run this case " && exit
+    fi
+    
+    #   - creates $system-$newR subdirectory
+    #   - creates input data file 
+    #   - performs further iterations obtain a better solution
+
+    [[ ! -d $pwd/$newDir ]] &&  mkdir $pwd/$newDir
+    cd $newDir >& /dev/null
+    resetCounter
+    genInputData  
+    input=$(basename -s .data $inputData)
+    #setSource
+    setTarget
+
+    cat <<EOF > run4$method
+        ln -s ../old.* . >& /dev/null
+     	xhf $input old $target > $system-$newR.lst
+	echo "completed" > .status
+        rm -f .pid
+EOF
+
+    chmod +x run4$method
+
+    if [[ -z $optFG ]]
+    then
+	./run4$method &
+    else
+	./run4$method 
+    fi
+
+    sleep $delay
+    jobname=x2dhf-$system.*\-$newR
+    pid=$(pgrep -f $jobname)
+    if [[ -n $pid ]]
+    then
+	echo "running" > .status
+	echo "$pid" > .pid 
+    fi
+    if [[ -z $omega ]]
+    then
+	printf "%12s %-40s\n"  "$newR:   " "A running"
+    else
+	printf "%12s %-40s\n"  "$newDir:   " "running"
+    fi
+    
+    cd - >& /dev/null
+}
+
+
+
+function runOmega2qsub {
+    newR=$1
+    case=$2
+    newDir=$system-$case
+    inputData=input.data
+    if [[ -f $newDir/.status ]]
+    then
+	status=$(cat $newDir/.status)
+    else
+	status=
+    fi
+
+    if [[ "$status" == "$message1" ]] 
+    then
+	[[ -z $omega ]] && echo "... already running ... quitting ..." && exit
+    fi
+
+    if [[ "$optFORCE" == "no" ]]
+    then 
+	[[ "$status" == "$message2"  || "$status" == "$message3" ]] \
+	    &&  echo "... already finished ... use '--force' to run this case " && exit
+    fi
+    
+    #   - creates $system-$newR subdirectory
+    #   - creates input data file 
+    #   - performs further iterations obtain a better solution
+
+    [[ ! -d $pwd/$newDir ]] &&  mkdir $pwd/$newDir
+    cd $newDir >& /dev/null
+    resetCounter
+    genInputData  
+    input=$(basename -s .data $inputData)
+    #setSource
+    setTarget
+
+    cat <<EOF > run4$method
+        ln -s ../old.* . >& /dev/null
+     	xhf $input old $target > $system-$newR.lst
+	echo "completed" > .status
+        rm -f .pid
+EOF
+
+    chmod +x run4$method
+
+job=$(mktemp)
+
+cat <<EOF > $job
+#PBS -m be
+#PBS -k oe
+#PBS -l nodes=$nodes:ppn=$ppn
+#PBS -l mem=$memory
+#PBS -l walltime=$walltime
+#PBS -N $job
+#PBS -q $queue
+
+
+cd $X2DHF_DIRECTORY
+source .x2dhfrc
+cd $PWD4OMEGACTL/$newDir
+bash ./run4$method
+echo "completed" > .status
+rm -f .pid
+
+EOF
+
+qsub $job
+
+    sleep $delay
+    jobname=x2dhf-$system.*\-$newR
+    pid=$(pgrep -f $jobname)
+    if [[ -n $pid ]]
+    then
+	echo "running" > .status
+	echo "$pid" > .pid 
+    fi
+    if [[ -z $omega ]]
+    then
+	printf "%12s %-40s\n"  "$newR:   " "A running"
+    else
+	printf "%12s %-40s\n"  "$newDir:   " "running"
+    fi
+    
+    cd - >& /dev/null
+}
+
+
 
 function listing {
     [[ ! -d $newDir ]] && echo "missing $newDir ..." && return	 
@@ -603,16 +940,89 @@ function runInit {
     setTarget
 
     cat <<EOF > run4$method	
-     	xhf -s $input $target > $system-$newR-$method-${counter}.lst
+     	xhf $input $target > $system-$newR-$method-${counter}.lst
 	echo "completed" > .status
-        rm .pid
+        rm -f .pid
 EOF
 
     chmod +x run4$method
     [[ $orbpot =~ qrhf ]] && xhf mk1dhf ../qrhf-a ../qrhf-b
     [[ $orbpot =~ gauss ]] && xhf mkgauss ../gaussian
 
-    ./run4$method &
+    if [[ -z $optFG ]]
+    then
+	./run4$method &
+    else
+	./run4$method 
+    fi
+
+    sleep $delay
+    jobname=x2dhf-$system.*\-$newR
+    pid=$(pgrep -f $jobname)
+    if [[ -n $pid ]]
+    then
+	echo "running" > .status
+	echo "$pid" > .pid 
+    fi
+    printf "%12s %-40s\n"  "$newR:   " "running"
+#    cat ./run4$method
+    
+    cd - >& /dev/null
+
+
+}
+
+# obsolete function
+function runInit4qsub {
+
+    #   - creates $system-$newR subdirectory
+    #   - creates input data file 
+    #   - performs initial run to obtain fairly good solution
+
+    [[ ! -d $pwd/$newDir ]] &&  mkdir $pwd/$newDir
+    #    [[ ! -e $pwd/$newDir/xhf ]] &&  cp -l $binDir/xhf $pwd/$newDir/xhf  
+    #    [[ ! -e $pwd/$newDir/x2dhf ]] &&  cp -l $binDir/x2dhf $pwd/$newDir/x2dhf      
+    cd $newDir >& /dev/null
+    resetCounter
+    genInputData  
+    input=$(basename -s .data $inputData)
+    setTarget
+
+    cat <<EOF > run4$method	
+     	xhf $input $target > $system-$newR-$method-${counter}.lst
+	echo "completed" > .status
+        rm -f .pid
+EOF
+
+    chmod +x run4$method
+    [[ $orbpot =~ qrhf ]] && xhf mk1dhf ../qrhf-a ../qrhf-b
+    [[ $orbpot =~ gauss ]] && xhf mkgauss ../gaussian
+
+    if [[ -z $optFG ]]
+    then
+	./run4$method &
+    else
+	./run4$method 
+    fi
+
+job=$(mktemp)
+
+cat <<EOF > $job
+#PBS -m be
+#PBS -k oe
+#PBS -l nodes=$nodes:ppn=$ppn
+#PBS -l mem=$memory
+#PBS -l walltime=$walltime
+#PBS -N $job
+#PBS -q $queue
+
+cd $X2DHF_DIRECTORY
+source .x2dhfrc
+cd $PWD4OMEGA/$newDir
+bash ./run4$method
+EOF
+
+qsub $job
 
     sleep $delay
     jobname=x2dhf-$system.*\-$newR
@@ -690,14 +1100,19 @@ function runNext {
     fi
 
     cat <<EOF > run4$method	
-    	xhf -s $input $locsource $target > $system-$newR-$method-${counter}.lst 
+    	xhf $input $locsource $target > $system-$newR-$method-${counter}.lst 
 	echo "completed" > .status
-        rm .pid
+        rm -f .pid
 EOF
 
     chmod +x run4$method >& /dev/null
-   ./run4$method & 
- 
+    if [[ -z $optFG ]]
+    then
+	./run4$method &
+    else
+	./run4$method 
+    fi
+    
     sleep $delay
     jobname=x2dhf-$system.*\-$newR
     pid=$(pgrep -f $jobname)
@@ -733,7 +1148,7 @@ function setStatus {
 	rm -f $pwd/${system}-$newR/.status
 	counter=$(cat $pwd/${system}-$newR/.x2dhf-counter)
 	lst=$pwd/$newDir/$system-$newR-$method-${counter}.lst 	
-	nan=$(grep -P 'sigma.*NaN' $lst| head -1)
+	nan=$(grep -P '(sigma|pi|delta|phi).*NaN' $lst| head -1)
 	[[ -n $nan ]] && echo "NaN detected"> $pwd/${system}-$newR/.status && exit
 	energy=$(grep 'orbital energy threshold reached' $lst)
 	[[ -n $energy ]] && echo "orbital energy threshold reached"> $pwd/${system}-$newR/.status && exit
@@ -905,21 +1320,25 @@ function genPlot4etot {
     cp /dev/null $gpdata
 
     offset=0
-    for r in $rinit; do
-	line=$r
-	
-	counter=$(cat $pwd/${system}-$r/.x2dhf-counter)
-	lst=$system-$r/$system-$r-$method-${counter}.lst 	
-	totalEnergy=$(grep 'total energy:              ' $lst|tail -1)
-	totalEnergy=$(echo $totalEnergy | gawk -F: '{print $2}')
-	#totalEnergy=$(echo $totalEnergy |perl -pe 's/([-\d.]+)e(?:\+|(-))?(\d+)/$1*10^$2$3/gi')	
-	#totalEnergy=$(echo "$totalEnergy + $offset" | bc -l)
-	line=$(echo $line "  " $totalEnergy)
-	#echo -e '###'"\n" $line > /tmp/.line
-	echo  $line > /tmp/.line
-	cat /tmp/.line >> $gpdata
-    done 
 
+    if [[ -z $optNOR ]]
+    then
+	for r in $rinit; do
+	    line=$r
+	    
+	    counter=$(cat $pwd/${system}-$r/.x2dhf-counter)
+	    lst=$system-$r/$system-$r-$method-${counter}.lst 	
+	    totalEnergy=$(grep 'total energy:              ' $lst|tail -1)
+	    totalEnergy=$(echo $totalEnergy | gawk -F: '{print $2}')
+	    #totalEnergy=$(echo $totalEnergy |perl -pe 's/([-\d.]+)e(?:\+|(-))?(\d+)/$1*10^$2$3/gi')	
+	    #totalEnergy=$(echo "$totalEnergy + $offset" | bc -l)
+	    line=$(echo $line "  " $totalEnergy)
+	    #echo -e '###'"\n" $line > /tmp/.line
+	    echo  $line > /tmp/.line
+	    cat /tmp/.line >> $gpdata
+	done 
+    fi
+    
     for r in $rnext; do
 	line=$r
 	counter=$(cat $pwd/${system}-$r/.x2dhf-counter)
@@ -966,7 +1385,7 @@ function genPlot4eorb {
 	    while read norb symmetry energy norm
 	    do
 		#energy=$(echo $energy | perl -pe 's/([-\d.]+)e(?:\+|(-))?(\d+)/$1*10^$2$3/gi' )
-		#energy=$(echo "$energy + 0.0" | bc -l)
+		energy=$(echo "$energy +$eoffset" | bc -l)
 		line=$(echo $line "  " $energy )
 		#echo -e '###'"\n" $line > /tmp/.line
 		echo $line > /tmp/.line
@@ -984,7 +1403,7 @@ function genPlot4eorb {
 	    while read norb symmetry energy norm
 	    do
 		#energy=$(echo $energy | perl -pe 's/([-\d.]+)e(?:\+|(-))?(\d+)/$1*10^$2$3/gi' )
-		#energy=$(echo "$energy + 0.0" | bc -l)
+		energy=$(echo "$energy + $eoffset" | bc -l)
 		line=$(echo $line "  " $energy )
 		#echo -e '###'"\n" $line > /tmp/.line
 		echo $line > /tmp/.line

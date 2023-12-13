@@ -1,7 +1,7 @@
 #!/usr/bin/bash
 
 # SPDX-License-Identifier: GPL-2.0-or-later
-# Copyright (C) 2023 Jacek Kobus
+# Copyright (C) 2024 Jacek Kobus
 
 . $X2DHF_DIRECTORY/bin/.pecctlFunctions
 
@@ -33,7 +33,9 @@ ${bold}SYNOPSIS${normal}
        pecctl --all rm|rminit|rmnext
        pecctl --all rmorbpot
 
-       pecctl --plot etot|eorb [disp]
+       pecctl [--nor] [--eoffset <value> ] --plot etot|eorb [disp]
+
+       pecctl [--qsub]  --omega 'omegaOrb omegaPot' omega1|2 $r omegaOrb-omegaPot 
 
 ${bold}DESCRIPTION${normal}
        This script can be used to automate 2D HF calculations of the
@@ -72,6 +74,11 @@ ${bold}DESCRIPTION${normal}
        Option '--all' can be used to perform certain actions for all
        predefined set of R vales. Those are defined by adding (after the
        stop card) the following two cards
+
+       If option '--nor' is used together with '--plot' the values of
+       orbital or total energies will be retrieved from available output
+       files.
+
 
        rinit=1.0 1.5 
        rnext=2.0 2.2 2.4 2.6 2.8 
@@ -121,13 +128,19 @@ EOF
 
 clean_exit()
 {
-    echo "... clean exit ..."
+    [[ -z $omega ]] && echo "... clean exit ..."
 
 }
 
 trap "clean_exit" EXIT
 
 [[ $1 == "" || "$1" == "help" ]] && help && exit
+
+nodes=1
+ppn=$PPN4OMEGACTL
+memory=$MEMORY4OMEGACTL
+walltime=$WALLTIME4OMEGACTL
+queue=$QUEUE4OMEGACTL
 
 # lst extension is assumed for output files
 
@@ -152,14 +165,14 @@ method=$(grep -iP '^method' $inputData | gawk '{print $2}')
 
 rinit=$(grep -iP '^rinit' $inputData | gawk -F= '{print $2}')
 
-[[ -z $rinit ]] && echo "... Error: rinit not set ..." && exit
+[[ -z "$rinit" ]] && echo "... Error: rinit not set ..." && exit
 
 # rnext values may be continued on the next line, e.g.
 # rnext=1e0 2e0
 #       3e0 4e0 .....
 
 rnext=$(grep -A1 -iP '^rnext' $inputData | tr -s '\n' ' ' | gawk -F= '{print $2}')
-[[ -z $rnext ]] && echo "... Error: rnext not set ..." && exit
+[[ -z "$rnext" ]] && echo "... Error: rnext not set ..." && exit
 
 orbpot=$(grep -iP '^orbpot' $inputData | gawk '{print $2}')
 
@@ -181,6 +194,7 @@ message1="running"
 message2="orbital normalization threshold reached"
 message3="orbital energy threshold reached"
 message4="solution cannot be further improved"
+message5="completed"
 
 
 # http://www.gnuplot.info/docs_4.0/gpcard.pdf
@@ -191,14 +205,17 @@ offsetRight=0.5
 offsetTop=0.5
 offsetBottom=0.5
 
+eoffset=0.0
 
 # allowed actions
 actions="
 cont
+eoffset
 help
 init
 lst
 next
+nor
 plot
 progress
 rm
@@ -210,22 +227,26 @@ tgz
 top
 "
 
-optForce=no
+optFORCE=
 
 optALL=
+optFG=
 optLAGRA=
+optNOR=
+optOMEGA=
 optORBPOT=
 optPLOT=
 optPRINT=
 optSCF=
+qsub=
 
 pwd=$(pwd)
 
 
 if [[ "$1" =~ "-" ]]; then
 
-    set -- $(getopt --options=f --longoptions=add:,delete:,help,all,config:,lagra:,omega:,orbpot:,plot:,print:,scf:  \
-	--  "$@")
+    set -- $(getopt --options=f --longoptions="add:,delete:,eoffset:,fg,force,help,all,config:\
+                   ,lagra:,nor,omega:,qsub,orbpot:,plot:,print:,scf:" --  "$@")
 
     args=$(echo $@ | sed -e "s/'//g")
 
@@ -235,13 +256,47 @@ if [[ "$1" =~ "-" ]]; then
     do
 	cc=$(echo $1)
 	case "$cc" in
-	    --force) optForce=yes; shift;;
+	    --add) shift; 
+		args=
+		while [[ $# -gt 1 ]]; do
+		    [[ $1 =~ '--' ]] && break
+		    args=$(echo $args $1)
+		    shift
+		done 
+		optADD=$args
+		;;
 
-	    --help) help; shift; exit;;
-	    
 	    --all) shift; optALL=yes;;
 	    
 	    --config) shift; perl -pi -e "s/^config.*/config $1/; s/'//g" input/input.data; shift; exit;;
+
+	    --delete) shift; 
+		args=
+		while [[ $# -gt 1 ]]; do
+		    [[ $1 =~ '--' ]] && break
+		    args=$(echo $args $1)
+		    shift
+		done 
+		optDELETE=$args
+		;;
+
+	    --eoffset) shift; 
+		args=
+		while [[ $# -gt 1 ]]; do
+		    [[ $1 =~ '--' ]] && break
+		    args=$(echo $args $1)
+		    shift
+		done 
+		eoffset=$args
+		;;
+
+	    
+	    --force) optFORCE=yes; shift;;
+
+	    --help) help; shift; exit;;
+	    
+
+	    --fg) shift; optFG=yes;;
 	    
 	    --lagra) shift; 
 		args=
@@ -252,8 +307,9 @@ if [[ "$1" =~ "-" ]]; then
 		done 
 		optLAGRA=$args
 		;;
-	    
 
+	    --nor) shift; optNOR=yes;; 
+	    
 	    --omega) shift; 
 		args=
 		while [[ $# -gt 1 ]]; do
@@ -264,7 +320,6 @@ if [[ "$1" =~ "-" ]]; then
 		optOMEGA=$args
 		;;
 		
-	    
 	    --orbpot) shift; 
 		optORBPOT=$1; shift;;
 	    
@@ -281,6 +336,8 @@ if [[ "$1" =~ "-" ]]; then
 		optPRINT=$args
 		;;
 
+	    --qsub) qsub=yes; shift;;
+	    
 	    --scf) shift; 
 		args=
 		while [[ $# -gt 1 ]]; do
@@ -291,34 +348,18 @@ if [[ "$1" =~ "-" ]]; then
 		optSCF=$args
 		;;
 		
-
-	    --add) shift; 
-		args=
-		while [[ $# -gt 1 ]]; do
-		    [[ $1 =~ '--' ]] && break
-		    args=$(echo $args $1)
-		    shift
-		done 
-		optADD=$args
-		;;
-
-
-	    --delete) shift; 
-		args=
-		while [[ $# -gt 1 ]]; do
-		    [[ $1 =~ '--' ]] && break
-		    args=$(echo $args $1)
-		    shift
-		done 
-		optDELETE=$args
-		;;
-
 	    --) shift; break;;
 	esac
     done
 fi
 
 [[ "$optALL" == "yes" ]] && contALL $1 && exit
+
+if [[ $optNOR == yes ]]
+then
+    rnext=$(ls | grep $system- |cut -d- -f2 |xargs -n100)
+fi
+
 
 if [[ "$1" == "status" ]]; then
     if [[ $2 == "" ]]; then
@@ -331,7 +372,38 @@ if [[ "$1" == "status" ]]; then
     exit
 fi
 
+
+
 [[ "$1" == "init" ]] && init $2 && exit
+
+# Run a case for a given pair of omega values (orbpot hydrogen|lda|hf).
+
+if [[ "$1" == "omega1" ]]
+then
+    omega=yes
+    if [[ -z $qsub ]]
+    then
+	runOmega1 $2 $3 && exit
+    else
+	runOmega1qsub $2 $3 && exit
+    fi
+fi
+
+# Run a case for a given pair of omega values (orbpot old).
+# he current directory should contain not only an appropriate input.data
+# file but also old.dat|orb|coul|exch files.
+
+if [[ "$1" == "omega2" ]]
+then
+    omega=yes
+
+    if [[ -z $qsub ]]
+    then
+	runOmega2 $2 $3 && exit
+    else
+	runOmega2qsub $2 $3 && exit
+    fi
+fi    
 
 if [[ "$1" == "lst" ]]; then
     newDir=$system-$2

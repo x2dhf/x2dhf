@@ -73,9 +73,14 @@ log=$PWD/log/$(basename $0).log
 
 rm -f $log >& /dev/null
 
-LIBXCVERSION=6.0.0
+LIBXCVERSION=6.2.2
+
+fortranVersion=$(gfortran --version | head -1 | gawk '{print $4}' | cut -d. -f1)
+
+(( $fortranVersion <= 4 )) && optLevel=2
 
 export CMVERSION=3.14.0
+#export CMVERSION=3.26.3
 export VERBOSE=off
 
 . .x2dhfrc
@@ -99,9 +104,10 @@ ${bold}NAME${normal}
 ${bold}SYNOPSIS${normal}
        x2dhfctl help|-h|--help
 
-       x2dhfctl [-b] [-g] [-i 8] [-l|L] [-o|p|q] [-r 16] [f95|gfortran]
-       x2dhfctl [-b] [-g] [-i 8] [-l|L] [-m] [-r 16] ifort
+       x2dhfctl [-a] [-b] [-g] [-i 8] [-l|L] [-o|p|q] [-r 16] [f95|gfortran]
+       x2dhfctl [-a] [-b] [-g] [-i 8] [-l|L] [-m] [-r 16] ifort
        x2dhfctl log|showlog
+       x2dhfctl tgz
 
 ${bold}DESCRIPTION${normal}
        This script employs the buildsystem generator CMake to facilitate the
@@ -163,6 +169,10 @@ ${bold}USAGE EXAMPLES${normal}
            directives; the executable x2dhf is copied as x2dhf and x2dhf-mkl to
            bin/ directory.
 
+       x2dhfctl tgz
+           Creates the tgz archive of the program files.
+
+
 ${bold}OPTIONS${normal}
        -a    
            Switches on the '-Wall' option of the gfortran compiler.
@@ -182,7 +192,6 @@ ${bold}OPTIONS${normal}
 
        -f 
            Forces the rebuilding of the libxc libraries (see -L option).
-
 
        -g 
            Turns on debugging options.
@@ -206,12 +215,15 @@ ${bold}OPTIONS${normal}
            OpenMP directives are included in coulExchSOR routine and the
            relaxation of Colulomb and exchange potentials is parallelized. In
            addition, the x2dhf binary is saved as x2dhf-openmp in bin/
-           directory.
+           directory. 
 
            If the mcsor-o and mcsor-ce labels (cards) are used the relaxation of
            orbitals and potentials is additionally parallelized since the MCSOR
            routine is employed instead of the SOR one to relax a single
            orbital/potential.
+
+           Use 'export OMP_THREAD_LIMIT=<n>' to set the maximum number of
+           OpenMP threads available in a contention group. 
 
        -O level
            Set the level of optimisation (3 by default).
@@ -254,6 +266,11 @@ ${bold}COPYRIGHT${normal}
 EOF
 }
 
+function makeArchive {
+    tar cvzf x2dhf-v3.tgz -T list_of_files_4_tgz.txt
+    exit
+}
+
 function makeLibxc {
 
     if [[ ! -f libxc-${LIBXCVERSION}.tar.gz ]]
@@ -276,14 +293,15 @@ function makeLibxc {
 
     if [[ $libxcDir == no && $force == "" ]]
     then
-	cat<<-EOF 
-	    Warning!  
-	    Directory libxc-${LIBXCVERSION}/ has been detected. 
-            It is assumed that the libxc library files are already there. 
-            To rebuild the library run the script again with '-f' option.
-            Or remove the directory and run the script again.
+	cat<<-EOF
+    Warning! Directory libxc-${LIBXCVERSION} has been detected. 
+
+    It is assumed that the libxc library files are already there. 
+    To rebuild the library run the script again with '-f' option.
+    Or remove the directory and run the script again.
+
 EOF
-	    exit
+	exit
     fi
 	
     cd libxc-${LIBXCVERSION}
@@ -299,8 +317,16 @@ EOF
 	    2>&1 >> $log make install
     fi
     cd - >& /dev/null
+
+    cat <<EOF
+
+    libxc is ready
+    libxc-${LIBXCVERSION} and libxc-${LIBXCVERSION}.tar.gz can be removed
+
+EOF
 }
 
+[[ $1 == tgz ]] && makeArchive && exit 
 
 [[ $host == tc06 ]] && module add cmake/$CMVERSION 
 

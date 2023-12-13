@@ -3,7 +3,7 @@
 # xhf - facilities the usage of the x2dhf program
 
 # SPDX-License-Identifier: GPL-2.0+
-# Copyright (C) 1996-2023 Jacek Kobus 
+# Copyright (C) 2024 Jacek Kobus 
 
 
 bold=$(tput bold)
@@ -240,6 +240,16 @@ function checkpoint {
 
 }
 
+function cleanDirs {
+    # removes all orbital and potential binary files from the current
+    # directory and all its subdirectories
+    find . \( -name "*.dat" -or -name "*.orb" \) -exec rm -f  {} \;
+    find . \( -name "*.coul" -or -name "*.exch" \) -exec rm -f  {} \;
+    
+    exit
+}
+
+
 function cleanDir {
     # removes all orbital and potential binary files
     rm -f *.dat *.orb *.coul *.exch *.fort.* fort.* fort-checkpoint.* stop_x2dhf *~ >& /dev/null
@@ -431,13 +441,15 @@ s=
 tpool=
 ext1=
 ext2=
+pinfty=
 
 schedPolicy=batch
 
-while getopts "DgIlopOPstv" Option
+while getopts "DegIlopOPstv" Option
 do
     case $Option in
-	D ) showDebug; exit;;	
+	D ) showDebug; exit;;
+	e ) pinfty=yes;;	
 	g ) gprof=yes;;
 	I ) schedPolicy=idle;;		
 	l ) ext2=lxc;;
@@ -453,26 +465,61 @@ done
 
 shift $((OPTIND-1))
 
+if [[ -n $pinfty ]]
+then
+    # It is assumed that the solution decays as exp(-\sqrt(-2*E)r) and at
+    # the practical infinity is of the order 10^{-12}-10^{-15}. Therefore
+    # the range of practcal infinities to be used can be easily estimated
+    energy=$1
+    rinfty1=$(echo "scale=3; 12*l(10)/s(2*$energy)" |bc -l)
+    rinfty2=$(echo "scale=3; 15*l(10)/s(2*$energy)" |bc -l)    
+    cat <<EOF
+    Lowest energy expected = $energy
+    Suggested values of practical infinity: $rinfty1 - $rinfty2
+EOF
+
+    exit
+fi
+
 checkSetBinary 
+
+regex="\.data$"
+if [[ $1 =~ $regex ]]
+then
+    echo "Error: Unexpected extention found in $1."
+    exit 1
+fi
 
 action=$1
 
-actions=(checkpoint clean copy mk1dhf mk1dlda mkgauss mkfinal move rm1dhf
-	 rm1dlda rmgauss tail cp mv rm stop)
+actions=(checkpoint clean cleanDirs copy mk1dhf mk1dlda mkgauss mkfinal move rm1dhf
+	 rm1dlda rmgauss tail cp mv rm rmstop stop)
+
+actionFound=false
 
 for (( i=0; i< ${#actions[@]}; i++ ))
 do
-    [[ $action == ${actions[$i]} ]]  && break
+    if [[ $action == ${actions[$i]} ]]
+    then
+	actionFound=true
+	break
+    fi
 done
      
-if [[ $i == ${#actions[@]} ]]
+if [[ $actionFound ==  false ]]
 then
-    [[ -e $action.data ]] || message "Error: unknown action $action."
+    if [[ ! -e ${action}.data ]]
+    then
+	echo "Error: ${action}.data is missing"
+	exit 1
+    fi
 fi
 
 [[ $action == "checkpoint" ]] && checkpoint $1 $2 $3
 
 [[ $action == "clean" ]] && cleanDir
+
+[[ $action == "cleanDirs" ]] && cleanDirs
 
 [[ $action == "copy" || $action == "cp" ]] && copy $1 $2 $3
 
@@ -516,7 +563,11 @@ then
 fi
 
 # stops the x2dhf program
-[[ $action == "stop" ]] && touch stop_x2dhf && exit
+[[ $action == "stop" ]] && touch stop_x2dhf && exit 0
+
+# stops the x2dhf program
+[[ $action == "rmstop" ]] && rm -f stop_x2dhf && exit 0
+
 
 # makes symbolic links to sigma virtual orbitals
 if [[ $action == "vsigma" ]]
@@ -694,12 +745,33 @@ fi
 machine=$(cat /proc/cpuinfo | grep 'model name'| gawk -F: '{print $2}' |
 	      sed s/\ Inte/Intel/|head -1 | sed -r  's/^\ //' )
 
+nCPU=$(lscpu | grep -iP '^CPU:\s+\d+|^CPU\(s\):\s+\d+' | cut -d: -f2 | sed -s 's/ //g')
+
+libgomp=$(ldd $binary | grep omp.so)
+
+if [[ -z $libgomp ]] 
+then
 cat <<EOF
 command-line:  $prog
       system:  $(uname -nsrpio)
-         CPU:  $machine
+         CPU:  $machine / CPU(s)=$nCPU
 ////////////////////////////////////////////////////////////////////////////////////////////////
 EOF
+
+else
+
+[[ -z $OMP_THREAD_LIMIT ]] && OMP_THREAD_LIMIT=$nCPU
+
+ompThreadLimit="/ OMP_THREAD_LIMIT=$OMP_THREAD_LIMIT"
+    
+cat <<EOF
+command-line:  $prog
+      system:  $(uname -nsrpio)
+         CPU:  $machine / CPU(s)=$nCPU $ompThreadLimit
+////////////////////////////////////////////////////////////////////////////////////////////////
+EOF
+    
+fi
 
 if [[ $3 == '' ]]; then
 

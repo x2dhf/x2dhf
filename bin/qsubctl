@@ -7,14 +7,37 @@ help() {
     cat <<EOF
 
 ${bold}NAME${normal}
-       qsubctl - submit a job to a PBS system
+       qsubctl - submit a job to a PBS system or examine its status
 
 ${bold}SYNOPSIS${normal}
        qsubctl -h|--help|help
 
-       qsubctl -s|status                                                                                     
        qsubctl -q|queue                                                                                      
+       qsubctl -s|status
+
        qsubctl <test-set-id> 
+
+       qsubctl -D|M|Q|R
+
+${bold}OPTIONS${normal}
+       -D 
+           Delete queued jobs.
+
+       -M 
+           Move a number of queued jobs in a given queue to the small,
+           medium and large queues (see moveQjobs).
+
+       -Q 
+           List queued jobs.
+
+       -R 
+           List running jobs.
+
+       -q
+           'qstat -q'
+
+       -s
+           'qstat -n -u $USER'
 
 ${bold}AUTHOR${normal}
        Jacek Kobus <jacek.kobus@umk.pl> 
@@ -27,10 +50,69 @@ EOF
     exit
 }
 
-while getopts "qhs" option; do
+function deleteQjobs {
+    
+    jobids=$(qstat -n -u $USER | grep ' Q ' | gawk '{print $1 }')
+    for id in $jobids
+    do
+	qdel $id
+    done
+    exit
+}
+
+
+function moveQjobs {
+
+    max=186
+    nlarge=0
+    nmedium=0
+    nsmall=0
+    jobids=$(qstat -n -u $USER | grep ' Q ' | gawk '{print $1 }' | cut -d. -f1)
+    for id in $jobids
+    do
+	currentQueue=$(qstat -s -u $USER | grep ^$id | gawk '{print $3}')
+	if [[ $currentQueue == large ]]
+	then
+	    if (( $nmedium < 60 ))
+	    then
+	       qmove medium $id
+	       let nmedium=$nmedium+1
+	    fi
+	    continue
+	fi
+
+	if [[ $currentQueue == medium ]]
+	then
+	    if (( $nlarge < 60 ))
+	    then
+	       qmove large $id
+	       let nsmall=$nsmall+1
+	    fi
+	    continue
+	fi
+	
+	if [[ $currentQueue == medium ]]
+	then
+	    if (( $nsmall < 60 ))
+	    then
+	       qmove small $id
+	       let nsmall=$nsmall+1
+	    fi
+	fi
+    done
+    exit
+}
+
+
+
+while getopts "qDMQhrRs" option; do
     case $option in
-	q ) qstat -q; exit;;
+	D ) deleteQjobs;;
+	M ) moveQjobs;;
+	Q ) qstat -n -u $USER | grep ' Q '; exit;;	
+	q ) qstat | grep $USER ; exit;;
         h ) help; exit;;
+	r|R ) qstat -n -u $USER | grep ' R '; exit;;
         s ) qstat -n -u $USER; exit;;
 	* ) echo "Error: unknown option" && help && exit
     esac
@@ -48,6 +130,26 @@ export TERM=xterm-256color
 test=$1
 job=$(echo $test |sed -e 's/\//-/')
 
+cat <<EOF > /tmp/$job
+#PBS -m be
+#PBS -k oe
+#PBS -l nodes=1:ppn=12
+#PBS -l mem=50000mb
+#PBS -l walltime=100:0:0
+#PBS -N $job
+##PBS -q tasq
+#PBS -q medium
+##PBS -q small
+
+cd $HOME/github/x2dhf-v3/
+source .x2dhfrc
+cd $HOME/github/x2dhf-v3/tests
+testctl run $test
+EOF
+
+qsub /tmp/$job
+
+exit
 
 
 cat <<EOF > /tmp/$job
@@ -58,19 +160,17 @@ cat <<EOF > /tmp/$job
 #PBS -l walltime=200:0:0
 #PBS -N $job
 ##PBS -q tasq
-##PBS -q medium
 #PBS -q small
 
-cd $HOME/github/2DHF/
+cd $HOME/github/x2dhf-v3/
 source .x2dhfrc
-cd $HOME/github/2DHF/tests
-testctl run $test
+cd $HOME/github/x2dhf-v3/tests/o2-elprop/set-01
+xhf input-1 output output-1 > current-1.lst 
 EOF
 
 qsub /tmp/$job
 
 exit
-
 
 
 

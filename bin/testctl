@@ -44,15 +44,30 @@ ${bold}SYNOPSIS${normal}
 
        testctl run <test-set-id>
 
+       testctl lxc/set-01|2|3|4
+
        testctl runall [regexp]
 
        testctl save <test-set-id>
 
+       testctl search regexp
+
        testctl [-D1|2|3|4|5|6] elprop [<test-set>]
+
+${bold}DESCRIPTION${normal}
+       The most straightforward way to check the correctness of a current
+       build of the x2dhf program is to run some tests collected in
+       test-sets directory. See examples below.
+
+       Usually, running a given test means a single execution of the x2dhf
+       program. However, when a lxc/set-0[1234] is selected the
+       x2dhf program is executed for all the input data files found in the
+       corresponding test-sets directory. In this way a host of density
+       functionals can be tested at a single run of the script.
 
 ${bold}USAGE EXAMPLES${normal}
        Below <test-set-id> corresponds to a particular test found in
-       test-set directory, e.g. be/set-01, be/set-02 or licl/set-01.
+       test-sets directory, e.g. be/set-01, be/set-02 or licl/set-01.
        <test-set> corresponds to the name a subdirectory, e.g. licl or o2.  
 
        testctl cat|catc <test-set-id> [current.lst]
@@ -111,6 +126,9 @@ ${bold}USAGE EXAMPLES${normal}
        testctl save <test-set-id>
            Saves the output of a given test to its "home" directory.
 
+       testctl search <perl-regexp>
+           Find  *.data files that match the regexp
+
        testctl stop
            Stops the x2dhf program.
 
@@ -121,12 +139,12 @@ ${bold}USAGE EXAMPLES${normal}
 
        testctl tail <test-set-id>
            Shows the progress of the running program by printing the last
-           20 lines of current.lst.
+           20 lines of the current output, i.e. the current.lst file.
 
 
 ${bold}OPTIONS${normal}
        -b jobfile
-           Run $0 for a number of tests specified in a jobfile. 
+           Run testctl for a number of tests specified in a jobfile. 
 
        -c
            Upon completion of the test its working directory
@@ -322,7 +340,7 @@ function actionINFO {
     fi
 
     set=$1
-    if [[ $set =~ 'set-' ]]
+    if [[ "$set" =~ 'set-' ]]
     then
 	dataFiles=$(ls $testSetsDir/$set/*.data)
 	for df in $dataFiles
@@ -397,6 +415,13 @@ function actionLST {
     fi
     exit
 }
+
+function actionSearch {
+
+    find ../test-sets -name \*.data -exec grep -iH "$1" {}  \;
+    exit 0
+}
+
 
 separator () {
     echo
@@ -758,6 +783,8 @@ set=$2
 # x2dhf working directory.
 
 x2dhf=$(which x2dhf >& /dev/null)
+
+[[ $action == "search" ]] && actionSearch $set 
 
 [[ $action == "log" ]] && cat $log && exit
 
