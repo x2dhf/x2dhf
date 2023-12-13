@@ -87,11 +87,10 @@ void tpoolStart4mcsor_ ( int *num_threads4mcsor)
     
     for (thread=0; thread<nthreads_mcsor; thread++) {
       threadIDs[thread]=thread;
-      //pthread_create( &threads[thread], &attr, (void *)mcsorpt_,  &params4mcsor[thread]);      
       pthread_create( &threads4mcsor[thread], NULL, (void *)mcsor_single_colour_tpool_,  &params4mcsor[thread]);
     }
-    //    printf ("   TPOOLH: sor4t.x4t[10] %15e\n",sor4t_.x4t[10]); 
-    printf ("      TPOOLH: %2d MCSORPT threads created \n",*num_threads4mcsor);
+
+    printf ("      TPOOL: %2d MCSORPT threads created \n",*num_threads4mcsor);
     if ( adjusted ) {  
       printf ("%65s\n","number of threads adjusted to available logical CPUs");
     }
@@ -104,7 +103,7 @@ void tpoolStop4mcsor_ (int *num_threads_mcsor )
   int thread;
   nthreads_mcsor=*(int *)num_threads_mcsor;
 
-  if ( nthreads_mcsor ==1 ) {
+  if ( nthreads_mcsor == 1 ) {
     return;
   }
        

@@ -7,6 +7,48 @@ module printUtils
   implicit none
 contains
 
+    subroutine out4plot(iout,a)
+    use params
+    use discrete
+    use commons
+
+    implicit none
+    integer (KIND=IPREC) :: iout,m,n,inu,imu
+    real (PREC) :: x,z
+    real (PREC), dimension(nni,mxnmu) :: a
+
+    if (iplot==1) then
+       do inu=1,nni,istep    
+          do imu=1,mxnmu,istep
+             z=(r/2.0_PREC)*vxi(imu)*veta(inu)
+             x=(r/2.0_PREC)*vxi1(imu)*veta1(inu)
+             if (abs(a(inu,imu))>plotThreshold) &             
+                  write(iout,'(1Pe12.4,1Pe12.4,1Pe14.4)') z,x,a(inu,imu)
+          enddo
+       enddo
+    endif
+
+    if (iplot==2) then
+       do inu=1,nni,istep    
+          do imu=1,mxnmu,istep
+             if (abs(a(inu,imu))>plotThreshold) &
+                  write(iout,'(1Pe12.4,1Pe12.4,1Pe14.4)') vni(inu),vmu(imu),a(inu,imu)
+          enddo
+       enddo
+    endif
+
+    if (iplot==3) then
+       do inu=1,nni,istep    
+          do imu=1,mxnmu,istep
+             if (abs(a(inu,imu))>plotThreshold) &
+                  write(iout,'(1Pe12.4,1Pe12.4,1Pe14.4)') veta(inu),vxi(imu),a(inu,imu)
+          enddo
+       enddo
+    endif
+    
+    
+  end subroutine out4plot
+  
 ! ### prtmatcw ###
   !
   !     Prints an array in a formatted way. Orbitals and potentials are
@@ -88,8 +130,6 @@ end module printUtils
 
    ! ### prtmatcw ###
    !
-   !     FIXME
-   !
    subroutine prtmatcw (m,n,a,ioutmat)
      use params
 
@@ -169,3 +209,12 @@ end module printUtils
  !     !     01000 format(5F15.6)
 
  !   end subroutine prtmatrw
+
+
+! ### prtmatcw ###
+  !
+  !     Prints an array in a formatted way. Orbitals and potentials are
+  !     stored in one-dimensional arrays. When they are printed as a
+  !     two-dimensional ones (\nu=0,\mu_1) element coresponds to A centre
+  !     and (\nu=\pi,\mu_1) --  B.
+  

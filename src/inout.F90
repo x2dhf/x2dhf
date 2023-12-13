@@ -34,6 +34,12 @@ contains
     do i=1,nmi
        call dcopy(nni,fun(1,i),ione,work(5,i+4),ione)
     enddo
+
+    ! do i=1,4
+    !    do j=2,nni-1
+    !       work(4+j,nmi+4+i)=fun(j,nmi)
+    !    enddo
+    ! enddo
     
     ! isym = 1 - even symmetry, isym =-1 - odd symmetry
     ! values over i=nmi boundary are determined from the asymptotic expansion
@@ -75,72 +81,6 @@ contains
 
   end subroutine putin
 
-  subroutine putin4n (nni,nmi,isym,fun,work)
-    use params
-    use blas
-    
-    implicit none
-    integer (KIND=IPREC) :: i,j,isym,jj,nni,nmi
-
-    real (PREC), dimension(nni,nmi) :: fun
-    real (PREC), dimension(nni+8,nmi+8) :: work
-
-    ! fill the interior of work array
-    do i=1,nmi
-       call dcopy(nni,fun(1,i),ione,work(5,i+4),ione)
-    enddo
-    
-    ! isym = 1 - even symmetry, isym =-1 - odd symmetry
-    ! values over i=nmi boundary are determined from the asymptotic expansion
-
-    ! mu=nmu+5....nmu+8
-    ! the following code is necessary since the derivatives must be
-    ! calculated up to i=nmi
-
-    if (isym.eq.1) then
-       ! mu=1...4
-       do i=2,5
-          call dcopy(nni,fun(1,i),ione,work(5,6-i),ione)
-       enddo
-
-       do j=2,5
-          call dcopy(nmi,fun(j,1),nni,work(6-j,5),nni+8)
-       enddo
-
-       do j=1,4
-          call dcopy(nmi,fun(nni-j,1),nni,work(nni+4+j,5),nni+8)
-       enddo
-    else
-       do i=2,5
-          call dcopyi(nni,fun(1,i),ione,work(5,6-i),ione)
-       enddo
-
-       do j=2,5
-          call dcopyi(nmi,fun(j,1),nni,work(6-j,5),nni+8)
-       enddo
-       
-       do j=1,4
-          call dcopyi(nmi,fun(nni-j,1),nni,work(nni+4+j,5),nni+8)
-       enddo
-    endif
-
-    print *,">>>>>>>>>>>>>>>> fixme"    
-    do i=nmi+5,nmi+8
-       do j=1,nni+8
-          work(j,i)=work(j,nmi+4)
-          !work(j,i)=one
-       enddo
-    enddo
-
-    ! do i=1,4
-    !    do j=1,nni+8
-    !       work(j,nmi+4+i)=work(j,nmi+4)
-    !    enddo
-    ! enddo
-    
-  end subroutine putin4n
-
-  
   subroutine putin1 (nni,nmi,isym4nu,isym4mu,fun,work)
     use params
     use blas

@@ -28,7 +28,6 @@ machine.F90
 memory.f90 
 nabla.f90 
 normOrtho.F90
-orbAsympt.f90 
 params.f90
 prepGauss.F90 
 printCase.F90 

@@ -160,7 +160,7 @@ contains
     if (verboseLevel>1) then
        write(iout6,'(1x,"... saving data to disk ...")')
     endif
-
+    
     !   write a header into the orbital output file (deprecated)
     if (outUnformatted) then
        write (iout21,err=1000) i1b,i2b,i3b,i1e,i2e,i3e,i1si,i2si,i3si,i1ng,i2ng,i3ng,i1mu,i2mu,i3mu
@@ -169,7 +169,6 @@ contains
     endif
 
     !   add orbitals
-    
     do i=1,norb
        call writea(iout21,mxsize,cw_orb(i1b(i)),ierr)
        if (ierr.ne.0) then
@@ -194,43 +193,32 @@ contains
     write(iout21,err=1020) exc8
 
     ! write out Coulomb potentials
-    if (lcoulexch) then
-       do i=1,norb
-          call writea(iout22,mxsize,cw_exch(i2b(i)),ierr)
-          if (ierr.ne.0) then
-             write(iout6,*) 'error detected when writing coulomb potential',i
-             stop 'wtdisknat'
-          endif
-       enddo
-    else
-       do i=1,norb
-          call writea(iout22,mxsize,cw_exch(i2b(i)),ierr)
-          if (ierr.ne.0) then
-             write(iout6,*) 'error detected when writing coulomb potential',i
-             stop 'wtdisknat'
-          endif
-       enddo
-    endif
-    
+    do i=1,norb
+       call writea(iout22,mxsize,cw_exch(i2b(i)),ierr)
+       if (ierr.ne.0) then
+          write(iout6,*) 'error detected when writing coulomb potential',i
+          stop 'wtdisknat'
+       endif
+    enddo
+
     ! write out exchange potentials
-    if (HF) then
+    if (HFinput) then
        do iorb1=1,norb
           do iorb2=iorb1,norb
-             k=iorb1+iorb2*(iorb2-1)/2
-             if (iorb1.eq.iorb2.and.ll(iorb1).eq.0) goto 50
+             k=k2(iorb1,iorb2)
+             if (iorb1.eq.iorb2.and.ll(iorb1).eq.0) cycle
              call writea(iout23,mxsize,cw_exch(i3b(k)),ierr)
              if (ierr.ne.0) then
                 write(iout6,*) 'error detected when writing exchange potential',iorb1,iorb2,k
                 stop 'wtdisknat'
              endif
-             if (iorb1.eq.iorb2) goto 50
-             if (ll(iorb1).eq.0.or.ll(iorb2).eq.0) goto 50
+             if (iorb1.eq.iorb2) cycle
+             if (ll(iorb1).eq.0.or.ll(iorb2).eq.0) cycle
              call writea(iout23,mxsize,cw_exch(i3b(k)+mxsize),ierr)
              if (ierr.ne.0) then
                 write(iout6,*) 'error detected when writing exchange potential',iorb1,iorb2,k
                 stop 'wtdisknat'
              endif
-50           continue
           enddo
        enddo
        rewind(iout23)
@@ -260,19 +248,19 @@ contains
        endif
     endif
     
-    if (HF.and.lxcHyb) then
-       call writea(iout23,mxsize,cw_exch(length2-2*mxsize+1),ierr)
-       if (ierr.ne.0) then
-          write(iout6,*) 'error detected when writing local exchange potential'
-          stop 'wtdisknat 7a'
-       endif
+    ! if (HF.and.lxcHyb) then
+    !    call writea(iout23,mxsize,cw_exch(length2-2*mxsize+1),ierr)
+    !    if (ierr.ne.0) then
+    !       write(iout6,*) 'error detected when writing local exchange potential'
+    !       stop 'wtdisknat 7a'
+    !    endif
 
-       call writea(iout23,mxsize,cw_exch(length2-mxsize+1),ierr)
-       if (ierr.ne.0) then
-          write(iout6,*) 'error detected when writing local exchange potential'
-          stop 'wtdisknat 7b'
-       endif
-    endif
+    !    call writea(iout23,mxsize,cw_exch(length2-mxsize+1),ierr)
+    !    if (ierr.ne.0) then
+    !       write(iout6,*) 'error detected when writing local exchange potential'
+    !       stop 'wtdisknat 7b'
+    !    endif
+    ! endif
 
     rewind(iout21)
     rewind(iout22)
@@ -308,7 +296,7 @@ contains
 #ifdef PRINT
 ! print=123: wtdisknat: print out exchange potentials
     if(iprint(123).ne.0.and.nexch.ge.1) then
-       if (HF) then
+       if (HFinput) then
           write(*,*)
           write(*,*) 'wtdisknat: output exchange potentials'
 
@@ -590,7 +578,7 @@ contains
     if (HF) then
        do iorb1=1,norb
           do iorb2=iorb1,norb
-             k=iorb1+iorb2*(iorb2-1)/2
+             k=k2(iorb1,iorb2)
              if (iorb1.eq.iorb2.and.ll(iorb1).eq.0) cycle
              
              do j=1,mxsize
@@ -810,8 +798,6 @@ contains
        write(i8out21,formfp64,err=1020) (r8tmp1(i),i=1,maxorb)
     endif
 
-    !FIXME !!!!
-    !do i=1,maxorb*(maxorb+1)
     do i=1,maxorb
        r8tmp3(i)=ee(i,i)
     enddo
@@ -922,7 +908,7 @@ contains
     if (HF) then
        do iorb1=1,norb
           do iorb2=iorb1,norb
-             k=iorb1+iorb2*(iorb2-1)/2
+             k=k2(iorb1,iorb2)
              if (iorb1.eq.iorb2.and.ll(iorb1).eq.0) cycle
              
              do j64=1,mxsize64
@@ -983,7 +969,6 @@ contains
     write(iout6,1070)
     stop 'wtdisk64'
 
-    ! FIXME
 1020 continue
     write(*,*) 'wtdisk64: error encountered when writing an extension to orbital file'
     write(*,*) '      '
@@ -1245,7 +1230,7 @@ contains
     if (HF) then
        do iorb1=1,norb
           do iorb2=iorb1,norb
-             k=iorb1+iorb2*(iorb2-1)/2
+             k=k2(iorb1,iorb2)
              if (iorb1.eq.iorb2.and.ll(iorb1).eq.0) cycle
              
              do j64=1,mxsize64
@@ -1306,7 +1291,6 @@ contains
     write(iout6,1070)
     stop 'wtdisk128'
 
-    ! FIXME
 1020 continue
     write(*,*) 'wtdiski128: error encountered when writing an extension to orbital file'
     write(*,*) '      '

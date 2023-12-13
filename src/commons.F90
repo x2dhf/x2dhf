@@ -113,7 +113,7 @@ module commons
   logical loffDiagLM ,hfIncl,homoIncl,lcaoIncl,ldaIncl,mcsorpt,mmoments,omegaIncl,openShell
   logical lpotmcsor,lorbmcsor,lmcsorpt,lcoulexch,openmp,pthread,tpool
   logical lfixcoul,lfixexch,lfixorb,lfixorb4init,lfastexch,lfastscf,lcheckTotEnergy,&
-       lpthreadpoolq,ltail
+       lplot,lpthreadpoolq,ltail
 
   logical inFormatI32,inFormatI64,inFormatR128,outFormatI32,outFormatI64,outFormatR128,&
        inUnFormatted,outUnFormatted  
@@ -122,7 +122,7 @@ module commons
   integer (KIND=IPREC) :: nexchp,norb,nel,nexch,nelInput,maxpots
   
   integer (KIND=IPREC) :: iharm2xy,magfield,inclorb,iinterp,imethod,ipot,&
-       ienterm,ienterm4init,inoterm,iftail,iplot
+       ienterm,ienterm4init,inoterm,iftail,iplot,istep
   integer (KIND=IPREC) :: iout4dd,iout4dft,iout4kinpot
 
   integer (KIND=IPREC) :: saveSCFdata,recalcMM
@@ -138,6 +138,7 @@ module commons
   integer (KIND=IPREC),dimension(0:maxthreads4mcsor-1) :: nstart7,nstart6a,nstart6b,nstop7,nstop6a,nstop6b      
   integer (KIND=IPREC),dimension(1) :: nmu,ngsize,inpv,ibmu,iemu,ioffs
   integer (KIND=IPREC) :: nmu_p,ibmu_p,iemu_p
+  integer (KIND=IPREC) :: nsor4orb,nsor4pot,ireset
 
   character*8 :: meshOrdering
   
@@ -151,9 +152,8 @@ module commons
   integer (KIND=IPREC),dimension(maxorb*(maxorb+1)/2) :: i3b,i3e,i3si,i3ng,i3mu,ilc
   integer (KIND=IPREC),dimension(maxorb*(1+maxorb/2)) :: iwexch,i3xrec1,i3xrec2,i3orb1,i3orb2
   integer (KIND=IPREC),dimension(maxbasis) :: lprim,mprim,icgau,ixref
-  integer (KIND=IPREC),dimension(4,10) :: ingr1,ingr2
   integer (KIND=IPREC),dimension(maxnu*maxmu) :: indx1nu,indx1mu
-  integer (KIND=IPREC),dimension(maxorb,maxorb) :: i3xind,i3xk,nlm
+  integer (KIND=IPREC),dimension(maxorb,maxorb) :: i3xind,ilc2,k2,nlm
   integer (KIND=IPREC),dimension(9,maxorb) :: mgx
   integer (KIND=IPREC),dimension(240,240) :: imagn
 
@@ -171,10 +171,10 @@ module commons
 
   real (PREC) :: orbEnergyIncThld,recalcMMfactor
   real (PREC) :: alphaf,alphaflxc,trelaxRealOrb,trelaxRealCoul,trelaxRealExch,&
-       trelaxCpu,trelaxCpuOrb,trelaxCpuCoul,trelaxCpuExch,&           
+       tmomenReal,trelaxCpu,trelaxCpuOrb,trelaxCpuCoul,trelaxCpuExch,&           
        tortho,trayl,tmomen,tlagra,ttoten,sflagra,dflagra,&
        vkt,vnt,evt,epott,etot,virrat,etotFN,ictot,iready,hallign,&
-       wtwoelLXC,dens_threshold
+       wtwoelLXC,dens_threshold,plotThreshold
   
   real (PREC), dimension(10) :: elect,electDA,total,totalDA
   
@@ -198,4 +198,6 @@ module commons
   integer (KIND=IPREC),dimension(maxorb+1) :: nexchpots
   integer (KIND=IPREC),dimension(maxorb,2*maxorb) :: ibexcp,ins1,ins2,ipcs,isyms
   integer (KIND=IPREC),dimension(maxorb,2*maxorb) :: deltam4pot
+  integer (KIND=IPREC),dimension(maxorb*(maxorb)/2) :: iorb1mm,iorb2mm,idelmm,ipcmm
+  integer (KIND=IPREC) :: nexchmm
 end module commons

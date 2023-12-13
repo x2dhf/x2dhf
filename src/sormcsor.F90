@@ -26,7 +26,9 @@ contains
     implicit none
     integer (KIND=IPREC) :: i,ij,ik,itr2,isym
     real (PREC) :: cc,ddmi1,ddmi2,ddni1,ddni2
-    !real (PREC) :: fcurr,fprev
+
+    !integer (KIND=IPREC) :: numax,mumax
+    !real (PREC) :: fcurr,fprev,fmax
     
     integer (KIND=IPREC),dimension(*) :: indx1,indx2,indx6a,indx6b,indx7
     real (PREC), dimension(*) :: fun,lhs,rhs,b,d
@@ -34,47 +36,59 @@ contains
     ! indx1 (indx2) array elements point to the particular (consequtive)
     ! element of fun (lhs, rhs, b and d) to be relaxed
 
+    !fmax=zero
+    
     do itr2=1,maxsor2
        do i=isstart,isstop,isstep
           ij=indx1(i)
           ik=indx2(i)
 
-          ddmi2=                                              &
+          ddmi2=                                             &
                dmu2(1) * ( fun(ij-nni4) + fun(ij+nni4) )+    &
                dmu2(2) * ( fun(ij-nni3) + fun(ij+nni3) )+    &
                dmu2(3) * ( fun(ij-nni2) + fun(ij+nni2) )+    &
                dmu2(4) * ( fun(ij-nni1) + fun(ij+nni1) )
 
-          ddmi1=                                              &
+          ddmi1=                                             &
                dmu1(1) * ( fun(ij-nni4) - fun(ij+nni4) )+    &
                dmu1(2) * ( fun(ij-nni3) - fun(ij+nni3) )+    &
                dmu1(3) * ( fun(ij-nni2) - fun(ij+nni2) )+    &
                dmu1(4) * ( fun(ij-nni1) - fun(ij+nni1) )
 
-          ddni2=                                              &
-               dni2(1) * ( fun(ij-   4) + fun(ij+   4) )+     &
-               dni2(2) * ( fun(ij-   3) + fun(ij+   3) )+     &
-               dni2(3) * ( fun(ij-   2) + fun(ij+   2) )+     &
+          ddni2=                                             &
+               dni2(1) * ( fun(ij-   4) + fun(ij+   4) )+    &
+               dni2(2) * ( fun(ij-   3) + fun(ij+   3) )+    &
+               dni2(3) * ( fun(ij-   2) + fun(ij+   2) )+    &
                dni2(4) * ( fun(ij-   1) + fun(ij+   1) )
 
-          ddni1=                                              &
-               dni1(1) * ( fun(ij-   4) - fun(ij+   4) )+     &
-               dni1(2) * ( fun(ij-   3) - fun(ij+   3) )+     &
-               dni1(3) * ( fun(ij-   2) - fun(ij+   2) )+     &
+          ddni1=                                             &
+               dni1(1) * ( fun(ij-   4) - fun(ij+   4) )+    &
+               dni1(2) * ( fun(ij-   3) - fun(ij+   3) )+    &
+               dni1(3) * ( fun(ij-   2) - fun(ij+   2) )+    &
                dni1(4) * ( fun(ij-   1) - fun(ij+   1) )
 
           cc=ddmi2 + b(ik)*ddmi1 + ddni2 + d(ik)*ddni1
           fun(ij) = omega * (rhs(ik)-cc)/lhs(ik)+ omega1 * fun(ij)
+          
 
+          
           !write(*,'("sor:",3i8,6e16.6)') i,ij,ik,b(ik),d(ik),rhs(ik),lhs(ik),cc,fun(ij)
           !if (mod(i,5000)==0) write(*,'("sor:",3i8,6e16.6)') i,ij,ik,b(ik),d(ik),rhs(ik),lhs(ik),cc,fun(ij)
           !fprev=fun(ij)
-          !fcurr = omega * (rhs(ik)-cc)/lhs(ik)+ omega1 * fun(ij)        
           !fun(ij) = omega * (rhs(ik)-cc)/lhs(ik)+ omega1 * fun(ij)
+
           !if (abs(fcurr-fprev)>9.93e-5) write(*,'("sor:",2i8,4e16.6,e16.6)') &    
           !     indx1nu(ij),indx1mu(ij),lhs(ik),rhs(ik),cc,fcurr,fcurr-fprev
-       enddo
 
+          !if (abs(fun(ij)-fprev)>fmax) then
+          !   fmax=abs(fun(ij)-fprev)
+          !   numax=indx1nu(ij)
+          !   mumax=indx1mu(ij)
+          !endif
+
+          !if (mod(ij,10000)==0) print *,"SOR:",ij,fprev,fun(ij)
+       enddo
+       
        !   determine values at the boundary points from extrapolation
        !   in version 2.0 single grid implies ifill=1
        if (isym == 1) then
@@ -114,6 +128,7 @@ contains
           enddo
        endif
     enddo
+
   end subroutine sor
 
   ! ### mcsor ###

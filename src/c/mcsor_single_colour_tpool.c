@@ -88,6 +88,7 @@ void mcsor_single_colour_tpool_ (void *args) {
 /*   printf("TRACE3: mcsorpt: 1 threadNum dmu1[01] %5d %15e %15e \n",threadNum,dmu1[0],dmu1[1]); */
 /* #endif */
   //int thread=threadNum;
+
   while (1) {
     if (threadsNum>1) {
       //printf("mcsorpt: thread=%1d worker_threads_done= %1d \n",thread,worker_threads_done);	

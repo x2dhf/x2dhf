@@ -102,16 +102,12 @@ PROGRAM  x2dhf
   length2= (no+2)*ngrid
 
   ! Let's extend the space originally reserved for storing exchange
-  ! potentials to store also the Coulomb potentias. The original excp area
-  ! is shifted rightward by no*mxsize elements.
+  ! potentials to store also the Coulomb potentials. The original excp area
+  ! is shifted rightward by no*ngrid (no*mxsize) elements.
 
-  ! FIXME ngrid vs ngrid8 ???
   length3=no*ngrid + ( no*(no+1)/2+nons*(nons+1)/2 )*ngrid8
- 
+
   ! ngrid8 is used below to allow excp to be used as a working array in fockDFT
-  
-  ! OED
-  if (OED) length3 =no*ngrid+( no*(no+1)/2+nons*(nons+1)/2 )*ngrid8
   
   ! HFS+DFT
   if (HFS.or.DFT) length3 = no*ngrid+3*ngrid8
@@ -133,7 +129,7 @@ PROGRAM  x2dhf
 
   !length7   = 24*ngrid8
   length7   = 30*ngrid8
-
+  length8   = 8*ngrid
   size=lengthfp
   
   ! dynamic allocation of memory acccording to the current case
@@ -145,6 +141,8 @@ PROGRAM  x2dhf
   allocate(scratch4lxcptr(length7))
   allocate(coulombptr(length1))
   allocate(exchangeptr(length1))
+  allocate(legendreptr(length8))
+
   
   ! zeroise arrays
   call zeroArray8(length1,orbptr)
@@ -153,7 +151,8 @@ PROGRAM  x2dhf
   call zeroArray8(length3,exchptr)
   call zeroArray8(length4,supplptr)
   call zeroArray8(length5,scratchptr)
-  call zeroArray8(length7,scratch4lxcptr)  
+  call zeroArray8(length7,scratch4lxcptr)
+  call zeroArray8(length8,legendreptr)    
   
   do n=1,length6
      sorptr(n)=0
@@ -170,7 +169,7 @@ PROGRAM  x2dhf
   ! prepare environment for Poisson's equation solving routines
   ! prepare arrays determining ordering of mesh points
 
-  call initArrays (supplptr,sorptr)
+  call initArrays
 
 
 #if ( defined PTHREAD )
@@ -227,7 +226,7 @@ PROGRAM  x2dhf
 
 #if defined TPOOL
   ! the thread pool(s) can now be destroyed
-  if (lcoulexch) then
+  if (lcoulexch.and..not.lfixexch) then
      call tpoolStop4pots(cnthreads4pots)
   endif
 

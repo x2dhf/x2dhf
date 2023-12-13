@@ -263,7 +263,6 @@ contains
     wk13=>scratchptr(13*mxsize8+1:14*mxsize8)
     
     !   contributions from one-electron terms
-    !FIXME
     iorb=1
     iborb=i1b(iorb)
     ngorb=i1si(iorb)
@@ -275,10 +274,6 @@ contains
     
     call zeroArray(mxsize,excp(length3-mxsize:))
     call zeroArray(mxsize,wk2)
-    
-    ! store wk0 in fock2 for a time being
-    !    call dcopy (mxsize,wk0,ione,fock2,ione) 
-    ! use fock2 as wk0
     
     ! contributions from the local exchange approximation
     
@@ -574,7 +569,7 @@ contains
     enddo
 
     open(iunit,file='out4kinpot.dat', status='unknown',form='formatted')
-    
+    !zshift=zero
     write(iunit,1000)
     ! v_k=V^P + v^W
 1000 format (&

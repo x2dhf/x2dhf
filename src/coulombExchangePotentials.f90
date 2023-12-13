@@ -85,7 +85,7 @@ contains
 
     implicit none
 
-    integer (KIND=IPREC) :: i3beg,igp,imu,in,inioff,iorb,iorb1,iorb2,iorb2t,irec,ishift,k
+    integer (KIND=IPREC) :: i3beg,igp,imu,in,inioff,iorb,iorb1,iorb2,iorb2t,irec,ishift
     real (PREC) :: ch1,ch2,crt1,crt2,ez1,ez2,ra1,ra2,slim,vetat,vxit,zc1,zc2
     !real (PREC), dimension(*) :: psi,excp,f4
 
@@ -110,10 +110,8 @@ contains
        
        do iorb1=1,norb
          do iorb2=iorb1,norb
-             k=iorb1+iorb2*(iorb2-1)/2
              if (iorb1.eq.iorb2.and.ll(iorb2).eq.0) cycle
-             ishift=i3b(k)-1
-
+             ishift=i3b(k2(iorb1,iorb2))-1
              ! loop over grid points
              do imu=1,mxnmu
                 if (imu.eq.1) cycle
@@ -136,8 +134,8 @@ contains
                 enddo
              enddo
 
-             excp1=>exchptr((i3b(k)):)
-             excp2=>exchptr((i3b(k))+mxsize:)
+             excp1=>exchptr((i3b(k2(iorb1,iorb2))):)
+             excp2=>exchptr((i3b(k2(iorb1,iorb2)))+mxsize:)
              call prod(mxsize,f4,excp1)
              if (iorb1.ne.iorb2) then
                 if (ll(iorb1).ne.0.and.ll(iorb2).ne.0) then

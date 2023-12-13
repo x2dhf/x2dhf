@@ -98,7 +98,6 @@ contains
     do i=1,mxsize
        wk7(i)=rhotup(i)+rhotdown(i)
        if (abs(wk7(i)).lt.precis) then
-          ! FIXME
           wk6(i)=two
        else
           wk6(i)=two*(one-(rhotup(i)*rhotup(i)+rhotdown(i)*rhotdown(i))/(wk7(i)*wk7(i)) )
@@ -128,7 +127,6 @@ contains
     ! wk6 - gamma (total)
     do i=1,mxsize
        if (rhot(i).lt.precis) then
-          ! FIXME
           wk5(i)=0.0_PREC
           wk6(i)=two
        else
@@ -374,7 +372,6 @@ contains
 
     ! calculate (nabla rho nabla rho)
 
-    ! FIXME
     call nfng (rhotup,rhotup,wk0,wk1,wk2,wk3,wk4,wk5,wk6,wk7)
     call dcopy(mxsize,wk7,ione,grhotup,ione)
 
@@ -487,7 +484,6 @@ contains
     enddo
 
     ! calculate (nabla rho nabla rho)
-    ! FIXME
     call nfng (rhotup,rhotup,wk0,wk1,wk2,wk3,wk4,wk5,wk6,wk7)
     call dcopy(mxsize,wk7,ione,grhotup,ione)
 
@@ -622,7 +618,6 @@ contains
     enddo
 
     ! calculate (nabla rho nabla rho)
-    ! FIXME
     call nfng (rhotup,rhotup,wk0,wk1,wk2,wk3,wk4,wk5,wk6,wk7)
     call dcopy(mxsize,wk7,ione,grhotup,ione)
 

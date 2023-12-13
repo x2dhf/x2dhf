@@ -84,8 +84,9 @@ contains
        call prodas (mxsize,w,e,psi1,wk1)
     endif
 
-    ! FIXME (debug pragma?)
-    if (idebug(707)==1.or.idebug(807)==1) then
+#ifdef DEBUG
+! debug= 55|65: test of oneelii
+    if (idebug(55)==1.or.idebug(65)==1) then
        j=1
        print *,"oneelii before interpolation: i=1,j=1", wk1(j)
        wk1(j)=zero
@@ -130,6 +131,7 @@ contains
        
        close(999)
     endif
+#endif
     
     call dcopy (mxsize,wk1,ione,wk2,ione)
     call prod  (mxsize,psi1,wk2)
@@ -376,7 +378,7 @@ contains
     use utils    
 
     implicit none
-    integer (KIND=IPREC) :: ihc,iorb1,iorb2,kex,exchType
+    integer (KIND=IPREC) :: ihc,iorb1,iorb2,exchType
     real (PREC) :: exchij
     real (PREC), dimension(*) :: psi,excp,wgt2,wk0
 #ifdef BLAS    
@@ -384,13 +386,7 @@ contains
     external ddot
 #endif
 
-    kex=iorb1+norb*(iorb2-1)
-          
-    if (iorb1.le.iorb2) then
-       ihc=iorb1+iorb2*(iorb2-1)/2
-    else
-       ihc=iorb2+iorb1*(iorb1-1)/2
-    endif
+    ihc=k2(iorb1,iorb2)
     
     if (exchType==0) then
        call prod2 (mxsize,psi(i1b(iorb1)),excp(i3b(ihc)),wk0)
@@ -405,7 +401,7 @@ contains
 
   ! ### oneelij ###
   !
-  ! FIXME    <1|T+V_n|2> ?????? or <2|T+V_n|1> ??????
+  ! <2|T+V_n|1> 
   !
   real (PREC) function oneelij(iorb1,iorb2,psi,e,f0,wgt1,wk0,wk1,wk2,wk3)
     use params
@@ -427,7 +423,6 @@ contains
 
     isym=isymOrb(iorb2)
 
-    ! FIXME iorb1->iorb2 below?
     ! calculate derivatives over mu and ni
     call putin (nni,i1mu(iorb1),isym,psi(i1b(iorb1)),wk3)
     call diffnu (i1mu(iorb1),wk3,wk0,wk1,wk2)
@@ -541,12 +536,7 @@ contains
        ! has already been retrieved from disk
        coo=occ(iorb)
        kex=iorb1+norb*(iorb-1)
-          
-       if (iorb1.le.iorb) then
-          ihc=iorb1+iorb*(iorb-1)/2
-       else
-          ihc=iorb+iorb1*(iorb1-1)/2
-       endif
+       ihc=k2(iorb1,iorb)
        
        if (iorb1.eq.iorb) coo=coo-one
        call dcopy (mxsize,pot(i2b(iorb)),ione,wk1,ione)
@@ -557,7 +547,7 @@ contains
        
        if (iorb.ne.iorb1)  then
           call prodas (mxsize,-gec(kex),psi(i1b(iorb)),excp(i3b(ihc)),wk2)
-          if (ilc(ihc).gt.1) then
+          if (ilc(ihc)==2) then
              call prodas (mxsize,-gec(kex+norb*norb),psi(i1b(iorb)),excp(i3b(ihc)+mxsize),wk2)
           endif
        else
@@ -573,17 +563,8 @@ contains
     
     call prod (mxsize,psi(i1b(iorb2)),wk2)
     wtwoelExch=ddot(mxsize,wgt2,ione,wk2,ione)
-    
     wtwoel=wtwoelCoul+wtwoelExch
-    !call prod (ngorb,psi(i1beg),wk2)
-    !wtwoel=ddot(ngorb,wgt2,ione,wk2,ione)
-    
     twoelij=wtwoelCoul+wtwoelExch
-
-    ! if(iprint(64).ne.0) then
-    !    write(*,'(4x,"<",i2,1x,a5,a1,"|J+K|",i2,1x,a5,a1"> =",1Pe23.16)') &
-    !         iorn(iorb2),bond(iorb2),gusym(iorb2),iorn(iorb1),bond(iorb1),gusym(iorb1),wtwoel
-    ! endif
 
 #ifdef PRINT
 ! print= 64: twoelij: 2-electron contributions
@@ -610,9 +591,115 @@ contains
     
   end function twoelij
 
-  ! ### twoelijLXC ###
+  ! ### twoelijSM ###
   !
-  !     FIXME
+  !  <2|V_C|1>
+  function twoelijSM (iorb1,iorb2)
+    use params
+    use discrete
+    use scfshr
+    use commons
+    use blas
+    use inout
+    use sharedMemory
+    use utils
+
+    
+    implicit none
+    integer (KIND=IPREC) :: i,ihc,iorb,iorb1,iorb2,kex
+
+    real (PREC) :: coo,w,woneel,wtwoel,wtwoelCoul,wtwoelExch,twoelijSM
+    !real (PREC), dimension(*) :: wgt2,wk0,wk1,wk2,wk3
+    real (PREC), dimension(:), pointer :: wgt2,wk0,wk1,wk2,wk3
+
+
+#ifdef BLAS    
+    real (PREC) ddot
+    external ddot
+#endif
+    
+    wgt2=>supplptr(i4b(14):)
+    wk0 =>scratchptr(           1:   mxsize8)
+    wk1 =>scratchptr(   mxsize8+1: 2*mxsize8)
+    wk2 =>scratchptr( 2*mxsize8+1: 3*mxsize8)
+    wk3 =>scratchptr( 3*mxsize8+1: 4*mxsize8)            
+
+    
+    ! The code below could be streamlined a bit by first calculating the Coulomb potential
+    ! contribution and then the exchange one. However, if this is done, some open-shell
+    ! cases fail to converge, e.g. Li one.
+
+    call zeroArray (mxsize,wk0)
+    call zeroArray (mxsize,wk1)
+    call zeroArray (mxsize,wk2)
+
+    ! add contributions from Coulomb and exchange potentials
+    do iorb=1,norb
+       ! it is asumed that exchange potentials involving iorb1
+       ! has already been retrieved from disk
+       coo=occ(iorb)
+       kex=iorb1+norb*(iorb-1)
+       ihc=k2(iorb1,iorb)
+       
+       if (iorb1.eq.iorb) coo=coo-one
+       call dcopy (mxsize,exchptr(i2b(iorb):),ione,wk1,ione)
+       call dscal (mxsize,coo,wk1,ione)
+       call prod (mxsize,orbptr(i1b(iorb1):),wk1)
+       
+       call add (mxsize,wk1,wk0)
+       
+       if (iorb.ne.iorb1)  then
+          call prodas (mxsize,-gec(kex),orbptr(i1b(iorb):),exchptr(i3b(ihc):),wk2)
+
+          if (ilc(ihc)==2) then
+             call prodas (mxsize,-gec(kex+norb*norb),orbptr(i1b(iorb):),exchptr(i3b(ihc)+mxsize:),wk2)
+          endif
+       else
+          if ((mm(iorb).gt.0).and.(ilc(ihc).gt.0)) then
+             call prodas(mxsize,-gec(kex),orbptr(i1b(iorb):),exchptr(i3b(ihc):),wk2)
+          endif
+       endif
+    enddo
+     
+    ! to complete the integrand wk2 has to be multiplied by psi(i1beg)
+    call prod (mxsize,orbptr(i1b(iorb2):),wk0)
+    wtwoelCoul=ddot(mxsize,wgt2,ione,wk0,ione)
+    
+    call prod (mxsize,orbptr(i1b(iorb2):),wk2)
+    wtwoelExch=ddot(mxsize,wgt2,ione,wk2,ione)
+    
+    wtwoel=wtwoelCoul+wtwoelExch
+    !call prod (ngorb,psi(i1beg),wk2)
+    !wtwoel=ddot(ngorb,wgt2,ione,wk2,ione)
+    
+    twoelijSM=wtwoelCoul+wtwoelExch
+
+#ifdef PRINT
+! print= 64: twoelij: 2-electron contributions
+    if (iprint(64).ne.0) then
+       write(*,'(4x,"twoelij: energy contributions for",i4,1x,a8,a1)') iorn(iorb1),bond(iorb1),gusym(iorb1)
+       write(*,'("    two-electron-Coul         =",1Pe23.16)') wtwoelCoul
+       write(*,'("    two-electron-Exch         =",1Pe23.16)') wtwoelExch
+       write(*,'("    two-electron              =",1Pe23.16)') wtwoel
+    endif
+#endif
+
+#ifdef PRINT
+! print= 65: twoelij: 2-electron contributions <i|J|j> and <i|K|j>
+    if(iprint(65).ne.0) then
+       !write(*,'(18x,"DFT: 2-electron energy contributions:")')
+       write(*,'(4x,"<",i2,1x,a5,a1,"| J |",i2,1x,a5,a1"> =",1Pe23.16)') &
+            iorn(iorb2),bond(iorb2),gusym(iorb2),iorn(iorb1),bond(iorb1),gusym(iorb1),wtwoelCoul
+       write(*,'(4x,"<",i2,1x,a5,a1,"| K |",i2,1x,a5,a1"> =",1Pe23.16)') &
+            iorn(iorb2),bond(iorb2),gusym(iorb2),iorn(iorb1),bond(iorb1),gusym(iorb1),wtwoelExch
+       write(*,'(4x,"<",i2,1x,a5,a1,"|J+K|",i2,1x,a5,a1"> =",1Pe23.16)') &
+            iorn(iorb2),bond(iorb2),gusym(iorb2),iorn(iorb1),bond(iorb1),gusym(iorb1),wtwoel
+    endif
+#endif
+    
+  end function twoelijSM
+  
+  ! ### twoelijLXC ###
   !
   real (PREC) function twoelijLXC (iorb1,iorb2,psi,pot,excp,wgt2,wk0,wk1,wk2)
     use params
@@ -707,23 +794,11 @@ contains
        do iorb=1,norb
           !coo=occ(iorb)
           kex=iorb1+norb*(iorb-1)
-          
-          if (iorb1.le.iorb) then
-             ihc=iorb1+iorb*(iorb-1)/2
-          else
-             ihc=iorb+iorb1*(iorb1-1)/2
-          endif
-          
-          !if (iorb1.eq.iorb) coo=coo-one
-          !call dcopy (mxsize,pot(i2b(iorb)),ione,wk1,ione)
-          !call dscal (mxsize,coo,wk1,ione)
-          !call prod (mxsize,psi(i1b(iorb1)),wk1)
-          
-          !call add (mxsize,wk1,wk0)
+          ihc=k2(iorb,iorb1)
           
           if (iorb.ne.iorb1)  then
              call prodas (mxsize,-gec(kex),psi(i1b(iorb)),excp(i3b(ihc)),wk2)
-             if (ilc(ihc).gt.1) then
+             if (ilc2(iorb,iorb1).gt.1) then
                 call prodas (mxsize,-gec(kex+norb*norb),psi(i1b(iorb)),excp(i3b(ihc)+mxsize),wk2)
              endif
           else
@@ -734,13 +809,8 @@ contains
        enddo
      
        ! to complete the integrand wk2 has to be multiplied by psi(i1beg)
-    
        call prod (mxsize,psi(i1b(iorb2)),wk2)
        wtwoelExch=alphaf*ddot(mxsize,wgt2,ione,wk2,ione)
-       !print *,"3",wtwoelExch,-alphaf*wtwoelCoul/occ(iorb1)
-       ! contribution i the Coulomb part
-       !wtwoel=wtwoel+wtwoelExch-alphaf*wtwoelCoul/occ(iorb1)
-       !wtwoel=wtwoel+wtwoelExch-alphaf*wtwoelCoul/occ(iorb1)
        wtwoel=wtwoel+wtwoelExch
     endif
  

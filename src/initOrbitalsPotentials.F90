@@ -113,7 +113,6 @@ contains
        ! combination of hydrogenic atomic orbitals unless the previous
        ! case is being continued
 
-       !FIXME
        if (ini4.ne.0) then
           call initHyd
           initAddData=.true.       

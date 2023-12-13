@@ -370,10 +370,10 @@ contains
     nnu4=nnu3+nnu1
     nnu5=nnu4+nnu1
 
-    !isym=isymOrb(iorb)
-    ! FIXME
+    ! FIXME: isym=isymOrb(iorb)
     isym=1
     stop "setBVpot"
+
     if (isym.eq.1) then
        do ij=2,nnu1-1
           fun1=fun(ij)
@@ -507,7 +507,6 @@ contains
        enddo
     enddo
     
-    ! FIXME
     write(*,'("checkd1nu: ",2i5,e15.6)') immax,inmax,diff
     
   end subroutine checkd1nu

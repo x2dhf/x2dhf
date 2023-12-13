@@ -21,7 +21,6 @@ module data4II
     data labellc /&
          'break'    , 'config'   , 'conv'     , 'debug'    , 'dft'     ,&
          'fefield'  , 'fermi'    , 'fix'      , 'fixorb'   , 'mmoments',&
-         'fixcoul'  , 'fixexch'  , 'gauss'    , 'grid'     , 'homo'    ,&
          'initial'  , 'inout'    , 'interp'   , 'lcao'     , 'lagra'   ,&
          'mcsor'    , 'method'   , 'multipol' , 'nuclei'   , 'omega'   ,&
          'orbpot'   , 'order'    , 'potgsz'   , 'potgszg'  , 'potharm3',&
@@ -32,7 +31,8 @@ module data4II
          'slowexch' , 'chktoten' , 'coulexch' , 'fastscf'  , 'lcao4lda',&
          'omegaopt' , 'tail'     , 'kinpot'   , 'lxcpolar' , 'densthld',&
          'potcoul2' , 'potcoul3' , 'lm'       , 'lm0'      , 'lm1'     ,&
-         'lm2'      , 'altsweep' , 'omegaz'   , 'intracul' , 'extracul' /
+         'lm2'      , 'altsweep' , 'omegaz'   , 'intracul' , 'extracul',&
+         'fixpot'   , 'gauss'    , 'grid'     , 'homo'     , 'plot' /
 
     data cdftext /'lda','b88'/
     data cdftcorrt /'lyp','vwn'/

@@ -54,13 +54,16 @@ contains
 
     woneel=oneelij(iorb,iorb,psi,e,f0,wgt1,wk0,wk1,wk2,wk3)
 
-    if (idebug(807)==1) then
+#ifdef DEBUG
+! debug= 65: EaHF: test of oneelii routine       
+    if (idebug(65)==1) then
        print *,"Ea:      woneel=",woneel 
        woneel=oneelii4plot(iorb,psi,e,f0,wgt1,wk0,wk1,wk2,wk3)
        print *,"Ea: woneel4plot=",woneel
        stop "Ea"
     endif
-
+#endif
+    
     call prod2 (mxsize,psi(i1b(iorb):),coulombptr(i2b(iorb):),wk0)
     call prod (mxsize,psi(i1b(iorb):),wk0)
     wtwoelCoul=ddot(mxsize,wgt2,ione,wk0,ione)
@@ -75,7 +78,7 @@ contains
        write(*,'(4x,"EaHF: energy contributions for",i4,1x,a8,a1)') iorn(iorb),bond(iorb),gusym(iorb)
        write(*,'("    1-electron-Coul         =",1Pe23.16)') wtwoelCoul
        write(*,'("    2-electron-Exch         =",1Pe23.16)') wtwoelExch
-       write(*,'("  1+2-electron              =",1Pe23.16)') wtwoel
+       write(*,'("  1+2-electron              =",1Pe23.16)') woneel+wtwoel
     endif
 #endif
 
@@ -180,12 +183,12 @@ contains
     
   end subroutine EaDFT
 
-  ! ### EaDFT ###
+  ! ### EaLXCnd ###
   !
   !     Evaluates an eigenvalue of the Fock equation for a given orbital
   !     using a DFT/LXC exchange potential
   !
-  subroutine EaLXC(iorb)
+  subroutine EaLXCnd(iorb)
     use params
     use discrete
     use memory
@@ -236,17 +239,17 @@ contains
     !eng(iorb) = engo(ipc)
     ee(iorb,iorb)=woneel+wtwoel
     
-  end subroutine EaLXC
+  end subroutine EaLXCnd
 
 
 
-  ! ### EaLxcDirect ###
+  ! ### EaLXC ###
   !
   !     Evaluates an eigenvalue of the Fock equation for a given orbital
   !     using a DFT/LXC exchange potential via coulombptr and exchangeptr
   !     arrays (see EaDirect).
   !
-  subroutine EaLxcDirect(iorb)
+  subroutine EaLXC(iorb)
     use params
     use discrete
     use memory
@@ -306,22 +309,19 @@ contains
     wtwoelExch=-ddot(mxsize,wgt2,ione,wk0,ione)
     wtwoel=wtwoelCoul+wtwoelExch
 
-    !print *,"EaLXCDirect: ",wtwoelCoul,wtwoelExch
-
-    
 #ifdef PRINT    
 ! print= 64: EaLxcDirect: Coulomb and exchange energy contributions 
     if (iprint(64).ne.0) then
-       write(*,'(4x,"EaLxcDirect: energy contributions for",i4,1x,a8,a1)') iorn(iorb),bond(iorb),gusym(iorb)
-       write(*,'("    1-electron              =",1Pe23.16)') woneel
-       write(*,'("    2-electron              =",1Pe23.16)') wtwoel
+       write(*,'(4x,"EaLXC: energy contributions for",i4,1x,a8,a1)') iorn(iorb),bond(iorb),gusym(iorb)
+       write(*,'("    1-electron-Coul         =",1Pe23.16)') wtwoelCoul
+       write(*,'("    2-electron-Exch         =",1Pe23.16)') wtwoelExch
        write(*,'("  1+2-electron              =",1Pe23.16)') woneel+wtwoel
     endif
 #endif    
     
     ee(iorb,iorb)=woneel+wtwoel
     
-  end subroutine EaLxcDirect
+  end subroutine EaLXC
 
   !  ### EabHF ###
   !
@@ -379,12 +379,12 @@ contains
           engo12=ent/occ(iorb)
           engo21=ent/occ(iorb1)
        elseif (lmtype==1) then
-          ! second best convergence (123 SCF iterations for Li)
+          ! lmtype=1|2 could be of some use when trying to converge
+          ! closed-shell systems in external electric field.   
           call Eab1HF (iorb1,iorb)
           engo12=ee(iorb1,iorb)
           engo21=ee(iorb1,iorb)/occ(iorb1)
        elseif (lmtype.eq.2) then
-          ! worst convergence (1000 SCF iterations for Li)
           call Eab1HF (iorb,iorb1)
           engo21=ee(iorb,iorb1)
           engo12=ee(iorb,iorb1)*occ(iorb1)
@@ -427,8 +427,7 @@ contains
     integer (KIND=IPREC) :: i,ihc,iorb,iorbRef,iorb1,iorb2,ipc12,ipc21,isym,kex
 
     real (PREC) :: w,woneel,wtwoel,wtwoelCoul,wtwoelExch
-    real (PREC), dimension(:), pointer :: e,excp,f0,psi,wgt1,wgt2,&
-         wk0,wk1,wk2,wk3
+    real (PREC), dimension(:), pointer :: e,excp,f0,psi,wgt1,wgt2,wk0,wk1,wk2,wk3
 
 #ifdef BLAS    
     real (PREC) ddot
@@ -455,15 +454,19 @@ contains
     if (ige(iorb1).ne.ige(iorb2)) return
     woneel=oneelij(iorb2,iorb1,psi,e,f0,wgt1,wk0,wk1,wk2,wk3)    
 
-    call prod2 (mxsize,psi(i1b(iorb1):),coulombptr(i2b(iorb1):),wk0)
-    call prod (mxsize,psi(i1b(iorb2):),wk0)
-    wtwoelCoul=ddot(mxsize,wgt2,ione,wk0,ione)
+    ! call prod2 (mxsize,psi(i1b(iorb1):),coulombptr(i2b(iorb1):),wk0)
+    ! call prod (mxsize,psi(i1b(iorb2):),wk0)
+    ! wtwoelCoul=ddot(mxsize,wgt2,ione,wk0,ione)
 
-    call prod2 (mxsize,psi(i1b(iorb2):),exchangeptr(i2b(iorb1):),wk0)
-    wtwoelExch=-ddot(mxsize,wgt2,ione,wk0,ione)
-    wtwoel=wtwoelCoul+wtwoelExch
+    ! call prod2 (mxsize,psi(i1b(iorb2):),exchangeptr(i2b(iorb1):),wk0)
+    ! wtwoelExch=-ddot(mxsize,wgt2,ione,wk0,ione)
+
+    ! wtwoel=wtwoelCoul+wtwoelExch
+    ! ee(iorb1,iorb2)=woneel+wtwoel
+
+    wtwoel=twoelijSM (iorb1,iorb2)
     ee(iorb1,iorb2)=woneel+wtwoel
-
+ 
 #ifdef PRINT    
 ! print= 47: Eab1HF: 1- and 2-electron contributions to off-diagonal Lagrange multipliers
     if (iprint(47).ne.0) then    
@@ -497,8 +500,6 @@ contains
     real (PREC), dimension(:), pointer :: e,excp,f0,psi,wgt1,wgt2,&
          wk0,wk1,wk2,wk3
 
-    ! FIXME
-    if (idebug(459).ne.0) return
     if (ifixorb(iorb)==1) return
     if (iorb==norb.or.norb==1.or.nel==1) return    
    
@@ -535,8 +536,6 @@ contains
           engo12=ee(iorb1,iorb)
           engo21=ee(iorb1,iorb)/occ(iorb1)
        elseif (lmtype==2) then
-          ! works for Li
-          !call Eab2DFT (iorb,iorb1)
           call Eab1DFT (iorb1,iorb)
           engo21=ee(iorb,iorb1)
           engo12=ee(iorb,iorb1)*occ(iorb1)
@@ -635,108 +634,11 @@ contains
 #ifdef PRINT    
 ! print= 46: Eab1DFT: off-diagonal Lagrange multipliers
     if (iprint(46).ne.0) then
-       write(*,'(a8,i4,e16.6,i4,a8,i4,a8,2e16.8)') 'Eab2DFT: ', &
+       write(*,'(a8,i4,e16.6,i4,a8,i4,a8,2e16.8)') 'Eab1DFT: ', &
             lmtype,sflagra,iorn(iorb2),bond(iorb2),iorn(iorb1),bond(iorb1),&
             ee(iorb2,iorb1),ee(iorb1,iorb2)
     endif
 #endif    
-
   end subroutine Eab1DFT
 
-  ! ### Eab2DFT ###
-  !
-  !     Evaluates the off-diagonal Lagrange multipliers in case of a local
-  !     exchange approximation
-  !
-  subroutine Eab2DFT(iorb1,iorb2)
-    use params
-    use discrete
-    use memory
-    use scfshr
-    use commons
-    use blas
-    use sharedMemory
-    use utils
-    
-    implicit none
-
-    integer (KIND=IPREC) :: length
-    integer (KIND=IPREC) :: i,iborb,ibpot,iorb1,iorb2,iborb1,iborb2,iorb,ipc12,ipc21,nmut
-    real (PREC) :: engo1,engo2,engoprv1,engoprv2,oc,wtwoel
-#ifdef BLAS    
-    real (PREC) ddot
-    external ddot
-#endif
-    real (PREC), dimension(:), pointer :: e,excp,excp1,psi,psi1,psi2,wgt2,&
-         wk0,wk1
-
-    if (mgx(6,iorb1).ne.mgx(6,iorb2)) return
-    if (ige(iorb1).ne.ige(iorb2)) return
-
-    e=>supplptr(i4b(4):)
-    excp=>exchptr
-    psi=>orbptr
-    wgt2=>supplptr(i4b(14):)
-
-    wk0 =>scratchptr(          1:   mxsize8)
-    wk1 =>scratchptr(   mxsize8+1: 2*mxsize8)
-
-    ee(iorb1,iorb2)=zero
-    ee(iorb2,iorb1)=zero
-
-    iborb1=i1b(iorb1)
-    iborb2=i1b(iorb2)
-
-    psi1=>orbptr(iborb1:)
-    psi2=>orbptr(iborb2:)
-    
-    ! Add contributions from the Coulomb and local exchange potentials.
-    ! In the local exchange approximtion the Coulomb potential includes
-    ! also the contribution from a given orbital
-
-    ! Calculate the Coulomb potential contribution from all the orbitals
-
-    call zeroArray (mxsize,wk0)
-
-    do iorb=1,norb
-       iborb=i1b(iorb)
-       ibpot=i2b(iorb)
-       nmut=i1mu(iorb)
-       oc=occ(iorb)
-       excp1=>exchptr(ibpot:)
-       call daxpy (mxsize,oc,excp1,ione,wk0,ione)
-    enddo
-
-    call prod  (mxsize,psi2,wk0)
-
-    ! Multiply the local exchange potential by psi(iborb2)
-    ! and add the result to the Coulomb potential
-
-    excp1=>exchptr(length2-2*mxsize+1:)
-    call prod2 (mxsize,psi2,excp1,wk1)
-    call add (mxsize,wk0,wk1)
-    
-    if (lxcHyb) then
-       ! add the (port) of exact exchange potential 
-       call add (mxsize,excp1,wk1)
-    endif
-
-    ! To complete the integrand wk1 has to be multiplied by psi(iborb1)
-
-    call prod (mxsize,psi1,wk1)
-    wtwoel=ddot(mxsize,wgt2,ione,wk1,ione)
-
-    ee(iorb1,iorb2)=wtwoel
-    ee(iorb2,iorb1)=wtwoel
-    
-#ifdef PRINT    
-! print= 46: Eab2DFT: off-diagonal Lagrange multipliers
-    if (iprint(46).ne.0) then
-       write(*,'(a8,i4,e16.6,i4,a8,i4,a8,2e16.8)') 'Eab2DFT: ', &
-            lmtype,sflagra,iorn(iorb),bond(iorb1),iorn(iorb1),bond(iorb1),&
-            ee(iorb1,iorb2),ee(iorb2,iorb1)
-    endif
-#endif
-  end subroutine Eab2DFT
-  
 end module lagrangeMultipliers

@@ -130,7 +130,7 @@ contains
   end subroutine fastSCF
   
 
-  ! ### prttoten ####
+  ! ### printTotalEnergy ####
   !
   !     Prints total energy and its components
   !
@@ -180,8 +180,9 @@ contains
   subroutine potAsympt (iorb1,pot,excp)
     use params
     use commons
+    use discrete    
     implicit none
-    integer (KIND=IPREC) :: i3beg,ibeg,idel,iorb1,iorb2,k,ngrid
+    integer (KIND=IPREC) :: i3beg,ibeg,idel,iorb1,iorb2,k
 
     real (PREC), dimension(*) :: pot,excp
 
@@ -200,10 +201,9 @@ contains
 
     do iorb2=1,norb
        if (itouch(iorb1).eq.0.and.itouch(iorb2).eq.0) goto 10
-       k=i3xk(iorb1,iorb2)
+       k=k2(iorb1,iorb2)
        !      check if k=0
        if (k.eq.0) goto 10
-       ngrid=i3si(k)
        if (ilc(k).ne.0) then
           i3beg=i3b(k)
           idel=abs(mgx(6,iorb1)-mgx(6,iorb2))
@@ -211,10 +211,10 @@ contains
 
           call exchAsympt (idel,k,excp(i3beg))
 
-          if (ilc(k).eq.2) then
+          if (ilc(k)==2) then
              idel=mgx(6,iorb2)+mgx(6,iorb1)
              k=k+norb*(norb+1)/2
-             i3beg=i3beg+ngrid
+             i3beg=i3beg+mxsize
              call exchAsympt (idel,k,excp(i3beg))
           endif
        endif
@@ -247,7 +247,7 @@ contains
 
     do iorb2=1,norb
        if (itouch(iorb1).eq.0.and.itouch(iorb2).eq.0) cycle
-       k=i3xk(iorb1,iorb2)
+       k=k2(iorb1,iorb2)
        ! check if k=0
        if (k.eq.0) cycle
        if (ilc(k).ne.0) then
@@ -255,7 +255,7 @@ contains
           idel=abs(mgx(6,iorb1)-mgx(6,iorb2))
           if (iorb1.eq.iorb2) idel=2*mgx(6,iorb1)
           call exchAsympt (idel,k,excp(i3beg))
-          if (ilc(k).eq.2) then
+          if (ilc(k)==2) then
              idel=mgx(6,iorb2)+mgx(6,iorb1)
              k=k+norb*(norb+1)/2
              i3beg=i3beg+mxsize
@@ -452,6 +452,7 @@ contains
     
     implicit none
     integer (KIND=IPREC) :: iorb1,iorb2
+    integer (KIND=IPREC) :: count1,count2,countRate
     real (PREC) :: time1,time2
     real (PREC), dimension(:), pointer :: cw_orb,cw_suppl,cw_sctch
 
@@ -463,22 +464,20 @@ contains
     cw_sctch=>scratchptr
     
     call getCpuTime(time1)
-    call coulMom (cw_orb,cw_suppl(i4b(9):),cw_suppl(i4b(14):),&
-         cw_sctch(i5b( 1):),cw_sctch(i5b( 2):),cw_sctch(i5b( 3):),cw_sctch(i5b( 4):),cw_sctch(i5b( 5):),&
-         cw_sctch(i5b( 6):),cw_sctch(i5b( 7):),cw_sctch(i5b( 8):),cw_sctch(i5b( 9):),cw_sctch(i5b(10):))
+    call getRealTime (count1,countRate)
 
-    if (nel>1.and.HF) then
-       do  iorb1=1,norb
-          do  iorb2=iorb1,norb
-             call exchMom (iorb1,iorb2,cw_orb,cw_suppl(i4b(9):),cw_suppl(i4b(14):),&
-                  cw_sctch(i5b( 1):),cw_sctch(i5b( 2):),cw_sctch(i5b( 3):),cw_sctch(i5b( 4):),&
-                  cw_sctch(i5b( 5):),cw_sctch(i5b( 6):),cw_sctch(i5b( 7):),cw_sctch(i5b( 8):),&
-                  cw_sctch(i5b( 9):),cw_sctch(i5b(10):))
-          enddo
-       enddo
+    call coulMom
+
+    if (nel>1.and.(HF.or.TED)) then
+       call exchMom
     endif
+
     call getCpuTime (time2)
     tmomen =tmomen + (time2-time1)
+
+    call getRealTime (count2,countRate)
+    tmomenReal=tmomenReal+dble(count2-count1)/dble(countRate)
+
     if (.not.lmpoleInit.and.verboseLevel>2) then
        write(iout6,'(" ... multipole moment expansion coefficients recalculated ...")')
     endif
@@ -489,163 +488,109 @@ contains
   !
   !     Calculates multipole moments up to order k_max=7.
   !
-  subroutine coulMom (psi,f4,wgt2,d1,d2,d3,d4,d5,d6,d7,d8,wk1,wk2)
+  subroutine coulMom
     use params
     use discrete
     use scfshr
     use commons
     use utils
     use blas
+    use sharedMemory
+    
     implicit none
-    integer (KIND=IPREC) :: i,ibeg,iorb,mu,n,ni,ngrid
+    integer (KIND=IPREC) :: i,ibeg,iorb,mu,n,ni
     real (PREC) :: costh,rr,xr,xw
-    real (PREC), dimension(*) ::  psi,f4,wgt2,wk1,wk2
     real (PREC), dimension(10) ::  dome
-    real (PREC), dimension(nni,mxnmu) :: d1(nni,mxnmu),d2(nni,mxnmu),d3(nni,mxnmu),d4(nni,mxnmu),&
-         d5(nni,mxnmu),d6(nni,mxnmu),d7(nni,mxnmu),d8(nni,mxnmu)
-
-
+    real (PREC), dimension(:), pointer :: psi,f4,wgt2,wk1,wk2
+    real (PREC), dimension(:), pointer :: dd1,dd2,dd3,dd4,dd5,dd6,dd7,dd8
+    
 #ifdef BLAS    
     real (PREC) ddot
     external ddot
 #endif
 
+    psi=>orbptr
+    f4=>supplptr(i4b(9):)
+    wgt2=>supplptr(i4b(14):)
+    wk1 =>scratchptr(   mxsize8+1: 2*mxsize8)
+    wk2 =>scratchptr( 2*mxsize8+1: 3*mxsize8)
+
+    dd1 => legendreptr(         1:   mxsize)
+    dd2 => legendreptr(  mxsize+1: 2*mxsize)
+    dd3 => legendreptr(2*mxsize+1: 3*mxsize)
+    dd4 => legendreptr(3*mxsize+1: 4*mxsize)
+    dd5 => legendreptr(4*mxsize+1: 5*mxsize)
+    dd6 => legendreptr(5*mxsize+1: 6*mxsize)
+    dd7 => legendreptr(6*mxsize+1: 7*mxsize)
+    dd8 => legendreptr(7*mxsize+1: 8*mxsize)
+
+    ! dd1, dd2, dd3, ... are equal to P1*r, P2*r**2 and P3*r**2, ...,
+    ! respectively (r==xr), where P1, P2, P3, ...  are Legendre polynomials
+    ! of a specified order.
+    
+    ! Prepare integrands and calculate moments. Multiplication by f4 is
+    ! necessary because the factor 2/(r*cosh(mu)) is incorporated in wgt2.
+
     do iorb=1,norb
        if (itouch(iorb).eq.0) cycle
        ibeg = i1b (iorb)
-       ngrid= i1si(iorb)
-
-       do mu=1,mxnmu
-          do ni=1,nni
-             rr=sqrt(vxisq(mu)+vetasq(ni)-1.0_PREC)
-             xr=r2*rr
-
-             ! xr=r2*rr  r2=R/2  costh == xi*eta/rr
-             ! r==xr=(R/2)rr see eq.13 (CPC 98 (1996) 346)
-
-             if (abs(rr).lt.precis) then
-                costh=0.0_PREC
-             else
-                costh=vxi(mu)*veta(ni)/rr
-             endif
-
-             ! domei=P_k (Legendre polynomial of order k)
-             dome(1)=costh
-             dome(2)=(3.0_PREC*costh*costh-1.0_PREC)*0.50_PREC
-             do n=2,(mpole-1)
-                dome(n+1)=(dble(2*n+1)*costh*dome(n)-dble(n)*dome(n-1))/dble(n+1)
-             enddo
-
-             xw=xr
-             d1(ni,mu)=dome(1)*xw
-             xw=xw*xr
-             d2(ni,mu)=dome(2)*xw
-
-             if (mpole.ge.3) then
-                xw=xw*xr
-                d3(ni,mu)=dome(3)*xw
-             endif
-
-             if (mpole.ge.4) then
-                xw=xw*xr
-                d4(ni,mu)=dome(4)*xw
-             endif
-
-             if (mpole.ge.5) then
-                xw=xw*xr
-                d5(ni,mu)=dome(5)*xw
-             endif
-             if (mpole.ge.6) then
-                xw=xw*xr
-                d6(ni,mu)=dome(6)*xw
-             endif
-
-             if (mpole.ge.7) then
-                xw=xw*xr
-                d7(ni,mu)=dome(7)*xw
-             endif
-
-             if (mpole.ge.8) then
-                xw=xw*xr
-                d8(ni,mu)=dome(8)*xw
-             endif
-          enddo
-       enddo
-
-#ifdef PRINT
-! print=160: coulMom: d1, d3, d5       
-       if (iprint(160).ne.0) then
-          write(*,*) 'coulMom: d1 '
-          call pmtx(nni,mxnmu,d1,ione,ione,incrni,incrmu)
-          write(*,*) 'coulMom: d3 '
-          call pmtx(nni,mxnmu,d3,ione,ione,incrni,incrmu)
-          write(*,*) 'coulMom: d5 '
-          call pmtx(nni,mxnmu,d5,ione,ione,incrni,incrmu)
-       endif
-#endif
-       
-       ! Now d1, d2, and d3 are equal to P1*r, P2*r**2 and P3*r**2,
-       ! respectively (r==xr), where P1, P2, ...  are Legendre polynomials of a
-       ! specified order.
-
-       ! Prepare integrands and calculate moments. Multiplication by f4 is
-       ! necessary because the factor 2/(r*cosh(mu)) is incorporated in wgt2.
-
-       call prod2 (ngrid,psi(ibeg),psi(ibeg),wk1)
-       call prod  (ngrid,f4,wk1)
+    
+       call prod2 (mxsize,psi(ibeg:),psi(ibeg:),wk1)
+       call prod  (mxsize,f4,wk1)
 
        if (lhomonucl .and. .not.lbreakCi) then
           cmulti (iorb) = 0.0_PREC
        else
-          call prod2 (ngrid,d1,wk1,wk2)
-          cmulti (iorb)=ddot(ngrid,wgt2,ione,wk2,ione)
+          call prod2 (mxsize,dd1,wk1,wk2)
+          cmulti (iorb)=ddot(mxsize,wgt2,ione,wk2,ione)
        endif
 
-       call prod2 (ngrid,d2,wk1,wk2)
-       cmulti (iorb+norb)=ddot(ngrid,wgt2,ione,wk2,ione)
+       call prod2 (mxsize,dd2,wk1,wk2)
+       cmulti (iorb+norb)=ddot(mxsize,wgt2,ione,wk2,ione)
 
        if (mpole.ge.3) then
           if (lhomonucl .and. .not.lbreakCi) then
              cmulti (iorb+2*norb)=0.0_PREC
           else
-             call prod2 (ngrid,d3,wk1,wk2)
-             cmulti (iorb+2*norb)=ddot(ngrid,wgt2,ione,wk2,ione)
+             call prod2 (mxsize,dd3,wk1,wk2)
+             cmulti (iorb+2*norb)=ddot(mxsize,wgt2,ione,wk2,ione)
           endif
        endif
 
        if (mpole.ge.4) then
-          call prod2 (ngrid,d4,wk1,wk2)
-          cmulti (iorb+3*norb) =ddot (ngrid,wgt2,ione,wk2,ione)
+          call prod2 (mxsize,dd4,wk1,wk2)
+          cmulti (iorb+3*norb) =ddot (mxsize,wgt2,ione,wk2,ione)
        endif
 
        if (mpole.ge.5) then
           if (lhomonucl .and. .not.lbreakCi) then
              cmulti (iorb+4*norb)=0.0_PREC
           else
-             call prod2 (ngrid,d5,wk1,wk2)
-             cmulti (iorb+4*norb)=ddot(ngrid,wgt2,ione,wk2,ione)
+             call prod2 (mxsize,dd5,wk1,wk2)
+             cmulti (iorb+4*norb)=ddot(mxsize,wgt2,ione,wk2,ione)
           endif
        endif
 
        if (mpole.ge.6) then
-          call prod2 (ngrid,d6,wk1,wk2)
-          cmulti (iorb+5*norb)=ddot(ngrid,wgt2,ione,wk2,ione)
+          call prod2 (mxsize,dd6,wk1,wk2)
+          cmulti (iorb+5*norb)=ddot(mxsize,wgt2,ione,wk2,ione)
        endif
 
        if (mpole.ge.7) then
           if (lhomonucl .and. .not.lbreakCi) then
              cmulti (iorb+6*norb)=0.0_PREC
           else
-             call prod2 (ngrid,d7,wk1,wk2)
-             cmulti (iorb+6*norb)=ddot(ngrid,wgt2,ione,wk2,ione)
+             call prod2 (mxsize,dd7,wk1,wk2)
+             cmulti (iorb+6*norb)=ddot(mxsize,wgt2,ione,wk2,ione)
           endif
        endif
 
        if (mpole.ge.8) then
-          call prod2 (ngrid,d8,wk1,wk2)
-          cmulti (iorb+7*norb)=ddot(ngrid,wgt2,ione,wk2,ione)
+          call prod2 (mxsize,dd8,wk1,wk2)
+          cmulti (iorb+7*norb)=ddot(mxsize,wgt2,ione,wk2,ione)
        endif
-
+    enddo
+    
 #ifdef PRINT
 ! print=161: multipole moments for orbital 
        if (iprint(161).ne.0) then
@@ -655,183 +600,247 @@ contains
 1111      format(4e25.14)
        endif
 #endif       
-    enddo
 
   end subroutine coulMom
 
   ! ### exchMom ###
-  ! 
-  !     Calculates multipole moments to k=8 and m=4 (iorb1<=iorb2)
   !
-  subroutine exchMom (iorb1,iorb2,psi,f4,wgt2,d1,d2,d3,d4,d5,d6,d7,d8,wk1,wk2)
-    use params
+  !     Recalculates multipole moment expansion coefficients every time demax(1),
+  !     i.e. maximum error in orbital energy, is reduced by recalcMMfactor. Multipole
+  !     moments used to calculate asymptotic values of Coulomb and exchange potentials are
+  !     stored in cmulti and exc(di|qu|oc|he|5-8) arrays, respectively.
+  !
+  !     Coefficients and then asymptotic values are recalculated only for orbitals which
+  !     undergo relaxation, i.e. those being touched (itouch=1).
+  !
+  subroutine exchMom
+    use blas
     use discrete
-    use scfshr
+    use params
     use commons
+    use dateTime
+    use sharedMemory
+    use scfshr
     use utils
 
-    use blas
-
+#ifdef OPENMP    
+    use omp_lib
+#endif
+    
     implicit none
-    integer (KIND=IPREC) :: i,ibeg1,ibeg2,iorb1,iorb2,idel,ido,ipc,mu,ni,ngrid
 
+    integer (KIND=IPREC) :: iorb1,iorb2
+    integer (KIND=IPREC) :: i,ibeg1,ibeg2,idel,ipc,istart,istop,j,&
+         mu,ni,maxThreads,nthread,nthreads
     real (PREC) ::  xrr,xw
-    real (PREC), dimension(*) ::  psi,f4,wgt2,wk1,wk2
-    real (PREC), dimension(10) ::  dome
-    real (PREC), dimension(nni,mxnmu) :: d1(nni,mxnmu),d2(nni,mxnmu),d3(nni,mxnmu),d4(nni,mxnmu),&
-         d5(nni,mxnmu),d6(nni,mxnmu),d7(nni,mxnmu),d8(nni,mxnmu)
+    real (PREC), dimension(10) :: dome
+!    real (PREC), dimension(nni,mxnmu) :: d1(nni,mxnmu),d2(nni,mxnmu),d3(nni,mxnmu),d4(nni,mxnmu),&
+!         d5(nni,mxnmu),d6(nni,mxnmu),d7(nni,mxnmu),d8(nni,mxnmu)
+
+
+    real (PREC), dimension(:,:), allocatable :: d1,d2,d3,d4,d5,d6,d7,d8
+
+    real (PREC), dimension(:), pointer :: psi,f4,wgt2
+    
+#ifdef OPENMP
+    real (PREC), dimension(:), allocatable :: wk1,wk2
+#else
+    real (PREC), dimension(:), pointer :: wk1,wk2
+#endif
+
 #ifdef BLAS    
     real (PREC) ddot
     external ddot
 #endif
 
-    ! iorb2>=iorb1
-    if (itouch(iorb1).eq.0.and.itouch(iorb2).eq.0) return
-    if (iorb1.eq.iorb2.and.mgx(6,iorb2).eq.0) return
+    psi=>orbptr
+    f4=>supplptr(i4b(9):)
+    wgt2=>supplptr(i4b(14):)
 
-    ido=0
-1234 ido=ido+1
+    allocate (d1(nni,mxnmu))
+    allocate (d2(nni,mxnmu))    
+    allocate (d3(nni,mxnmu))
+    allocate (d4(nni,mxnmu))    
+    allocate (d5(nni,mxnmu))
+    allocate (d6(nni,mxnmu))    
+    allocate (d7(nni,mxnmu))
+    allocate (d8(nni,mxnmu))    
+    
+#ifdef OPENMP
+    allocate (wk1(mxsize8))
+    allocate (wk2(mxsize8))
+    maxThreads=OMP_get_max_threads()
+#else
+    wk1 =>scratchptr(          1:   mxsize8)
+    wk2 =>scratchptr(   mxsize8+1: 2*mxsize8)
+#endif
 
-    ! calculate m
+    nthreads=min(nexchmm,maxThreads)
+    !$OMP  PARALLEL NUM_THREADS(nthreads) DEFAULT(SHARED) &
+    !$OMP& PRIVATE(i,ibeg1,ibeg2,idel,iorb1,iorb2,ipc,istart,istop,j,mu,&
+    !$OMP&         nthread,ni,xrr,xw,dome,d1,d2,d3,d4,d5,d6,d7,d8,wk1,wk2)
+    
+#ifdef OPENMP
 
-    idel=abs(mgx(6,iorb2)-mgx(6,iorb1))
-    if (iorb1.eq.iorb2) idel=2*mgx(6,iorb2)
-    ! ipc=iorb1+iorb2*(iorb2-1)/2
-    ipc=i3xk(iorb1,iorb2)
-
-    ! if ((iorb1.eq.iorb2).and.(ilc(ipc).lt.1)) return
-
-    if (ipc.eq.0) return
-
-    ! second values of expansion coefficients for the same pair of
-    ! orbitals are stored in the second half of the arrays.
-
-    if (ido.eq.2) then
-       idel=mgx(6,iorb2)+mgx(6,iorb1)
-       ipc=ipc+norb*(norb+1)/2
+    nthread=OMP_get_thread_num()
+    nthread=nthread+1
+    !print *,"OPENMP-1",nexchmm,maxThreads,nthread
+    if (nexchmm<=maxThreads) then
+       istart=nthread
+       istop=nthread
+    else
+       istart=(nthread-1)*(nexchmm/maxThreads+1)+1
+       istop=nthread*(nexchmm/maxThreads+1)
+       if (istop>nexchmm) istop=nexchmm
     endif
 
-    ! homonuclear case is treated as a heteronuclear one
+    if (istart>nexchmm) goto 9999
+    
+    ! do i=(nthread-1)*(nexchmm/maxThreads+1)+1,nthread*(nexchmm/maxThreads+1)
+    do i=istart,istop
+       if (i>nexchmm) exit
+       
+       ! if (i>nexchmm) then
+       !    print *,"OPENMP3-",nexchmm,nthread,istart,istop,i
+       !    exit
+       ! endif
+#else
+    do i=1,nexchmm
+#endif       
+       idel=idelmm(i)
+       iorb1=iorb1mm(i)
+       iorb2=iorb2mm(i)    
+       ipc=ipcmm(i)
 
-    ibeg1=i1b (iorb1)
-    ibeg2=i1b (iorb2)
+       !print *,"OPENMP2-",nthread,i,ipc
+       
+       ibeg1=i1b (iorb1)
+       ibeg2=i1b (iorb2)
 
-    do mu=1,mxnmu
-       do ni=1,nni
-          xrr=r2*sqrt (vxisq(mu)+vetasq(ni)-1.0_PREC)
-          call mulex(ni,mu,idel,dome)
-
-          xw=xrr
-          d1(ni,mu)=dome(1)*xw
-          xw=xw*xrr
-          d2(ni,mu)=dome(2)*xw
-
-          if (mpole.ge.3) then
+       do mu=1,mxnmu
+          do ni=1,nni
+             xrr=r2*sqrt (vxisq(mu)+vetasq(ni)-1.0_PREC)
+             call mulex(ni,mu,idel,dome)
+             
+             xw=xrr
+             d1(ni,mu)=dome(1)*xw
              xw=xw*xrr
-             d3(ni,mu)=dome(3)*xw
-          endif
-
-          if (mpole.ge.4) then
-             xw=xw*xrr
-             d4(ni,mu)=dome(4)*xw
-          endif
-
-          if (mpole.ge.5) then
-             xw=xw*xrr
-             d5(ni,mu)=dome(5)*xw
-          endif
-
-          if (mpole.ge.6) then
-             xw=xw*xrr
-             d6(ni,mu)=dome(6)*xw
-          endif
-
-          if (mpole.ge.7) then
-             xw=xw*xrr
-             d7(ni,mu)=dome(7)*xw
-          endif
-
-          if (mpole.ge.8) then
-             xw=xw*xrr
-             d8(ni,mu)=dome(8)*xw
-          endif
-
-#ifdef PRINT
-! print=165: xrr,xw,dome
-          if (iprint(165).ne.0) then
-             if ((iorb1.eq.1).and.(iorb2.eq.1).and.(ni.eq.nni/2).and.(mu.eq.mxnmu/2)) then
-                write(*,'(10e16.7)') xrr,xw
-                write(*,'(10e16.7)') (dome(i),i=1,8)
-                print *,'iorb1,iorb2,ni,mu,nnu,mxnmu',iorb1,iorb2,ni,mu,nni,mxnmu
+             d2(ni,mu)=dome(2)*xw
+             
+             if (mpole.ge.3) then
+                xw=xw*xrr
+                d3(ni,mu)=dome(3)*xw
              endif
-          endif
-#endif
-       enddo
-    enddo
-
-    ! Now d1,d2,... are equal to N*P(1,q)*r, N*P(2,q)*r**2, ...,
-    ! respectively. P(1,q), P(2,q),...  are associate Legendre polynomials
-    ! of a specified order (k) and degree q (q==idel). N is equal to
-    ! [(k-|q|)!/(k+|q|)!]^{1/2}.
-    ! Note that N*N is present in eq. (19). One N is taken care of when
-    ! evaluating Q_kq (Q_{k\Delta m}^{ab}) and the other when generating
-    ! Pkm (P_{k|\Delta m|).
-
-    ! Prepare integrands and calculate moments. Multiplication by f4 is
-    ! necessary because of the factor 2/(r*cosh(mu)) incorporated in wgt2.
-
-    ngrid = min (i1si(iorb1),i1si(iorb2))
-    call prod2 (ngrid,psi(ibeg1),psi(ibeg2),wk1)
-    call prod  (ngrid,f4,wk1)
-
-    call prod2 (ngrid,d1,wk1,wk2)
-    excdi(ipc)=ddot(ngrid,wgt2,ione,wk2,ione)
-
-    call prod2 (ngrid,d2,wk1,wk2)
-    excqu(ipc)=ddot(ngrid,wgt2,ione,wk2,ione)
-
-    if (mpole.ge.3) then
-       call prod2 (ngrid,d3,wk1,wk2)
-       excoc(ipc)=ddot(ngrid,wgt2,ione,wk2,ione)
-    endif
-
-    if (mpole.ge.4) then
-       call prod2(ngrid,d4,wk1,wk2)
-       exche(ipc)=ddot(ngrid,wgt2,ione,wk2,ione)
-    endif
-
-    if (mpole.ge.5) then
-       call prod2 (ngrid,d5,wk1,wk2)
-       exc5(ipc)=ddot(ngrid,wgt2,ione,wk2,ione)
-    endif
-
-    if (mpole.ge.6) then
-       call prod2 (ngrid,d6,wk1,wk2)
-       exc6(ipc)=ddot(ngrid,wgt2,ione,wk2,ione)
-    endif
-
-    if (mpole.ge.7) then
-       call prod2 (ngrid,d7,wk1,wk2)
-       exc7(ipc)=ddot(ngrid,wgt2,ione,wk2,ione)
-    endif
-
-    if (mpole.ge.8) then
-       call prod2 (ngrid,d8,wk1,wk2)
-       exc8(ipc)=ddot(ngrid,wgt2,ione,wk2,ione)
-    endif
-
+             
+             if (mpole.ge.4) then
+                xw=xw*xrr
+                d4(ni,mu)=dome(4)*xw
+             endif
+             
+             if (mpole.ge.5) then
+                xw=xw*xrr
+                d5(ni,mu)=dome(5)*xw
+             endif
+             
+             if (mpole.ge.6) then
+                xw=xw*xrr
+                d6(ni,mu)=dome(6)*xw
+             endif
+             
+             if (mpole.ge.7) then
+                xw=xw*xrr
+                d7(ni,mu)=dome(7)*xw
+             endif
+             
+             if (mpole.ge.8) then
+                xw=xw*xrr
+                d8(ni,mu)=dome(8)*xw
+             endif
+             
 #ifdef PRINT
-! print=166: excdi,excqu,excoc,exche,exc5,exc6,exc7,exc8
-    if (iprint(166).ne.0) then
-       write(*,1000) iorn(iorb1),bond(iorb1),gusym(iorb1),iorn(iorb2),bond(iorb2),gusym(iorb2),idel
-1000   format(/,i4,1x,a8,a1,3x,i4,1x,a8,a1,3x,i5)
-       write(*,1010) excdi(ipc),excqu(ipc),excoc(ipc),exche(ipc),exc5(ipc),exc6(ipc),exc7(ipc),exc8(ipc)
-1010   format(4d25.14)
-    endif
+             ! print=165: xrr,xw,dome
+             if (iprint(165).ne.0) then
+                if ((iorb1.eq.1).and.(iorb2.eq.1).and.(ni.eq.nni/2).and.(mu.eq.mxnmu/2)) then
+                   write(*,'(10e16.7)') xrr,xw
+                   write(*,'(10e16.7)') (dome(j),j=1,8)
+                   print *,'iorb1,iorb2,ni,mu,nnu,mxnmu',iorb1,iorb2,ni,mu,nni,mxnmu
+                endif
+             endif
+#endif
+          enddo
+       enddo
+
+       ! Now d1,d2,... are equal to N*P(1,q)*r, N*P(2,q)*r**2, ...,
+       ! respectively. P(1,q), P(2,q),...  are associate Legendre polynomials
+       ! of a specified order (k) and degree q (q==idel). N is equal to
+       ! [(k-|q|)!/(k+|q|)!]^{1/2}.
+       ! Note that N*N is present in eq. (19). One N is taken care of when
+       ! evaluating Q_kq (Q_{k\Delta m}^{ab}) and the other when generating
+       ! Pkm (P_{k|\Delta m|).
+       
+       ! Prepare integrands and calculate moments. Multiplication by f4 is
+       ! necessary because of the factor 2/(r*cosh(mu)) incorporated in wgt2.
+       
+       call prod2 (mxsize,psi(ibeg1:),psi(ibeg2:),wk1)
+       call prod  (mxsize,f4,wk1)
+       
+       call prod2 (mxsize,d1,wk1,wk2)
+       excdi(ipc)=ddot(mxsize,wgt2,ione,wk2,ione)
+       
+       call prod2 (mxsize,d2,wk1,wk2)
+       excqu(ipc)=ddot(mxsize,wgt2,ione,wk2,ione)
+       
+       if (mpole.ge.3) then
+          call prod2 (mxsize,d3,wk1,wk2)
+          excoc(ipc)=ddot(mxsize,wgt2,ione,wk2,ione)
+       endif
+       
+       if (mpole.ge.4) then
+          call prod2(mxsize,d4,wk1,wk2)
+          exche(ipc)=ddot(mxsize,wgt2,ione,wk2,ione)
+       endif
+       
+       if (mpole.ge.5) then
+          call prod2 (mxsize,d5,wk1,wk2)
+          exc5(ipc)=ddot(mxsize,wgt2,ione,wk2,ione)
+       endif
+       
+       if (mpole.ge.6) then
+          call prod2 (mxsize,d6,wk1,wk2)
+          exc6(ipc)=ddot(mxsize,wgt2,ione,wk2,ione)
+       endif
+       
+       if (mpole.ge.7) then
+          call prod2 (mxsize,d7,wk1,wk2)
+          exc7(ipc)=ddot(mxsize,wgt2,ione,wk2,ione)
+       endif
+       
+       if (mpole.ge.8) then
+          call prod2 (mxsize,d8,wk1,wk2)
+          exc8(ipc)=ddot(mxsize,wgt2,ione,wk2,ione)
+       endif
+       
+#ifdef PRINT
+       ! print=166: excdi,excqu,excoc,exche,exc5,exc6,exc7,exc8
+       if (iprint(166).ne.0) then
+          !write(*,'("i,iorb1,iorb2,idel,ipc",4i5)') i,iorb1,iorb2,idel,ipc
+          write(*,1000) iorn(iorb1),bond(iorb1),gusym(iorb1),iorn(iorb2),bond(iorb2),gusym(iorb2),idel
+1000      format(/,i4,1x,a8,a1,3x,i4,1x,a8,a1,3x,i5)
+          write(*,1010) excdi(ipc),excqu(ipc),excoc(ipc),exche(ipc),exc5(ipc),exc6(ipc),exc7(ipc),exc8(ipc)
+1010      format(4d25.14)
+       endif
 #endif
 
-    ! do not replace iorb1+iorb2*(iorb2-1)/2 by ipc!
-    if (ilc(iorb1+iorb2*(iorb2-1)/2).eq.2.and.ido.eq.1) go to 1234
+#ifdef OPENMP
+    enddo
+9999 continue    
+    deallocate (wk1)
+    deallocate (wk2)
+
+    !$OMP END PARALLEL
+#else
+    enddo
+#endif
 
   end subroutine exchMom
 
@@ -1038,13 +1047,13 @@ contains
     integer (KIND=IPREC) :: i,iorb,j,kxk,m,n
     real (PREC) :: vcoul
     real (PREC) :: costh,rr,rr1,rr2,pe
-    real (PREC), dimension(10) :: dome
+    real (PREC), dimension(maxmpole) :: dome
 
     rr=sqrt(vxisq(j)+vetasq(i)-1.0_PREC)
     rr1=1.0_PREC/(rr*r2)
 
     dome(1)=costh
-    dome(2)=(3.0_PREC*costh*costh-1.0_PREC)*5.d-01
+    dome(2)=(3.0_PREC*costh*costh-1.0_PREC)*0.5_PREC
     do n=2,mpole-1
        dome(n+1)=(dble(2*n+1)*costh*dome(n)-dble(n)*dome(n-1))/dble(n+1)
     enddo
@@ -1052,10 +1061,8 @@ contains
     pe=0.0_PREC
     rr2=rr1
     do m=1,mpole
-       !         rr2=rr2*rr1
        kxk=iorb+(m-1)*norb
        pe=pe+cmulti(kxk)*dome(m)*(rr1**dble(m+1))
-       !         pe=pe+cmulti(kxk)*dome(m)*rr2
     enddo
     vcoul=pe
 
@@ -1102,7 +1109,6 @@ contains
 
     elseif (mt.eq.1) then
        ! m=1
-
        costh2=costh*costh
        sini2=abs(1.0_PREC-costh2)
        sini =sqrt(sini2)
@@ -1125,11 +1131,11 @@ contains
 
        if (mpole.lt.7) goto 100
        costh6=costh4*costh2
-       dome(7)=(7.0_PREC/16.0_PREC)*sini*(5.0_PREC-135.0_PREC*costh2+495.0_PREC*costh4-429.0_PREC*costh6)/sqrt(56.0_PREC)
-
+       dome(7)=(7.0_PREC/16.0_PREC)*sini&
+            *(5.0_PREC-135.0_PREC*costh2+495.0_PREC*costh4-429.0_PREC*costh6)/sqrt(56.0_PREC)
        if (mpole.lt.8) goto 100
-       dome(8)=(9.0_PREC/16.0_PREC)*sini*costh*(35.0_PREC-385.0_PREC*costh2+1001.0_PREC*costh4-715.0_PREC*costh6)/sqrt(72.0_PREC)
-
+       dome(8)=(9.0_PREC/16.0_PREC)*sini*costh&
+            *(35.0_PREC-385.0_PREC*costh2+1001.0_PREC*costh4-715.0_PREC*costh6)/sqrt(72.0_PREC)
        !      minus sign for odd values of mt
        !       pe=-pe
 
@@ -1153,10 +1159,12 @@ contains
 
        if (mpole.lt.6) goto 100
        costh6=costh4*costh2
-       dome(6)=(105.0_PREC/8.0_PREC)*(1.0_PREC-19.0_PREC*costh2+51.0_PREC*costh4-33.0_PREC*costh6)/sqrt(1680.0_PREC)
+       dome(6)=(105.0_PREC/8.0_PREC)*&
+            (1.0_PREC-19.0_PREC*costh2+51.0_PREC*costh4-33.0_PREC*costh6)/sqrt(1680.0_PREC)
 
        if (mpole.lt.7) goto 100
-       dome(7)=(63.0_PREC/8.0_PREC)*costh*(15.0_PREC-125.0_PREC*costh2+253.0_PREC*costh4-143.0_PREC*costh6)/sqrt(3024.0_PREC)
+       dome(7)=(63.0_PREC/8.0_PREC)*costh&
+            *(15.0_PREC-125.0_PREC*costh2+253.0_PREC*costh4-143.0_PREC*costh6)/sqrt(3024.0_PREC)
 
        if (mpole.lt.8) goto 100
        costh8=costh6*costh2
@@ -1168,7 +1176,7 @@ contains
        costh2=costh*costh
        sini2=abs(1.0_PREC-costh2)
        ! FIXME sini =(sini2) or sini =sqrt(sini2)
-       sini =(sini2)
+       sini =sini2
        sini3=sini2*sini
 
        dome(1)=0.0_PREC
@@ -1188,17 +1196,15 @@ contains
 
        if (mpole.lt.7) goto 100
        costh4=costh2*costh2
-       dome(7)=-(315.0_PREC/8.0_PREC)*sini3*(3.0_PREC-66.0_PREC*costh2+143.0_PREC*costh4)/sqrt(151200.0_PREC)
+       dome(7)=-(315.0_PREC/8.0_PREC)*&
+            sini3*(3.0_PREC-66.0_PREC*costh2+143.0_PREC*costh4)/sqrt(151200.0_PREC)
 
        if (mpole.lt.8) goto 100
-       dome(8)=-(3465.0_PREC/8.0_PREC)*sini3*costh*(3.0_PREC-26.0_PREC*costh2+39.0_PREC*costh4)/sqrt(332640.0_PREC)
-
-       ! minus sign for odd values of mt
-       ! pe=-pe
+       dome(8)=-(3465.0_PREC/8.0_PREC)*&
+            sini3*costh*(3.0_PREC-26.0_PREC*costh2+39.0_PREC*costh4)/sqrt(332640.0_PREC)
 
     elseif (mt.eq.4) then
        ! m=4
-
        dome(1)=0.0_PREC
        dome(2)=0.0_PREC
        dome(3)=0.0_PREC
@@ -1213,10 +1219,12 @@ contains
 
        if (mpole.lt.6) goto 100
        costh6=costh4*costh2
-       dome(6)=(945.0_PREC/2.0_PREC)*(-1.0_PREC+13*costh2-23.0_PREC*costh4+11.0_PREC*costh6)/sqrt(1814400.0_PREC)
+       dome(6)=(945.0_PREC/2.0_PREC)*&
+            (-1.0_PREC+13*costh2-23.0_PREC*costh4+11.0_PREC*costh6)/sqrt(1814400.0_PREC)
 
        if (mpole.lt.7) goto 100
-       dome(7)=(3465.0_PREC/2.0_PREC)*costh*(-3.0_PREC+19*costh2-29.0_PREC*costh4+13.0_PREC*costh6)/sqrt(6652800.0_PREC)
+       dome(7)=(3465.0_PREC/2.0_PREC)*&
+            costh*(-3.0_PREC+19*costh2-29.0_PREC*costh4+13.0_PREC*costh6)/sqrt(6652800.0_PREC)
 
        if (mpole.lt.8) goto 100
        costh8=costh6*costh2
@@ -1264,8 +1272,8 @@ contains
 
   ! ### alphaSCMC ###
   !
-  !     Calculates self-consistent multiplicative constant (see Eq. 3 in
-  !     Karasiev, Ludenia, eq.3 PR 64 (2002) 062510)
+  !     Calculates self-consistent multiplicative constant; see Eq. 3 in
+  !     Karasiev, Ludenia, eq.3 PR 64 (2002) 062510
   !
   subroutine alphaSCMC 
     use blas
@@ -1279,9 +1287,9 @@ contains
     use utils
     
     implicit none
-    integer (KIND=IPREC) ::  ibex,iborb,iborb1,iborb2,ibpot,ibpot1,ibpot2,iex,iex1,&
+    integer (KIND=IPREC) ::  ibex,iborb,iborb1,iborb2,ibpot,ibpot1,ibpot2,iex1,&
          iorb,iorb1,iorb2,ipe1,ipe2,&
-         isiorb,isiorb1,isiorb2,isipot,isipot1,isipot2,isiex,isiex1,ngrid,nmut,nmut1,nmut2
+         isiorb,isiorb1,isiorb2,isipot,isipot1,isipot2,nmut,nmut1,nmut2
 
     real (PREC) :: ehfex,eps,oc,oc1,oc2,ocx1,ocx2,w,wdcoul,wex1,wex2
     real (PREC), dimension(:), pointer :: psi,excp,e,f0,wgt1,wgt2,&
@@ -1317,8 +1325,7 @@ contains
 
     if (nel.lt.2) return
 
-    ! FIXME
-    !   contribution from coulomb interaction within the same shell
+    ! contribution from coulomb interaction within the same shell
 
     wdcoul=0.0_PREC
 
@@ -1336,13 +1343,11 @@ contains
           call prod  (isiorb,psi(iborb:),wk2)
 
           w=ddot(isiorb,wgt2,ione,wk2,ione)
-          !          wdcoul=wdcoul+oc*(oc-1.0_PREC)/2.0_PREC*w
           wdcoul=wdcoul+oc/2.0_PREC*w
        endif
     enddo
 
     !   contribution from coulomb and exchange interaction between shells
-
     wex1 =0.0_PREC
     wex2 =0.0_PREC
 
@@ -1355,21 +1360,17 @@ contains
        oc1=occ(iorb1)
 
        ipe1=mgx(6,iorb1)
-       iex1 =iorb1+iorb1*(iorb1-1)/2
+       iex1 =k2(iorb1,iorb2)
 
        call dcopy (isiorb1,psi(iborb1:),ione,wk0,ione)
        call prod  (isiorb1,psi(iborb1:),wk0)
 
-       !      calculate exchange interaction within pi, delta, etc. open shell
-       ! FIXME
+       ! calculate exchange interaction within pi, delta, etc. open shell
        if (ipe1.gt.0.and.abs(oc1-1.0_PREC).gt.eps) then
           call exint (iorb1,ocx1)
           ibex=i3b(iex1)
-          isiex1=i3si(iex1)
-
-          ngrid=min(isiorb1,isiex1)
-          call prod2  (ngrid,wk0,excp(ibex:),wk1)
-          w=ddot (ngrid,wgt2,ione,wk1,ione)
+          call prod2  (mxsize,wk0,excp(ibex:),wk1)
+          w=ddot (mxsize,wgt2,ione,wk1,ione)
           wex1=wex1+ocx1*w
 
 #ifdef PRINT
@@ -1398,17 +1399,14 @@ contains
           oc2=occ(iorb2)
 
           ipe2=mgx(6,iorb2)
-          iex=iorb1+iorb2*(iorb2-1)/2
-          ibex=i3b(iex)
-          isiex=i3si(iex)
+          ibex=i3b(k2(iorb1,iorb2))
 
-          !         exchange interaction between shells (same lambda)
+          ! exchange interaction between shells (same lambda)
 
           call excont (iorb1,iorb2,ocx1,ocx2)
-          ngrid=min(isiorb1,isiorb2,isiex)
-          call prod2 (ngrid,excp(ibex:),psi(iborb1:),wk1)
-          call prod  (ngrid,psi(iborb2:),wk1)
-          w=ddot(ngrid,wgt2,ione,wk1,ione)
+          call prod2 (mxsize,excp(ibex:),psi(iborb1:),wk1)
+          call prod  (mxsize,psi(iborb2:),wk1)
+          w=ddot(mxsize,wgt2,ione,wk1,ione)
           wex1=wex1+ocx1*w
 #ifdef PRINT
 ! print= 82: exchange interaction between shells (same lambda)
@@ -1416,12 +1414,12 @@ contains
              print *,'ibex,wex1,ocx1,w',ibex,wex1,ocx1,w
           endif
 #endif          
-          !         exchange interaction between shells (different lambda)
+          ! exchange interaction between shells (different lambda)
 
-          if (ilc(iex).gt.1) then
-             call prod2 (ngrid,excp(ibex+ngrid:),psi(iborb1:),wk1)
-             call prod  (ngrid,psi(iborb2:),wk1)
-             w=ddot (ngrid,wgt2,ione,wk1,ione)
+          if (ilc2(iorb1,iorb2)==2) then
+             call prod2 (mxsize,excp(ibex+mxsize:),psi(iborb1:),wk1)
+             call prod  (mxsize,psi(iborb2:),wk1)
+             w=ddot (mxsize,wgt2,ione,wk1,ione)
              wex2=wex2+ocx2*w
 #ifdef PRINT
 ! print= 83: exchange interaction between shells (different lambda)
@@ -1433,7 +1431,6 @@ contains
        enddo
     enddo
 
-    ! FIXME
     ehfex=wdcoul+wex1+wex2
 
     alphaf=two/three
@@ -1461,7 +1458,6 @@ contains
   ! ### dftex ###
   !
   !     Calculates exchange contribution due to various DFT functionals
-  !     FIXME
   !
   subroutine dftex (psi,pot,wgt2,wk0,wk1,wk2,wk3,rhot,rhotup,rhotdown, &
        grhot,grhotup,grhotdown,wk10,wk11,wk12,wk13)
@@ -1525,4 +1521,5 @@ contains
     endif
 
   end subroutine dftex
+
 end module scfUtils

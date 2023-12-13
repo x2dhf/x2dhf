@@ -51,7 +51,6 @@ contains
     
     !$OMP PARALLEL NUM_THREADS(nexchpots(iorb)) DEFAULT(SHARED) PRIVATE(nexchpot,isym,i,ib1,ib2,in1,in2,ibexp,idel,itr1,lhs,rhs,wk2)
 #ifdef OPENMP
-
     i=OMP_get_thread_num()
     nexchpot=i+1
 #else
@@ -62,6 +61,8 @@ contains
        allocate(rhs(mxsize))
        allocate(wk2(mxsize8))
 #endif    
+       nsor4pot=nsor4pot+maxsor1*maxsor2
+
        in1=ins1(iorb,nexchpot)
        in2=ins2(iorb,nexchpot)
        
@@ -156,7 +157,7 @@ contains
        end subroutine coulExch_tpool
     end interface
 #endif
-  
+
     d=>supplptr(i4b(3):)
     e=>supplptr(i4b(4):)
     excp=>exchptr
@@ -169,15 +170,17 @@ contains
     iorbc=iorb
     maxsor1c=maxsorpot(1)    
     maxsor2c=maxsorpot(2)
-
+   
     omegac=ovfexch
     omega1c=1.0_PREC-omegac
     nthreadsc=nexchpots(iorb)
 
 #ifdef TRACE    
-    write(*,'("TRACE:  coulExchSORPT/iorb, nexchpots, maxpots", 4i5)') iorb,nexchpots(iorb),maxpots
+    write(*,'("TRACE:  coulExchSORPT/iorb, nexchpots, maxpots", 4i5)') &
+         iorb,nexchpots(iorb),maxpots
 #endif
     if (nexchpots(iorb)==0) return
+    nsor4pot=nsor4pot+maxsor1c*maxsor2c*nexchpots(iorb)    
 
 #ifdef PTHREAD
     call coulExch_pthread ()
@@ -233,7 +236,7 @@ contains
     omega1=1.0_PREC-omega
     maxsor1=maxsorpot(1)    
     maxsor2=maxsorpot(2)
-
+    
     ! It turns out that the parallel region below cannot be nested due to a heavy overhead
     ! (with 'mcsor 4' the execution time of Ar on 181/40 grid increases
     ! tenfold). Therefore SOR routine must be used insted of MCSOR one.
@@ -257,6 +260,8 @@ contains
        wk2 =>scratchptr( 2*mxsize8+1: 3*mxsize8)
 #endif    
 
+       nsor4pot=nsor4pot+maxsor1*maxsor2
+       
        in1=ins1(iorb,nexchpot)
        in2=ins2(iorb,nexchpot)
        
@@ -384,8 +389,10 @@ contains
 
     maxsor1=maxsorpot(1)
     maxsor2c=maxsorpot(2)    
-
+    
     do nexchpot=1,nexchpots(iorb)
+       nsor4pot=nsor4pot+maxsor1*maxsor2c
+       
        in1=ins1(iorb,nexchpot)
        in2=ins2(iorb,nexchpot)
        

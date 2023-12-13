@@ -26,8 +26,8 @@ contains
     use sharedMemory
     use utils 
     implicit none
-    integer (KIND=IPREC) :: i,i1beg1,i1beg,i2beg,i2beg1,i3beg,ibeg,ihc,im,imax,in,iorb,iorb1,ioutmat, &
-         ipc,isym,kex,nmut
+    integer (KIND=IPREC) :: i,i1beg1,i1beg,i2beg,i2beg1,i3beg,ibeg,&
+         im,imax,in,iorb,iorb1,ioutmat,isym,kex,nmut
     real (PREC) :: oc,w,w1,w2,wk2max,wtwoel
     real (PREC), dimension(:), pointer :: psi,excp,e,f0,f4,wgt1,wgt2,wk0,wk1,wk2,wk3
 
@@ -68,8 +68,6 @@ contains
     mxsize=i1si(iorb)
     mxsize=i2si(iorb)
 
-    !ipc=iorb+(iorb-1)*norb
-    !engo(ipc)=zero
     ee(iorb,iorb)=zero
     isym=isymOrb(iorb)
 
@@ -118,17 +116,9 @@ contains
              i2beg1=i2b(iorb1)
              oc=occ(iorb1)
              kex=iorb+norb*(iorb1-1)
+             i3beg=i3b(k2(iorb,iorb1))
 
-             if (iorb.le.iorb1) then
-                ihc=iorb+iorb1*(iorb1-1)/2
-             else
-                ihc=iorb1+iorb*(iorb-1)/2
-             endif
-
-             i3beg=i3b(ihc)
-             do i=1,mxsize
-                wk0(i)=zero
-             enddo
+             call zeroArray(mxsize,wk0)
 
              call dcopy (mxsize,excp(i2beg1:),ione,wk0,ione)
              call prod  (mxsize,psi(i1beg:),wk0)
@@ -141,12 +131,12 @@ contains
              if (iorb1.ne.iorb)  then
                 oc=gec(kex)
                 call prodas (mxsize,-oc,psi(i1beg1:),excp(i3beg:),wk0)
-                if (ilc(ihc).gt.1) then
+                if (ilc2(iorb,iorb1)==2) then                
                    oc=gec(kex+norb*norb)
                    call prodas (mxsize,-oc,psi(i1beg1:),excp(i3beg+mxsize:),wk0)
                 endif
              else
-                if ((mm(iorb).gt.0).and.(ilc(ihc).gt.0)) then
+                if ((mm(iorb)>0).and.(ilc2(iorb,iorb1)>0)) then                
                    oc=gec(kex)
                    call prodas (mxsize,-oc,psi(i1beg1:),excp(i3beg:),wk0)
                 endif
@@ -199,37 +189,29 @@ contains
 
     write(*,*) 'imax, wk2max',imax,wk2max
 
-    ! FIXME
-    if (idebug(496).ne.0) then
-       go to ( 11, 12, 13, 14, 15, 16), iorb
-00011  fn='bf-1p.lenergy'
-       goto 100
-00012  fn='bf-5s.lenergy'
-       goto 100
-00013  fn='bf-4s.lenergy'
-       goto 100
-00014  fn='bf-3s.lenergy'
-       goto 100
-00015  fn='bf-2s.lenergy'
-       goto 100
-00016  fn='bf-1s.lenergy'
-00100  continue
+#ifdef PRINT
+! print=600: local energy        
+    if (iprint(600)/=0) then
+       if (iorb==1) fn='bf-1p.lenergy'
+       if (iorb==2) fn='bf-5s.lenergy'
+       if (iorb==3) fn='bf-4s.lenergy'
+       if (iorb==4) fn='bf-3s.lenergy'
+       if (iorb==5) fn='bf-2s.lenergy'
+       if (iorb==6) fn='bf-1s.lenergy'
        open(ioutmat,file=fn,status='replace',form='formatted')
        ibeg=i1b(iorb)
        call prtmat (nni,i1mu(1),wk2,ioutmat)
        close(ioutmat)
     endif
+#endif       
 
     write(*,1010) iorn(iorb),bond(iorb),w1,sqrt(w1),sqrt(w1)/(-ee(iorb,iorb))
 01010 format(10x,i2,1x,a5,'  ',4e15.5)
 
-    ! FIXME
-    !call leexact1(wk3,wk0)
+    ! call leexact1(wk3,wk0)
 
   end subroutine locenergy
 
-  ! ### leexact1 ###
-  !
   subroutine leexact1 (vt,orb)
     use params
     use discrete
@@ -396,8 +378,6 @@ contains
 
   ! ### prtdenA ###
   !
-  !     FIXME
-  !
   subroutine prtdenA (m,n,a,ioutmat)
     use params
     use discrete
@@ -419,8 +399,6 @@ contains
 
   ! ### prtdenB ###
   !
-  !     FIXME
-  !
   subroutine prtdenB (m,n,a,ioutmat)
     use params
     use discrete
@@ -440,33 +418,35 @@ contains
 
   end subroutine prtdenB
 
-  subroutine showTail(psi)
+    subroutine showTail(pot)
     use params
     use discrete
     use commons
 
     implicit none
     integer (KIND=IPREC) :: i,in,imu,iborb,iorb
-    real (PREC) :: tailmax
-    real (PREC), dimension(*) :: psi
+    real (PREC) :: tailmax,tailmin
+    real (PREC), dimension(*) :: pot
 
-    !write(*,'(/"  largest values of orbitals in their tail regions, i.e. max(orb(i,mxnmu),i=1,nni):")')
-    write(*,'(/"  largest values of orbitals in their tail regions:")')
     imu=mxnmu-1
-    do iorb=norb,1,-1
+    do iorb=1,norb,1
        tailmax=zero
+       tailmin=1e10_PREC
        iborb=i1b(iorb)
        do in=1,nni
-          if (abs(psi(iborb+(imu-1)*nni+in-1)) > tailmax) then
-             tailmax=abs(psi(iborb+(imu-1)*nni+in-1))
+          if (abs(pot(iborb+(imu-1)*nni+in-1)) > tailmax) then
+             tailmax=abs(pot(iborb+(imu-1)*nni+in-1))
+          endif
+          if (abs(pot(iborb+(imu-1)*nni+in-1)) < tailmin) then
+             tailmin=abs(pot(iborb+(imu-1)*nni+in-1))
           endif
        enddo
-       write(*,'("    ",i4,1x,a8,a1,2x,e12.2)') iorn(iorb),bond(iorb),gusym(iorb),tailmax
+       write(*,'("    ",i5,1x,a8,a1,2x,1Pe14.4,1Pe14.4)') &
+            iorn(iorb),bond(iorb),gusym(iorb),tailmin,tailmax
     enddo
-    write(*,'()') 
   end subroutine showTail
 
-  
+
   ! ### printResults ####
   !
   !     Prints total energy and its components, orbital energies, multipole
@@ -487,6 +467,11 @@ contains
     use scfUtils
     use sharedMemory
     implicit none
+
+    integer (KIND=IPREC) :: fu
+    character(len=10) :: file_id
+    character(len=50) :: file_name
+    
     integer (KIND=IPREC) :: i,ibeg,iorb,inuclder,jorb,k,ngrid
 
     real (PREC) :: etot_final,tcpu,trelax,xnorm,zarea
@@ -519,9 +504,7 @@ contains
 
     ! etotal and etotalg give the same results for He but not for Be 
     if (HF) call etotalHF
-
-  
-
+    if (TED) call etotalTED    
     if (DFT.or.HFS.or.SCMC) call etotalDFT
     
 #ifdef LIBXC
@@ -540,7 +523,16 @@ contains
 #endif
     
     etot_final=etot
-
+    
+    if (TED) then
+       write(*,*)
+       write(iout6,'(8x,"orbital",14x,"total energy")') 
+       do i=1,norb
+          write(iout6,1002) iorn(i),bond(i),gusym(i),engt(i)
+       enddo
+       write(*,*)
+    else
+    
     if (iprint16.eq.0) then
        write(*,*)
             write(*,'(5x,"nuclear attraction energy:        ",f19.12)') ennucel
@@ -578,47 +570,8 @@ contains
             write(*,'(5x,"exchange-correlation energy (LXC):",f29.22)') wtwoelLXC
        if (lxcHyb) &
             write(*,'(5x,"exact-exchange energy (HYB):      ",f29.22)') enexchdft
-    end if
-
-    ! if (iprint16.eq.0) then
-    !    write(*,*)
-    !    write(*,'("     total energy contributions: ")')
-    !    write(*,'("     nuclear attraction energy          = ",f20.12)') ennucel
-    !    write(*,'("     kinetic energy                     = ",f20.12)') enkin
-    !    write(*,'("     one-electron energy                = ",f20.12)') enkin+ennucel
-    !    write(*,'("     Coulomb energy                     = ",f20.12)') encoul
-    !    write(*,'("     exchange energy                    = ",f20.12)') enexch
-    !    write(*,'("     nuclear repulsion energy           = ",f20.12)') z1*z2/r
-    !    if (HF) write(*,'("     Coulomb energy (DFT/LXC)           = ",f20.12)') encouldft
-    !    if (HF) write(*,'("     exchange energy (DFT/LXC)          = ",f20.12)') enexchdft
-    !    !write(*,'("     correlation energy (DFT)           = ",f20.12)') edftcorr
-    !    if (DFT) write(*,'("     exchange-correlation energy (DFT)  = ",f20.12)')  enexchdft
-    !    if (LXC) write(*,'("     exchange-correlation energy (LXC)  = ",f20.12)') wtwoelLXC
-    !    !write(*,'("     exact-exchange energy (HYB)        = ",f20.12)') alphaflxc*enexchdft       
-    !    if (lxcHyb) write(*,'("     exact-exchange energy (HYB)        = ",f20.12)')  enexchdft
-    ! else
-    !    write(*,*)
-    !    write(*,'(" Total energy contributions: ")')
-    !    write(*,'("     nuclear attraction energy          = ",f29.22)') ennucel
-    !    write(*,'("     kinetic energy                     = ",f29.22)') enkin
-    !    write(*,'("     one-electron energy                = ",f29.22)') enkin+ennucel
-    !    write(*,'("     Coulomb energy                     = ",f29.22)') encoul
-    !    write(*,'("     exchange energy                    = ",f29.22)') enexch
-    !    write(*,'("     nuclear repulsion energy           = ",f29.22)') z1*z2/r
-    !    write(*,'("     Coulomb energy (DFT/LXC)           = ",f29.22)') encouldft
-    !    if (HF) write(*,'("     Coulomb energy (DFT/LXC)           = ",f29.22)') encouldft
-    !    if (HF) write(*,'("     exchange energy (DFT/LXC)          = ",f29.22)') enexchdft
-    !    if (DFT) write(*,'("     exchange-correlation energy (DFT)  = ",f29.22)') enexchdft
-    !    if (LXC) write(*,'("     exchange-correlation energy (LXC)  = ",f29.22)') wtwoelLXC
-    !    !write(*,'("     exact-exchange energy (HYB)        = ",f29.22)') alphaflxc*enexchdft
-    !    if (lxcHyb) write(*,'("     exact-exchange energy (HYB)        = ",f29.22)') enexchdft
-    ! end if
-
-    ! FIXME print DFT functional used
-    ! write(*,'("     Coulomb energy (DFT)               = ",f29.22)') encouldft
-    ! write(*,'("     exchange energy (DFT)              = ",f29.22)') enexchdft
-    ! write(*,'("     correlation energy (DFT)           = ",f29.22)') edftcorr
-
+    endif
+    endif
     ! write final orbital energies and normalization factors
     write(*,*)
     ! iprint16=1
@@ -649,17 +602,12 @@ contains
        etot_final=etot
        
        if (HF) call etotalHF
+       if (TED) call etotalTED       
 
        if (DFT.or.HFS.or.SCMC) call etotalDFT 
 
 #ifdef LIBXC
-       if (LXC) then
-          if (lxcHyb) then
-             call etotallxcHyb
-          else
-             call etotalLXC
-          endif
-       endif
+       if (LXC) call etotalLXC
 #endif          
        
        write(iout6,6111) abs(etot_final-etot),abs(etot_final/etot-1.0_PREC)*100
@@ -768,12 +716,6 @@ contains
 
 #endif
     
-    ! FIXME
-    ! calling scmc is not needed at the end of calculations
-    if (iscmc.eq.1) then
-       call alphaSCMC 
-    endif
-
 #ifdef PRINT
 ! print=110: printResults: total radial density relative to centre A (z-R/2) 
     if (iprint(110)/=0) then
@@ -788,7 +730,38 @@ contains
     endif
 #endif
 
-    if (ltail) call showTail(cw_orb)
+    if (ltail) then
+       write(*,'(/4x," smallest and largest values of orbitals in tail region:")')    
+       call showTail(cw_orb)
+       write(*,'(/4x," smallest and largest values of Coulomb potentials in tail region:")')    
+       call showTail(cw_coul)
+       write(*,'()')        
+    endif
+
+
+    if (lplot) then
+       if (iplot.eq.1) then
+          write(iout6,'(5x,"orbital values exported in z and x coordinates")')
+       elseif (iplot.eq.2) then
+          write(iout6,'(5x,"orbital values exported in nu and mu coordinates")')          
+       elseif (iplot.eq.3) then
+          write(iout6,'(5x,"orbital values exported in eta and xi coordinates")')          
+       endif
+       
+       do iorb=1,norb
+          ! Write the integer into a string:
+          fu=iorb+50
+          write(file_id, '(i0)') norb-iorb+1
+          ! Construct the filename:
+          if (iplot==1) file_name = 'orbital-z-x-' // trim(adjustl(file_id)) // '.dat'
+          if (iplot==2) file_name = 'orbital-nu-mu-' // trim(adjustl(file_id)) // '.dat'
+          if (iplot==3) file_name = 'orbital-eta-xi-' // trim(adjustl(file_id)) // '.dat'
+          ! Open the file with this name
+          open(fu, file = trim(file_name), status='unknown',form='formatted') 
+          call out4plot(fu,cw_orb(i1b(iorb):))
+          close(fu)
+       enddo
+    endif
     
     call separator
 
@@ -816,6 +789,7 @@ contains
        write(*,5105) tcpu
        
        write(*,'(/" System clock summary (sec):")')
+       write(*,6101) tmomenReal
        write(*,6102) trelaxRealOrb
        if (lcoulexch) then
           write(*,6106) trelaxRealExch
@@ -844,6 +818,7 @@ contains
        !if (iscf.ne.0) write(*,5006) tcpu/dble(iscf)
        write(*,5005) tcpu       
        write(*,'(/" System clock summary (sec):")')
+       write(*,6001) tmomenReal
        write(*,6002) trelaxRealOrb
        if (lcoulexch) then
           write(*,6006) trelaxRealExch
@@ -875,13 +850,15 @@ contains
 5105 format(4x,'SCF iterations ............................', f9.2)
 5106 format(4x,'single SCF iteration ......................', f9.2)
 5108 format(4x,'total energy ..............................', f9.2)
-    
+
+6001 format(4x,'multipole moments .........................', f12.2)   
 6002 format(4x,'relaxation of orbitals ....................', f12.2)
 6003 format(4x,'relaxation of Coulomb potentials  .........', f12.2)    
 6004 format(4x,'relaxation of exchange potentials .........', f12.2)
 6005 format(4x,'relaxation of orbitals & potentials .......', f12.2)        
 6006 format(4x,'relaxation of Coulomb & exchange potentials', f12.2)    
 
+6101 format(4x,'multipole moments .........................', f9.2)       
 6102 format(4x,'relaxation of orbitals ....................', f9.2)
 6103 format(4x,'relaxation of Coulomb potentials  .........', f9.2)    
 6104 format(4x,'relaxation of exchange potentials .........', f9.2)
@@ -1554,11 +1531,10 @@ contains
     do iorb1=1,norb
        do iorb2=iorb1,norb
           if (iorb1.eq.iorb2.and.mgx(6,iorb1).eq.0 ) goto 10
-          if ((iorb1.eq.iorb2).and.(ilc(iorb1*(iorb1+1)/2).lt.1)) goto 10
+          if ((iorb1.eq.iorb2).and.(ilc2(iorb1,iorb1)==0)) goto 10          
 
-          !           orbitals in increasing order
-
-          ipc=iorb1+iorb2*(iorb2-1)/2
+          ! orbitals in increasing order
+          ipc=k2(iorb1,iorb2)
           iax=i3b(ipc)
 
           idel=abs(mgx(6,iorb1)-mgx(6,iorb2))
@@ -1573,12 +1549,12 @@ contains
           endif
 
           write(*,1000) iorn(iorb1),bond(iorb1),gusym(iorb1),iorn(iorb2),bond(iorb2),gusym(iorb2)
-          write(*,*) '------ ilc(ipc) ',iorb1,iorb2,'...',idel,'...',ipc,ilc(ipc)
+          write(*,*) '------ ilc2 ',iorb1,iorb2,'...',idel,'...',ilc2(iorb1,iorb2)
 1000      format(/i4,1x,a8,a1,3x,i4,1x,a8,a1,3x)
 
           call exchAsymptCont (idel,ipc,excp(iax))
 
-          if (ilc(ipc).eq.2.and.ido.eq.1) go to 1234
+          if (ilc2(iorb1,iorb2)==2.and.ido==1) go to 1234          
 10        continue
        enddo
     enddo
@@ -1712,9 +1688,9 @@ contains
           endif
        endif
     enddo
-01000 format(/,' checking symmetry of orbitals:'/,'          required    actual ')
-01005 format(1x,i3,1x,a8,1x,a1,10x,'g')
-01010 format(1x,i3,1x,a8,1x,a1,10x,'u')
+01000 format(/,5x,'checking symmetry of orbitals:'/,16x,'required    actual ')
+01005 format(6x,i3,1x,a8,1x,a1,10x,'g')
+01010 format(6x,i3,1x,a8,1x,a1,10x,'u')
   end subroutine checkSym
   
 end module summary

@@ -6,7 +6,7 @@
 module initCBAllocArrays
   use params, only : IPREC, PREC
   real (PREC), parameter :: pii = 4.0_PREC*atan(1.0_PREC)
-
+  integer (KIND=IPREC), dimension(4,10) :: ingr1
 contains
 
   ! ****************************************************************************
@@ -674,7 +674,6 @@ contains
 
     rho=0.5_PREC*(cos(pii/dble(mxnmu))+cos(pii/dble(nni)))
     setOmegaOrb=2.0_PREC*a/(1.0_PREC+sqrt(1.0_PREC-rho*rho))+b
-
   end function setOmegaOrb
 
   ! ### setOmegaPot ###  
@@ -700,7 +699,6 @@ contains
     
     rho=0.5_PREC*(cos(pii/dble(mxnmu))+cos(pii/dble(nni)))
     setOmegaPot=2.0_PREC*a/(1.0_PREC+sqrt(1.0_PREC-rho*rho))+b
-    
   end function setOmegaPot
 
   ! ### setOmegaPot2 ###    
@@ -1010,21 +1008,20 @@ contains
     ! by scaling the optimal value for potentials
 
     !  set optimal value of omega for potentials if ovfcoul(1)< 0
-    if (ovfcoul.lt.0._PREC) then
+    if (ovfcoul.lt.0.0_PREC) then
        ovfcoul=setOmega()
        ovfexch=ovfcoul
     endif
 
     ! in case of convergence problems decrease this value explicitely or
     ! change the omega scaling factor accordingly
-    if (ovforb.lt.0._PREC) then
+    if (ovforb.lt.0.0_PREC) then
        ! it turns out that omegasf factor is grid-dependent and the new
        ! formula accounts for that dependence fairly well
        
        !ovforb=omegasf*setOmega()
        ovf=setOmega()
        ovforb=(ovf-one)*ovf
-
 
        ! For heavier species (like Kr or Rn) the automatically calculated
        ! overrelaxation parameter for orbital turns out to be a bit too
@@ -1130,10 +1127,14 @@ contains
   !
   !     i3ng(k)    - number of grids needed to define the k-th exchange potential
   !
-  !     ilc(k)     - 0, 1 or 2 indicating the number of exchange potentials for
+  !     ilc(k)     - 0, 1 or 2, the number of exchange potentials for a given
+  !                  pair of orbitals
+
+  !     ilc2(iorb1,iorb2)
+  !                - 0, 1 or 2, the number of exchange potentials for
   !                  a given pair of orbitals
   !
-  !     i3xk(iorb1,iorb2)
+  !     k2(iorb1,iorb2)
   !                - the index k of exchange potential corresponding to the pair of
   !                  orbitals iorb1 and iorb2
   !
@@ -1154,8 +1155,7 @@ contains
 
     implicit none
 
-    ! FIXME i3bfin not used
-    integer (KIND=IPREC) :: i,i3beg,i3bfin,ibeg,i3boffset,iorb,iorb1,iorb2,irec,k,&
+    integer (KIND=IPREC) :: i,i3beg,ibeg,iorb,iorb1,iorb2,irec,k,&
          l,l1cur,l2cur,l3cur,l5cur,ngrid,ngds,nons
     integer (KIND=IPREC8) :: iend
 
@@ -1232,12 +1232,17 @@ contains
        do  iorb2=iorb1,norb
           k=iorb1+iorb2*(iorb2-1)/2
           ilc(k)=0
+          ilc2(iorb1,iorb2)=0
+          ilc2(iorb2,iorb1)=0          
           i3si(k)=0
-          i3xk(iorb1,iorb2)=0
-          i3xk(iorb2,iorb1)=0
           if (iorb1.eq.iorb2.and.ll(iorb1).eq.0) cycle
           ilc(k)=1
           l=l+1
+          ilc2(iorb1,iorb2)=1
+          ilc2(iorb2,iorb1)=1          
+
+          k2(iorb1,iorb2)=k
+          k2(iorb2,iorb1)=k          
           ngds=min(i1ng(iorb1),i1ng(iorb2))
           i3ng(k)=ngds
           ngrid=mxsize
@@ -1246,10 +1251,7 @@ contains
           i3b(k)=i3e(k)-ngrid+1
           i3si(k)=ngrid
           i3mu(k)=iemu(i3ng(k))
-          i3bfin=i3e(k)
 
-          i3xk(iorb1,iorb2)=k
-          i3xk(iorb2,iorb1)=k
           i3orb1(k)=iorb1
           i3orb2(k)=iorb2
 
@@ -1257,6 +1259,8 @@ contains
           if (iorb1.eq.iorb2) cycle
           if (ll(iorb1).eq.0.or.ll(iorb2).eq.0) cycle
           ilc(k)=2
+          ilc2(iorb1,iorb2)=2
+          ilc2(iorb2,iorb1)=2          
           l=l+1
           iend=iend+ngrid
           l3cur=l3cur+ngrid
@@ -1267,7 +1271,6 @@ contains
              stop 'initAddr'
           endif
        enddo
-       i3boffset=i3bfin
     enddo
 
     ! is working array cw_suppl large enough?
@@ -1347,7 +1350,8 @@ contains
        nexchpot=0
        do iorb1=ifirst,norb
           if (iorb.eq.iorb1.and.mgx(6,iorb).eq.0 ) cycle
-          if ((iorb.eq.iorb1).and.(ilc(iorb*(iorb+1)/2).lt.1)) cycle
+          !if ((iorb.eq.iorb1).and.(ilc(iorb*(iorb+1)/2).lt.1)) cycle
+          if ((iorb.eq.iorb1).and.(ilc2(iorb,iorb)==0)) cycle          
           nexchpot=nexchpot+1
           
           if (iorb.lt.iorb1) then
@@ -1378,7 +1382,8 @@ contains
           
           ibexcp(iorb,nexchpot)=i3b(ipc)
           
-          if (ilc(ipc).eq.2) then
+          !if (ilc(ipc).eq.2) then
+          if (ilc2(in1,in2)==2) then          
              nexchpot=nexchpot+1
              deltam4pot(iorb,nexchpot)=mgx(6,in1)+mgx(6,in2)
              
@@ -1465,11 +1470,9 @@ contains
   !
   !     Setup various arrays and variables
   !
-  subroutine initArrays (cw_suppl,cw_sor)
+  subroutine initArrays
     use params
     use commons
-    integer (KIND=IPREC),dimension(*) ::  cw_sor
-    real (PREC), dimension(*) :: cw_suppl
 
     ! initialize arrays within common blocks (except for differentiating
     ! arrays which are defined in prepdiff) and check input data
@@ -1494,14 +1497,11 @@ contains
     ! i4b(12)=wjac2
     ! i4b(13)=wgt1
     ! i4b(14)=wgt2
-    call initSuppl (cw_suppl(i4b( 1)),cw_suppl(i4b( 2)),cw_suppl(i4b( 3)),cw_suppl(i4b( 4)), &
-         cw_suppl(i4b( 5)),cw_suppl(i4b( 6)),cw_suppl(i4b( 7)),cw_suppl(i4b( 8)),   &
-         cw_suppl(i4b( 9)),cw_suppl(i4b(10)),cw_suppl(i4b(11)),cw_suppl(i4b(12)),   &
-         cw_suppl(i4b(13)),cw_suppl(i4b(14)) )
 
-    !     prepare meshes for all subgrids
+    call initSuppl
 
-    call initMesh (cw_sor)
+    ! prepare meshes for all subgrids
+    call initMesh
 
     ! calculate weights of exchange contributions to the total energy
     ! expression for the given open/closed shell scf case
@@ -1510,19 +1510,138 @@ contains
 
   end subroutine initArrays
 
-  ! ### initSuppl ###
+
+  ! ### initLP ###
+  !
+  !     Initialise Legendre polynomials
+  !
+  subroutine initLP
+    use params
+    use discrete
+    use scfshr
+    use commons
+    use utils
+    use sharedMemory
+    
+    implicit none
+    integer (KIND=IPREC) :: i,ibeg,idel,iorb,iorb1,iorb2,ipc,mu,n,ni
+    real (PREC) :: costh,rr,xr,xw
+    real (PREC), dimension(10) ::  dome
+    real (PREC), dimension(:), pointer :: dd1,dd2,dd3,dd4,dd5,dd6,dd7,dd8
+    
+    dd1 => legendreptr(         1:   mxsize)
+    dd2 => legendreptr(  mxsize+1: 2*mxsize)
+    dd3 => legendreptr(2*mxsize+1: 3*mxsize)
+    dd4 => legendreptr(3*mxsize+1: 4*mxsize)
+    dd5 => legendreptr(4*mxsize+1: 5*mxsize)
+    dd6 => legendreptr(5*mxsize+1: 6*mxsize)
+    dd7 => legendreptr(6*mxsize+1: 7*mxsize)
+    dd8 => legendreptr(7*mxsize+1: 8*mxsize)
+
+    do mu=1,mxnmu
+       do ni=1,nni
+          i=(mu-1)*nni+ni
+          
+          rr=sqrt(vxisq(mu)+vetasq(ni)-1.0_PREC)
+          xr=r2*rr
+          
+          ! xr=r2*rr  r2=R/2  costh == xi*eta/rr
+          ! r==xr=(R/2)rr see eq.13 (CPC 98 (1996) 346)
+          
+          if (abs(rr).lt.precis) then
+             costh=0.0_PREC
+          else
+             costh=vxi(mu)*veta(ni)/rr
+          endif
+          
+          ! domei=P_k (Legendre polynomial of order k)
+          dome(1)=costh
+          dome(2)=(3.0_PREC*costh*costh-1.0_PREC)*0.50_PREC
+          do n=2,(mpole-1)
+             dome(n+1)=(dble(2*n+1)*costh*dome(n)-dble(n)*dome(n-1))/dble(n+1)
+          enddo
+          
+          xw=xr
+          dd1(i)=dome(1)*xw
+          xw=xw*xr
+          dd2(i)=dome(2)*xw
+          
+          if (mpole.ge.3) then
+             xw=xw*xr
+             dd3(i)=dome(3)*xw
+          endif
+          
+          if (mpole.ge.4) then
+             xw=xw*xr
+             dd4(i)=dome(4)*xw
+          endif
+          
+          if (mpole.ge.5) then
+             xw=xw*xr
+             dd5(i)=dome(5)*xw
+          endif
+          if (mpole.ge.6) then
+             xw=xw*xr
+             dd6(i)=dome(6)*xw
+          endif
+          
+          if (mpole.ge.7) then
+             xw=xw*xr
+             dd7(i)=dome(7)*xw
+          endif
+          
+          if (mpole.ge.8) then
+             xw=xw*xr
+             dd8(i)=dome(8)*xw
+          endif
+       enddo
+    enddo
+
+    
+    ! Init some arrays needed for exchMomPT
+    nexchmm=0
+
+    do  iorb1=1,norb
+       do  iorb2=iorb1,norb
+          if (iorb1.eq.iorb2.and.mgx(6,iorb2).eq.0) cycle
+          nexchmm=nexchmm+1
+          iorb1mm(nexchmm)=iorb1
+          iorb2mm(nexchmm)=iorb2
+
+          idel=abs(mgx(6,iorb2)-mgx(6,iorb1))
+          if (iorb1.eq.iorb2) idel=2*mgx(6,iorb2)
+          idelmm(nexchmm)=idel
+          
+          ipc=k2(iorb1,iorb2)
+          if (ipc.eq.0) cycle
+          ipcmm(nexchmm)=ipc
+          if (ilc2(iorb1,iorb2)==2) then          
+             nexchmm=nexchmm+1
+             idel=mgx(6,iorb2)+mgx(6,iorb1)
+             idelmm(nexchmm)=idel             
+             iorb1mm(nexchmm)=iorb1
+             iorb2mm(nexchmm)=iorb2
+             ipcmm(nexchmm)=ipc+norb*(norb+1)/2
+          endif
+          !write(*,'("initLP2:",5i5)') nexchmm,iorb1mm(nexchmm),iorb2mm(nexchmm),idelmm(nexchmm),ipcmm(nexchmm)
+       enddo
+    enddo
+  end subroutine initLP
+
+  ! ### initSupplSM ###
   !
   !     Initialises various supplementary arrays of case-dependent lengths
   !     supported by cw_suppl (one-electron potentials, Jacobians,
-  !     integration and differentiation weights, etc)
+  !     integration and differentiation weights, Legendre polynomials, etc)
   !
-  subroutine initSuppl (borb,bpot,d,e,f0,f1,f2,f3,f4,g,wjac1,wjac2,wgt1,wgt2)
+  subroutine initSuppl
     use params
     use discrete
     use scfshr
     use commons
     use sapPotential
     use blas
+    use sharedMemory
     use utils
     implicit none
 
@@ -1532,15 +1651,23 @@ contains
          xxplusyy,xxplusyy2,xy2,z,z1t,z2t,zcm
 
     real (PREC) :: r1t,r2t
-    real (PREC), dimension(nni,mxnmu) :: borb,bpot,d,e,f0,f1,f2,f3,f4,g,wjac1,wjac2
-    real (PREC), dimension(mxsize) :: wgt1,wgt2
-
+    !real (PREC), dimension(nni,mxnmu) :: borb,bpot,d,e,f0,f1,f2,f3,f4,g,wjac1,wjac2
+    !real (PREC), dimension(mxsize) :: wgt1,wgt2
+    
+    real (PREC), pointer :: borb(:,:),bpot(:,:),d(:,:),e(:,:),&
+         f0(:,:),f1(:,:),f2(:,:),f3(:,:),f4(:,:),g(:,:),wjac1(:,:),wjac2(:,:)
+    
     real (PREC), dimension(9) :: aa1,aa2,a1,a2
     real (PREC), dimension(9,7,9) :: dc1,dc2
 
+    !(borb,bpot,d,e,f0,f1,f2,f3,f4,g,wjac1,wjac2,wgt1,wgt2)
+    real (PREC), dimension(:), pointer :: borbpt,bpotpt,dpt,ept,&
+         f0pt,f1pt,f2pt,f3pt,f4pt,gpt,wjac1pt,wjac2pt
+
+    real (PREC), dimension(:), pointer :: wgt1pt,wgt2pt
+
     !     Coefficients of the first and second derivatives taken from from
     !     the 8th-order Stirling interpolation formula
-
     real (PREC) dmu1c,dmu2c,dnu1c,dnu2c,exevenc,omegac,omega1c
     !common /c_interface_18/ dmu1c(4),dmu2c(4),dnu1c(4),dnu2c(4),exevenc(5),omegac,omega1c
 
@@ -1583,6 +1710,34 @@ contains
     ! f4 - array of factors multiplying Coulomb and exchange
     !  potentials (to make the tilda counterparts), see eq.9 and 10
 
+    borbpt =>supplptr(i4b( 1):)
+    bpotpt =>supplptr(i4b( 2):)
+    dpt    =>supplptr(i4b( 3):)
+    ept    =>supplptr(i4b( 4):)                    
+    f0pt   =>supplptr(i4b( 5):)
+    f1pt   =>supplptr(i4b( 6):)
+    f2pt   =>supplptr(i4b( 7):)
+    f3pt   =>supplptr(i4b( 8):)
+    f4pt   =>supplptr(i4b( 9):)
+    gpt    =>supplptr(i4b(10):)
+    wjac1pt=>supplptr(i4b(11):)
+    wjac2pt=>supplptr(i4b(12):)
+    wgt1pt =>supplptr(i4b(13):)        
+    wgt2pt =>supplptr(i4b(14):)
+
+    borb (1:nni,1:mxnmu) => borbpt(:)
+    bpot (1:nni,1:mxnmu) => bpotpt(:)
+    d    (1:nni,1:mxnmu) => dpt(:)        
+    e    (1:nni,1:mxnmu) => ept(:)
+    f0   (1:nni,1:mxnmu) => f0pt(:)
+    f1   (1:nni,1:mxnmu) => f1pt(:)
+    f2   (1:nni,1:mxnmu) => f2pt(:)
+    f3   (1:nni,1:mxnmu) => f3pt(:)
+    f4   (1:nni,1:mxnmu) => f4pt(:)
+    g    (1:nni,1:mxnmu) => gpt(:)        
+    wjac1(1:nni,1:mxnmu) => wjac1pt(:)
+    wjac2(1:nni,1:mxnmu) => wjac2pt(:)                
+    
     if (lfefield) then
        izz1=nint(z1)
        izz2=nint(z2)
@@ -1812,8 +1967,8 @@ contains
     do i=1,mxnmu
        ii=(i-1)*nni
        do j=1,nni
-          wgt1(ii+j)=wni(j)*wjac1(j,i)
-          wgt2(ii+j)=wni(j)*wjac2(j,i)
+          wgt1pt(ii+j)=wni(j)*wjac1(j,i)
+          wgt2pt(ii+j)=wni(j)*wjac2(j,i)
        enddo
     enddo
 
@@ -1892,19 +2047,11 @@ contains
     exevenc(4)= -10._PREC/126._PREC
     exevenc(5)=   1._PREC/126._PREC
 
+    call initLP
+    
   end subroutine initSuppl
 
-  ! ### initMesh ####
-  !
-  !     Establishes meshes for each subgrid and determines coefficients
-  !     of the interpolation polynomials needed in fill arrays.
-  !
-  !     This routine also initializes some variables that are needed when C
-  !     versions of (mc)sor routines are used i.e. when MCSORPT directive is on.
-  !
-  !     Warning! In this version only one grid is allowed.
-  !
-  subroutine initMesh (cw_sor)
+  subroutine initMesh
     use sharedMemory
     use commons
     use discrete
@@ -1912,15 +2059,19 @@ contains
     use params
     use scfshr
     use solver
+    use sharedMemory
 
     implicit none
     integer (KIND=IPREC) :: ib1,ib2,ib3,ib4,ib5,ibeg1,ibeg2,ibeg3,ibeg4,ibeg5, &
-         igs,imcase,imut,init,is34,is5,mxnmu16,mxsmu,ngrid16
+         igs,imut,init,is34,is5,mxnmu16,mxsmu,ngrid16
 
     integer (KIND=IPREC) :: error,i,icol,j,threadID,startRange,step,stopRange
     integer (KIND=IPREC),dimension(:), allocatable :: itemp1,itemp2
-    integer (KIND=IPREC),dimension(length6) :: cw_sor
+    !integer (KIND=IPREC),dimension(length6) :: cw_sor
+    integer (KIND=IPREC),dimension(:), pointer :: cw_sor
+
     integer (KIND=IPREC),parameter :: ig=1
+    integer (KIND=IPREC),parameter :: imcase=1
 
     integer (KIND=IPREC) :: mxnmuc,mxsizec,ngrid6ac,ngrid6bc,ngrid7c,&
          nnu1c,nnu2c,nnu3c,nnu4c,nnu5c,isstartc,isstopc,maxsor1c,maxsor2c
@@ -1941,7 +2092,7 @@ contains
     common /c_interface_17/ mxnmuc,mxsizec,ngrid6ac,ngrid6bc,ngrid7c,&
          nnu1c,nnu2c,nnu3c,nnu4c,nnu5c,isstartc,isstopc,maxsor1c,maxsor2c
     common /c_interface_45/ omegac,omega1c
-    ! FIXME
+
     !  integer (KIND=IPREC),dimension(*) :: cw_sor
 
     ! Array cw_sor is used to store index arrays needed to perform
@@ -1985,11 +2136,11 @@ contains
     ! - (ngrids-1) arrays of indx7 (case 2)
     !          the length of each array is determined by nmu
 
-    ! ingr1(k,ig) and ingr2(k,ig),ig=1,ngrids, k=1,..,4, contain number of
+    ! ingr1(k,ig), ig=1,ngrids, k=1,..,4, contain number of
     ! grids points to be relaxed in each subgrid (k=1) and number of points
     ! for which extrapolation is to be carried out (k=2 - ngrid6a, k=3 - ngrid6b,
-    ! k=4 - ngrid7); ingr1 and ingr2 correspond to the extended and normal
-    ! case, respectively.
+    ! k=4 - ngrid7); ingr1 corresponds to the extended (imcase=2) and normal
+    ! case (imcase=1), respectively.
 
     ! i6b(1) - begining of ind1
     ! i6b(2) - begining of ind2
@@ -2002,6 +2153,8 @@ contains
 
     ! determine the largest subgrid length in mu variable
 
+    cw_sor=>sorptr(1:)
+    
     mxsmu=0
     if (mxsmu.lt.nmu(ig)) mxsmu=nmu(ig)
 
@@ -2027,7 +2180,6 @@ contains
     ! ones (grid points in the last 4 columns are excluded from relaxation
     ! process
 
-    imcase=1
     ibeg1=i6b(1)
     ibeg2=i6b(2)
     ibeg3=i6b(3)
@@ -2056,7 +2208,9 @@ contains
     
     ! call mesh(imcase,ig,ib1,ib2,ib3,ib4,ib5,cw_sor(ib1),cw_sor(ib2),cw_sor(ib3),cw_sor(ib4),cw_sor(ib5))
     call meshsize(imcase,ig)
-    call mesh(imcase,ig,cw_sor(ib1),cw_sor(ib2),cw_sor(ib3),cw_sor(ib4),cw_sor(ib5))
+    !call mesh(imcase,ig,cw_sor(ib1:),cw_sor(ib2:),cw_sor(ib3:),cw_sor(ib4:),cw_sor(ib5:))
+    call mesh(imcase,ig)
+
     imut=imut+nmu(ig)
     init=init+nni
     igs=igs+ngsize(ig)
@@ -2087,7 +2241,7 @@ contains
           enddo
        enddo
 #ifdef PRINT
-! print=185: icolours       
+       ! print=185: icolours
        if (iprint(185)/=0) write(*,'(" icolours: ",5i10)') (icolours(i),i=1,5)
 #endif
        ! calculate ranges of grid points to be assigned to a given thread
@@ -2253,32 +2407,42 @@ contains
 
   end subroutine initMesh
 
-  ! ### mesh ###
-  !
-  !     Initializes index arrays determining the ordering of mesh points during sor process
-  !
-  !     type of ordering (itype==iorder):
-  !     itype=1 -- natural column-wise
-  !     itype=2 -- middle
-  !     itype=3 -- natural row-wise
-  !     itype=4 -- reverse row-wise
-
-  subroutine mesh(imcase,ig,indx1,indx2,indx6a,indx6b,indx7)
+  subroutine mesh(imcase,ig)
     use params
     use discrete
     use commons
+    use sharedMemory
     use utils
 
     implicit none
     integer (KIND=IPREC) :: i,i2,i0,iend1,iend2,ii,imcase,ig,itype,j,j2,jj,nmu8,nmut,nmux,nnix
 
-    integer (KIND=IPREC),dimension(ngrid1) :: indx1
-    integer (KIND=IPREC),dimension(ngrid2) :: indx2
-    integer (KIND=IPREC),dimension(ngrid6a) :: indx6a
-    integer (KIND=IPREC),dimension(ngrid6b) :: indx6b
-    integer (KIND=IPREC),dimension(ngrid7) :: indx7
+    ! integer (KIND=IPREC),dimension(ngrid1) :: indx1
+    ! integer (KIND=IPREC),dimension(ngrid2) :: indx2
+    ! integer (KIND=IPREC),dimension(ngrid6a) :: indx6a
+    ! integer (KIND=IPREC),dimension(ngrid6b) :: indx6b
+    ! integer (KIND=IPREC),dimension(ngrid7) :: indx7
+    
+    integer (KIND=IPREC) :: ib1,ib2,ib3,ib4,ib5
+    integer (KIND=IPREC),dimension(:), pointer :: indx1
+    integer (KIND=IPREC),dimension(:), pointer :: indx2
+    integer (KIND=IPREC),dimension(:), pointer :: indx6a
+    integer (KIND=IPREC),dimension(:), pointer :: indx6b
+    integer (KIND=IPREC),dimension(:), pointer :: indx7
 
 
+    ib1=iadext(ig)
+    ib2=iadnor(ig)
+    ib3=iadex1(ig)
+    ib4=iadex2(ig)
+    ib5=iadex3(ig)
+    
+    indx1 =>sorptr(ib1:)
+    indx2 =>sorptr(ib2:)
+    indx6a=>sorptr(ib3:)
+    indx6b=>sorptr(ib4:)
+    indx7 =>sorptr(ib5:)            
+    
     ! initialize variables needed in sor and mcsor
 
     nni1=nni+8
@@ -2367,8 +2531,8 @@ contains
              i0=i0+1
              indx2(i0)=(i2-1)*nni  +j2
              indx1(i0)=(ii-1)*nni8 +jj
-             indx1nu(i0)=jj
-             indx1mu(i0)=ii             
+             indx1nu(i0)=j2
+             indx1mu(i0)=i2             
           enddo
        enddo
 
@@ -2642,18 +2806,11 @@ contains
     enddo
     ngrid7=i0
 
-    if (imcase.eq.1) then
-       ingr1(1,ig)=ngrid1
-       ingr1(2,ig)=ngrid6a
-       ingr1(3,ig)=ngrid6b
-       ingr1(4,ig)=ngrid7
-    elseif (imcase.eq.2) then
-       ingr2(1,ig)=ngrid1
-       ingr2(2,ig)=ngrid6a
-       ingr2(3,ig)=ngrid6b
-       ingr2(4,ig)=ngrid7
-    endif
-
+    ingr1(1,ig)=ngrid1
+    ingr1(2,ig)=ngrid6a
+    ingr1(3,ig)=ngrid6b
+    ingr1(4,ig)=ngrid7
+ 
     ! Orbitals and potentials are stored in one-dimensional arrays. When
     ! they are printed as a two-dimensional ones (\nu=0,\mu_1) element
     ! coresponds to the centre A and (\nu=\pi,\mu_1) -- B.
@@ -2676,10 +2833,10 @@ contains
 #endif    
 
   end subroutine mesh
+
   
-  ! ### initMesh ####
+  ! ### meshsize ####
   !
-  !     FIXME
   subroutine meshsize(imcase,ig)
     use params
     use discrete
@@ -3040,18 +3197,11 @@ contains
     enddo
     ngrid7=i0
 
-    if (imcase.eq.1) then
-       ingr1(1,ig)=ngrid1
-       ingr1(2,ig)=ngrid6a
-       ingr1(3,ig)=ngrid6b
-       ingr1(4,ig)=ngrid7
-    elseif (imcase.eq.2) then
-       ingr2(1,ig)=ngrid1
-       ingr2(2,ig)=ngrid6a
-       ingr2(3,ig)=ngrid6b
-       ingr2(4,ig)=ngrid7
-    endif
-
+    ingr1(1,ig)=ngrid1
+    ingr1(2,ig)=ngrid6a
+    ingr1(3,ig)=ngrid6b
+    ingr1(4,ig)=ngrid7
+ 
     ! Orbitals and potentials are stored in one-dimensional arrays. When
     ! they are printed as a two-dimensional ones (\nu=0,\mu_1) element
     ! coresponds to the centre A and (\nu=\pi,\mu_1) -- B.
@@ -3229,7 +3379,6 @@ contains
     ! the same symmetry is examined to see if an orthogonal transformation
     ! can be applied and off-diagonal Lagrange multipliers set to zero. 
 
-    ! FIXME cycle
     do j=1,(norb-1)
        jxx=4*(j-1)
        do i=(j+1),norb

@@ -23,10 +23,11 @@ contains
     use sharedMemory
     use utils
     implicit none
-    integer (KIND=IPREC) :: ibex,iborb,iborb1,iborb2,ibpot,ibpot1,ibpot2,iex,iex1,iorb,iorb1,iorb2,isiex,isiex1,isiorb,&
+    integer (KIND=IPREC) :: ibex,iborb,iborb1,iborb2,ibpot,ibpot1,ibpot2,&
+         iorb,iorb1,iorb2,isiex,isiex1,isiorb,&
          isiorb1,isiorb2,isipot,isipot1,isipot2,isym,ngrid,nmut,nmut1,nmut2
 
-    real (PREC) :: epscharge,etsum,oc,ocx2,ocx1,w,wcouldft,wdcoul,wex1,wex2,wndc,woneel
+    real (PREC) :: epscharge,etsum,ocx2,ocx1,w,wcouldft,wdcoul,wex1,wex2,wndc,woneel
     !real (PREC), dimension(*) :: psi,pot,excp,e,f0,wgt1,wgt2,wk0,wk1,wk2,wk3,wk4,wk5,wk6, &
     !wk7,wk8,wk9,wk10,wk11,wk12,wk13
 
@@ -57,10 +58,7 @@ contains
 
     data epscharge /1.e-7_PREC/
 
-    engt(1)=ee(ione,ione)
-
-    ! FIXME
-    engt(1)=zero
+    !engt(1)=zero
 
     ! calculate first contributions from one particle operators and
     ! coulomb potential contributions within the same shell
@@ -86,33 +84,35 @@ contains
        woneel=woneel+occ(iorb)*oneelii(iorb)
        vkt=vkt+occ(iorb)*vk(iorb)
        vnt=vnt+occ(iorb)*vn(iorb)
-       oc=occ(iorb)
-
+      
 #ifdef PRINT
        if (iprint(66).ne.0) then
-          etsum=etsum+oc*vk(iorb)
-          write(*,7028) iorn(iorb),bond(iorb),gusym(iorb),iorn(iorb),bond(iorb),gusym(iorb),vk(iorb),oc,etsum
+          etsum=etsum+occ(iorb)*vk(iorb)
+          write(*,7028) iorn(iorb),bond(iorb),gusym(iorb),&
+               iorn(iorb),bond(iorb),gusym(iorb),vk(iorb),occ(iorb),etsum
 7028      format('<',i4,1x,a5,a1,'| T |',i4,1x,a5,a1,' >',26x,1Pd25.16, 0Pf8.2, 1Pd25.16)
 
-          etsum=etsum+oc*vn(iorb)
-          write(*,7030) iorn(iorb),bond(iorb),gusym(iorb),iorn(iorb),bond(iorb),gusym(iorb),vn(iorb),oc,etsum
+          etsum=etsum+occ(iorb)*vn(iorb)
+          write(*,7030) iorn(iorb),bond(iorb),gusym(iorb),&
+               iorn(iorb),bond(iorb),gusym(iorb),vn(iorb),occ(iorb),etsum
 7030      format('<',i4,1x,a5,a1,'| V |',i4,1x,a5,a1,' >',26x,1Pd25.16, 0Pf8.2, 1Pd25.16)
        endif
 #endif
        
        if (occ(iorb).gt.one) then
           w=coulij (iorb,iorb,psi,excp,wgt2,wk0)
-          wdcoul=wdcoul+occ(iorb)*(occ(iorb)-one)/two*w
+          wdcoul=wdcoul+occ(iorb)*(occ(iorb)-one)*w/two
           ! To calculate DFT exchange energy the Coulomb energy must include
           ! J_{ii}=K_{ii} terms
 
-          wcouldft=wcouldft+occ(iorb)*occ(iorb)/two*w
+          wcouldft=wcouldft+occ(iorb)*w/two
 
 #ifdef PRINT          
           if (iprint(66).ne.0) then
-             etsum=etsum+oc*(oc-one)/two*w
+             etsum=etsum+occ(iorb)*(occ(iorb)-one)*w/two
              write(*,7031) iorn(iorb),bond(iorb),gusym(iorb),iorn(iorb),bond(iorb),gusym(iorb), &
-                  iorn(iorb),bond(iorb),gusym(iorb),iorn(iorb),bond(iorb),gusym(iorb),w,oc*(oc-one)/two,etsum
+                  iorn(iorb),bond(iorb),gusym(iorb),iorn(iorb),bond(iorb),gusym(iorb),&
+                  w,occ(iorb)*(occ(iorb)-one)/two,etsum
 7031         format('<',i4,1x,a5,a1,'| J1(',i4,1x,a5,a1,i4,1x,a5,a1,' ) |',i4,1x,a5,a1,' >',1Pd25.16, 0Pf8.2, 1Pd25.16)
           endif
 #endif          
@@ -135,28 +135,33 @@ contains
 #ifdef PRINT                    
           if (iprint(66).ne.0) then
              etsum=etsum-ocx1*w
-             write(*,7032) iorn(iorb1),bond(iorb1),gusym(iorb1),iorn(iorb1),bond(iorb1),gusym(iorb1), &
-                  iorn(iorb1),bond(iorb1),gusym(iorb1),iorn(iorb1),bond(iorb1),gusym(iorb1),w,-ocx1,etsum
-7032         format('<',i4,1x,a5,a1,'| K (',i4,1x,a5,a1,i4,1x,a5,a1,' ) |',i4,1x,a5,a1,' >',1Pd25.16, 0Pf8.2, 1Pd25.16)
+             write(*,7032) iorn(iorb1),bond(iorb1),gusym(iorb1),&
+                  iorn(iorb1),bond(iorb1),gusym(iorb1),&
+                  iorn(iorb1),bond(iorb1),gusym(iorb1),&
+                  iorn(iorb1),bond(iorb1),gusym(iorb1),w,-ocx1,etsum
+7032         format('<',i4,1x,a5,a1,'| K (',i4,1x,a5,a1,i4,1x,a5,a1,&
+                  ' ) |',i4,1x,a5,a1,' >',1Pd25.16, 0Pf8.2, 1Pd25.16)
           endif
 #endif
        endif
 
        do iorb2=iorb1+1,norb
-          iex=iorb1+iorb2*(iorb2-1)/2
-          
           ! Coulomb interaction between shells
           w=coulij(iorb2,iorb1,psi,excp,wgt2,wk0)
           wndc=wndc+occ(iorb1)*occ(iorb2)*w
           wcouldft=wcouldft+occ(iorb1)*occ(iorb2)*w
 
-#ifdef PRINT                    
+#ifdef PRINT
+! print= 66: etotalHF: J contributions            
           if (iprint(66).ne.0) then
              etsum=etsum+occ(iorb1)*occ(iorb2)*w
-             write(*,7034) iorn(iorb1),bond(iorb1),gusym(iorb1),iorn(iorb2),bond(iorb2),gusym(iorb2), &
-                  iorn(iorb2),bond(iorb2),gusym(iorb2),iorn(iorb1),bond(iorb1),gusym(iorb1),&
+             write(*,7034) iorn(iorb1),bond(iorb1),gusym(iorb1),&
+                  iorn(iorb2),bond(iorb2),gusym(iorb2),&
+                  iorn(iorb2),bond(iorb2),gusym(iorb2),&
+                  iorn(iorb1),bond(iorb1),gusym(iorb1),&
                   w,occ(iorb1)*occ(iorb2),etsum
-7034         format('<',i4,1x,a5,a1,'| J (',i4,1x,a5,a1,i4,1x,a5,a1,' ) |',i4,1x,a5,a1,' >',1Pd25.16, 0Pf8.2, 1Pd25.16)
+7034         format('<',i4,1x,a5,a1,'| J (',i4,1x,a5,a1,i4,1x,a5,a1,&
+                  ' ) |',i4,1x,a5,a1,' >',1Pd25.16, 0Pf8.2, 1Pd25.16)
           endif
 #endif
           ! exchange interaction between shells (same lambda)
@@ -164,24 +169,32 @@ contains
           w=exchij(0,iorb1,iorb2,psi,excp,wgt2,wk0)
           wex1=wex1+ocx1*w
 
+#ifdef PRINT
+! print= 66: etotalHF: K contribution                               
           if (iprint(66).ne.0) then
              etsum=etsum-ocx1*w
-             write(*,7036) iorn(iorb1),bond(iorb1),gusym(iorb1),iorn(iorb1),bond(iorb1),gusym(iorb1), &
-                  iorn(iorb2),bond(iorb2),gusym(iorb2),iorn(iorb2),bond(iorb2),gusym(iorb2),w,-ocx1,etsum
-7036         format('<',i4,1x,a5,a1,'| K (',i4,1x,a5,a1,i4,1x,a5,a1,' ) |',i4,1x,a5,a1,' >',1Pd25.16, 0Pf8.2, 1Pd25.16)
+             write(*,7036) iorn(iorb1),bond(iorb1),gusym(iorb1),&
+                  iorn(iorb1),bond(iorb1),gusym(iorb1),&
+                  iorn(iorb2),bond(iorb2),gusym(iorb2),&
+                  iorn(iorb2),bond(iorb2),gusym(iorb2),w,-ocx1,etsum
+7036         format('<',i4,1x,a5,a1,'| K (',i4,1x,a5,a1,i4,1x,a5,a1,&
+                  ' ) |',i4,1x,a5,a1,' >',1Pd25.16, 0Pf8.2, 1Pd25.16)
           endif
-
+#endif
           ! exchange interaction between shells (different lambda)
-          if (ilc(iex).gt.1) then
+          if (ilc2(iorb1,iorb2)==2) then          
              w=exchij(1,iorb1,iorb2,psi,excp,wgt2,wk0)
              wex2=wex2+ocx2*w
 
 #ifdef PRINT                       
              if (iprint(66).ne.0) then
                 etsum=etsum-ocx2*w
-                write(*,7038) iorn(iorb1),bond(iorb1),gusym(iorb1),iorn(iorb1),bond(iorb1),gusym(iorb1), &
-                     iorn(iorb2),bond(iorb2),gusym(iorb2),iorn(iorb2),bond(iorb2),gusym(iorb2),w,-ocx2,etsum
-7038            format('<',i4,1x,a5,a1,'| K1(',i4,1x,a5,a1,i4,1x,a5,a1,' ) |',i4,1x,a5,a1,' >',1Pd25.16, 0Pf8.2, 1Pd25.16)
+                write(*,7038) iorn(iorb1),bond(iorb1),gusym(iorb1),&
+                     iorn(iorb1),bond(iorb1),gusym(iorb1),&
+                     iorn(iorb2),bond(iorb2),gusym(iorb2),&
+                     iorn(iorb2),bond(iorb2),gusym(iorb2),w,-ocx2,etsum
+7038            format('<',i4,1x,a5,a1,'| K1(',i4,1x,a5,a1,i4,1x,a5,a1,&
+                     ' ) |',i4,1x,a5,a1,' >',1Pd25.16, 0Pf8.2, 1Pd25.16)
              endif
 #endif
           endif
@@ -451,4 +464,111 @@ contains
   end subroutine etotalGauss
 
 
+  ! ### eTotalTED ###
+  !
+  !    Calculates total HF energy for the 2-electron system
+  !
+  subroutine eTotalTED 
+    use params
+    use discrete
+    use commons
+    use utils
+    use blas
+    use exchContribs
+    use diskInterface
+    use inout
+    use integrals
+    use sharedMemory
+    use utils
+    implicit none
+    integer (KIND=IPREC) :: ibex,iborb,iborb1,iborb2,ibpot,ibpot1,ibpot2,&
+         iorb,iorb1,iorb2,isiex,isiex1,isiorb,&
+         isiorb1,isiorb2,isipot,isipot1,isipot2,isym,ngrid,nmut,nmut1,nmut2
+
+    real (PREC) :: epscharge,etsum,oc,ocx2,ocx1,w,wcouldft,wdcoul,wex1,wex2,wndc,woneel
+    !real (PREC), dimension(*) :: psi,pot,excp,e,f0,wgt1,wgt2,wk0,wk1,wk2,wk3,wk4,wk5,wk6, &
+    !wk7,wk8,wk9,wk10,wk11,wk12,wk13
+
+    real (PREC), dimension(:), pointer :: psi,excp,e,f0,wgt1,wgt2,&
+              wk0,wk1,wk2,wk3,wk4,wk5,wk6,wk7,wk8,wk9,wk10,wk11,wk12,wk13
+    e=>supplptr(i4b(4):)
+    excp=>exchptr
+    f0=>supplptr(i4b(5):)
+    psi=>orbptr
+    wgt1=>supplptr(i4b(13):)
+    wgt2=>supplptr(i4b(14):)
+
+    wk0 =>scratchptr(          1:   mxsize8)
+    wk1 =>scratchptr(   mxsize8+1: 2*mxsize8)
+    wk2 =>scratchptr( 2*mxsize8+1: 3*mxsize8)
+    wk3 =>scratchptr( 3*mxsize8+1: 4*mxsize8)
+    wk4 =>scratchptr( 4*mxsize8+1: 5*mxsize8)            
+    wk5 =>scratchptr( 5*mxsize8+1: 6*mxsize8)
+    wk6 =>scratchptr( 6*mxsize8+1: 7*mxsize8)
+    wk7 =>scratchptr( 7*mxsize8+1: 8*mxsize8)            
+    wk8 =>scratchptr( 8*mxsize8+1: 9*mxsize8)
+    wk9 =>scratchptr( 9*mxsize8+1:10*mxsize8)
+    wk10=>scratchptr(10*mxsize8+1:11*mxsize8)
+    wk11=>scratchptr(11*mxsize8+1:12*mxsize8)
+    wk12=>scratchptr(12*mxsize8+1:13*mxsize8)
+    wk13=>scratchptr(13*mxsize8+1:14*mxsize8)
+
+
+    data epscharge /1.e-7_PREC/
+
+    do iorb=1,norb
+       vkt=zero
+       vnt=zero
+       woneel=zero
+       wdcoul=zero
+       wcouldft=zero
+       etsum=zero
+       
+       woneel=woneel+occ(iorb)*oneelii(iorb)
+       vkt=vkt+occ(iorb)*vk(iorb)
+       vnt=vnt+occ(iorb)*vn(iorb)
+       oc=occ(iorb)
+
+       if (occ(iorb).gt.one) then
+          w=coulij (iorb,iorb,psi,excp,wgt2,wk0)
+          wdcoul=wdcoul+occ(iorb)*(occ(iorb)-one)/two*w
+          ! To calculate DFT exchange energy the Coulomb energy must include
+          ! J_{ii}=K_{ii} terms
+
+          wcouldft=wcouldft+occ(iorb)*occ(iorb)/two*w
+
+          wndc=zero
+          wex1=zero
+          wex2=zero
+          iorb1=iorb
+          ! calculate exchange interaction within pi, delta, etc. shell
+          if (mm(iorb1).gt.0.and.abs(occ(iorb1)-one).gt.epscharge) then
+             call exint (iorb1,ocx1)
+             w=exchij(0,iorb1,iorb1,psi,excp,wgt2,wk0)
+             wex1=wex1+ocx1*w
+          endif
+       endif
+          
+       evt=woneel+wdcoul+wndc-wex1-wex2
+       epott=vnt+wdcoul+wndc-wex1-wex2
+       virrat=(epott+z1*z2/r)/vkt
+       etot=evt+z1*z2/r
+       
+       enkin=vkt
+       ennucel=vnt
+       encoul=wdcoul+wndc
+       enexch=-wex1-wex2
+       entot=enkin+ennucel+encoul+enexch+z1*z2/r
+       
+       ! to be able to compare HF and DFT exchange energies these contributions have to be
+       ! calculated as
+       encouldft=wcouldft
+       enexchdft=evt-woneel-wcouldft
+          
+       engt(iorb)=entot
+    enddo
+  end subroutine etotalTED
+
+
+  
 end module totalEnergy

@@ -750,8 +750,7 @@ contains
        if (clabel.eq.'fermi') call read_fermi
        !if (clabel.eq.'fix') call read_fix
        if (clabel.eq.'fixnan') call read_fixnan
-       if (clabel.eq.'fixcoul') call read_fixcoul
-       if (clabel.eq.'fixexch') call read_fixexch
+       if (clabel.eq.'fixpot') call read_fixpot
        if (clabel.eq.'fixorb') call read_fixorb       
        if (clabel.eq.'gauss') call read_gauss
        if (clabel.eq.'grid') call read_grid
@@ -773,7 +772,10 @@ contains
           lmtype=2
           call read_offDiagLM
        endif
-       
+
+
+       if (clabel.eq.'extracul') call read_extracule
+       if (clabel.eq.'intracul') call read_intracule
        if (clabel.eq.'lcao') call read_lcao
        if (clabel.eq.'lcao4lda') call read_lcao4lda
        if (clabel.eq.'lxcpolar') lxcPolar=.true.
@@ -789,12 +791,9 @@ contains
        if (clabel.eq.'omegaopt') call read_omegaopt       
        if (clabel.eq.'orbpot') call read_orbpot
        if (clabel.eq.'order') call read_order
+       if (clabel.eq.'plot') call read_plot       
        if (clabel.eq.'potgsz') call read_potgsz
        if (clabel.eq.'potgszg') call read_potgszg
-
-       if (clabel.eq.'intracul') call read_intracule
-       if (clabel.eq.'extracul') call read_extracule
-
        if (clabel.eq.'potharm2') call read_potharm2
        if (clabel.eq.'potharm3') call read_potharm3       
        if (clabel.eq.'pothooke') call read_pothooke
@@ -1025,10 +1024,8 @@ contains
           totchar=totchar+occ(iorb)
        enddo
        
-       ! FIXME r128
        if (abs(totchar-totq).gt.precis*1000.0_PREC) then
           write(iout6,'(/,2x,"Warning: mismatch in given and calculated total charge:",2f6.1/)') totchar,totq
-          ! FIXME !!!! OED is effected
        endif
        
        ! set some additional parameters
@@ -1140,30 +1137,12 @@ contains
     
     implicit none
 
-
     ! label: debug
     ! idbg  -  additional printout or action for testing purposes
     !          set debug flags. if an integer i is encountered debuf
     !          flag i is set, i.e. idebug(i)=1. At most 999 integers can be specified.
     
-    ! FIXME
-    ! List of used idbg flags:
-    ! doSCF: 77 - assign maxsor for each orbital every iepoch iterations (call schedSOR)
-    ! initExWeights: 335, 336 - select a way in which off-diagonal
-    !                           Lagrange multipliers are calculated between closed shell orbitals
-    
-    !        locenergy: 496, 497
-    !        printCase: 550 - mm3=3*mxsize
-    !        initAddr:  550 - stop
-    !        initGauss: 562 - call gauss_ovlap
-    !        initGauss: 560, 561, 562, 565, 566
-    !        initGauss: 560 - stop
-    !        label: debug    
-    !        idbg  -  additional printout or action for testing purposes
-    !        set debug flags. if an integer i is encountered debuf flag i is
-    !        set, i.e. idebug(i)=1. At most 999 integers can be specified.
-    !                                  orbitals
-    
+    ! List of used debug flags: xhf -D list
     inzero=1
     do i=1,maxflags
        id(i)=0
@@ -1253,7 +1232,7 @@ contains
     ! PW91) and correlation (LYP) contributions to total energy at the
     ! end of SCF process
 
-    if (.not.DFT) then
+    if (.not.DFT.and.HFinput) then
        write(iout6,'(/2x,"Warning: assuming DFT method (see User''s guide)."/)')
        HFinput=.false.
        !stop 'read_dft'
@@ -1431,36 +1410,6 @@ contains
     return
   end subroutine read_slowexch
 
-  
-  subroutine read_fixcoul
-    use params
-    use discrete
-    use scfshr
-    use solver
-    use commons
-    use data4II 
-    
-    implicit none
-    
-    lfixcoul=.true.
-    return
-  end subroutine read_fixcoul
-
-  subroutine read_fixexch
-    use params
-    use discrete
-    use scfshr
-    use solver 
-    use commons
-    use data4II
-    
-    implicit none
-
-    lfixexch=.true.
-    return
-  end subroutine read_fixexch
-
-
   subroutine read_fixorb
     use params
     use discrete
@@ -1495,6 +1444,20 @@ contains
     return
   end subroutine read_fixorb
 
+  subroutine read_fixpot
+    use params
+    use discrete
+    use scfshr
+    use solver 
+    use commons
+    use data4II
+    
+    implicit none
+    lfixcoul=.true.
+    lfixexch=.true.
+    return
+  end subroutine read_fixpot
+  
   subroutine read_gauss
     use params
     use discrete
@@ -1816,9 +1779,6 @@ contains
     endif
     lcaoIncl=.true.
 
-
-    
-    ! FIXME3 
     if (linitFuncsHydrogen.and.(inclorb.ne.1.and.inclorb.ne.2)) then
        write(iout6,'(/2x,"Error: incompatible parameters - no LCAO data present."/)')
        stop 'read_lcao'
@@ -1826,8 +1786,6 @@ contains
 
     ! method OED
     if (OED) then
-       !lfastscf=.true.
-       lfixcoul=.true.
        lfixexch=.true.
        if (.not.linitFuncsHydrogen) initFuncsOED=.true.
        recalcMMfactor=10.0_PREC**(15)
@@ -2025,7 +1983,6 @@ contains
        endif
     endif
 
-    ! FIXME
     nni=nnucalc(nni)
     nmu(ngrids)=nmucalc(nmu(ngrids))
     nmutot=nmu(ngrids)
@@ -2288,7 +2245,7 @@ contains
        if (abs(ftmp1)>epsilon(zero)) ovforb=ftmp1
        if (abs(ftmp2)>epsilon(zero)) ovfcoul=ftmp2
     else
-       !           old format
+       ! old format
        call inCard
        call inFloat(ftmp)
        if (ftmp.gt.0.0_PREC) then
@@ -2708,6 +2665,28 @@ contains
     OED=.true.
     return
   end subroutine read_extracule
+
+  subroutine read_plot
+    use params
+    use commons
+    use data4II
+    
+    implicit none
+    ! alphaf - if alphaf is not zero a DFT energy functional is used
+    
+    lplot=.true.
+    iplot=1
+    call inInt(itmp)
+    if (itmp.ne.inpiexit) then
+       iplot=itmp
+       call inInt(itmp)
+       if (itmp.ne.inpiexit) then
+          istep = itmp
+       endif
+    endif
+    
+  end subroutine read_plot
+
   
   subroutine read_potkh
     use params
@@ -2747,7 +2726,6 @@ contains
     return
   end subroutine read_potkh
 
-  ! FIXME
   subroutine read_print
     use params
     use discrete
@@ -2760,77 +2738,7 @@ contains
     ! label: print
     ! label followed by up to maxflags integers (1..999) specifying additional printouts
 
-    ! list of used iprint flags:
-    !   prepArray: 10 - check i3bxx arrays (separate files case)
-    !   ortho: 20 - print overlap integrals
-    !   ortho: 21 - print overlap integrals only for pairs of orbitals
-    !               having non-zero off-diagonal Lagrange multipliers
-    !   preSCF: 30 - check orthogonality
-    !   ortho: 35 - force normalization of orbitals upon their orthogonalization         
-    !   norm:  36 - check normalization
-    !   mesh: 40,41     
-    !   EabHF:  46  - print off-diagonal Lagrange multipliers 
-    !   EabDFT: 48  - print off-diagonal Lagrange multipliers 
-    !   doSCF: 50 - print orbital contributions to total energy
-    !   setci: 55 - symmetry of orbitals
-    !   EaHF: 60 - kinetic energy, nuclear energy  one-electron energy
-    !   integrals: 64,65 - one- and two-electron contributions
-    !   EaDFT: 67,68 one- and two-electron contributions
-    !   EaDFT: 69 orbitals
-    !   EaDFT: 71 wgt1, wgt2
-    !   EaDFT: 71 f0
-    !   EaDFT: 72 wk1, wk2
-    !   etotal, etotalLXC: 66 - one- and two-electron contributions
-    !   etotalLCX: 75 - test n2f and nfnf routines
-    !   EtotalHForb: 80, 81 - woneel,wndc,wex,etotal,wndc,wex,evt
-    !   scmc: 82,83 individual exchange contributions
-    !   scmc: 84 - ehfex,edftex,alphaf
-    !   scmc: 85 - wdcoul,wex1,wex2
-    !   fock:  91 - one-electron contribution
-    !   fock:  92 - coo0,coo1,coo2,engo(ideng)
-    !   fock:  93 - Coulomb potential'
-    !   fock:  95 - checking (E-V) values for a given orbital
-    !   printResults: 100 - find last maximum in mu variable
-    !   radialden: 110 - total radial density along the internuclear
-    !                    axis from the centre A to minus infinity (-rinf)
-    !   radialden: 111 - total radial density along the internuclear
-    !                    axis from the centre B to plus infinity (+rinf)
-    !   rfun: 114 - r values at grid points (to be implemented)
-    !   rfun: 115 - input orbitals 
-    !   rfun: 116 - input Coulomb potentials
-    !   rfun: 117 - input exchange potentials
-    !   wtdisknat: 121 - output orbitals 
-    !   wtdisknat: 122 - output Coulomb potentials
-    !   wtdisknat: 123 - output exchange potentials
-    !   interpolq: 125: iadint2, cint2, iadint4, cint4
-    !   interpolq: 126 - iadint2, cint2, iadint4, cint4, etc
-    !   zz1: 131 - i,j,ri,zz1
-    !   zz2: 132 - i,j,ri,zz2
-    !   printResults: 140 - calculate the total electronic density at A
-    !   printResults: 150 - calculate the derivative of the orbital
-    !                       density with respect to z at A
-    !   printResults: 152 - calculate multipole moments errors due to
-    !                       orbital norms not being equal to 1
-    !   coulMom: 160 - d1, d3, d5
-    !            161 - multipole moments for a given orbital      
-    !   EaDFT: 459
-    !   
-    !   exchMom: 165 - dome
-    !            166 - excdi(ipc),excqu(ipc),excoc(ipc),exche(ipc) 
-    !   fixNaN: 470
-    !   initEXWeights: 170, 172 - ,idiv,gec(kk),gec(kk+isu2),div(i), etc
-    !   initCBlocks: 180 - subgrids
-    !   initMesh: 185, 186 - icolours, nstart,nstop
-    !   printResults:  191 - check orthogonality of orbitals
-    !   printResults:  192 - calculate Euclidean norms of (T+V(n)+V-E)|i>
-    !   printResults:  193 - check multipole expansion
-    !   propet2: 214,216
-    !   initHF: 220,221,222
-    !   fermi: 230,231
-    !   prepGauss: 553, 554, 555
-    !   prepGaussCust: 563, 564, 565
-    !   prttot: 590 print etotFN
-    
+    ! list of used iprint flags: xh -P list
     inzero=1
     do i=1,maxflags
        id(i)=0
@@ -3060,6 +2968,8 @@ contains
     ltail=.true.
   end subroutine read_tail
 
+
+  
   
   subroutine read_xalpha
     use params

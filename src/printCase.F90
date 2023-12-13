@@ -160,8 +160,8 @@ contains
     use commons
 
     implicit none
-    integer (KIND=IPREC) :: iorb,iorb1,ipc,kex,idexp,orborder
-    real (PREC) :: coo,coo0,coo1,coo2
+    integer (KIND=IPREC) :: iorb,iorb1,ipc,kex,orborder
+    real (PREC) :: coo
     parameter (orborder=1)
 
     ! exchange contributions due to different pair of orbitals
@@ -173,10 +173,8 @@ contains
 
     if (norb.eq.1) then
        iorb=1
-       ! FIXME what about one non-sigma orbital
-       ! contribution from coulomb potential of one sigma orbital
-       !  call dcopy (ngpot,pot(ibpot),ione,wk1,ione)
-       write(*,'(/5x,"2-electron part of Fock operator for orbital",i4,1x,a8,a1)') iorn(iorb),bond(iorb),gusym(iorb)
+       write(*,'(/5x,"2-electron part of Fock operator for orbital",i4,1x,a8,a1)') &
+            iorn(iorb),bond(iorb),gusym(iorb)
        write(*,'(15x,f6.2, "  J (",i4,1x,a8,a1,",",i4,1x,a8,a1,")" )') &
             1.0,iorn(iorb),bond(iorb),gusym(iorb),iorn(iorb),bond(iorb),gusym(iorb)
        return
@@ -185,23 +183,13 @@ contains
     if (orborder.eq.1) goto 1000
 
     do iorb=1,norb
-       write(*,'(/5x,"2-electron part of Fock operator for orbital",i4,1x,a8,a1)') iorn(iorb),bond(iorb),gusym(iorb)
+       write(*,'(/5x,"2-electron part of Fock operator for orbital",i4,1x,a8,a1)') &
+            iorn(iorb),bond(iorb),gusym(iorb)
 
        ! add contributions from Coulomb potentials
-
        do iorb1=1,norb
-          kex=iorb+norb*(iorb1-1)
-          ipc=iorb1+norb*(iorb-1)
-
-          if (iorb.le.iorb1) then
-             idexp=iorb+iorb1*(iorb1-1)/2
-          else
-             idexp=iorb1+iorb*(iorb-1)/2
-          endif
-
           coo=occ(iorb1)
           if (iorb.eq.iorb1) coo=coo-1.0_PREC
-
           !           write(*,'(2i5," J1  " ,1Pe12.2)') iorb,iorb1,coo
           write(*,'(15x,f6.2, "  J (",i4,1x,a8,a1,",",i4,1x,a8,a1,")" )') &
                coo,iorn(iorb1),bond(iorb1),gusym(iorb1),iorn(iorb1),bond(iorb1),gusym(iorb1)
@@ -210,21 +198,13 @@ contains
        ! add contributions from exchange potentials
        do iorb1=1,norb
           kex=iorb+norb*(iorb1-1)
-          ipc=iorb1+norb*(iorb-1)
-
-          if (iorb.le.iorb1) then
-             idexp=iorb+iorb1*(iorb1-1)/2
-          else
-             idexp=iorb1+iorb*(iorb-1)/2
-          endif
-
           if (iorb1.ne.iorb)  then
              coo=gec(kex)
              !              write(*,'(2i5," Ka  " ,1Pe12.2)') iorb,iorb1,-coo
              write(*,'(15x,f6.2, "  Ka(",i4,1x,a8,a1,",",i4,1x,a8,a1,")" )') &
                   -coo,iorn(iorb1),bond(iorb1),gusym(iorb1),iorn(iorb),bond(iorb),gusym(iorb)
 
-             if (ilc(idexp).gt.1) then
+             if (ilc(k2(iorb,iorb1))==2) then
                 coo=gec(kex+norb*norb)
                 !              call daxpy (ngexp,coo,excp(ibexp+ngexp),ione,wk2,ione)
                 !                 write(*,'(2i5," Kc  " ,1Pe12.2)') iorb,iorb1,-coo
@@ -233,10 +213,8 @@ contains
 
              endif
           else
-             if ((mm(iorb).gt.0).and.(ilc(idexp).gt.0)) then
+             if ((mm(iorb).gt.0).and.(ilc(k2(iorb,iorb1)).gt.0)) then
                 coo=gec(kex)
-                coo2=coo
-                !                 write(*,'(2i5," Kb  " ,1Pe12.2)') iorb,iorb1,-coo
                 write(*,'(15x,f6.2, "  Kb(",i4,1x,a8,a1,",",i4,1x,a8,a1,")" )') &
                      -coo,iorn(iorb1),bond(iorb1),gusym(iorb1),iorn(iorb),bond(iorb),gusym(iorb)
              endif
@@ -247,29 +225,15 @@ contains
 1000 continue
 
     do iorb=norb,1,-1
-       write(*,'(/5x,"2-electron part of Fock operator for orbital",i4,1x,a8,a1)') iorn(iorb),bond(iorb),gusym(iorb)
+       write(*,'(/5x,"2-electron part of Fock operator for orbital",i4,1x,a8,a1)') &
+            iorn(iorb),bond(iorb),gusym(iorb)
 
        ! add contributions from Coulomb potentials
-
        do iorb1=norb,1,-1
           kex=iorb+norb*(iorb1-1)
-          ipc=iorb1+norb*(iorb-1)
-
-          if (iorb.le.iorb1) then
-             idexp=iorb+iorb1*(iorb1-1)/2
-          else
-             idexp=iorb1+iorb*(iorb-1)/2
-          endif
-
           coo=occ(iorb1)
 
-          ! FIXME
           if (iorb.eq.iorb1) coo=coo-1.0_PREC
-          coo0=coo
-
-          ! call daxpy (ngpot1,coo,pot(ibpot1),ione,wk1,ione)
-
-          ! write(*,'(2i5," J1  " ,1Pe12.2)') iorb,iorb1,coo
           write(*,'(15x,f6.2, "  J (",i4,1x,a8,a1,",",i4,1x,a8,a1,")" )') &
                coo,iorn(iorb1),bond(iorb1),gusym(iorb1),iorn(iorb1),bond(iorb1),gusym(iorb1)
        enddo
@@ -278,45 +242,23 @@ contains
        do iorb1=norb,1,-1
           kex=iorb+norb*(iorb1-1)
           ipc=iorb1+norb*(iorb-1)
-
-          if (iorb.le.iorb1) then
-             idexp=iorb+iorb1*(iorb1-1)/2
-          else
-             idexp=iorb1+iorb*(iorb-1)/2
-          endif
-
           coo=occ(iorb1)
 
           if (iorb.eq.iorb1) coo=coo-1.0_PREC
-          coo0=coo
-
-          coo1=0.0_PREC
-          coo2=0.0_PREC
 
           if (iorb1.ne.iorb)  then
              coo=gec(kex)
-             coo1=coo
-             ! call dcopy (ngexp,excp(ibexp),ione,wk2,ione)
-             ! call dscal (ngexp,coo,wk2,ione)
-             ! write(*,'(2i5," Ka  " ,1Pe12.2)') iorb,iorb1,-coo
              write(*,'(15x,f6.2, "  Ka(",i4,1x,a8,a1,",",i4,1x,a8,a1,")" )') &
                   -coo,iorn(iorb1),bond(iorb1),gusym(iorb1),iorn(iorb),bond(iorb),gusym(iorb)
 
-
-             if (ilc(idexp).gt.1) then
+             if (ilc(k2(iorb,iorb1))==2) then
                 coo=gec(kex+norb*norb)
-                coo2=coo
-                ! call daxpy (ngexp,coo,excp(ibexp+ngexp),ione,wk2,ione)
-                ! write(*,'(2i5," Kc  " ,1Pe12.2)') iorb,iorb1,-coo
                 write(*,'(15x,f6.2, "  Kc(",i4,1x,a8,a1,",",i4,1x,a8,a1,")" )') &
                      -coo,iorn(iorb1),bond(iorb1),gusym(iorb1),iorn(iorb),bond(iorb),gusym(iorb)
-
              endif
           else
-             if ((mm(iorb).gt.0).and.(ilc(idexp).gt.0)) then
+             if ((mm(iorb).gt.0).and.(ilc(k2(iorb,iorb1)).gt.0)) then
                 coo=gec(kex)
-                coo2=coo
-                ! write(*,'(2i5," Kb  " ,1Pe12.2)') iorb,iorb1,-coo
                 write(*,'(15x,f6.2, "  Kb(",i4,1x,a8,a1,",",i4,1x,a8,a1,")" )') &
                      -coo,iorn(iorb1),bond(iorb1),gusym(iorb1),iorn(iorb),bond(iorb),gusym(iorb)
              endif
@@ -328,8 +270,6 @@ contains
   end subroutine fockform
 
   ! ### printCase ###
-  !
-  !     FIXME
   !
   subroutine printElConf
     use params
@@ -726,15 +666,6 @@ contains
     write(iout6,'(10x,"overrelaxation parameters:   orbitals       potentials ")')
     write(iout6,'(38x,2x,f5.3,7x,f5.3,3x,f5.3)') ovforb,ovfcoul,ovfexch
 
-    ! FIXME
-    if (iplot.eq.1) then
-       write(iout6,*)
-       write(iout6,1105)
-    elseif (iplot.eq.2) then
-       write(iout6,*)
-       write(iout6,1106)
-    endif
-
     write(iout6,*)
     write(iout6,'("   Machine accuracy      = ",1Pe11.2)') precis
     write(iout6,*)
@@ -778,7 +709,6 @@ contains
 
     lengtht=8*(length1+length2+length3+length4+length5)+lengthint*(length6)
 
-    ! FIXME 
     if (OED.or.HFS.or.DFT.or.SCMC) then
        nexch=1
     endif
@@ -811,8 +741,6 @@ contains
 1060 format(28x,'(mc)sor iterations',/27x,' orbital  potentials')
 1061 format(10x,i4,1x,a8,a1,1x,i8,i10)
 
-1105 format(3x,'Plot:'/,10x,'orbital values exported in (x,z) ','cartesian coordinates')
-1106 format(3x,'Plot:'/,10x,'orbital values exported in (ni,mu) ','prolate spheroidal coordinates')
 1110 format(3x,'Memory usage:')
 
 1300 format(11x,'finite electric field: ',1Pe9.2,' au')

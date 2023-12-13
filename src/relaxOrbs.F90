@@ -20,7 +20,6 @@ contains
     use solver
     use commons
     use fock
-    use orbAsympt
     use inout
     use sormcsor
     use sharedMemory
@@ -37,6 +36,11 @@ contains
     integer (KIND=IPREC),dimension(:), pointer :: cw_sor    
     real (PREC), dimension(:), pointer :: psi,b,d,f1,fock1,lhs,rhs,wk1,wk2,wk3
 
+    real (PREC), dimension(:), pointer :: wk4    
+    integer (KIND=IPREC) :: numax,mumax
+    real (PREC) :: fcurr,fprev,fmax
+
+    
     b=>supplptr(i4b(1):)
     d=>supplptr(i4b(3):)    
     f1=>supplptr(i4b(6):)
@@ -50,13 +54,15 @@ contains
     wk2  =>scratchptr( 3*mxsize8+1: 4*mxsize8)
     wk3  =>scratchptr( 4*mxsize8+1: 5*mxsize8)
     lhs  =>scratchptr( 5*mxsize8+1: 6*mxsize8)
+    wk4  =>scratchptr( 6*mxsize8+1: 7*mxsize8)    
 
     ! prepare right and left-hand side of the Poisson equation include
     ! the diagonal part of the differentiation operator in lhs
 
-    if (ifixorb(iorb)==1) return
+    !if (ifixorb(iorb)==1) return
+
     if (HF.or.OED) call fockHF (iorb)
-    if (TED) call fock4TED (iorb)
+    if (TED) call fockTED (iorb)
 
     ! use self-coded exchange-correlation functionals
     if (DFT.or.HFS.or.SCMC) call fockDFT(iorb)
@@ -79,6 +85,9 @@ contains
     
     maxsor1=maxsororb(1)    
     maxsor2=maxsororb(2)
+    
+    nsor4orb=nsor4orb+maxsor1*maxsor2
+    
     !call zeroArray(mxsize8,wk2)
     do itr1=1,maxsor1
        do i=1,mxsize
@@ -106,13 +115,29 @@ contains
        
        call orbAsymptGet (wk3,wk1)
        call putin (nni,mxnmu,isym,psi(iborb:),wk2)
+       wk4=wk2
        call sor (isym,wk2,lhs,rhs,b,d,          &
             cw_sor(iadext(1):),cw_sor(iadnor(1):),&
             cw_sor(iadex1(1):),cw_sor(iadex2(1):),&
             cw_sor(iadex3(1):))
        call putout (nni,mxnmu,psi(iborb:),wk2)
        call orbAsymptSet (psi(iborb:),wk3)
+
+    fmax=zero
+    numax=0
+    mumax=0
+    do i=1,mxsize8
+    !   if (mod(i,5000)==0) print *,i,wk2(i),wk3(i)
+       if (abs(wk2(i)-wk4(i))>fmax) then
+          fmax=abs(wk2(i)-wk4(i))
+          numax=indx1nu(i)
+          mumax=indx1mu(i)
+       endif
     enddo
+    !print *,"orbSOR:    ",numax,mumax,fmax
+
+    enddo
+
 
   end subroutine orbSOR
 
@@ -127,7 +152,6 @@ contains
     use discrete
     use fock
     use sormcsor
-    use orbAsympt
     use params
     use inout
     use scfshr
@@ -159,7 +183,7 @@ contains
     ! include the diagonal part of the differentiation operator in lhs
 
     if (HF.or.OED) call fockHF (iorb)
-    if (TED) call fock4TED (iorb)
+    if (TED) call fockTED (iorb)
     
     ! use self-coded exchange-correlation functionals
     if (DFT.or.HFS.or.SCMC) call fockDFT(iorb)
@@ -182,6 +206,7 @@ contains
 
     maxsor1=maxsororb(1)    
     maxsor2=maxsororb(2)
+    nsor4orb=nsor4orb+maxsor1*maxsor2
     
     do itr1=1,maxsor1
        do i=1,mxsize
@@ -229,7 +254,6 @@ contains
     use discrete
     use fock
     use sormcsor
-    use orbAsympt
     use params
     use inout
     use scfshr
@@ -304,7 +328,7 @@ contains
     if (ifixorb(iorb)==1) return
 
     if (HF.or.OED) call fockHF (iorb)
-    if (TED) call fock4TED (iorb)
+    if (TED) call fockTED (iorb)
     
     ! use self-coded exchange-correlation functionals
     if (DFT.or.HFS.or.SCMC) call fockDFT(iorb)
@@ -328,7 +352,8 @@ contains
     omega=ovforb
     maxsor1=maxsororb(1)    
     maxsor2=maxsororb(2)
-
+    nsor4orb=nsor4orb+maxsor1*maxsor2
+    
     ! maxsor1c=maxsororb(1)    
     ! maxsor2c=maxsororb(2)
     ! omega1c=1.0_PREC-omegac
@@ -381,5 +406,59 @@ contains
     enddo
   end subroutine orbMCSORPT
 #endif
+
+  ! ### orbAsymptGet ###
+  !
+  !   Initializes array edecay which is used by orbAsymptSet to calculate
+  !   boundary values of a given orbital at practical infinity.
+  !
+  subroutine orbAsymptGet (edecay,fa)
+    use params
+    use discrete
+    use commons
+
+    implicit none
+    integer (KIND=IPREC) :: i,j,jj
+    real (PREC) :: raiq,raiq1
+    real (PREC), dimension(*) :: fa
+    real (PREC), dimension(nni,4) :: edecay
+
+    jj=0
+    do j=mxnmu-3,mxnmu
+       jj=jj+1
+       do i=1,nni
+          raiq1=sqrt(vxisq(j-1)+vetasq(i)-1.0_PREC)
+          raiq =sqrt(vxisq(j)+vetasq(i)-1.0_PREC)
+          edecay(i,jj)=(abs(fa(i+(j-1)*nni)/fa(i+(j-1)*nni-nni)))**0.250_PREC&
+               *exp(sqrt(abs(fa(i+(j-1)*nni-nni)))*(raiq1-raiq))
+       enddo
+    enddo
+
+  end subroutine orbAsymptGet
+
+  ! ### orbAsymptSet ###
+  !
+  !     Recalculates asymptotic values of a given orbital at the practical
+  !     infinity using exponential decay values prepared by calling orbAsymptDet.
+  !
+  subroutine orbAsymptSet (psi,edecay)
+    use params
+    use discrete
+    use commons
+
+    implicit none
+    integer (KIND=IPREC) :: i,j,jj
+    real (PREC), dimension(*) :: psi
+    real (PREC), dimension(nni,4) :: edecay
+
+    jj=0
+    do j=mxnmu-3,mxnmu
+       jj=jj+1
+       do i=1,nni
+          psi(i+(j-1)*nni)=psi(i+(j-1)*nni-nni)*edecay(i,jj)
+       enddo
+    enddo
+
+  end subroutine orbAsymptSet
   
 end module relaxOrbs

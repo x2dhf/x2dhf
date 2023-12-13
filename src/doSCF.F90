@@ -59,7 +59,7 @@ contains
           else
              call fockLXCunpol(iorb)
           endif
-          !!!!call EaLxcDirect(iorb)
+          !!!!call EaLXC(iorb)
           !call EaDFT(iorb)
        endif
 #endif    
@@ -118,7 +118,7 @@ contains
           endif
 
           if (LXC) then
-             call EaLxcDirect(iorb)
+             call EaLXC(iorb)
              eeOld(iorb)=ee(iorb,iorb)
              call EabLXC(iorb)
           endif
@@ -126,7 +126,6 @@ contains
           
           if (DFT.or.HFS.or.SCMC) then
              call EaDFT (iorb)
-             !FIXME???
              eeOld(iorb)=ee(iorb,iorb)
              call EabDFT (iorb)
           endif
@@ -149,19 +148,16 @@ contains
           write(*,'(6x,i2,1x,a8,a1)') iorn(iorb),bond(iorb),gusym(iorb)
        endif
     enddo
-    if (ipass==0.and. lfixorb) write(*,'(6x,"orbitals not relaxed")')     
-    if (lfixcoul) write(*,'(6x,"Coulomb potentials not relaxed")') 
-    if (lfixexch) write(*,'(6x,"exchange potentials not relaxed")')  
+    if (ipass==0.and.lfixorb) write(*,'(6x,"orbitals not relaxed")')     
 
     if (HF.or.OED) then
        call EtotalHF
     endif
 
-    if (TED.and..not.LXC) then
-       call EtotalHF
+    if (TED) then
+       call EtotalTED
     endif
 
-    
     if (DFT.or.HFS.or.SCMC) then
        call EtotalDFT 
     endif
@@ -216,6 +212,7 @@ contains
     use params
     use discrete
     use commons
+    use fock
     use lagrangeMultipliers
     use totalEnergy
 #ifdef LIBXC    
@@ -231,13 +228,13 @@ contains
     use diskInterfaceMisc
     implicit none
 
-    integer (KIND=IPREC) :: i1,j1
     integer (KIND=IPREC) :: i,iasympt,ibeg,ic,iend,iorb,istat,jorb,&
          modv,nei,next,noenergydec,nonormdec,nresets,nresets4no,nOrbEnergyThld,nOrbNormThld
     real (PREC) :: eeconv,eeconvprev,dnmaxprev,thren4init,time1,time2,tscf
+
     integer (KIND=IPREC),dimension(:), pointer :: cw_sor
     real (PREC), dimension(:), pointer ::  cw_coul,cw_exch,cw_suppl,cw_sctch,cw_scratch4lxc
-
+    real (PREC), dimension(1000) ::  gDeltaEE
     
     integer (KIND=IPREC) :: mxnmuc,mxsizec,ngrid6ac,ngrid6bc,ngrid7c,&
          nnu1c,nnu2c,nnu3c,nnu4c,nnu5c,isstartc,isstopc,maxsor1c,maxsor2c
@@ -308,6 +305,7 @@ contains
     trelaxRealOrb=0.0_PREC
     trelaxRealCoul=0.0_PREC
     trelaxRealExch=0.0_PREC
+    tmomenReal=0.0_PREC    
     lenergyThld=.false.
     lnormThld=.false.
     lmpoleInit=.false.    
@@ -366,7 +364,6 @@ contains
        ibeg=1
        iend=norb
        iasympt=norb
-
        
        do i=ibeg,iend
           lorbitalLoop=.true.
@@ -444,25 +441,41 @@ contains
           call getCpuTime(time2)
           tortho=tortho+(time2-time1)
 
-          ! call rotate(iorb,cw_orb,cw_sctch(i5b(1)))
 
           ! calculate diagonal energy value
           call getCpuTime(time1)
-          
-          if (HF.or.OED.or.TED) then
+
+          ! if orbitals are kept fixed relaxation of potentials do not
+          ! change exchangeptr needed in EaHF
+          if (HF.or.OED) then
+             if (ifixorb(iorb)/=0) call fockHF(iorb)
              call EaHF (iorb)
           endif
 
+          if (TED) then
+             if (ifixorb(iorb)/=0) call fockTED(iorb)
+             call EaHF (iorb)
+          endif
+
+#ifdef LIBXC          
           if (LXC) then
+             if (ifixorb(iorb)/=0) then
+                if (lxcPolar) then
+                   call fockLXCpol(iorb)
+                else
+                   call fockLXCunpol(iorb)
+                endif
+             endif
              if (lxcHyb) then
                 call EaDFT (iorb)
-                call EaLxcDirect (iorb)
+                call EaLXC (iorb)
              else
-                call EaLxcDirect (iorb)
+                call EaLXC (iorb)
              endif
           endif
-             
+#endif             
           if (DFT.or.HFS.or.SCMC) then
+             if (ifixorb(iorb)/=0) call fockDFT(iorb)
              call EaDFT (iorb)
           endif
 
@@ -470,7 +483,7 @@ contains
           trayl =trayl + (time2-time1)
 
           deltaee(iorb)=ee(iorb,iorb)-eeOld(iorb)
-
+          
           ! Although it should not normally happen sometimes deltaee(iorb)
           ! becomes zero. In such cases its value is explicitly set to
           ! 2*orbEnergyThld.  (This procedure is especially important for OED
@@ -486,6 +499,14 @@ contains
 
           eeOld(iorb)=ee(iorb,iorb)
 
+          ! sumNew=zero
+          ! do iorb=1,norb
+          !    !sumNew=sumNew+abs(deltaEE(iorb))                                                                    
+          !    sumNew=sumNew+abs(deltaEE(iorb)/ee(iorb,iorb))
+          ! enddo
+          ! sumNew=sumNew/norb
+          ! write(*,'("tuneSOR:",i5,2e14.4,i9)') iscf,sumNew,abs(log10(sumNew)),nsor4orb+nsor4pot
+          
           ! calculate off-diagonal Lagrange multipliers
           call getCpuTime(time1)
           !if (HF) call EabHF (iorb)
@@ -513,6 +534,7 @@ contains
        ! ----- end of orbital loop -----
 
 00110  continue
+
        lorbitalLoop=.false.
        
        inde=1
@@ -649,7 +671,7 @@ contains
              ! than the threshold for nscfextra consecutive iterations
              if (nOrbNormThld==nscfextra) then
                 write(*,*) '          '
-                write(*,*) '... orbital energy threshold reached ...'
+                write(*,*) '... orbital normalization threshold reached ...'
                 goto 9999
              else
                 nOrbNormThld=nOrbNormThld+1
@@ -702,9 +724,7 @@ contains
 
        if (stop_x2dhf) then
           write(*,*) '          '
-          write(*,*) '... stop_x2dhf detected ... '
-          write(*,*) '... program is terminating ...'
-          write(*,*)
+          write(*,*) '... stop_x2dhf detected ... program is terminating ...'
           next=0
           goto 9999
        endif
@@ -726,15 +746,11 @@ contains
        if (saveScfData.gt.0 .and. mod(iscf,saveScfData)==0) then
           ! calculate 'intermediate' total energy
              !if (.not.DFT.and.lxcFuncs==0) call Etotal
-          if (HF.or.OED.or.TED) call EtotalHF             
+          if (HF.or.OED) call EtotalHF
+          if (TED) call eTotalTED             
+          
 #ifdef LIBXC                
-          if (LXC) then
-             if (lxcHyb) then
-                call EtotallxcHyb
-             else
-                call EtotalLXC
-             endif
-          endif
+          if (LXC) call EtotalLXC
 #endif
           if (DFT.or.HFS.or.SCMC) then
              call EtotalDFT
@@ -757,7 +773,9 @@ contains
              endif
 
           endif
+          !$OMP SECTIONS 
           call writeToDisk
+          !$OMP END SECTIONS NOWAIT
        endif
        
        ! let's separate pintouts for consecutive SCF iterations  
@@ -771,11 +789,12 @@ contains
     !   ----- end of scf loop	-----
 
 09999 continue
-    
+
+                    
     ! As long as the SCF process is not converged and is carried out in
     ! separate runs one can notice the discrepances between the orbital
     ! energies at the end of one run and the corresponding values
-    ! calculated at the outset of the subsequent one (especially when label
+    ! calculated at the onset of the subsequent one (especially when label
     ! fixorb is used). As a remedy one has to recalculate all of the
     ! orbital energies (and off-diagonal Lagrange multipliers if necessary)
     ! with the final set of orbitals and potentials.
@@ -802,57 +821,53 @@ contains
        endif
 
        if (LXC) then
-          call EaLxcDirect(iorb) 
+          call EaLXC(iorb) 
           call EabLXC(iorb)
        endif
     enddo
 
   ! write functions to a disk file 
-  if (saveScfData>0) then
-     call mpoleMoments
-     call writeToDisk
+    call mpoleMoments
+    call writeToDisk
      
-     call getCpuTime(time1)
-     if (HF.OR.OED) then
-        call EtotalHF
-        write(*,*)
-        call printTotalEnergy
-     endif
+    call getCpuTime(time1)
+    if (HF.OR.OED) then
+       call EtotalHF
+       write(*,*)
+       call printTotalEnergy
+    endif
+    
+    if (TED) then
+       call eTotalTED
+    endif
 
-     if (TED.and. .not.LXC) then
-        call EtotalHF
-        write(*,*)
-        call printTotalEnergy
-     endif
-
+    
 #ifdef LIBXC                
-     if (LXC) then
-        if (lxcHyb) then
-           call EtotallxcHyb
-        else
-           call EtotalLXC
-        endif
-        write(*,*)
-        call printTotalEnergy
-     endif
+    if (LXC) then
+       if (LXC) call EtotalLXC
+       write(*,*)
+       call printTotalEnergy
+    endif
 #endif
-     if (DFT.or.HFS.or.SCMC) then
-        call EtotalDFT
-        write(*,*)
-        call printTotalEnergy
-     endif
-     
-     call getCpuTime(time2)
-     ttoten=ttoten+(time2-time1)
-  endif
+    if (DFT.or.HFS.or.SCMC) then
+       call EtotalDFT
+       write(*,*)
+       call printTotalEnergy
+    endif
+
+    !write(*,'(5x,i6," (MC)SOR iterations")') nsor4orb+nsor4pot
+    write(*,'(/5x,"(MC)SOR iterations:",12x,i8)') nsor4orb+nsor4pot    
+    
+    call getCpuTime(time2)
+    ttoten=ttoten+(time2-time1)
+ 
+    if (iout4dd==1) call writeDisk4dd
   
-  if (iout4dd==1) call writeDisk4dd
+    if (iout4dft==1) call writeDisk4dft
   
-  if (iout4dft==1) call writeDisk4dft
-  
-  ! Calculate and write to disk the Pauli and von Weizsaecker kinetic potentials
-  if (iout4kinpot==1) call writeDisk4kinpot
-  return
+    ! Calculate and write to disk the Pauli and von Weizsaecker kinetic potentials
+    if (iout4kinpot==1) call writeDisk4kinpot
+    return
     
 15000 format(/'   scf  orbital',14x,'energy',15x,                 'energy diff.',6x,'1-norm',10x,'overlap',&
            /'   ---  -------',6x,'-----------------------',6x,'------------',5x,'---------',8x,'--------')
@@ -961,9 +976,6 @@ contains
              ! every exchange potential is relaxed in separated thread via OpenMP
              call coulExchSOR (iorb)
 #elif ( defined PTHREAD || defined TPOOL )
-#ifdef TRACE
-             write(*,'("TRACE:  relaxDriver/coulExchSORPT")')
-#endif
              call coulExchSORPT (iorb)
 #else
              call coulExchSOR (iorb)
@@ -971,6 +983,7 @@ contains
           endif
        endif
     endif
+    
     call getRealTime (count2,countRate)
     call getCpuTime (time2)   
     trelaxCpuExch=trelaxCpuExch+time2-time1

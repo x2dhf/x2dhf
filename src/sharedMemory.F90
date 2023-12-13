@@ -2,8 +2,9 @@ module sharedMemory
   use params
 
   integer (KIND=IPREC), dimension(:), pointer :: sorptr=>null()
-  real (PREC), dimension(:), pointer :: coulombptr,exchangeptr,orbptr,coulptr,exchptr,supplptr,&
-       scratchptr,scratch4lxcptr
+  real (PREC), dimension(:), pointer :: coulombptr,exchangeptr,orbptr,coulptr,&
+       exchptr,legendreptr,supplptr,scratchptr,scratch4lxcptr
+  
   common /c_sorptr/ sorptr
   common /c_orbptr/ orbptr
   common /c_exchptr/ exchptr
@@ -13,6 +14,7 @@ module sharedMemory
   common /c_coulptr/ coulptr
   common /c_coulombptr/ coulombptr
   common /c_exchangeptr/ exchangeptr
+  common /c_legendreptr/ legendreptr  
   common /c_i4b/ i4barr(20)
   !common /c_iadex/ iadex1c,iadex2c,iadex3c
   common /c_iadex/ iadex1c,iadex2c,iadex3c,iadextc,iadnorc

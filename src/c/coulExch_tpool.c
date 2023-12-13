@@ -39,10 +39,6 @@ void tpoolStart4pots ( int *num_threads4pots )
   //  int thread;
   int threadsNum=*(int *)num_threads4pots;
 
-  if (threadsNum==1) {
-    return;
-  }
-
   int numofcpus = sysconf(_SC_NPROCESSORS_ONLN); // Get the number of logical CPUs.
   bool adjusted=false;  
   if ( (int) *num_threads4pots > numofcpus ) {  
@@ -50,17 +46,20 @@ void tpoolStart4pots ( int *num_threads4pots )
     adjusted=true;
   }
 
+  threadsNum=*(int *)num_threads4pots;
+  
   if ( (int) *num_threads4pots > max_threads4pots ) {
     printf ("%20d threads cannot be created; "
 	    "increase max_threads4pots (see sortpt.h)\n",*num_threads4pots);
     return;
   }
 
+  
   pthread_mutex_init(&mutex,NULL);
 
   pthread_cond_init(&exchsor_ready,NULL);
   
-  if ( nthreads > 1 ) {
+  if ( nthreads >= 1 ) {
     pthread_mutex_lock(&mutex);
     exchsor_threads_done=0;
     pthread_mutex_unlock(&mutex);
@@ -77,10 +76,8 @@ void tpoolStart4pots ( int *num_threads4pots )
       pthread_create( &threads[thread], NULL, (void *) relax_single_pot_tpool_, &params[thread].threadNum);
     }
 
-#ifdef TRACE
-    printf ("\n ... %2d threads created\n",threadsNum);
-#endif
-    
+    printf ("      TPOOL: %2d SORPT threads created \n",threadsNum);
+
     if ( adjusted ) {  
       printf ("%65s\n","number of threads adjusted to available logical CPUs");
     }
@@ -93,15 +90,10 @@ void tpoolStop4pots_ (int *num_threads_pots )
   int nthreads,thread;
   nthreads=*(int *)num_threads_pots;
 
-  if ( nthreads ==1 ) {
-    return;
-  }
-
   pthread_mutex_lock(&mutex);  
   quit=true;
 
   for (thread=0; thread<nthreads; thread++) {
-    //printf("tpoolStop4pots: signaling thread=%1d\n",thread);
     pthread_cond_signal(&exchsor_start[thread]);
   }
   pthread_mutex_unlock(&mutex);    
@@ -110,7 +102,7 @@ void tpoolStop4pots_ (int *num_threads_pots )
   };
 
 #ifdef TRACE2  
-  printf ("\n ... %2d threads destroyed\n\n", (int) *num_threads_pots); 
+  printf ("\n ... %2d thread(s) destroyed\n\n", (int) *num_threads_pots); 
 #endif
 }
 
@@ -134,16 +126,9 @@ void coulExch_tpool_ ()
 #ifdef TRACE
   printf("TRACE/coulExch_tpool: iorb threadsNum, nthreads: %2d %2d %2d \n",iorb,threadsNum, nthreads);
 #endif
-
-  //  printf("coulExch_tpool: psiptr: %f %2f \n",c_interface_48_.psiptr[0],c_interface_48_.psiptr[9]);
-
-  
-  //for (thread = 0; thread < nexchpots[iorb-1]; thread++) {
+ 
   for (thread = 0; thread < maxpots; thread++) {
-    //params[thread].threadsNum = threadsNum;
     params[thread].threadNum = thread;
-    //params[thread].indxex=iadext;
-    //params[thread].indx=iadnor;
     params[thread].indxex=&c_sorptr_.cw_sor[c_iadex_.iadextc-1];
     params[thread].indx=  &c_sorptr_.cw_sor[c_iadex_.iadnorc-1];    
     params[thread].indx6a=&c_sorptr_.cw_sor[c_iadex_.iadex1c-1];
@@ -189,33 +174,20 @@ void coulExch_tpool_ ()
     params[thread].ib2=ib2;   
     params[thread].ibexc=ibexc;
     params[thread].isym=isym; 
-    params[thread].threadNum=thread;
     params[thread].deltam2=(double) idel*idel;        
   }
-  if (2>10) {
-    for ( thread=0; thread<nexchpots[iorb-1]; thread++ ) {
-#ifdef TRACE3      
-      printf("TRACE3: coulExch_tpool/thread=%d\n",thread);
-#endif
-      relax_single_pot_tpool_(&params[thread].threadNum);
-
-      //exchsorsingle0_(&params[thread]);
-    }
-    return;
-  }
-  
+ 
   pthread_mutex_lock(&mutex);
   exchsor_threads_done=0;
   pthread_mutex_unlock(&mutex);
-  
+
   if (! threads_created) {
-    tpoolStart4pots(&maxpots);
+    tpoolStart4pots(&nthreads);
     threads_created=true;
     usleep(500000);
   }
   
   for ( thread=0; thread<nexchpots[iorb-1]; thread++ ) {
-    //for ( thread=nexchpots[iorb-1]-1; thread=0; thread-- ) {
     pthread_mutex_lock(&mutex);
     pthread_cond_signal(&exchsor_start[thread]);
     pthread_mutex_unlock(&mutex);
@@ -228,8 +200,9 @@ void coulExch_tpool_ ()
   pthread_mutex_lock(&mutex);
   pthread_cond_wait(&exchsor_ready,&mutex);
   pthread_mutex_unlock(&mutex);
-  
+
   return;
 }
+
 
 

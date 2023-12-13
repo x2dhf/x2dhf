@@ -51,6 +51,10 @@ contains
        iprint16=1
     endif
 
+    lplot=.false.        
+    iplot=1
+    istep=2
+    plotThreshold=1.0e-10_PREC
     ltail=.false.    
     homoIncl=.false.
     lcoulexch=.true.
@@ -156,7 +160,6 @@ contains
     pthread=.false.
 #endif
 
-    ! FIXME msleep is not used
 #if defined TPOOL
     tpool=.true.
     mcsorpt=.true.
@@ -220,7 +223,7 @@ contains
     lfixexch=.false.
 
     lfixorb4init=.false.    
-    ienterm4init=1
+    ienterm4init=0
     
     ! and DFT approach is switched off
     idftex=0
@@ -249,7 +252,9 @@ contains
     maxsorpot(2)=10    
     lsor    = 1
     iomega  = 0
-
+    nsor4orb=0
+    nsor4pot=0
+    ireset=-1
     ovforb=-one
     ovfcoul=-one
 
@@ -284,9 +289,6 @@ contains
     nscfExtra=3
     ! ipot default value (point nuclei)
     ipot=0
-    ! plot default value (no data exported for making plots)
-    iplot=0
-
     sflagra=1.0_PREC
     dflagra=0.0_PREC
     

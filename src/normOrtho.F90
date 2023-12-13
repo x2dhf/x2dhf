@@ -60,8 +60,6 @@ contains
   
   ! ### norm94 ###
   !
-  !     FIXME
-  !
   subroutine norm94 (iorb,xnorm)
     use params
     use commons
@@ -153,7 +151,7 @@ contains
 ! print= 20: ortho: checking overlap of orbitals
        if (iprint(20).ne.0) then
           write(*,60) iorn(iorb1),bond(iorb1),gusym(iorb1),iorn(iorb3),bond(iorb3),gusym(iorb3),ovla(jor)
-60        format(4x,' <',i2,1x,a5,1x,a1,1x,'|',1x,i2,1x,a5,1x,a1,1x,'> = ',e10.2)
+60        format(4x,' <',i2,1x,a5,1x,a1,1x,'|',1x,i2,1x,a5,1x,a1,1x,'> = ',1Pe10.2)
        endif
 #endif
        
@@ -276,4 +274,44 @@ contains
   end subroutine checkOrtho
 
 
+  ! ### rotate ###
+  !
+  !     Rotate a pair of orbitals by theta
+  !
+  subroutine rotate (theta,iorb1,iorb2)
+    use params
+    use commons
+    use discrete
+    use sharedMemory
+    use utils
+    use blas
+
+    implicit none
+    integer (KIND=IPREC) :: i,ibeg1,ibeg2,iorb1,iorb2
+    real (PREC) :: theta,thetaRad
+    real (PREC), dimension(:), pointer :: psi1,psi2,wk1,wk2
+
+    wk1  =>scratchptr(         1:   mxsize8)
+    wk2  =>scratchptr( mxsize8+1: 2*mxsize8)
+    
+    ibeg1= i1b (iorb1 )
+    ibeg2= i1b (iorb2 )    
+
+    psi1=>orbptr(ibeg1:)
+    psi2=>orbptr(ibeg2:)
+    thetaRad=theta/180.0_PREC*pii
+    do i=1,mxsize
+       wk1(i)=cos(thetaRad)*psi1(i) - sin(thetaRad)*psi2(i)
+       wk2(i)=sin(thetaRad)*psi1(i) + cos(thetaRad)*psi2(i)       
+    enddo
+
+    do i=1,mxsize
+       psi1(i)=wk1(i)
+       psi2(i)=wk2(i)
+    enddo
+
+    print *,"rotate: theta orb1 orb2",theta,iorb1,iorb2
+  end subroutine rotate
+
+  
 end module normOrtho

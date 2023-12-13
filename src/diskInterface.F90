@@ -333,10 +333,8 @@ contains
        if (inUnformatted) then
           read(iinp11,end=1008,err=1010) r8tmp1
           call rfunaux(r8tmp1,orbNorm)
-
           if (lversion) then
              read(iinp11,end=1008,err=1010) r8tmp12
-             !read(iinp11,end=1008,err=1010) ee
              ee=r8tmp12
           else
              read(iinp11,end=1008,err=1010) r8tmp1
@@ -354,12 +352,11 @@ contains
                 enddo
              enddo
           endif
-       
           read(iinp11,end=1008,err=1010) r8tmp2
           do i=1,maxorb+(maxmpole-1)*maxorb
              cmulti(i)=r8tmp2(i)
           enddo
-
+          
           read(iinp11,end=1008,err=1010) r8tmp3
           do i=1,maxorb*(maxorb+1)
              excdi(i)=r8tmp3(i)
@@ -373,6 +370,7 @@ contains
           do i=1,maxorb*(maxorb+1)
              excoc(i)=r8tmp3(i)
           enddo
+
           read(iinp11,end=1008,err=1010) r8tmp3
           do i=1,maxorb*(maxorb+1)
              exche(i)=r8tmp3(i)
@@ -382,6 +380,7 @@ contains
           do i=1,maxorb*(maxorb+1)
              exc5(i)=r8tmp3(i)
           enddo
+
           read(iinp11,end=1008,err=1010) r8tmp3
           do i=1,maxorb*(maxorb+1)
              exc6(i)=r8tmp3(i)
@@ -396,7 +395,6 @@ contains
              exc8(i)=r8tmp3(i)
           enddo
        else
-
           read(iinp11,formfp64,end=1008,err=1010) r8tmp1
           call rfunaux(r8tmp1,orbNorm)
           
@@ -447,6 +445,8 @@ contains
           enddo
        endif
     endif
+
+
     if (lengthfp.eq.16) then
        if (inUnformatted) then
           read(iinp11,end=1008,err=1010) r16tmp1
@@ -546,8 +546,8 @@ contains
     endif
     rewind iinp11
 
+500 continue
     ! read in Coulomb potentials
-
     do i=1,norb
        if (inhyd(i).eq.1) cycle
        if (inUnformatted) then
@@ -604,9 +604,8 @@ contains
        if (.not.linitFuncsNoexch) then
           do iorb1=1,norbt
              do iorb2=iorb1,norbt
-                k=iorb1+iorb2*(iorb2-1)/2
-                if (iorb1.eq.iorb2.and.ll(iorb1).eq.0) goto 50
-
+                k=k2(iorb1,iorb2)
+                if (iorb1.eq.iorb2.and.ll(iorb1).eq.0) cycle
                 if (inUnformatted) then
                    if (lengthfp.eq.8) then
                       call reada8(iinp13,mxsize,wk8,ierr)
@@ -635,8 +634,8 @@ contains
                    enddo
                 endif
                 
-                if (iorb1.eq.iorb2) goto 50
-                if (ll(iorb1).eq.0.or.ll(iorb2).eq.0) goto 50
+                if (iorb1.eq.iorb2) cycle
+                if (ll(iorb1).eq.0.or.ll(iorb2).eq.0) cycle
 
                 if (inUnformatted) then                
                    if (lengthfp.eq.8) then
@@ -665,7 +664,6 @@ contains
                       cw_exch(i3b(k)+mxsize+j-1)=wk8(j)
                    enddo
                 endif
-50              continue
              enddo
           enddo
           rewind iinp13
@@ -673,7 +671,8 @@ contains
        write(*,*) '... orbitals and potentials retrieved ... '
     endif
 
-    if (LXC.or.DFT.or.HFS.or.SCMC) then
+    !if (LXC.or.DFT.or.HFS.or.SCMC) then
+    if (DFT.or.HFS.or.SCMC) then
        if (inUnformatted) then
           if (lengthfp.eq.8) then
              call reada8(iinp13,i3si(1),wk8,ierr)
@@ -754,7 +753,7 @@ contains
     return
 
 1000 continue
-    write(*,*) '... error detected when reading the disk file ... '
+    write(*,*) '... error detected when reading disk file ... '
     stop 'rfun'
 
 1004 continue
@@ -766,17 +765,11 @@ contains
     stop 'rfun'
 
 1008 continue
-    write(*,*) '... error detected when reading the orbital input file ...'
-    write(*,*) '... the data without the extension retrieved ... '
+    write(*,*) '... end of file detected when reading orbital input file ...'
+    write(*,*) '... data without extension retrieved ... '
+    write(*,*) '... continue reading potentials ... '    
     initAddData=.true.
-    goto 1100
-
-1009 continue
-    write(*,*) '... error detected when reading the orbital input file ...'
-    write(*,*) '... the data without the extension retrieved ... '
-    initAddData=.true.
-    goto 1100
-
+    goto 500
     
 1010 write(*,*) '... error detected when reading exchange function ...'
     initAddData=.true.
@@ -934,10 +927,8 @@ contains
 01104  format(' ... interpolating exchange potentials for orbitals:',/,'  ',$)
        do iorb1=1,norb_p
           write(iout6,1110) iorb1
-
           do iorb2=iorb1,norb_p
-             k=iorb1+iorb2*(iorb2-1)/2
-
+             k=k2(iorb1,iorb2)
              idel=abs(mgx(6,iorb1)-mgx(6,iorb2))
              if (iorb1.eq.iorb2) idel=2*mgx(6,iorb1)
              ipex=idel-2*(idel/2)
