@@ -1,0 +1,17 @@
+title Hooke atom
+!! Hooke's atom:
+method hf
+!dft xc_lda_x
+pothooke ! 0.5
+nuclei  1.0 0.0 2.0
+!break 
+config -1
+ 1 sigma g end  
+grid 269 160.0
+orbpot hydrogen 
+lcao
+  1.0  1 0 1.0   1.0  1 0  1.0  
+scf  5000 10 12 14 3
+!omega 1.8 1.8
+conv 5000
+stop

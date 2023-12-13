@@ -12,7 +12,7 @@
   9 pi                                                                            
   17 sigma end                                                                    
   grid 445 50.0                                                                   
-  orbpot hydrogen 0                                                               
+  orbpot hydrogen 
   lcao                                                                            
   1.0   4 3 13.0   0.0   2 1   13.0                                               
   1.0   5 2 13.0   0.0   2 1   13.0                                               

@@ -9,7 +9,7 @@ config 0
   1 sigma u 
   1 sigma g end
 grid 269 50.0 
-orbpot  lda 0
+orbpot  lda 
 scf 10000 10 4 10 3
 conv 2000
 !omega 1.9 1.9

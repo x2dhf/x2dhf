@@ -24,6 +24,8 @@
 
    Method: HF
 
+   Nuclear potential: Coulomb
+
    Electronic configuration:
 
            1  sigma      +   
@@ -54,7 +56,7 @@
               orbital norm             = 1.00E-16
               multipole moments recalc = 1.15E+00  (mpole=4)
 
-          orbitals are kept frozen
+          orbitals are relaxed
           Coulomb potentials are relaxed
           exchange potential for each pair of orbitals is relaxed once per single scf iteration
 
@@ -64,8 +66,6 @@
 
    (MC)SOR:
           SOR method used for relaxing orbitals
-          SOR method used for relaxing Coulomb potentials
-          SOR method used for relaxing exchange potentials
 
           maximal number of Coulomb+exchange potentials per orbital =  1
 
@@ -97,28 +97,17 @@
  ... initializing exchange potentials ...
  ... initializing multipole moment coefficients ...
  ... initializing Lagrange multipliers ...
-
-     orbitals kept frozen until potentials get converged:
-       1 sigma    
      total energy:                 -5.0000000000070011E-01
      total electronic energy:      -5.0000000000070011E-01
      virial ratio:                 -2.0000000000027502E+00
 
    scf  orbital              energy               energy diff.      1-norm          overlap
    ---  -------      -----------------------      ------------     ---------        --------
-  Warning: energy diff. set to 2.0E-12. This message is shown only once!
-    1   1 sigma      -5.0000000000070011E-01        2.00E-12       -3.86E-14        0.00E+00
-    2   1 sigma      -5.0000000000070011E-01        2.00E-12       -3.86E-14        0.00E+00
-    3   1 sigma      -5.0000000000070011E-01        2.00E-12       -3.86E-14        0.00E+00
-    4   1 sigma      -5.0000000000070011E-01        2.00E-12       -3.86E-14        0.00E+00
-           
- ... initial relaxation of potentials with fixed orbitals reached the threshold ...
- ... SCF continues with both orbitals and potentials being relaxed ...
-    5   1 sigma      -5.0000000000078337E-01       -8.33E-14        7.22E-14        0.00E+00
-    6   1 sigma      -5.0000000000075739E-01        2.60E-14        8.79E-14        0.00E+00
-    7   1 sigma      -5.0000000000074674E-01        1.07E-14        1.06E-13        0.00E+00
-    8   1 sigma      -5.0000000000079770E-01       -5.10E-14        1.18E-13        0.00E+00
-    9   1 sigma      -5.0000000000076605E-01        3.16E-14        1.21E-13        0.00E+00
+    1   1 sigma      -5.0000000000078337E-01       -8.33E-14        7.22E-14        0.00E+00
+    2   1 sigma      -5.0000000000075739E-01        2.60E-14        8.79E-14        0.00E+00
+    3   1 sigma      -5.0000000000074674E-01        1.07E-14        1.06E-13        0.00E+00
+    4   1 sigma      -5.0000000000079770E-01       -5.10E-14        1.18E-13        0.00E+00
+    5   1 sigma      -5.0000000000076605E-01        3.16E-14        1.21E-13        0.00E+00
            
  ... orbital energy threshold reached ...
  ... saving data to disk ...
@@ -126,6 +115,8 @@
      total energy:                 -5.0000000000076605E-01
      total electronic energy:      -5.0000000000076605E-01
      virial ratio:                 -2.0000000000021210E+00
+
+     (MC)SOR iterations:                 100
 
      nuclear attraction energy:            -1.000000000000
      kinetic energy:                        0.500000000000
@@ -185,27 +176,28 @@
                                       -0.5830048930078401E-02
 ///////////////////////////////////////////////////////////////////////////////////////////////
  CPU summary (sec):
-    Lagrange multipliers ......................     0.06
+    Lagrange multipliers ......................     0.02
     normalization+orthogonalization ...........     0.00
     multipole moments .........................     0.00
     total energy ..............................     0.01
-    relaxation of orbitals ....................     0.25
-    relaxation of Coulomb & exchange potentials     0.46
-    relaxation of orbitals & potentials .......     0.71
-    SCF iterations ............................     0.78
+    relaxation of orbitals ....................     0.15
+    relaxation of Coulomb & exchange potentials     0.16
+    relaxation of orbitals & potentials .......     0.31
+    SCF iterations ............................     0.34
 
  System clock summary (sec):
-    relaxation of orbitals ....................     0.25
-    relaxation of Coulomb & exchange potentials     0.46
-    relaxation of orbitals & potentials .......     0.71
+    multipole moments .........................     0.00
+    relaxation of orbitals ....................     0.15
+    relaxation of Coulomb & exchange potentials     0.16
+    relaxation of orbitals & potentials .......     0.31
 
  Speedup:                                           1.00
 ///////////////////////////////////////////////////////////////////////////////////////////////
-       start:  2023/06/12  20:01:59.85                                                         
-        stop:  2023/06/12  20:02:00.75                                                         
-  start-stop:                     0.91
+       start:  2023/10/28  20:51:49.08                                                         
+        stop:  2023/10/28  20:51:49.55                                                         
+  start-stop:                     0.47
 
 command-line:  /home/jkob/github/x2dhf-v3/bin/xhf input output
-      system:  Linux gateway 5.14.0-284.11.1.el9_2.x86_64 x86_64 x86_64 GNU/Linux
-         CPU:  Intell(R) Xeon(R) Silver 4310 CPU @ 2.10GHz
+      system:  Linux nscobie 6.2.15-100.fc36.x86_64 x86_64 x86_64 GNU/Linux
+         CPU:  Intell(R) Core(TM) i5-8265U CPU @ 1.60GHz / CPU(s)=8 / OMP_THREAD_LIMIT=8
 ////////////////////////////////////////////////////////////////////////////////////////////////

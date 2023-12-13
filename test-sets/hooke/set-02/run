@@ -1,0 +1,5 @@
+[[ -f reference.lst ]] && grep -P 'total electronic energy' reference.lst 2>/dev/null | tail -1 > reference-result.log
+xhf input output 2>/dev/null > current.lst
+grep -P 'total electronic energy' current.lst 2>/dev/null | tail -1 > current-result.log
+
+

@@ -16,7 +16,7 @@
   1 sigma u                                                                       
   1 sigma g end                                                                   
   grid  200 30.0                                                                  
-  orbpot hf 0                                                                     
+  orbpot hf                                                                       
   scf 1000 10 4 7 3                                                               
   stop                                                                            
  ... end of input data  ...
@@ -27,6 +27,8 @@
           Ne( 10.00)   Ne ( 10.00)   R =  5.81091 bohr = 3.07500 angstroms
 
    Method: HF
+
+   Nuclear potential: Coulomb
 
    Electronic configuration:
 
@@ -65,12 +67,8 @@
 
           multipole expansion coefficients =  4
 
-   MT support: OpenMP
-
    (MC)SOR:
           SOR method used for relaxing orbitals
-          SOR method used for relaxing Coulomb potentials
-          SOR method used for relaxing exchange potentials
 
           maximal number of Coulomb+exchange potentials per orbital = 10
 
@@ -92,7 +90,7 @@
    Memory usage:
           text+data                                      0.9 MB 
           bss (common block contributions)              64.7 MB
-          dynamical allocation                          26.9 MB 
+          dynamical allocation                          23.3 MB 
               orbitals                                   1.7 MB
               Coulomb potentials                         2.1 MB
               exchange potentials                       12.7 MB
@@ -2247,27 +2245,25 @@
    1 sigma    g          g
 ///////////////////////////////////////////////////////////////////////////////////////////////
  CPU summary (sec):
-    Lagrange multipliers ......................     1.10
-    normalization+orthogonalization ...........     0.31
-    multipole moments .........................     0.89
-    total energy ..............................     0.30
-    relaxation of orbitals ....................    43.85
-    relaxation of Coulomb & exchange potentials    38.14
-    relaxation of orbitals & potentials .......    81.99
-    SCF iterations ............................    84.30
+    Lagrange multipliers ......................     1.61
+    normalization+orthogonalization ...........     0.57
+    multipole moments .........................     1.53
+    total energy ..............................     0.48
+    relaxation of orbitals ....................    13.28
+    relaxation of Coulomb & exchange potentials    56.29
+    relaxation of orbitals & potentials .......    69.56
+    SCF iterations ............................    73.28
 
  System clock summary (sec):
-    relaxation of orbitals ....................     8.99
-    relaxation of Coulomb & exchange potentials     8.48
-    relaxation of orbitals & potentials .......    17.48
-
- Speedup:                                           4.69
+    relaxation of orbitals ....................    13.28
+    relaxation of Coulomb & exchange potentials    56.51
+    relaxation of orbitals & potentials .......    69.79
 ///////////////////////////////////////////////////////////////////////////////////////////////
-       start:  2023/06/19  19:19:59.56                                                         
-        stop:  2023/06/19  19:20:21.01                                                         
-  start-stop:                    21.45
+       start:  2023/09/27  09:05:52.16                                                         
+        stop:  2023/09/27  09:07:07.75                                                         
+  start-stop:                    75.59
 
 command-line:  /home/jkob/github/x2dhf-v3/bin/xhf input output
-      system:  Linux p18 5.14.0-284.11.1.el9_2.x86_64 x86_64 x86_64 GNU/Linux
-         CPU:  Intell(R) Xeon(R) Gold 6336Y CPU @ 2.40GHz
+      system:  Linux nscobie 6.2.15-100.fc36.x86_64 x86_64 x86_64 GNU/Linux
+         CPU:  Intell(R) Core(TM) i5-8265U CPU @ 1.60GHz
 ////////////////////////////////////////////////////////////////////////////////////////////////

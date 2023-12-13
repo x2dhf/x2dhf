@@ -14,7 +14,7 @@ config  0
 !grid 445 200.0
 grid 445 200.0
 !fefield +0.00025
-orbpot  hf 0
+orbpot  hf 
 scf 15000 10 14 16 3
 !omega 1.90 1.90
 conv 15000

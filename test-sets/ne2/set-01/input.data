@@ -13,6 +13,6 @@ config  0
   1 sigma u   
   1 sigma g end     
 grid  200 30.0
-orbpot hf 0 
+orbpot hf 
 scf 1000 10 4 7 3                                                                  
 stop                      

@@ -11,7 +11,7 @@ config 0
  1 sigma g +  
  1 sigma g +   end
 grid 269 60.0
-orbpot hydrogen 0 ! old
+orbpot hydrogen 
 lcao
   1.0  1 0 1.0  -1.0  1 0  1.0    
   1.0  1 0 1.0   1.0  1 0  1.0  

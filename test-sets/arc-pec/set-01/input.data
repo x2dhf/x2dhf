@@ -1,0 +1,24 @@
+!! ArC: R-dependence of total energy and orbital energies
+title arc
+method dft
+nuclei  18.0  6.0  2.0
+config  0
+1 pi + . + .
+2 pi
+7 sigma end
+grid  397 643 100.0
+orbpot hf 
+interp
+scf 4000 10 6 14 3
+conv 2000
+!omega 1.5 1.5
+stop
+
+norbs=10
+orblabels=1sigma 2sigma 3sigma 4sigma 5sigma 6sigma 7sigma 1pi 2pi 3pi
+
+rinit=9.0
+rnext=8.0 7.0 6.0 5.0 4.0 3.0 2.0
+
+
+

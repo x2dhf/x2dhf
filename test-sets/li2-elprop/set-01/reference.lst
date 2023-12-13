@@ -11,7 +11,7 @@
   1 sigma u                                                                       
   1 sigma g end                                                                   
   grid 445 250.0                                                                  
-  orbpot  hf 0                                                                    
+  orbpot  hf 
   scf  5000 10 16 20 3                                                            
   conv 4000                                                                       
   lm 1 2                                                                          

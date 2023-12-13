@@ -1,0 +1,13 @@
+title  F 2S
+!! F : HF cals with initial atomic HF orbitals (2S state)
+method hf
+nuclei  9.0 0.0 2.0 
+config 0
+     1 pi
+     1 sigma + 
+     2 sigma  end
+grid  200 40.0
+orbpot hf
+scf  2000 10 12 18 3
+conv 2000
+stop 

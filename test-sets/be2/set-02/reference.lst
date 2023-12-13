@@ -13,7 +13,7 @@
   1 sigma u                                                                       
   1 sigma g end                                                                   
   grid 269 50.0                                                                   
-  orbpot  lda 0                                                                   
+  orbpot  lda                                                                     
   scf 10000 10 4 10 3                                                             
   conv 2000                                                                       
   lm 1 2  2 3  3 4                                                                
@@ -26,6 +26,8 @@
           Be(  4.00)   Be (  4.00)   R =  5.05086 bohr = 2.67280 angstroms
 
    Method: HF
+
+   Nuclear potential: Coulomb
 
    Electronic configuration:
 
@@ -64,12 +66,8 @@
 
           multipole expansion coefficients =  4
 
-   MT support: OpenMP
-
    (MC)SOR:
           SOR method used for relaxing orbitals
-          SOR method used for relaxing Coulomb potentials
-          SOR method used for relaxing exchange potentials
 
           maximal number of Coulomb+exchange potentials per orbital =  4
 
@@ -91,7 +89,7 @@
    Memory usage:
           text+data                                      0.9 MB 
           bss (common block contributions)              64.7 MB
-          dynamical allocation                          39.7 MB 
+          dynamical allocation                          31.3 MB 
               orbitals                                   2.0 MB
               Coulomb potentials                         3.0 MB
               exchange potentials                       10.3 MB
@@ -869,27 +867,25 @@
    1 sigma               g
 ///////////////////////////////////////////////////////////////////////////////////////////////
  CPU summary (sec):
-    Lagrange multipliers ......................     2.38
-    normalization+orthogonalization ...........     0.22
-    multipole moments .........................     0.63
-    total energy ..............................     0.22
-    relaxation of orbitals ....................     9.99
-    relaxation of Coulomb & exchange potentials    14.60
-    relaxation of orbitals & potentials .......    24.59
-    SCF iterations ............................    26.21
+    Lagrange multipliers ......................     3.53
+    normalization+orthogonalization ...........     0.40
+    multipole moments .........................     1.07
+    total energy ..............................     0.34
+    relaxation of orbitals ....................     8.81
+    relaxation of Coulomb & exchange potentials    20.40
+    relaxation of orbitals & potentials .......    29.21
+    SCF iterations ............................    31.80
 
  System clock summary (sec):
-    relaxation of orbitals ....................     6.11
-    relaxation of Coulomb & exchange potentials     5.97
-    relaxation of orbitals & potentials .......    12.08
-
- Speedup:                                           2.04
+    relaxation of orbitals ....................     8.84
+    relaxation of Coulomb & exchange potentials    21.30
+    relaxation of orbitals & potentials .......    30.15
 ///////////////////////////////////////////////////////////////////////////////////////////////
-       start:  2023/06/20  11:38:51.23                                                         
-        stop:  2023/06/20  11:39:07.15                                                         
-  start-stop:                    15.93
+       start:  2023/09/27  09:02:13.93                                                         
+        stop:  2023/09/27  09:02:49.90                                                         
+  start-stop:                    35.97
 
 command-line:  /home/jkob/github/x2dhf-v3/bin/xhf input output
-      system:  Linux p18 5.14.0-284.11.1.el9_2.x86_64 x86_64 x86_64 GNU/Linux
-         CPU:  Intell(R) Xeon(R) Gold 6336Y CPU @ 2.40GHz
+      system:  Linux nscobie 6.2.15-100.fc36.x86_64 x86_64 x86_64 GNU/Linux
+         CPU:  Intell(R) Core(TM) i5-8265U CPU @ 1.60GHz
 ////////////////////////////////////////////////////////////////////////////////////////////////

@@ -22,7 +22,7 @@ config  0
  4 pi    
  8 sigma  end
 grid  349 150 ! 60 ! 150.0
-orbpot  hf ! lda 0
+orbpot  hf 1
 !orbpot hydrogen 0 
 scf 13000 10 8 12 3
 conv 2000

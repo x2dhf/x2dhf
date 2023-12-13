@@ -22,7 +22,6 @@ config  0
  4 pi    
  8 sigma  end
 grid  349 150.0
-!orbpot lda
 orbpot old
 scf 13000 10 8 12 3
 conv 2000

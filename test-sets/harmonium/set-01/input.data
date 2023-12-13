@@ -1,12 +1,12 @@
 title Hooke's atom ground state
 !! Hooke's atom: ground state
-method ted ! oed
-pothooke !
+method ted 
+pothooke 
 nuclei  1.0 1.0 1.0
 config 0
  1 sigma g  end
-grid 269 40.0
-orbpot hydrogen 0 
+grid 269 25.0
+orbpot hydrogen  
 lcao
   1.0  1 0 1.0   1.0  1 0  1.0  
 scf  500 10 10 14  3

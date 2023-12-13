@@ -1,0 +1,4 @@
+grep -iP '^\s+[1-6] pi.*\de' reference.lst |head -6 > reference-result.log
+xhf input output 2>/dev/null > current.lst
+grep -iP '^\s+[1-6] pi.*\de' current.lst | head -6 > current-result.log
+

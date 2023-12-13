@@ -21,6 +21,7 @@
 
           He(  2.00)      (  0.00)   R =  2.00000 bohr = 1.05835 angstroms
 
+   Method: DFT     
 
       Libxc version = 6.0.0
                name = lda_x
@@ -31,839 +32,7 @@
                       [2] F. Bloch.,  Z. Phys. 57, 545 (1929)
 
 
-   Electronic configuration:
-
-           1  sigma      + - 
-
-
-          total charge            =  0
-          number of
-              electrons           =  2
-              orbitals            =  1
-              Coulomb potentials  =  1
-              exchange potentials =  0
-
-   Grid:
-          nu (h_nu)  =  181  (0.01745)
-          mu (h_mu)  =  271  (0.01803)
-          R_infty    =  65.00
-
-   SCF: 
-          thresholds
-              scf iterations           =  3000
-              orbital energy           = 1.00E-12
-              orbital norm             = 1.00E-18
-              multipole moments recalc = 1.15E+00  (mpole=4)
-
-          orbitals are kept frozen
-          Coulomb potentials are relaxed
-
-          multipole expansion coefficients =  4
-
-   MT support: OpenMP
-
-   (MC)SOR:
-          SOR method used for relaxing orbitals
-          SOR method used for relaxing Coulomb potentials
-          SOR method used for relaxing exchange potentials
-
-          maximal number of Coulomb+exchange potentials per orbital =  1
-
-          micro and macro SOR iterations for orbitals   =  10  1
-          micro and macro SOR iterations for potentials =  10  1
-
-          ordering: middle
-
-          overrelaxation parameters:   orbitals       potentials 
-                                        1.934       1.978   1.978
-
-   Machine accuracy      =    2.22E-16
-
-   Constants: 
-               pi        =    3.1415926535897931E+00
-               bohr      =    5.2917721067121204E-01 angstroms
-
-
-   Memory usage:
-          text+data                                      0.9 MB 
-          bss (common block contributions)              64.7 MB
-          dynamical allocation                          21.9 MB 
-              orbitals                                   0.4 MB
-              Coulomb potentials                         1.1 MB
-              exchange potentials                        1.9 MB
-///////////////////////////////////////////////////////////////////////////////////////////////
- ... initializing molecular orbitals from HF functions ...
- Asigma iorb,co1,co2,eh,n,l   1   1.0   0.0     -0.9180    1    0
-
- ... initializing Coulomb potentials (pottf) ...
- ... initializing Slater exchange potential ...
- ... initializing multipole moment coefficients ...
- ... initializing Lagrange multipliers ...
-
-     orbitals kept frozen until potentials get converged:
-       1 sigma    
-     total energy:                 -3.5071884876597545E+00
-     total electronic energy:      -3.5071884876597545E+00
-     virial ratio:                 -5.5527044367054188E+00
-
-   scf  orbital              energy               energy diff.      1-norm          overlap
-   ---  -------      -----------------------      ------------     ---------        --------
-  Warning: energy diff. set to 2.0E-12. This message is shown only once!
-    1   1 sigma      -2.1869746345826675E+00        2.00E-12        1.85E-01        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-    2   1 sigma      -2.1869746345826675E+00        2.00E-12        1.85E-01        0.00E+00
-    3   1 sigma      -2.1869746345826675E+00        2.00E-12        1.85E-01        0.00E+00
-    4   1 sigma      -2.1869746345826675E+00        2.00E-12        1.85E-01        0.00E+00
-           
- ... initial relaxation of potentials with fixed orbitals reached the threshold ...
- ... SCF continues with both orbitals and potentials being relaxed ...
-    5   1 sigma      -1.6440148168258526E+00        5.43E-01       -2.95E-01        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-    6   1 sigma      -1.6235018598920723E+00        2.05E-02       -1.03E-01        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-    7   1 sigma      -1.5723571847508053E+00        5.11E-02       -9.96E-02        0.00E+00
-    8   1 sigma      -1.5209809515841595E+00        5.14E-02       -9.30E-02        0.00E+00
-    9   1 sigma      -1.4741029712335949E+00        4.69E-02       -8.75E-02        0.00E+00
-   10   1 sigma      -1.4337940750593607E+00        4.03E-02       -8.29E-02        0.00E+00
-
-       total energy: -3.1551676374545199E+00
-
- ... saving data to disk ...
-   11   1 sigma      -1.4007102541991312E+00        3.31E-02       -7.86E-02        0.00E+00
-   12   1 sigma      -1.3735563057864963E+00        2.72E-02       -7.41E-02        0.00E+00
-   13   1 sigma      -1.3506851388811183E+00        2.29E-02       -6.89E-02        0.00E+00
-   14   1 sigma      -1.3298392626441173E+00        2.08E-02       -6.28E-02        0.00E+00
-   15   1 sigma      -1.3071287536356526E+00        2.27E-02       -5.56E-02        0.00E+00
-   16   1 sigma      -1.2795237074513919E+00        2.76E-02       -4.76E-02        0.00E+00
-   17   1 sigma      -1.2457090872835397E+00        3.38E-02       -3.90E-02        0.00E+00
-   18   1 sigma      -1.2051937505413886E+00        4.05E-02       -3.07E-02        0.00E+00
-   19   1 sigma      -1.1595925546898820E+00        4.56E-02       -2.30E-02        0.00E+00
-   20   1 sigma      -1.1113261427885583E+00        4.83E-02       -1.64E-02        0.00E+00
-
-       total energy: -3.2973414314360361E+00
-
- ... saving data to disk ...
-   21   1 sigma      -1.0628433702255122E+00        4.85E-02       -1.11E-02        0.00E+00
-   22   1 sigma      -1.0160253566829465E+00        4.68E-02       -7.06E-03        0.00E+00
-   23   1 sigma      -9.7226220663962937E-01        4.38E-02       -4.28E-03        0.00E+00
-   24   1 sigma      -9.3169147916439798E-01        4.06E-02       -2.71E-03        0.00E+00
-   25   1 sigma      -8.9508959759415530E-01        3.66E-02       -1.86E-03        0.00E+00
-   26   1 sigma      -8.6248139459931594E-01        3.26E-02       -1.65E-03        0.00E+00
-   27   1 sigma      -8.3408941282212945E-01        2.84E-02       -1.74E-03        0.00E+00
-   28   1 sigma      -8.0947115689517002E-01        2.46E-02       -2.11E-03        0.00E+00
-   29   1 sigma      -7.8821552070011625E-01        2.13E-02       -2.58E-03        0.00E+00
-   30   1 sigma      -7.6986514790251248E-01        1.84E-02       -3.02E-03        0.00E+00
-
-       total energy: -2.9668769472416794E+00
-
- ... saving data to disk ...
-   31   1 sigma      -7.5367523744626252E-01        1.62E-02       -3.41E-03        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-   32   1 sigma      -7.3845223435865481E-01        1.52E-02       -3.81E-03        0.00E+00
-   33   1 sigma      -7.2587747053062324E-01        1.26E-02       -3.48E-03        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-   34   1 sigma      -7.1393040756346449E-01        1.19E-02       -3.43E-03        0.00E+00
-   35   1 sigma      -7.0247083014139267E-01        1.15E-02       -3.22E-03        0.00E+00
-   36   1 sigma      -6.9145775604077353E-01        1.10E-02       -2.88E-03        0.00E+00
-   37   1 sigma      -6.8081779486917227E-01        1.06E-02       -2.50E-03        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-   38   1 sigma      -6.7052416392563274E-01        1.03E-02       -2.11E-03        0.00E+00
-   39   1 sigma      -6.6059026227587991E-01        9.93E-03       -1.74E-03        0.00E+00
-   40   1 sigma      -6.5105936626674388E-01        9.53E-03       -1.42E-03        0.00E+00
-
-       total energy: -2.8577347645762856E+00
-
- ... saving data to disk ...
-   41   1 sigma      -6.4197997526634554E-01        9.08E-03       -1.16E-03        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-   42   1 sigma      -6.3339822126959899E-01        8.58E-03       -9.70E-04        0.00E+00
-   43   1 sigma      -6.2535125851140760E-01        8.05E-03       -8.34E-04        0.00E+00
-   44   1 sigma      -6.1789383351857596E-01        7.46E-03       -7.45E-04        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-   45   1 sigma      -6.1099263124925085E-01        6.90E-03       -7.03E-04        0.00E+00
-   46   1 sigma      -6.0461913917699484E-01        6.37E-03       -6.93E-04        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-   47   1 sigma      -5.9876098313802584E-01        5.86E-03       -6.98E-04        0.00E+00
-   48   1 sigma      -5.9337920992494086E-01        5.38E-03       -7.10E-04        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-   49   1 sigma      -5.8842721627489580E-01        4.95E-03       -7.20E-04        0.00E+00
-   50   1 sigma      -5.8385599793557752E-01        4.57E-03       -7.23E-04        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-
-       total energy: -2.7899106453013509E+00
-
- ... saving data to disk ...
-   51   1 sigma      -5.7961903311326624E-01        4.24E-03       -7.16E-04        0.00E+00
-   52   1 sigma      -5.7567381741806267E-01        3.95E-03       -6.96E-04        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-   53   1 sigma      -5.7198456937721409E-01        3.69E-03       -6.65E-04        0.00E+00
-   54   1 sigma      -5.6852134624112227E-01        3.46E-03       -6.24E-04        0.00E+00
-   55   1 sigma      -5.6526126397200294E-01        3.26E-03       -5.77E-04        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-   56   1 sigma      -5.6218702832893053E-01        3.07E-03       -5.26E-04        0.00E+00
-   57   1 sigma      -5.5928606194729280E-01        2.90E-03       -4.76E-04        0.00E+00
-   58   1 sigma      -5.5654882603388534E-01        2.74E-03       -4.28E-04        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-   59   1 sigma      -5.5397006103575386E-01        2.58E-03       -3.84E-04        0.00E+00
-   60   1 sigma      -5.5154287270199642E-01        2.43E-03       -3.46E-04        0.00E+00
-
-       total energy: -2.7582424983980252E+00
-
- ... saving data to disk ...
-   61   1 sigma      -5.4926566353151141E-01        2.28E-03       -3.13E-04        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-   62   1 sigma      -5.4713353739414572E-01        2.13E-03       -2.85E-04        0.00E+00
-   63   1 sigma      -5.4514131152081036E-01        1.99E-03       -2.63E-04        0.00E+00
-   64   1 sigma      -5.4328325878088268E-01        1.86E-03       -2.46E-04        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-   65   1 sigma      -5.4155273771807844E-01        1.73E-03       -2.32E-04        0.00E+00
-   66   1 sigma      -5.3994212918597095E-01        1.61E-03       -2.20E-04        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-   67   1 sigma      -5.3844351428067205E-01        1.50E-03       -2.10E-04        0.00E+00
-   68   1 sigma      -5.3704867465189099E-01        1.39E-03       -2.01E-04        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-   69   1 sigma      -5.3574949927565707E-01        1.30E-03       -1.92E-04        0.00E+00
-   70   1 sigma      -5.3453796997739067E-01        1.21E-03       -1.83E-04        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-
-       total energy: -2.7411532559955125E+00
-
- ... saving data to disk ...
-   71   1 sigma      -5.3340694501612074E-01        1.13E-03       -1.74E-04        0.00E+00
-   72   1 sigma      -5.3234973086747117E-01        1.06E-03       -1.64E-04        0.00E+00
-   73   1 sigma      -5.3136030408665169E-01        9.89E-04       -1.54E-04        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-   74   1 sigma      -5.3043359155993253E-01        9.27E-04       -1.44E-04        0.00E+00
-   75   1 sigma      -5.2956504885097111E-01        8.69E-04       -1.34E-04        0.00E+00
-   76   1 sigma      -5.2875080859872003E-01        8.14E-04       -1.24E-04        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-   77   1 sigma      -5.2798745830588278E-01        7.63E-04       -1.15E-04        0.00E+00
-   78   1 sigma      -5.2727204088415403E-01        7.15E-04       -1.06E-04        0.00E+00
-   79   1 sigma      -5.2660185490954881E-01        6.70E-04       -9.83E-05        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-   80   1 sigma      -5.2597444353228662E-01        6.27E-04       -9.10E-05        0.00E+00
-
-       total energy: -2.7326420105308911E+00
-
- ... saving data to disk ...
-   81   1 sigma      -5.2538742295901453E-01        5.87E-04       -8.44E-05        0.00E+00
-   82   1 sigma      -5.2483854879955816E-01        5.49E-04       -7.85E-05        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-   83   1 sigma      -5.2432563390117948E-01        5.13E-04       -7.33E-05        0.00E+00
-   84   1 sigma      -5.2384649661276561E-01        4.79E-04       -6.86E-05        0.00E+00
-   85   1 sigma      -5.2339903725283343E-01        4.47E-04       -6.44E-05        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-   86   1 sigma      -5.2298120369446965E-01        4.18E-04       -6.05E-05        0.00E+00
-   87   1 sigma      -5.2259098214510669E-01        3.90E-04       -5.69E-05        0.00E+00
-   88   1 sigma      -5.2222649633524587E-01        3.64E-04       -5.36E-05        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-   89   1 sigma      -5.2188595061829690E-01        3.41E-04       -5.04E-05        0.00E+00
-   90   1 sigma      -5.2156765336498911E-01        3.18E-04       -4.74E-05        0.00E+00
-
-       total energy: -2.7282319751200736E+00
-
- ... saving data to disk ...
-   91   1 sigma      -5.2127005890087341E-01        2.98E-04       -4.44E-05        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-   92   1 sigma      -5.2099172915302328E-01        2.78E-04       -4.16E-05        0.00E+00
-   93   1 sigma      -5.2073133289108364E-01        2.60E-04       -3.89E-05        0.00E+00
-   94   1 sigma      -5.2048768074572349E-01        2.44E-04       -3.64E-05        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-   95   1 sigma      -5.2025966440855842E-01        2.28E-04       -3.39E-05        0.00E+00
-   96   1 sigma      -5.2004628325426516E-01        2.13E-04       -3.16E-05        0.00E+00
-   97   1 sigma      -5.1984660367067903E-01        2.00E-04       -2.95E-05        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-   98   1 sigma      -5.1965977593660750E-01        1.87E-04       -2.75E-05        0.00E+00
-   99   1 sigma      -5.1948499509183144E-01        1.75E-04       -2.56E-05        0.00E+00
-  100   1 sigma      -5.1932152016378663E-01        1.63E-04       -2.39E-05        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-
-       total energy: -2.7259911064172018E+00
-
- ... saving data to disk ...
-  101   1 sigma      -5.1916864897021808E-01        1.53E-04       -2.23E-05        0.00E+00
-  102   1 sigma      -5.1902570993827291E-01        1.43E-04       -2.09E-05        0.00E+00
-  103   1 sigma      -5.1889208113886265E-01        1.34E-04       -1.95E-05        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  104   1 sigma      -5.1876716879379869E-01        1.25E-04       -1.83E-05        0.00E+00
-  105   1 sigma      -5.1865040235282911E-01        1.17E-04       -1.71E-05        0.00E+00
-  106   1 sigma      -5.1854125500558212E-01        1.09E-04       -1.60E-05        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  107   1 sigma      -5.1843922606533521E-01        1.02E-04       -1.50E-05        0.00E+00
-  108   1 sigma      -5.1834383877829060E-01        9.54E-05       -1.40E-05        0.00E+00
-  109   1 sigma      -5.1825465655567737E-01        8.92E-05       -1.32E-05        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  110   1 sigma      -5.1817126824516579E-01        8.34E-05       -1.23E-05        0.00E+00
-
-       total energy: -2.7248414528749105E+00
-
- ... saving data to disk ...
-  111   1 sigma      -5.1809328541425792E-01        7.80E-05       -1.15E-05        0.00E+00
-  112   1 sigma      -5.1802035481719777E-01        7.29E-05       -1.08E-05        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  113   1 sigma      -5.1795214572518078E-01        6.82E-05       -1.01E-05        0.00E+00
-  114   1 sigma      -5.1788834626954716E-01        6.38E-05       -9.42E-06        0.00E+00
-  115   1 sigma      -5.1782867319830217E-01        5.97E-05       -8.80E-06        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  116   1 sigma      -5.1777286088007823E-01        5.58E-05       -8.22E-06        0.00E+00
-  117   1 sigma      -5.1772065807454348E-01        5.22E-05       -7.68E-06        0.00E+00
-  118   1 sigma      -5.1767183561927710E-01        4.88E-05       -7.18E-06        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  119   1 sigma      -5.1762617757206320E-01        4.57E-05       -6.71E-06        0.00E+00
-  120   1 sigma      -5.1758347869157850E-01        4.27E-05       -6.27E-06        0.00E+00
-
-       total energy: -2.7242544725654696E+00
-
- ... saving data to disk ...
-  121   1 sigma      -5.1754355091663440E-01        3.99E-05       -5.86E-06        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  122   1 sigma      -5.1750621643070072E-01        3.73E-05       -5.48E-06        0.00E+00
-  123   1 sigma      -5.1747130584310663E-01        3.49E-05       -5.13E-06        0.00E+00
-  124   1 sigma      -5.1743866375433312E-01        3.26E-05       -4.79E-06        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  125   1 sigma      -5.1740814325937823E-01        3.05E-05       -4.49E-06        0.00E+00
-  126   1 sigma      -5.1737960456718812E-01        2.85E-05       -4.20E-06        0.00E+00
-  127   1 sigma      -5.1735291968479946E-01        2.67E-05       -3.93E-06        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  128   1 sigma      -5.1732796789431923E-01        2.50E-05       -3.67E-06        0.00E+00
-  129   1 sigma      -5.1730463462994458E-01        2.33E-05       -3.44E-06        0.00E+00
-  130   1 sigma      -5.1728281526304221E-01        2.18E-05       -3.21E-06        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-
-       total energy: -2.7239540786420124E+00
-
- ... saving data to disk ...
-  131   1 sigma      -5.1726241132142792E-01        2.04E-05       -3.01E-06        0.00E+00
-  132   1 sigma      -5.1724332950176866E-01        1.91E-05       -2.81E-06        0.00E+00
-  133   1 sigma      -5.1722548468719931E-01        1.78E-05       -2.63E-06        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  134   1 sigma      -5.1720879679803611E-01        1.67E-05       -2.46E-06        0.00E+00
-  135   1 sigma      -5.1719318994103713E-01        1.56E-05       -2.30E-06        0.00E+00
-  136   1 sigma      -5.1717859483071815E-01        1.46E-05       -2.15E-06        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  137   1 sigma      -5.1716494620843290E-01        1.36E-05       -2.01E-06        0.00E+00
-  138   1 sigma      -5.1715218214393044E-01        1.28E-05       -1.88E-06        0.00E+00
-  139   1 sigma      -5.1714024601887210E-01        1.19E-05       -1.76E-06        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  140   1 sigma      -5.1712908443824834E-01        1.12E-05       -1.64E-06        0.00E+00
-
-       total energy: -2.7238005196881074E+00
-
- ... saving data to disk ...
-  141   1 sigma      -5.1711864667601448E-01        1.04E-05       -1.53E-06        0.00E+00
-  142   1 sigma      -5.1710888631697238E-01        9.76E-06       -1.44E-06        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  143   1 sigma      -5.1709975957336396E-01        9.13E-06       -1.34E-06        0.00E+00
-  144   1 sigma      -5.1709122483966730E-01        8.53E-06       -1.26E-06        0.00E+00
-  145   1 sigma      -5.1708324405790385E-01        7.98E-06       -1.17E-06        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  146   1 sigma      -5.1707578133773358E-01        7.46E-06       -1.10E-06        0.00E+00
-  147   1 sigma      -5.1706880260255672E-01        6.98E-06       -1.03E-06        0.00E+00
-  148   1 sigma      -5.1706227670257232E-01        6.53E-06       -9.60E-07        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  149   1 sigma      -5.1705617428533790E-01        6.10E-06       -8.98E-07        0.00E+00
-  150   1 sigma      -5.1705046749807670E-01        5.71E-06       -8.40E-07        0.00E+00
-
-       total energy: -2.7237219812818951E+00
-
- ... saving data to disk ...
-  151   1 sigma      -5.1704513089500970E-01        5.34E-06       -7.85E-07        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  152   1 sigma      -5.1704014050652414E-01        4.99E-06       -7.34E-07        0.00E+00
-  153   1 sigma      -5.1703547359134983E-01        4.67E-06       -6.87E-07        0.00E+00
-  154   1 sigma      -5.1703110937417107E-01        4.36E-06       -6.42E-07        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  155   1 sigma      -5.1702702828058222E-01        4.08E-06       -6.00E-07        0.00E+00
-  156   1 sigma      -5.1702321173494026E-01        3.82E-06       -5.62E-07        0.00E+00
-  157   1 sigma      -5.1701964276012569E-01        3.57E-06       -5.25E-07        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  158   1 sigma      -5.1701630535473386E-01        3.34E-06       -4.91E-07        0.00E+00
-  159   1 sigma      -5.1701318432772103E-01        3.12E-06       -4.59E-07        0.00E+00
-  160   1 sigma      -5.1701026579084464E-01        2.92E-06       -4.29E-07        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-
-       total energy: -2.7236818219026104E+00
-
- ... saving data to disk ...
-  161   1 sigma      -5.1700753665111354E-01        2.73E-06       -4.01E-07        0.00E+00
-  162   1 sigma      -5.1700498447602161E-01        2.55E-06       -3.75E-07        0.00E+00
-  163   1 sigma      -5.1700259789871317E-01        2.39E-06       -3.51E-07        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  164   1 sigma      -5.1700036620352829E-01        2.23E-06       -3.28E-07        0.00E+00
-  165   1 sigma      -5.1699827921719166E-01        2.09E-06       -3.07E-07        0.00E+00
-  166   1 sigma      -5.1699632763943426E-01        1.95E-06       -2.87E-07        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  167   1 sigma      -5.1699450270496961E-01        1.82E-06       -2.69E-07        0.00E+00
-  168   1 sigma      -5.1699279609320836E-01        1.71E-06       -2.51E-07        0.00E+00
-  169   1 sigma      -5.1699120020008538E-01        1.60E-06       -2.35E-07        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  170   1 sigma      -5.1698970785872045E-01        1.49E-06       -2.20E-07        0.00E+00
-
-       total energy: -2.7236612850335007E+00
-
- ... saving data to disk ...
-  171   1 sigma      -5.1698831226836028E-01        1.40E-06       -2.05E-07        0.00E+00
-  172   1 sigma      -5.1698700721304802E-01        1.31E-06       -1.92E-07        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  173   1 sigma      -5.1698578683486218E-01        1.22E-06       -1.80E-07        0.00E+00
-  174   1 sigma      -5.1698464557466561E-01        1.14E-06       -1.68E-07        0.00E+00
-  175   1 sigma      -5.1698357835105013E-01        1.07E-06       -1.57E-07        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  176   1 sigma      -5.1698258037523082E-01        9.98E-07       -1.47E-07        0.00E+00
-  177   1 sigma      -5.1698164710141370E-01        9.33E-07       -1.37E-07        0.00E+00
-  178   1 sigma      -5.1698077437444989E-01        8.73E-07       -1.28E-07        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  179   1 sigma      -5.1697995827802723E-01        8.16E-07       -1.20E-07        0.00E+00
-  180   1 sigma      -5.1697919509445178E-01        7.63E-07       -1.12E-07        0.00E+00
-
-       total energy: -2.7236507831717871E+00
-
- ... saving data to disk ...
-  181   1 sigma      -5.1697848142515745E-01        7.14E-07       -1.05E-07        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  182   1 sigma      -5.1697781406656018E-01        6.67E-07       -9.82E-08        0.00E+00
-  183   1 sigma      -5.1697718997763142E-01        6.24E-07       -9.18E-08        0.00E+00
-  184   1 sigma      -5.1697660637881926E-01        5.84E-07       -8.59E-08        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  185   1 sigma      -5.1697606065017765E-01        5.46E-07       -8.03E-08        0.00E+00
-  186   1 sigma      -5.1697555030451259E-01        5.10E-07       -7.51E-08        0.00E+00
-  187   1 sigma      -5.1697507306851587E-01        4.77E-07       -7.02E-08        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  188   1 sigma      -5.1697462679992623E-01        4.46E-07       -6.57E-08        0.00E+00
-  189   1 sigma      -5.1697420946493988E-01        4.17E-07       -6.14E-08        0.00E+00
-  190   1 sigma      -5.1697381920507945E-01        3.90E-07       -5.74E-08        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-
-       total energy: -2.7236454128244878E+00
-
- ... saving data to disk ...
-  191   1 sigma      -5.1697345426780261E-01        3.65E-07       -5.37E-08        0.00E+00
-  192   1 sigma      -5.1697311299082860E-01        3.41E-07       -5.02E-08        0.00E+00
-  193   1 sigma      -5.1697279385426254E-01        3.19E-07       -4.70E-08        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  194   1 sigma      -5.1697249542579216E-01        2.98E-07       -4.39E-08        0.00E+00
-  195   1 sigma      -5.1697221634568757E-01        2.79E-07       -4.11E-08        0.00E+00
-  196   1 sigma      -5.1697195537108720E-01        2.61E-07       -3.84E-08        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  197   1 sigma      -5.1697171133070952E-01        2.44E-07       -3.59E-08        0.00E+00
-  198   1 sigma      -5.1697148311259333E-01        2.28E-07       -3.36E-08        0.00E+00
-  199   1 sigma      -5.1697126970041052E-01        2.13E-07       -3.14E-08        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  200   1 sigma      -5.1697107013666455E-01        2.00E-07       -2.94E-08        0.00E+00
-
-       total energy: -2.7236426665960458E+00
-
- ... saving data to disk ...
-  201   1 sigma      -5.1697088351182874E-01        1.87E-07       -2.75E-08        0.00E+00
-  202   1 sigma      -5.1697070899459963E-01        1.75E-07       -2.57E-08        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  203   1 sigma      -5.1697054580159030E-01        1.63E-07       -2.40E-08        0.00E+00
-  204   1 sigma      -5.1697039318915405E-01        1.53E-07       -2.25E-08        0.00E+00
-  205   1 sigma      -5.1697025047798784E-01        1.43E-07       -2.10E-08        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  206   1 sigma      -5.1697011702689943E-01        1.33E-07       -1.96E-08        0.00E+00
-  207   1 sigma      -5.1696999222841944E-01        1.25E-07       -1.84E-08        0.00E+00
-  208   1 sigma      -5.1696987552646978E-01        1.17E-07       -1.72E-08        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  209   1 sigma      -5.1696976639708403E-01        1.09E-07       -1.61E-08        0.00E+00
-  210   1 sigma      -5.1696966434283764E-01        1.02E-07       -1.50E-08        0.00E+00
-
-       total energy: -2.7236412622534845E+00
-
- ... saving data to disk ...
-  211   1 sigma      -5.1696956890968093E-01        9.54E-08       -1.40E-08        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  212   1 sigma      -5.1696947966887508E-01        8.92E-08       -1.31E-08        0.00E+00
-  213   1 sigma      -5.1696939621405069E-01        8.35E-08       -1.23E-08        0.00E+00
-  214   1 sigma      -5.1696931817342340E-01        7.80E-08       -1.15E-08        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  215   1 sigma      -5.1696924519671872E-01        7.30E-08       -1.07E-08        0.00E+00
-  216   1 sigma      -5.1696917695145439E-01        6.82E-08       -1.00E-08        0.00E+00
-  217   1 sigma      -5.1696911313365779E-01        6.38E-08       -9.39E-09        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  218   1 sigma      -5.1696905345711808E-01        5.97E-08       -8.78E-09        0.00E+00
-  219   1 sigma      -5.1696899764958881E-01        5.58E-08       -8.21E-09        0.00E+00
-  220   1 sigma      -5.1696894546274574E-01        5.22E-08       -7.68E-09        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-
-       total energy: -2.7236405441157903E+00
-
- ... saving data to disk ...
-  221   1 sigma      -5.1696889666201051E-01        4.88E-08       -7.18E-09        0.00E+00
-  222   1 sigma      -5.1696885102553414E-01        4.56E-08       -6.71E-09        0.00E+00
-  223   1 sigma      -5.1696880834948988E-01        4.27E-08       -6.28E-09        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  224   1 sigma      -5.1696876844296025E-01        3.99E-08       -5.87E-09        0.00E+00
-  225   1 sigma      -5.1696873112365505E-01        3.73E-08       -5.49E-09        0.00E+00
-  226   1 sigma      -5.1696869622548269E-01        3.49E-08       -5.13E-09        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  227   1 sigma      -5.1696866359174942E-01        3.26E-08       -4.80E-09        0.00E+00
-  228   1 sigma      -5.1696863307391028E-01        3.05E-08       -4.49E-09        0.00E+00
-  229   1 sigma      -5.1696860453588012E-01        2.85E-08       -4.20E-09        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  230   1 sigma      -5.1696857784974126E-01        2.67E-08       -3.93E-09        0.00E+00
-
-       total energy: -2.7236401768819953E+00
-
- ... saving data to disk ...
-  231   1 sigma      -5.1696855289368582E-01        2.50E-08       -3.67E-09        0.00E+00
-  232   1 sigma      -5.1696852955687800E-01        2.33E-08       -3.43E-09        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  233   1 sigma      -5.1696850773417613E-01        2.18E-08       -3.21E-09        0.00E+00
-  234   1 sigma      -5.1696848732643730E-01        2.04E-08       -3.00E-09        0.00E+00
-  235   1 sigma      -5.1696846824263276E-01        1.91E-08       -2.81E-09        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  236   1 sigma      -5.1696845039720318E-01        1.78E-08       -2.63E-09        0.00E+00
-  237   1 sigma      -5.1696843370872814E-01        1.67E-08       -2.46E-09        0.00E+00
-  238   1 sigma      -5.1696841810308669E-01        1.56E-08       -2.30E-09        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  239   1 sigma      -5.1696840350989737E-01        1.46E-08       -2.15E-09        0.00E+00
-  240   1 sigma      -5.1696838986299531E-01        1.36E-08       -2.01E-09        0.00E+00
-
-       total energy: -2.7236399890894787E+00
-
- ... saving data to disk ...
-  241   1 sigma      -5.1696837710143240E-01        1.28E-08       -1.88E-09        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  242   1 sigma      -5.1696836516783740E-01        1.19E-08       -1.76E-09        0.00E+00
-  243   1 sigma      -5.1696835400803320E-01        1.12E-08       -1.64E-09        0.00E+00
-  244   1 sigma      -5.1696834357222832E-01        1.04E-08       -1.54E-09        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  245   1 sigma      -5.1696833381355711E-01        9.76E-09       -1.44E-09        0.00E+00
-  246   1 sigma      -5.1696832468764331E-01        9.13E-09       -1.34E-09        0.00E+00
-  247   1 sigma      -5.1696831615371508E-01        8.53E-09       -1.26E-09        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  248   1 sigma      -5.1696830817354011E-01        7.98E-09       -1.17E-09        0.00E+00
-  249   1 sigma      -5.1696830071075262E-01        7.46E-09       -1.10E-09        0.00E+00
-  250   1 sigma      -5.1696829373224906E-01        6.98E-09       -1.03E-09        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-
-       total energy: -2.7236398930579360E+00
-
- ... saving data to disk ...
-  251   1 sigma      -5.1696828720648669E-01        6.53E-09       -9.60E-10        0.00E+00
-  252   1 sigma      -5.1696828110385384E-01        6.10E-09       -8.98E-10        0.00E+00
-  253   1 sigma      -5.1696827539694445E-01        5.71E-09       -8.40E-10        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  254   1 sigma      -5.1696827006061175E-01        5.34E-09       -7.85E-10        0.00E+00
-  255   1 sigma      -5.1696826507019988E-01        4.99E-09       -7.34E-10        0.00E+00
-  256   1 sigma      -5.1696826040354615E-01        4.67E-09       -6.87E-10        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  257   1 sigma      -5.1696825603965890E-01        4.36E-09       -6.42E-10        0.00E+00
-  258   1 sigma      -5.1696825195877039E-01        4.08E-09       -6.00E-10        0.00E+00
-  259   1 sigma      -5.1696824814268050E-01        3.82E-09       -5.61E-10        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  260   1 sigma      -5.1696824457403734E-01        3.57E-09       -5.25E-10        0.00E+00
-
-       total energy: -2.7236398439504770E+00
-
- ... saving data to disk ...
-  261   1 sigma      -5.1696824123670670E-01        3.34E-09       -4.91E-10        0.00E+00
-  262   1 sigma      -5.1696823811606984E-01        3.12E-09       -4.59E-10        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  263   1 sigma      -5.1696823519810953E-01        2.92E-09       -4.29E-10        0.00E+00
-  264   1 sigma      -5.1696823246906387E-01        2.73E-09       -4.02E-10        0.00E+00
-  265   1 sigma      -5.1696822991716052E-01        2.55E-09       -3.75E-10        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  266   1 sigma      -5.1696822753066329E-01        2.39E-09       -3.51E-10        0.00E+00
-  267   1 sigma      -5.1696822529902176E-01        2.23E-09       -3.28E-10        0.00E+00
-  268   1 sigma      -5.1696822321216751E-01        2.09E-09       -3.07E-10        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  269   1 sigma      -5.1696822126080799E-01        1.95E-09       -2.87E-10        0.00E+00
-  270   1 sigma      -5.1696821943593219E-01        1.82E-09       -2.69E-10        0.00E+00
-
-       total energy: -2.7236398188383588E+00
-
- ... saving data to disk ...
-  271   1 sigma      -5.1696821772959534E-01        1.71E-09       -2.51E-10        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  272   1 sigma      -5.1696821613377586E-01        1.60E-09       -2.35E-10        0.00E+00
-  273   1 sigma      -5.1696821464141585E-01        1.49E-09       -2.20E-10        0.00E+00
-  274   1 sigma      -5.1696821324589370E-01        1.40E-09       -2.05E-10        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  275   1 sigma      -5.1696821194091402E-01        1.30E-09       -1.92E-10        0.00E+00
-  276   1 sigma      -5.1696821072053134E-01        1.22E-09       -1.80E-10        0.00E+00
-  277   1 sigma      -5.1696820957931533E-01        1.14E-09       -1.68E-10        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  278   1 sigma      -5.1696820851211944E-01        1.07E-09       -1.57E-10        0.00E+00
-  279   1 sigma      -5.1696820751411576E-01        9.98E-10       -1.47E-10        0.00E+00
-  280   1 sigma      -5.1696820658092979E-01        9.33E-10       -1.37E-10        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-
-       total energy: -2.7236398059964677E+00
-
- ... saving data to disk ...
-  281   1 sigma      -5.1696820570839108E-01        8.73E-10       -1.28E-10        0.00E+00
-  282   1 sigma      -5.1696820489241824E-01        8.16E-10       -1.20E-10        0.00E+00
-  283   1 sigma      -5.1696820412934841E-01        7.63E-10       -1.12E-10        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  284   1 sigma      -5.1696820341564043E-01        7.14E-10       -1.05E-10        0.00E+00
-  285   1 sigma      -5.1696820274833777E-01        6.67E-10       -9.82E-11        0.00E+00
-  286   1 sigma      -5.1696820212438488E-01        6.24E-10       -9.18E-11        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  287   1 sigma      -5.1696820154063450E-01        5.84E-10       -8.59E-11        0.00E+00
-  288   1 sigma      -5.1696820099490837E-01        5.46E-10       -8.03E-11        0.00E+00
-  289   1 sigma      -5.1696820048457792E-01        5.10E-10       -7.51E-11        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  290   1 sigma      -5.1696820000738120E-01        4.77E-10       -7.02E-11        0.00E+00
-
-       total energy: -2.7236397994297725E+00
-
- ... saving data to disk ...
-  291   1 sigma      -5.1696819956118056E-01        4.46E-10       -6.56E-11        0.00E+00
-  292   1 sigma      -5.1696819914383352E-01        4.17E-10       -6.14E-11        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  293   1 sigma      -5.1696819875355793E-01        3.90E-10       -5.74E-11        0.00E+00
-  294   1 sigma      -5.1696819838870467E-01        3.65E-10       -5.37E-11        0.00E+00
-  295   1 sigma      -5.1696819804746763E-01        3.41E-10       -5.02E-11        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  296   1 sigma      -5.1696819772835068E-01        3.19E-10       -4.69E-11        0.00E+00
-  297   1 sigma      -5.1696819742987499E-01        2.98E-10       -4.39E-11        0.00E+00
-  298   1 sigma      -5.1696819715084641E-01        2.79E-10       -4.10E-11        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  299   1 sigma      -5.1696819689004969E-01        2.61E-10       -3.84E-11        0.00E+00
-  300   1 sigma      -5.1696819664576754E-01        2.44E-10       -3.59E-11        0.00E+00
-
-       total energy: -2.7236397960715486E+00
-
- ... saving data to disk ...
-  301   1 sigma      -5.1696819641752190E-01        2.28E-10       -3.35E-11        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  302   1 sigma      -5.1696819620434376E-01        2.13E-10       -3.13E-11        0.00E+00
-  303   1 sigma      -5.1696819600462618E-01        2.00E-10       -2.94E-11        0.00E+00
-  304   1 sigma      -5.1696819581809006E-01        1.87E-10       -2.74E-11        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  305   1 sigma      -5.1696819564370244E-01        1.74E-10       -2.57E-11        0.00E+00
-  306   1 sigma      -5.1696819548038331E-01        1.63E-10       -2.40E-11        0.00E+00
-  307   1 sigma      -5.1696819532778981E-01        1.53E-10       -2.24E-11        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  308   1 sigma      -5.1696819518524451E-01        1.43E-10       -2.10E-11        0.00E+00
-  309   1 sigma      -5.1696819505157476E-01        1.34E-10       -1.97E-11        0.00E+00
-  310   1 sigma      -5.1696819492685520E-01        1.25E-10       -1.83E-11        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-
-       total energy: -2.7236397943544821E+00
-
- ... saving data to disk ...
-  311   1 sigma      -5.1696819481035106E-01        1.17E-10       -1.71E-11        0.00E+00
-  312   1 sigma      -5.1696819470113464E-01        1.09E-10       -1.61E-11        0.00E+00
-  313   1 sigma      -5.1696819459915710E-01        1.02E-10       -1.50E-11        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  314   1 sigma      -5.1696819450358755E-01        9.56E-11       -1.41E-11        0.00E+00
-  315   1 sigma      -5.1696819441430431E-01        8.93E-11       -1.31E-11        0.00E+00
-  316   1 sigma      -5.1696819433090413E-01        8.34E-11       -1.22E-11        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  317   1 sigma      -5.1696819425287255E-01        7.80E-11       -1.15E-11        0.00E+00
-  318   1 sigma      -5.1696819417997952E-01        7.29E-11       -1.07E-11        0.00E+00
-  319   1 sigma      -5.1696819411175832E-01        6.82E-11       -1.01E-11        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  320   1 sigma      -5.1696819404790073E-01        6.39E-11       -9.41E-12        0.00E+00
-
-       total energy: -2.7236397934765089E+00
-
- ... saving data to disk ...
-  321   1 sigma      -5.1696819398816585E-01        5.97E-11       -8.78E-12        0.00E+00
-  322   1 sigma      -5.1696819393238069E-01        5.58E-11       -8.20E-12        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  323   1 sigma      -5.1696819388027149E-01        5.21E-11       -7.68E-12        0.00E+00
-  324   1 sigma      -5.1696819383137016E-01        4.89E-11       -7.19E-12        0.00E+00
-  325   1 sigma      -5.1696819378576975E-01        4.56E-11       -6.70E-12        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  326   1 sigma      -5.1696819374316560E-01        4.26E-11       -6.27E-12        0.00E+00
-  327   1 sigma      -5.1696819370322844E-01        3.99E-11       -5.89E-12        0.00E+00
-  328   1 sigma      -5.1696819366601199E-01        3.72E-11       -5.49E-12        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  329   1 sigma      -5.1696819363102797E-01        3.50E-11       -5.16E-12        0.00E+00
-  330   1 sigma      -5.1696819359832880E-01        3.27E-11       -4.81E-12        0.00E+00
-
-       total energy: -2.7236397930273295E+00
-
- ... saving data to disk ...
-  331   1 sigma      -5.1696819356785917E-01        3.05E-11       -4.48E-12        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  332   1 sigma      -5.1696819353929069E-01        2.86E-11       -4.20E-12        0.00E+00
-  333   1 sigma      -5.1696819351261536E-01        2.67E-11       -3.93E-12        0.00E+00
-  334   1 sigma      -5.1696819348761403E-01        2.50E-11       -3.67E-12        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  335   1 sigma      -5.1696819346430245E-01        2.33E-11       -3.41E-12        0.00E+00
-  336   1 sigma      -5.1696819344251144E-01        2.18E-11       -3.21E-12        0.00E+00
-  337   1 sigma      -5.1696819342209444E-01        2.04E-11       -3.00E-12        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  338   1 sigma      -5.1696819340301392E-01        1.91E-11       -2.81E-12        0.00E+00
-  339   1 sigma      -5.1696819338516886E-01        1.78E-11       -2.62E-12        0.00E+00
-  340   1 sigma      -5.1696819336851285E-01        1.67E-11       -2.45E-12        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-
-       total energy: -2.7236397927978064E+00
-
- ... saving data to disk ...
-  341   1 sigma      -5.1696819335292599E-01        1.56E-11       -2.30E-12        0.00E+00
-  342   1 sigma      -5.1696819333841026E-01        1.45E-11       -2.15E-12        0.00E+00
-  343   1 sigma      -5.1696819332475896E-01        1.37E-11       -2.04E-12        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  344   1 sigma      -5.1696819331192922E-01        1.28E-11       -1.91E-12        0.00E+00
-  345   1 sigma      -5.1696819329996102E-01        1.20E-11       -1.75E-12        0.00E+00
-  346   1 sigma      -5.1696819328877819E-01        1.12E-11       -1.64E-12        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  347   1 sigma      -5.1696819327828814E-01        1.05E-11       -1.53E-12        0.00E+00
-  348   1 sigma      -5.1696819326852506E-01        9.76E-12       -1.41E-12        0.00E+00
-  349   1 sigma      -5.1696819325934218E-01        9.18E-12       -1.33E-12        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  350   1 sigma      -5.1696819325078702E-01        8.56E-12       -1.22E-12        0.00E+00
-
-       total energy: -2.7236397926799847E+00
-
- ... saving data to disk ...
-  351   1 sigma      -5.1696819324290355E-01        7.88E-12       -1.13E-12        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  352   1 sigma      -5.1696819323544330E-01        7.46E-12       -1.09E-12        0.00E+00
-  353   1 sigma      -5.1696819322834031E-01        7.10E-12       -1.02E-12        0.00E+00
-  354   1 sigma      -5.1696819322189147E-01        6.45E-12       -9.21E-13        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  355   1 sigma      -5.1696819321580745E-01        6.08E-12       -8.83E-13        0.00E+00
-  356   1 sigma      -5.1696819321017151E-01        5.64E-12       -8.24E-13        0.00E+00
-  357   1 sigma      -5.1696819320498610E-01        5.19E-12       -7.91E-13        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  358   1 sigma      -5.1696819319998988E-01        5.00E-12       -7.68E-13        0.00E+00
-  359   1 sigma      -5.1696819319521503E-01        4.77E-12       -7.26E-13        0.00E+00
-  360   1 sigma      -5.1696819319081566E-01        4.40E-12       -6.41E-13        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-
-       total energy: -2.7236397926202480E+00
-
- ... saving data to disk ...
-  361   1 sigma      -5.1696819318666498E-01        4.15E-12       -5.90E-13        0.00E+00
-  362   1 sigma      -5.1696819318290133E-01        3.76E-12       -5.38E-13        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  363   1 sigma      -5.1696819317926557E-01        3.64E-12       -5.17E-13        0.00E+00
-  364   1 sigma      -5.1696819317593690E-01        3.33E-12       -4.63E-13        0.00E+00
-  365   1 sigma      -5.1696819317292930E-01        3.01E-12       -4.38E-13        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  366   1 sigma      -5.1696819317005827E-01        2.87E-12       -4.31E-13        0.00E+00
-  367   1 sigma      -5.1696819316725295E-01        2.81E-12       -4.23E-13        0.00E+00
-  368   1 sigma      -5.1696819316476006E-01        2.49E-12       -3.70E-13        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  369   1 sigma      -5.1696819316233555E-01        2.42E-12       -3.60E-13        0.00E+00
-  370   1 sigma      -5.1696819316014331E-01        2.19E-12       -3.31E-13        0.00E+00
-
-       total energy: -2.7236397925896831E+00
-
- ... saving data to disk ...
-  371   1 sigma      -5.1696819315813602E-01        2.01E-12       -3.14E-13        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  372   1 sigma      -5.1696819315616782E-01        1.97E-12       -3.18E-13        0.00E+00
-  373   1 sigma      -5.1696819315446407E-01        1.70E-12       -2.91E-13        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  374   1 sigma      -5.1696819315262732E-01        1.84E-12       -3.01E-13        0.00E+00
-  375   1 sigma      -5.1696819315083564E-01        1.79E-12       -2.53E-13        0.00E+00
-  376   1 sigma      -5.1696819314942477E-01        1.41E-12       -1.82E-13        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  377   1 sigma      -5.1696819314801146E-01        1.41E-12       -1.96E-13        0.00E+00
-  378   1 sigma      -5.1696819314670073E-01        1.31E-12       -1.76E-13        0.00E+00
-  379   1 sigma      -5.1696819314559428E-01        1.11E-12       -1.72E-13        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  380   1 sigma      -5.1696819314436215E-01        1.23E-12       -1.80E-13        0.00E+00
-
-       total energy: -2.7236397925738745E+00
-
- ... saving data to disk ...
-  381   1 sigma      -5.1696819314323816E-01        1.12E-12       -1.45E-13        0.00E+00
-  382   1 sigma      -5.1696819314226605E-01        9.72E-13       -1.30E-13        0.00E+00
-  383   1 sigma      -5.1696819314139431E-01        8.72E-13       -1.26E-13        0.00E+00
-  384   1 sigma      -5.1696819314046927E-01        9.25E-13       -1.31E-13        0.00E+00
-  385   1 sigma      -5.1696819313983733E-01        6.32E-13       -1.14E-13        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  386   1 sigma      -5.1696819313895848E-01        8.79E-13       -1.47E-13        0.00E+00
-           
- ... orbital energy threshold reached ...
- ... multipole moment expansion coefficients recalculated ...
- ... saving data to disk ...
-
-     total energy:                 -2.7236397925685196E+00
-     total electronic energy:      -2.7236397925685196E+00
-     virial ratio:                 -1.9999999997206299E+00
-
-     nuclear attraction energy:            -6.568460482210
-     kinetic energy:                        2.723639793329
-     one-electron energy:                  -3.844820688880
-     Coulomb energy:                        1.973964661216
-     exchange energy:                      -0.852783764904
-     nuclear repulsion energy:              0.000000000000
-     exchange-correlation energy (LXC):    -0.852783764904
-
-        orbital                 energy             1-norm
-      1 sigma          -5.1696819313895848E-01    1.47E-13
-
-
-     total energy uncertainty due to orbital norms not being equal 1:
-     absolute = +/-0.47E-12,  relative = +/-0.17E-10%
-///////////////////////////////////////////////////////////////////////////////////////////////
- CPU summary (sec):
-    Lagrange multipliers ......................     0.56
-    normalization+orthogonalization ...........     0.07
-    multipole moments .........................     0.14
-    total energy ..............................     0.17
-    relaxation of orbitals ....................     4.71
-    relaxation of Coulomb & exchange potentials     3.98
-    relaxation of orbitals & potentials .......     8.68
-    SCF iterations ............................     9.45
-
- System clock summary (sec):
-    relaxation of orbitals ....................     4.71
-    relaxation of Coulomb & exchange potentials     3.98
-    relaxation of orbitals & potentials .......     8.69
-
- Speedup:                                           1.00
-///////////////////////////////////////////////////////////////////////////////////////////////
-       start:  2023/06/20  17:45:22.38                                                         
-        stop:  2023/06/20  17:45:32.25                                                         
-  start-stop:                     9.87
-
-command-line:  /home/jkob/github/x2dhf-v3/bin/xhf input-1 output-1
-      system:  Linux gateway 5.14.0-284.11.1.el9_2.x86_64 x86_64 x86_64 GNU/Linux
-         CPU:  Intell(R) Xeon(R) Silver 4310 CPU @ 2.10GHz
-////////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////  FINITE DIFFERENCE 2D HARTREE-FOCK  ////////////////////////////// 
-////////////////////////////             version 3.0             ////////////////////////////// 
-///////////////////////////////////////////////////////////////////////////////////////////////
- ... start of input data ...
-  title He                                                                        
-  method dft                                                                      
-  dft xc_lda_x xc_gga_c_lyp                                                       
-  nuclei  2.0 0.0  2.0                                                            
-  config 0                                                                        
-  1 sigma  end                                                                    
-  grid  191 65.0                                                                  
-  orbpot old                                                                      
-  scf  3000 10 12 18 3                                                            
-  conv 3000                                                                       
-  stop                                                                            
- ... end of input data  ...
-         
-
-   Atomic/molecular system: 
-
-          He(  2.00)      (  0.00)   R =  2.00000 bohr = 1.05835 angstroms
-
-
-      Libxc version = 6.0.0
-               name = lda_x
-               kind = XC_EXCHANGE
-             family = LDA
-              nspin = XC_UNPOLARIZED
-       reference(s) = [1] P. A. M. Dirac.,  Math. Proc. Cambridge Philos. Soc. 26, 376 (1930)
-                      [2] F. Bloch.,  Z. Phys. 57, 545 (1929)
-
-
-      Libxc version = 6.0.0
-               name = gga_c_lyp
-               kind = XC_CORRELATION
-             family = GGA
-              nspin = XC_UNPOLARIZED
-       reference(s) = [1] C. Lee, W. Yang, and R. G. Parr.,  Phys. Rev. B 37, 785 (1988)
-                      [2] B. Miehlich, A. Savin, H. Stoll, and H. Preuss.,  Chem. Phys. Lett. 157, 200 (1989)
-
+   Nuclear potential: Coulomb
 
    Electronic configuration:
 
@@ -898,8 +67,837 @@ command-line:  /home/jkob/github/x2dhf-v3/bin/xhf input-1 output-1
 
    (MC)SOR:
           SOR method used for relaxing orbitals
-          SOR method used for relaxing Coulomb potentials
-          SOR method used for relaxing exchange potentials
+
+          maximal number of Coulomb+exchange potentials per orbital =  1
+
+          micro and macro SOR iterations for orbitals   =  10  1
+          micro and macro SOR iterations for potentials =  10  1
+
+          ordering: middle
+
+          overrelaxation parameters:   orbitals       potentials 
+                                        1.934       1.978   1.978
+
+   Machine accuracy      =    2.22E-16
+
+   Constants: 
+               pi        =    3.1415926535897931E+00
+               bohr      =    5.2917721067121204E-01 angstroms
+
+
+   Memory usage:
+          text+data                                      0.9 MB 
+          bss (common block contributions)              64.7 MB
+          dynamical allocation                          21.9 MB 
+              orbitals                                   0.4 MB
+              Coulomb potentials                         1.1 MB
+              exchange potentials                        1.9 MB
+///////////////////////////////////////////////////////////////////////////////////////////////
+ ... initializing molecular orbitals from HF functions ...
+ Asigma iorb,co1,co2,eh,n,l   1   1.0   0.0     -0.9180    1    0
+
+ ... initializing Coulomb potentials (pottf) ...
+ ... initializing Slater exchange potential ...
+ ... initializing multipole moment coefficients ...
+ ... initializing Lagrange multipliers ...
+     total energy:                 -3.5071884876597545E+00
+     total electronic energy:      -3.5071884876597545E+00
+     virial ratio:                 -5.5527044367054188E+00
+
+   scf  orbital              energy               energy diff.      1-norm          overlap
+   ---  -------      -----------------------      ------------     ---------        --------
+    1   1 sigma      -2.2018358907000901E+00       -1.49E-02       -2.02E-01        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+    2   1 sigma      -2.1843626788993795E+00        1.75E-02       -1.57E-01        0.00E+00
+    3   1 sigma      -2.1270801683225891E+00        5.73E-02       -1.34E-01        0.00E+00
+    4   1 sigma      -2.0469210610429309E+00        8.02E-02       -1.16E-01        0.00E+00
+    5   1 sigma      -1.9543151073113580E+00        9.26E-02       -1.01E-01        0.00E+00
+    6   1 sigma      -1.8570416147490190E+00        9.73E-02       -8.88E-02        0.00E+00
+    7   1 sigma      -1.7611513410782356E+00        9.59E-02       -7.74E-02        0.00E+00
+    8   1 sigma      -1.6706077243809876E+00        9.05E-02       -6.71E-02        0.00E+00
+    9   1 sigma      -1.5874231131897962E+00        8.32E-02       -5.81E-02        0.00E+00
+   10   1 sigma      -1.5123378302488915E+00        7.51E-02       -5.02E-02        0.00E+00
+
+       total energy: -3.5238653533448212E+00
+
+ ... saving data to disk ...
+   11   1 sigma      -1.4445801902690483E+00        6.78E-02       -4.33E-02        0.00E+00
+   12   1 sigma      -1.3829961377739179E+00        6.16E-02       -3.72E-02        0.00E+00
+   13   1 sigma      -1.3267715180397075E+00        5.62E-02       -3.16E-02        0.00E+00
+   14   1 sigma      -1.2743748722196071E+00        5.24E-02       -2.66E-02        0.00E+00
+   15   1 sigma      -1.2244970106790205E+00        4.99E-02       -2.20E-02        0.00E+00
+   16   1 sigma      -1.1764861965404640E+00        4.80E-02       -1.79E-02        0.00E+00
+   17   1 sigma      -1.1302662525087492E+00        4.62E-02       -1.42E-02        0.00E+00
+   18   1 sigma      -1.0859665938539611E+00        4.43E-02       -1.10E-02        0.00E+00
+   19   1 sigma      -1.0439508524012324E+00        4.20E-02       -8.40E-03        0.00E+00
+   20   1 sigma      -1.0038757250429624E+00        4.01E-02       -6.58E-03        0.00E+00
+
+       total energy: -3.2016987762820515E+00
+
+ ... saving data to disk ...
+   21   1 sigma      -9.6639187229598555E-01        3.75E-02       -5.19E-03        0.00E+00
+   22   1 sigma      -9.3163638613122712E-01        3.48E-02       -4.27E-03        0.00E+00
+   23   1 sigma      -9.0005536483936921E-01        3.16E-02       -3.60E-03        0.00E+00
+   24   1 sigma      -8.7146421247501138E-01        2.86E-02       -3.23E-03        0.00E+00
+   25   1 sigma      -8.4571631618439769E-01        2.57E-02       -3.06E-03        0.00E+00
+   26   1 sigma      -8.2261822917122229E-01        2.31E-02       -3.00E-03        0.00E+00
+   27   1 sigma      -8.0169059270970977E-01        2.09E-02       -3.04E-03        0.00E+00
+   28   1 sigma      -7.8199245523732852E-01        1.97E-02       -3.27E-03        0.00E+00
+   29   1 sigma      -7.6539804213118701E-01        1.66E-02       -2.91E-03        0.00E+00
+   30   1 sigma      -7.4999320770238720E-01        1.54E-02       -2.95E-03        0.00E+00
+
+       total energy: -2.9516319531591635E+00
+
+ ... saving data to disk ...
+   31   1 sigma      -7.3564839425606654E-01        1.43E-02       -2.90E-03        0.00E+00
+   32   1 sigma      -7.2226597164040895E-01        1.34E-02       -2.77E-03        0.00E+00
+   33   1 sigma      -7.0968034976954697E-01        1.26E-02       -2.59E-03        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+   34   1 sigma      -6.9776491045374200E-01        1.19E-02       -2.37E-03        0.00E+00
+   35   1 sigma      -6.8644156481639307E-01        1.13E-02       -2.14E-03        0.00E+00
+   36   1 sigma      -6.7567118860934894E-01        1.08E-02       -1.91E-03        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+   37   1 sigma      -6.6543686351539244E-01        1.02E-02       -1.68E-03        0.00E+00
+   38   1 sigma      -6.5573685005986371E-01        9.70E-03       -1.49E-03        0.00E+00
+   39   1 sigma      -6.4657347552457600E-01        9.16E-03       -1.31E-03        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+   40   1 sigma      -6.3798612291784162E-01        8.59E-03       -1.16E-03        0.00E+00
+
+       total energy: -2.8445281640733935E+00
+
+ ... saving data to disk ...
+   41   1 sigma      -6.2993659479403408E-01        8.05E-03       -1.05E-03        0.00E+00
+   42   1 sigma      -6.2240115779434446E-01        7.54E-03       -9.65E-04        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+   43   1 sigma      -6.1538199888509615E-01        7.02E-03       -9.00E-04        0.00E+00
+   44   1 sigma      -6.0885843314455879E-01        6.52E-03       -8.51E-04        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+   45   1 sigma      -6.0280262547009089E-01        6.06E-03       -8.14E-04        0.00E+00
+   46   1 sigma      -5.9718289962515381E-01        5.62E-03       -7.84E-04        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+   47   1 sigma      -5.9196526666860838E-01        5.22E-03       -7.56E-04        0.00E+00
+   48   1 sigma      -5.8711538296929011E-01        4.85E-03       -7.28E-04        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+   49   1 sigma      -5.8259980753005536E-01        4.52E-03       -6.98E-04        0.00E+00
+   50   1 sigma      -5.7838716957612002E-01        4.21E-03       -6.66E-04        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+
+       total energy: -2.7847545131658333E+00
+
+ ... saving data to disk ...
+   51   1 sigma      -5.7444969828242809E-01        3.94E-03       -6.30E-04        0.00E+00
+   52   1 sigma      -5.7076345715843502E-01        3.69E-03       -5.92E-04        0.00E+00
+   53   1 sigma      -5.6730851326490339E-01        3.45E-03       -5.52E-04        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+   54   1 sigma      -5.6406718378164156E-01        3.24E-03       -5.12E-04        0.00E+00
+   55   1 sigma      -5.6102517252702366E-01        3.04E-03       -4.72E-04        0.00E+00
+   56   1 sigma      -5.5817070908712774E-01        2.85E-03       -4.35E-04        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+   57   1 sigma      -5.5549351642240086E-01        2.68E-03       -4.00E-04        0.00E+00
+   58   1 sigma      -5.5298373527455391E-01        2.51E-03       -3.68E-04        0.00E+00
+   59   1 sigma      -5.5063282095560950E-01        2.35E-03       -3.39E-04        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+   60   1 sigma      -5.4843309917044758E-01        2.20E-03       -3.14E-04        0.00E+00
+
+       total energy: -2.7550798022372627E+00
+
+ ... saving data to disk ...
+   61   1 sigma      -5.4637704481424754E-01        2.06E-03       -2.91E-04        0.00E+00
+   62   1 sigma      -5.4445536447371845E-01        1.92E-03       -2.72E-04        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+   63   1 sigma      -5.4266126313658436E-01        1.79E-03       -2.55E-04        0.00E+00
+   64   1 sigma      -5.4098684018490251E-01        1.67E-03       -2.39E-04        0.00E+00
+   65   1 sigma      -5.3942420420176940E-01        1.56E-03       -2.25E-04        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+   66   1 sigma      -5.3796588608888052E-01        1.46E-03       -2.13E-04        0.00E+00
+   67   1 sigma      -5.3660456703176851E-01        1.36E-03       -2.01E-04        0.00E+00
+   68   1 sigma      -5.3533320145255536E-01        1.27E-03       -1.89E-04        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+   69   1 sigma      -5.3414535119167761E-01        1.19E-03       -1.78E-04        0.00E+00
+   70   1 sigma      -5.3303495221519426E-01        1.11E-03       -1.67E-04        0.00E+00
+
+       total energy: -2.7396745523894057E+00
+
+ ... saving data to disk ...
+   71   1 sigma      -5.3199637743259376E-01        1.04E-03       -1.57E-04        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+   72   1 sigma      -5.3102463527032451E-01        9.72E-04       -1.47E-04        0.00E+00
+   73   1 sigma      -5.3011514951988326E-01        9.09E-04       -1.37E-04        0.00E+00
+   74   1 sigma      -5.2926381156409708E-01        8.51E-04       -1.27E-04        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+   75   1 sigma      -5.2846684707334357E-01        7.97E-04       -1.19E-04        0.00E+00
+   76   1 sigma      -5.2772087885151797E-01        7.46E-04       -1.10E-04        0.00E+00
+   77   1 sigma      -5.2702273140195399E-01        6.98E-04       -1.03E-04        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+   78   1 sigma      -5.2636951493202710E-01        6.53E-04       -9.57E-05        0.00E+00
+   79   1 sigma      -5.2575849187231172E-01        6.11E-04       -8.92E-05        0.00E+00
+   80   1 sigma      -5.2518710928236900E-01        5.71E-04       -8.32E-05        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+
+       total energy: -2.7318510599715835E+00
+
+ ... saving data to disk ...
+   81   1 sigma      -5.2465291384642576E-01        5.34E-04       -7.77E-05        0.00E+00
+   82   1 sigma      -5.2415354914323653E-01        4.99E-04       -7.27E-05        0.00E+00
+   83   1 sigma      -5.2368682096049191E-01        4.67E-04       -6.80E-05        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+   84   1 sigma      -5.2325062534361910E-01        4.36E-04       -6.37E-05        0.00E+00
+   85   1 sigma      -5.2284293755893785E-01        4.08E-04       -5.97E-05        0.00E+00
+   86   1 sigma      -5.2246189421352796E-01        3.81E-04       -5.60E-05        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+   87   1 sigma      -5.2210571934771055E-01        3.56E-04       -5.25E-05        0.00E+00
+   88   1 sigma      -5.2177272310788481E-01        3.33E-04       -4.92E-05        0.00E+00
+   89   1 sigma      -5.2146136777161090E-01        3.11E-04       -4.61E-05        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+   90   1 sigma      -5.2117021037142908E-01        2.91E-04       -4.31E-05        0.00E+00
+
+       total energy: -2.7278365317711009E+00
+
+ ... saving data to disk ...
+   91   1 sigma      -5.2089789294233690E-01        2.72E-04       -4.03E-05        0.00E+00
+   92   1 sigma      -5.2064318557509348E-01        2.55E-04       -3.77E-05        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+   93   1 sigma      -5.2040493952500300E-01        2.38E-04       -3.52E-05        0.00E+00
+   94   1 sigma      -5.2018207401450756E-01        2.23E-04       -3.29E-05        0.00E+00
+   95   1 sigma      -5.1997360833862194E-01        2.08E-04       -3.07E-05        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+   96   1 sigma      -5.1977862375399231E-01        1.95E-04       -2.87E-05        0.00E+00
+   97   1 sigma      -5.1959624801680859E-01        1.82E-04       -2.68E-05        0.00E+00
+   98   1 sigma      -5.1942568600227190E-01        1.71E-04       -2.50E-05        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+   99   1 sigma      -5.1926618663326329E-01        1.59E-04       -2.34E-05        0.00E+00
+  100   1 sigma      -5.1911703432621259E-01        1.49E-04       -2.19E-05        0.00E+00
+
+       total energy: -2.7257864698599503E+00
+
+ ... saving data to disk ...
+  101   1 sigma      -5.1897757192189942E-01        1.39E-04       -2.05E-05        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  102   1 sigma      -5.1884717696847171E-01        1.30E-04       -1.91E-05        0.00E+00
+  103   1 sigma      -5.1872525571353090E-01        1.22E-04       -1.79E-05        0.00E+00
+  104   1 sigma      -5.1861126293810522E-01        1.14E-04       -1.67E-05        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  105   1 sigma      -5.1850468306664022E-01        1.07E-04       -1.57E-05        0.00E+00
+  106   1 sigma      -5.1840502562834967E-01        9.97E-05       -1.47E-05        0.00E+00
+  107   1 sigma      -5.1831184182515067E-01        9.32E-05       -1.37E-05        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  108   1 sigma      -5.1822470869677817E-01        8.71E-05       -1.28E-05        0.00E+00
+  109   1 sigma      -5.1814322544553004E-01        8.15E-05       -1.20E-05        0.00E+00
+  110   1 sigma      -5.1806702639532531E-01        7.62E-05       -1.12E-05        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+
+       total energy: -2.7247374345554172E+00
+
+ ... saving data to disk ...
+  111   1 sigma      -5.1799576776667555E-01        7.13E-05       -1.05E-05        0.00E+00
+  112   1 sigma      -5.1792912414888082E-01        6.66E-05       -9.82E-06        0.00E+00
+  113   1 sigma      -5.1786679887356057E-01        6.23E-05       -9.18E-06        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  114   1 sigma      -5.1780851292499963E-01        5.83E-05       -8.58E-06        0.00E+00
+  115   1 sigma      -5.1775400189878873E-01        5.45E-05       -8.02E-06        0.00E+00
+  116   1 sigma      -5.1770302436740434E-01        5.10E-05       -7.50E-06        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  117   1 sigma      -5.1765535286038578E-01        4.77E-05       -7.01E-06        0.00E+00
+  118   1 sigma      -5.1761077139088085E-01        4.46E-05       -6.55E-06        0.00E+00
+  119   1 sigma      -5.1756908235993571E-01        4.17E-05       -6.13E-06        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  120   1 sigma      -5.1753009931402882E-01        3.90E-05       -5.73E-06        0.00E+00
+
+       total energy: -2.7242011215026523E+00
+
+ ... saving data to disk ...
+  121   1 sigma      -5.1749364502434303E-01        3.65E-05       -5.36E-06        0.00E+00
+  122   1 sigma      -5.1745955724447401E-01        3.41E-05       -5.01E-06        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  123   1 sigma      -5.1742768285816099E-01        3.19E-05       -4.69E-06        0.00E+00
+  124   1 sigma      -5.1739787636898638E-01        2.98E-05       -4.38E-06        0.00E+00
+  125   1 sigma      -5.1737000467830896E-01        2.79E-05       -4.10E-06        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  126   1 sigma      -5.1734394229193659E-01        2.61E-05       -3.84E-06        0.00E+00
+  127   1 sigma      -5.1731957008377183E-01        2.44E-05       -3.59E-06        0.00E+00
+  128   1 sigma      -5.1729677919339845E-01        2.28E-05       -3.35E-06        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  129   1 sigma      -5.1727546707336525E-01        2.13E-05       -3.14E-06        0.00E+00
+  130   1 sigma      -5.1725553645072453E-01        1.99E-05       -2.93E-06        0.00E+00
+
+       total energy: -2.7239268359070890E+00
+
+ ... saving data to disk ...
+  131   1 sigma      -5.1723689848313747E-01        1.86E-05       -2.74E-06        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  132   1 sigma      -5.1721946949819975E-01        1.74E-05       -2.57E-06        0.00E+00
+  133   1 sigma      -5.1720317012648165E-01        1.63E-05       -2.40E-06        0.00E+00
+  134   1 sigma      -5.1718792786048917E-01        1.52E-05       -2.24E-06        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  135   1 sigma      -5.1717367438302730E-01        1.43E-05       -2.10E-06        0.00E+00
+  136   1 sigma      -5.1716034485714202E-01        1.33E-05       -1.96E-06        0.00E+00
+  137   1 sigma      -5.1714788001762124E-01        1.25E-05       -1.83E-06        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  138   1 sigma      -5.1713622399464043E-01        1.17E-05       -1.71E-06        0.00E+00
+  139   1 sigma      -5.1712532373999998E-01        1.09E-05       -1.60E-06        0.00E+00
+  140   1 sigma      -5.1711513074474236E-01        1.02E-05       -1.50E-06        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+
+       total energy: -2.7237865785669451E+00
+
+ ... saving data to disk ...
+  141   1 sigma      -5.1710559927072697E-01        9.53E-06       -1.40E-06        0.00E+00
+  142   1 sigma      -5.1709668588641744E-01        8.91E-06       -1.31E-06        0.00E+00
+  143   1 sigma      -5.1708835087817806E-01        8.34E-06       -1.23E-06        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  144   1 sigma      -5.1708055680738663E-01        7.79E-06       -1.15E-06        0.00E+00
+  145   1 sigma      -5.1707326813056298E-01        7.29E-06       -1.07E-06        0.00E+00
+  146   1 sigma      -5.1706645235853044E-01        6.82E-06       -1.00E-06        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  147   1 sigma      -5.1706007887043293E-01        6.37E-06       -9.38E-07        0.00E+00
+  148   1 sigma      -5.1705411860472461E-01        5.96E-06       -8.77E-07        0.00E+00
+  149   1 sigma      -5.1704854500221598E-01        5.57E-06       -8.20E-07        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  150   1 sigma      -5.1704333303667593E-01        5.21E-06       -7.67E-07        0.00E+00
+
+       total energy: -2.7237148547065506E+00
+
+ ... saving data to disk ...
+  151   1 sigma      -5.1703845895735268E-01        4.87E-06       -7.17E-07        0.00E+00
+  152   1 sigma      -5.1703390105926150E-01        4.56E-06       -6.71E-07        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  153   1 sigma      -5.1702963888899856E-01        4.26E-06       -6.27E-07        0.00E+00
+  154   1 sigma      -5.1702565303395098E-01        3.99E-06       -5.86E-07        0.00E+00
+  155   1 sigma      -5.1702192575113148E-01        3.73E-06       -5.48E-07        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  156   1 sigma      -5.1701844031783550E-01        3.49E-06       -5.13E-07        0.00E+00
+  157   1 sigma      -5.1701518086014375E-01        3.26E-06       -4.80E-07        0.00E+00
+  158   1 sigma      -5.1701213286673853E-01        3.05E-06       -4.48E-07        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  159   1 sigma      -5.1700928265982582E-01        2.85E-06       -4.19E-07        0.00E+00
+  160   1 sigma      -5.1700661725422870E-01        2.67E-06       -3.92E-07        0.00E+00
+
+       total energy: -2.7236781770100560E+00
+
+ ... saving data to disk ...
+  161   1 sigma      -5.1700412477963309E-01        2.49E-06       -3.67E-07        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  162   1 sigma      -5.1700179404723556E-01        2.33E-06       -3.43E-07        0.00E+00
+  163   1 sigma      -5.1699961443517761E-01        2.18E-06       -3.21E-07        0.00E+00
+  164   1 sigma      -5.1699757623440523E-01        2.04E-06       -3.00E-07        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  165   1 sigma      -5.1699567029383253E-01        1.91E-06       -2.80E-07        0.00E+00
+  166   1 sigma      -5.1699388792667489E-01        1.78E-06       -2.62E-07        0.00E+00
+  167   1 sigma      -5.1699222119333288E-01        1.67E-06       -2.45E-07        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  168   1 sigma      -5.1699066261132209E-01        1.56E-06       -2.29E-07        0.00E+00
+  169   1 sigma      -5.1698920507803625E-01        1.46E-06       -2.14E-07        0.00E+00
+  170   1 sigma      -5.1698784210188942E-01        1.36E-06       -2.01E-07        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+
+       total energy: -2.7236594212379792E+00
+
+ ... saving data to disk ...
+  171   1 sigma      -5.1698656756505512E-01        1.27E-06       -1.88E-07        0.00E+00
+  172   1 sigma      -5.1698537566028357E-01        1.19E-06       -1.75E-07        0.00E+00
+  173   1 sigma      -5.1698426108031059E-01        1.11E-06       -1.64E-07        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  174   1 sigma      -5.1698321882259779E-01        1.04E-06       -1.53E-07        0.00E+00
+  175   1 sigma      -5.1698224413852434E-01        9.75E-07       -1.43E-07        0.00E+00
+  176   1 sigma      -5.1698133268817514E-01        9.11E-07       -1.34E-07        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  177   1 sigma      -5.1698048038106581E-01        8.52E-07       -1.25E-07        0.00E+00
+  178   1 sigma      -5.1697968333343503E-01        7.97E-07       -1.17E-07        0.00E+00
+  179   1 sigma      -5.1697893799590111E-01        7.45E-07       -1.10E-07        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  180   1 sigma      -5.1697824102323620E-01        6.97E-07       -1.03E-07        0.00E+00
+
+       total energy: -2.7236498300776866E+00
+
+ ... saving data to disk ...
+  181   1 sigma      -5.1697758923941284E-01        6.52E-07       -9.59E-08        0.00E+00
+  182   1 sigma      -5.1697697974143542E-01        6.09E-07       -8.97E-08        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  183   1 sigma      -5.1697640979360870E-01        5.70E-07       -8.39E-08        0.00E+00
+  184   1 sigma      -5.1697587679878176E-01        5.33E-07       -7.84E-08        0.00E+00
+  185   1 sigma      -5.1697537838287388E-01        4.98E-07       -7.33E-08        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  186   1 sigma      -5.1697491230881920E-01        4.66E-07       -6.86E-08        0.00E+00
+  187   1 sigma      -5.1697447645227701E-01        4.36E-07       -6.41E-08        0.00E+00
+  188   1 sigma      -5.1697406887249797E-01        4.08E-07       -6.00E-08        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  189   1 sigma      -5.1697368774008612E-01        3.81E-07       -5.61E-08        0.00E+00
+  190   1 sigma      -5.1697333131799628E-01        3.56E-07       -5.24E-08        0.00E+00
+
+       total energy: -2.7236449254426280E+00
+
+ ... saving data to disk ...
+  191   1 sigma      -5.1697299801912777E-01        3.33E-07       -4.90E-08        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  192   1 sigma      -5.1697268634735560E-01        3.12E-07       -4.59E-08        0.00E+00
+  193   1 sigma      -5.1697239488283353E-01        2.91E-07       -4.29E-08        0.00E+00
+  194   1 sigma      -5.1697212232730205E-01        2.73E-07       -4.01E-08        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  195   1 sigma      -5.1697186745762891E-01        2.55E-07       -3.75E-08        0.00E+00
+  196   1 sigma      -5.1697162911240691E-01        2.38E-07       -3.51E-08        0.00E+00
+  197   1 sigma      -5.1697140623008631E-01        2.23E-07       -3.28E-08        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  198   1 sigma      -5.1697119781041811E-01        2.08E-07       -3.07E-08        0.00E+00
+  199   1 sigma      -5.1697100290360831E-01        1.95E-07       -2.87E-08        0.00E+00
+  200   1 sigma      -5.1697082064177668E-01        1.82E-07       -2.68E-08        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+
+       total energy: -2.7236424173585081E+00
+
+ ... saving data to disk ...
+  201   1 sigma      -5.1697065020682587E-01        1.70E-07       -2.51E-08        0.00E+00
+  202   1 sigma      -5.1697049082184643E-01        1.59E-07       -2.34E-08        0.00E+00
+  203   1 sigma      -5.1697034177740409E-01        1.49E-07       -2.19E-08        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  204   1 sigma      -5.1697020240437430E-01        1.39E-07       -2.05E-08        0.00E+00
+  205   1 sigma      -5.1697007206752787E-01        1.30E-07       -1.92E-08        0.00E+00
+  206   1 sigma      -5.1696995018638980E-01        1.22E-07       -1.79E-08        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  207   1 sigma      -5.1696983621390546E-01        1.14E-07       -1.68E-08        0.00E+00
+  208   1 sigma      -5.1696972963099475E-01        1.07E-07       -1.57E-08        0.00E+00
+  209   1 sigma      -5.1696962996264006E-01        9.97E-08       -1.47E-08        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  210   1 sigma      -5.1696953676185120E-01        9.32E-08       -1.37E-08        0.00E+00
+
+       total energy: -2.7236411348043630E+00
+
+ ... saving data to disk ...
+  211   1 sigma      -5.1696944960335811E-01        8.72E-08       -1.28E-08        0.00E+00
+  212   1 sigma      -5.1696936809958571E-01        8.15E-08       -1.20E-08        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  213   1 sigma      -5.1696929188444529E-01        7.62E-08       -1.12E-08        0.00E+00
+  214   1 sigma      -5.1696922061074235E-01        7.13E-08       -1.05E-08        0.00E+00
+  215   1 sigma      -5.1696915396089427E-01        6.66E-08       -9.81E-09        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  216   1 sigma      -5.1696909163592131E-01        6.23E-08       -9.17E-09        0.00E+00
+  217   1 sigma      -5.1696903335191546E-01        5.83E-08       -8.58E-09        0.00E+00
+  218   1 sigma      -5.1696897884915849E-01        5.45E-08       -8.02E-09        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  219   1 sigma      -5.1696892788298432E-01        5.10E-08       -7.50E-09        0.00E+00
+  220   1 sigma      -5.1696888022094711E-01        4.77E-08       -7.01E-09        0.00E+00
+
+       total energy: -2.7236404789410407E+00
+
+ ... saving data to disk ...
+  221   1 sigma      -5.1696883565139840E-01        4.46E-08       -6.56E-09        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  222   1 sigma      -5.1696879397369844E-01        4.17E-08       -6.13E-09        0.00E+00
+  223   1 sigma      -5.1696875499824202E-01        3.90E-08       -5.73E-09        0.00E+00
+  224   1 sigma      -5.1696871855146220E-01        3.64E-08       -5.36E-09        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  225   1 sigma      -5.1696868446951094E-01        3.41E-08       -5.01E-09        0.00E+00
+  226   1 sigma      -5.1696865259753033E-01        3.19E-08       -4.69E-09        0.00E+00
+  227   1 sigma      -5.1696862279315203E-01        2.98E-08       -4.39E-09        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  228   1 sigma      -5.1696859492271052E-01        2.79E-08       -4.10E-09        0.00E+00
+  229   1 sigma      -5.1696856885925269E-01        2.61E-08       -3.83E-09        0.00E+00
+  230   1 sigma      -5.1696854448662277E-01        2.44E-08       -3.59E-09        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+
+       total energy: -2.7236401435534514E+00
+
+ ... saving data to disk ...
+  231   1 sigma      -5.1696852169554974E-01        2.28E-08       -3.35E-09        0.00E+00
+  232   1 sigma      -5.1696850038224018E-01        2.13E-08       -3.14E-09        0.00E+00
+  233   1 sigma      -5.1696848045146271E-01        1.99E-08       -2.93E-09        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  234   1 sigma      -5.1696846181403910E-01        1.86E-08       -2.74E-09        0.00E+00
+  235   1 sigma      -5.1696844438504841E-01        1.74E-08       -2.56E-09        0.00E+00
+  236   1 sigma      -5.1696842808676746E-01        1.63E-08       -2.40E-09        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  237   1 sigma      -5.1696841284608364E-01        1.52E-08       -2.24E-09        0.00E+00
+  238   1 sigma      -5.1696839859354449E-01        1.43E-08       -2.10E-09        0.00E+00
+  239   1 sigma      -5.1696838526569322E-01        1.33E-08       -1.96E-09        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  240   1 sigma      -5.1696837280246388E-01        1.25E-08       -1.83E-09        0.00E+00
+
+       total energy: -2.7236399720465450E+00
+
+ ... saving data to disk ...
+  241   1 sigma      -5.1696836114736944E-01        1.17E-08       -1.71E-09        0.00E+00
+  242   1 sigma      -5.1696835024843524E-01        1.09E-08       -1.60E-09        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  243   1 sigma      -5.1696834005666403E-01        1.02E-08       -1.50E-09        0.00E+00
+  244   1 sigma      -5.1696833052582880E-01        9.53E-09       -1.40E-09        0.00E+00
+  245   1 sigma      -5.1696832161324413E-01        8.91E-09       -1.31E-09        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  246   1 sigma      -5.1696831327900328E-01        8.33E-09       -1.23E-09        0.00E+00
+  247   1 sigma      -5.1696830548506600E-01        7.79E-09       -1.15E-09        0.00E+00
+  248   1 sigma      -5.1696829819676604E-01        7.29E-09       -1.07E-09        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  249   1 sigma      -5.1696829138141687E-01        6.82E-09       -1.00E-09        0.00E+00
+  250   1 sigma      -5.1696828500793801E-01        6.37E-09       -9.38E-10        0.00E+00
+
+       total energy: -2.7236398843425693E+00
+
+ ... saving data to disk ...
+  251   1 sigma      -5.1696827904806852E-01        5.96E-09       -8.77E-10        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  252   1 sigma      -5.1696827347491414E-01        5.57E-09       -8.20E-10        0.00E+00
+  253   1 sigma      -5.1696826826294884E-01        5.21E-09       -7.67E-10        0.00E+00
+  254   1 sigma      -5.1696826338918034E-01        4.87E-09       -7.17E-10        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  255   1 sigma      -5.1696825883156783E-01        4.56E-09       -6.71E-10        0.00E+00
+  256   1 sigma      -5.1696825456951490E-01        4.26E-09       -6.27E-10        0.00E+00
+  257   1 sigma      -5.1696825058395013E-01        3.99E-09       -5.86E-10        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  258   1 sigma      -5.1696824685701381E-01        3.73E-09       -5.48E-10        0.00E+00
+  259   1 sigma      -5.1696824337171687E-01        3.49E-09       -5.13E-10        0.00E+00
+  260   1 sigma      -5.1696824011249265E-01        3.26E-09       -4.79E-10        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+
+       total energy: -2.7236398394934156E+00
+
+ ... saving data to disk ...
+  261   1 sigma      -5.1696823706501638E-01        3.05E-09       -4.48E-10        0.00E+00
+  262   1 sigma      -5.1696823421491933E-01        2.85E-09       -4.19E-10        0.00E+00
+  263   1 sigma      -5.1696823154969174E-01        2.67E-09       -3.92E-10        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  264   1 sigma      -5.1696822905737094E-01        2.49E-09       -3.67E-10        0.00E+00
+  265   1 sigma      -5.1696822672678344E-01        2.33E-09       -3.43E-10        0.00E+00
+  266   1 sigma      -5.1696822454723512E-01        2.18E-09       -3.21E-10        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  267   1 sigma      -5.1696822250914187E-01        2.04E-09       -3.00E-10        0.00E+00
+  268   1 sigma      -5.1696822060328262E-01        1.91E-09       -2.80E-10        0.00E+00
+  269   1 sigma      -5.1696821882110977E-01        1.78E-09       -2.62E-10        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  270   1 sigma      -5.1696821715453622E-01        1.67E-09       -2.45E-10        0.00E+00
+
+       total energy: -2.7236398165592628E+00
+
+ ... saving data to disk ...
+  271   1 sigma      -5.1696821559612616E-01        1.56E-09       -2.29E-10        0.00E+00
+  272   1 sigma      -5.1696821413854921E-01        1.46E-09       -2.14E-10        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  273   1 sigma      -5.1696821277575000E-01        1.36E-09       -2.01E-10        0.00E+00
+  274   1 sigma      -5.1696821150132788E-01        1.27E-09       -1.88E-10        0.00E+00
+  275   1 sigma      -5.1696821030942708E-01        1.19E-09       -1.75E-10        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  276   1 sigma      -5.1696820919498521E-01        1.11E-09       -1.64E-10        0.00E+00
+  277   1 sigma      -5.1696820815283351E-01        1.04E-09       -1.53E-10        0.00E+00
+  278   1 sigma      -5.1696820717829817E-01        9.75E-10       -1.43E-10        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  279   1 sigma      -5.1696820626677376E-01        9.12E-10       -1.34E-10        0.00E+00
+  280   1 sigma      -5.1696820541436361E-01        8.52E-10       -1.25E-10        0.00E+00
+
+       total energy: -2.7236398048312540E+00
+
+ ... saving data to disk ...
+  281   1 sigma      -5.1696820461729920E-01        7.97E-10       -1.17E-10        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  282   1 sigma      -5.1696820387214681E-01        7.45E-10       -1.10E-10        0.00E+00
+  283   1 sigma      -5.1696820317516723E-01        6.97E-10       -1.03E-10        0.00E+00
+  284   1 sigma      -5.1696820252332243E-01        6.52E-10       -9.59E-11        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  285   1 sigma      -5.1696820191375936E-01        6.10E-10       -8.96E-11        0.00E+00
+  286   1 sigma      -5.1696820134379839E-01        5.70E-10       -8.38E-11        0.00E+00
+  287   1 sigma      -5.1696820081095751E-01        5.33E-10       -7.84E-11        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  288   1 sigma      -5.1696820031255419E-01        4.98E-10       -7.33E-11        0.00E+00
+  289   1 sigma      -5.1696819984670839E-01        4.66E-10       -6.85E-11        0.00E+00
+  290   1 sigma      -5.1696819941091721E-01        4.36E-10       -6.41E-11        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+
+       total energy: -2.7236397988340069E+00
+
+ ... saving data to disk ...
+  291   1 sigma      -5.1696819900340985E-01        4.08E-10       -6.00E-11        0.00E+00
+  292   1 sigma      -5.1696819862227628E-01        3.81E-10       -5.61E-11        0.00E+00
+  293   1 sigma      -5.1696819826579188E-01        3.56E-10       -5.25E-11        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  294   1 sigma      -5.1696819793246873E-01        3.33E-10       -4.90E-11        0.00E+00
+  295   1 sigma      -5.1696819762080382E-01        3.12E-10       -4.58E-11        0.00E+00
+  296   1 sigma      -5.1696819732925636E-01        2.92E-10       -4.29E-11        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  297   1 sigma      -5.1696819705674946E-01        2.73E-10       -4.01E-11        0.00E+00
+  298   1 sigma      -5.1696819680197437E-01        2.55E-10       -3.75E-11        0.00E+00
+  299   1 sigma      -5.1696819656381088E-01        2.38E-10       -3.51E-11        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  300   1 sigma      -5.1696819634089963E-01        2.23E-10       -3.28E-11        0.00E+00
+
+       total energy: -2.7236397957671818E+00
+
+ ... saving data to disk ...
+  301   1 sigma      -5.1696819613246014E-01        2.08E-10       -3.07E-11        0.00E+00
+  302   1 sigma      -5.1696819593745347E-01        1.95E-10       -2.87E-11        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  303   1 sigma      -5.1696819575529496E-01        1.82E-10       -2.68E-11        0.00E+00
+  304   1 sigma      -5.1696819558475982E-01        1.71E-10       -2.51E-11        0.00E+00
+  305   1 sigma      -5.1696819542538130E-01        1.59E-10       -2.34E-11        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  306   1 sigma      -5.1696819527635784E-01        1.49E-10       -2.19E-11        0.00E+00
+  307   1 sigma      -5.1696819513711012E-01        1.39E-10       -2.05E-11        0.00E+00
+  308   1 sigma      -5.1696819500671465E-01        1.30E-10       -1.92E-11        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  309   1 sigma      -5.1696819488490053E-01        1.22E-10       -1.79E-11        0.00E+00
+  310   1 sigma      -5.1696819477096834E-01        1.14E-10       -1.68E-11        0.00E+00
+
+       total energy: -2.7236397941988564E+00
+
+ ... saving data to disk ...
+  311   1 sigma      -5.1696819466441757E-01        1.07E-10       -1.57E-11        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  312   1 sigma      -5.1696819456473020E-01        9.97E-11       -1.47E-11        0.00E+00
+  313   1 sigma      -5.1696819447160292E-01        9.31E-11       -1.37E-11        0.00E+00
+  314   1 sigma      -5.1696819438443953E-01        8.72E-11       -1.28E-11        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  315   1 sigma      -5.1696819430285990E-01        8.16E-11       -1.20E-11        0.00E+00
+  316   1 sigma      -5.1696819422648121E-01        7.64E-11       -1.12E-11        0.00E+00
+  317   1 sigma      -5.1696819415522355E-01        7.13E-11       -1.04E-11        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  318   1 sigma      -5.1696819408862882E-01        6.66E-11       -9.77E-12        0.00E+00
+  319   1 sigma      -5.1696819402629468E-01        6.23E-11       -9.14E-12        0.00E+00
+  320   1 sigma      -5.1696819396803950E-01        5.83E-11       -8.57E-12        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+
+       total energy: -2.7236397933966279E+00
+
+ ... saving data to disk ...
+  321   1 sigma      -5.1696819391358861E-01        5.45E-11       -8.00E-12        0.00E+00
+  322   1 sigma      -5.1696819386268955E-01        5.09E-11       -7.50E-12        0.00E+00
+  323   1 sigma      -5.1696819381513182E-01        4.76E-11       -7.03E-12        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  324   1 sigma      -5.1696819377043135E-01        4.47E-11       -6.60E-12        0.00E+00
+  325   1 sigma      -5.1696819372867187E-01        4.18E-11       -6.13E-12        0.00E+00
+  326   1 sigma      -5.1696819368979119E-01        3.89E-11       -5.73E-12        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  327   1 sigma      -5.1696819365332147E-01        3.65E-11       -5.36E-12        0.00E+00
+  328   1 sigma      -5.1696819361922164E-01        3.41E-11       -5.02E-12        0.00E+00
+  329   1 sigma      -5.1696819358746993E-01        3.18E-11       -4.68E-12        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  330   1 sigma      -5.1696819355760515E-01        2.99E-11       -4.40E-12        0.00E+00
+
+       total energy: -2.7236397929866794E+00
+
+ ... saving data to disk ...
+  331   1 sigma      -5.1696819352972323E-01        2.79E-11       -4.11E-12        0.00E+00
+  332   1 sigma      -5.1696819350370937E-01        2.60E-11       -3.83E-12        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  333   1 sigma      -5.1696819347914325E-01        2.46E-11       -3.60E-12        0.00E+00
+  334   1 sigma      -5.1696819345652067E-01        2.26E-11       -3.31E-12        0.00E+00
+  335   1 sigma      -5.1696819343525169E-01        2.13E-11       -3.15E-12        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  336   1 sigma      -5.1696819341529743E-01        2.00E-11       -2.96E-12        0.00E+00
+  337   1 sigma      -5.1696819339670363E-01        1.86E-11       -2.75E-12        0.00E+00
+  338   1 sigma      -5.1696819337914701E-01        1.76E-11       -2.59E-12        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  339   1 sigma      -5.1696819336283406E-01        1.63E-11       -2.38E-12        0.00E+00
+  340   1 sigma      -5.1696819334763489E-01        1.52E-11       -2.23E-12        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+
+       total energy: -2.7236397927769627E+00
+
+ ... saving data to disk ...
+  341   1 sigma      -5.1696819333326816E-01        1.44E-11       -2.10E-12        0.00E+00
+  342   1 sigma      -5.1696819331998767E-01        1.33E-11       -1.93E-12        0.00E+00
+  343   1 sigma      -5.1696819330745392E-01        1.25E-11       -1.82E-12        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  344   1 sigma      -5.1696819329584032E-01        1.16E-11       -1.68E-12        0.00E+00
+  345   1 sigma      -5.1696819328512045E-01        1.07E-11       -1.58E-12        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  346   1 sigma      -5.1696819327488996E-01        1.02E-11       -1.52E-12        0.00E+00
+  347   1 sigma      -5.1696819326530874E-01        9.58E-12       -1.42E-12        0.00E+00
+  348   1 sigma      -5.1696819325633969E-01        8.97E-12       -1.31E-12        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  349   1 sigma      -5.1696819324804055E-01        8.30E-12       -1.21E-12        0.00E+00
+  350   1 sigma      -5.1696819324035359E-01        7.69E-12       -1.15E-12        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+
+       total energy: -2.7236397926698070E+00
+
+ ... saving data to disk ...
+  351   1 sigma      -5.1696819323301035E-01        7.34E-12       -1.09E-12        0.00E+00
+  352   1 sigma      -5.1696819322622689E-01        6.78E-12       -1.01E-12        0.00E+00
+  353   1 sigma      -5.1696819321974297E-01        6.48E-12       -9.55E-13        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  354   1 sigma      -5.1696819321377707E-01        5.97E-12       -8.62E-13        0.00E+00
+  355   1 sigma      -5.1696819320826770E-01        5.51E-12       -8.04E-13        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  356   1 sigma      -5.1696819320317200E-01        5.10E-12       -7.63E-13        0.00E+00
+  357   1 sigma      -5.1696819319821863E-01        4.95E-12       -7.46E-13        0.00E+00
+  358   1 sigma      -5.1696819319371312E-01        4.51E-12       -6.82E-13        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  359   1 sigma      -5.1696819318944520E-01        4.27E-12       -6.42E-13        0.00E+00
+  360   1 sigma      -5.1696819318544307E-01        4.00E-12       -5.98E-13        0.00E+00
+
+       total energy: -2.7236397926149571E+00
+
+ ... saving data to disk ...
+  361   1 sigma      -5.1696819318164478E-01        3.80E-12       -5.66E-13        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  362   1 sigma      -5.1696819317818976E-01        3.46E-12       -5.07E-13        0.00E+00
+  363   1 sigma      -5.1696819317496612E-01        3.22E-12       -4.79E-13        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  364   1 sigma      -5.1696819317200204E-01        2.96E-12       -4.69E-13        0.00E+00
+  365   1 sigma      -5.1696819316911524E-01        2.89E-12       -4.49E-13        0.00E+00
+  366   1 sigma      -5.1696819316632370E-01        2.79E-12       -4.13E-13        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  367   1 sigma      -5.1696819316393161E-01        2.39E-12       -3.58E-13        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  368   1 sigma      -5.1696819316162435E-01        2.31E-12       -3.58E-13        0.00E+00
+  369   1 sigma      -5.1696819315945630E-01        2.17E-12       -3.43E-13        0.00E+00
+  370   1 sigma      -5.1696819315740372E-01        2.05E-12       -3.22E-13        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+
+       total energy: -2.7236397925870248E+00
+
+ ... saving data to disk ...
+  371   1 sigma      -5.1696819315554943E-01        1.85E-12       -3.02E-13        0.00E+00
+  372   1 sigma      -5.1696819315370290E-01        1.85E-12       -2.85E-13        0.00E+00
+  373   1 sigma      -5.1696819315202136E-01        1.68E-12       -2.61E-13        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  374   1 sigma      -5.1696819315040665E-01        1.61E-12       -2.42E-13        0.00E+00
+  375   1 sigma      -5.1696819314893605E-01        1.47E-12       -2.12E-13        0.00E+00
+  376   1 sigma      -5.1696819314759312E-01        1.34E-12       -1.93E-13        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  377   1 sigma      -5.1696819314623466E-01        1.36E-12       -1.90E-13        0.00E+00
+  378   1 sigma      -5.1696819314522124E-01        1.01E-12       -1.57E-13        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  379   1 sigma      -5.1696819314400111E-01        1.22E-12       -1.87E-13        0.00E+00
+  380   1 sigma      -5.1696819314300435E-01        9.97E-13       -1.52E-13        0.00E+00
+
+       total energy: -2.7236397925726110E+00
+
+ ... saving data to disk ...
+  381   1 sigma      -5.1696819314205666E-01        9.48E-13       -1.56E-13        0.00E+00
+  382   1 sigma      -5.1696819314111586E-01        9.41E-13       -1.53E-13        0.00E+00
+  383   1 sigma      -5.1696819314007691E-01        1.04E-12       -1.35E-13        0.00E+00
+  384   1 sigma      -5.1696819313926690E-01        8.10E-13       -8.20E-14        0.00E+00
+  385   1 sigma      -5.1696819313855880E-01        7.08E-13       -7.18E-14        0.00E+00
+  386   1 sigma      -5.1696819313803810E-01        5.21E-13       -7.70E-14        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  387   1 sigma      -5.1696819313729891E-01        7.39E-13       -1.11E-13        0.00E+00
+  388   1 sigma      -5.1696819313675846E-01        5.40E-13       -8.75E-14        0.00E+00
+           
+ ... orbital energy threshold reached ...
+ ... multipole moment expansion coefficients recalculated ...
+ ... saving data to disk ...
+
+     total energy:                 -2.7236397925663360E+00
+     total electronic energy:      -2.7236397925663360E+00
+     virial ratio:                 -1.9999999997198687E+00
+
+     (MC)SOR iterations:                7760
+
+     nuclear attraction energy:            -6.568460482210
+     kinetic energy:                        2.723639793329
+     one-electron energy:                  -3.844820688880
+     Coulomb energy:                        1.973964661218
+     exchange energy:                      -0.852783764904
+     nuclear repulsion energy:              0.000000000000
+     exchange-correlation energy (LXC):    -0.852783764904
+
+        orbital                 energy             1-norm
+      1 sigma          -5.1696819313675846E-01    8.75E-14
+
+
+     total energy uncertainty due to orbital norms not being equal 1:
+     absolute = +/-0.29E-12,  relative = +/-0.11E-10%
+///////////////////////////////////////////////////////////////////////////////////////////////
+ CPU summary (sec):
+    Lagrange multipliers ......................     0.38
+    normalization+orthogonalization ...........     0.05
+    multipole moments .........................     0.05
+    total energy ..............................     0.14
+    relaxation of orbitals ....................     3.58
+    relaxation of Coulomb & exchange potentials     2.93
+    relaxation of orbitals & potentials .......     6.51
+    SCF iterations ............................     7.00
+
+ System clock summary (sec):
+    multipole moments .........................     0.05
+    relaxation of orbitals ....................     3.58
+    relaxation of Coulomb & exchange potentials     2.95
+    relaxation of orbitals & potentials .......     6.53
+
+ Speedup:                                           1.00
+///////////////////////////////////////////////////////////////////////////////////////////////
+       start:  2023/10/28  20:43:51.37                                                         
+        stop:  2023/10/28  20:43:58.69                                                         
+  start-stop:                     7.32
+
+command-line:  /home/jkob/github/x2dhf-v3/bin/xhf input-1 output-1
+      system:  Linux nscobie 6.2.15-100.fc36.x86_64 x86_64 x86_64 GNU/Linux
+         CPU:  Intell(R) Core(TM) i5-8265U CPU @ 1.60GHz / CPU(s)=8 / OMP_THREAD_LIMIT=8
+////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////  FINITE DIFFERENCE 2D HARTREE-FOCK  ////////////////////////////// 
+////////////////////////////             version 3.0             ////////////////////////////// 
+///////////////////////////////////////////////////////////////////////////////////////////////
+ ... start of input data ...
+  title He                                                                        
+  method dft                                                                      
+  dft xc_lda_x xc_gga_c_lyp                                                       
+  nuclei  2.0 0.0  2.0                                                            
+  config 0                                                                        
+  1 sigma  end                                                                    
+  grid  191 65.0                                                                  
+  orbpot old                                                                      
+  scf  3000 10 12 18 3                                                            
+  conv 3000                                                                       
+  stop                                                                            
+ ... end of input data  ...
+         
+
+   Atomic/molecular system: 
+
+          He(  2.00)      (  0.00)   R =  2.00000 bohr = 1.05835 angstroms
+
+   Method: DFT     
+
+      Libxc version = 6.0.0
+               name = lda_x
+               kind = XC_EXCHANGE
+             family = LDA
+              nspin = XC_UNPOLARIZED
+       reference(s) = [1] P. A. M. Dirac.,  Math. Proc. Cambridge Philos. Soc. 26, 376 (1930)
+                      [2] F. Bloch.,  Z. Phys. 57, 545 (1929)
+
+
+      Libxc version = 6.0.0
+               name = gga_c_lyp
+               kind = XC_CORRELATION
+             family = GGA
+              nspin = XC_UNPOLARIZED
+       reference(s) = [1] C. Lee, W. Yang, and R. G. Parr.,  Phys. Rev. B 37, 785 (1988)
+                      [2] B. Miehlich, A. Savin, H. Stoll, and H. Preuss.,  Chem. Phys. Lett. 157, 200 (1989)
+
+
+   Nuclear potential: Coulomb
+
+   Electronic configuration:
+
+           1  sigma      + - 
+
+
+          total charge            =  0
+          number of
+              electrons           =  2
+              orbitals            =  1
+              Coulomb potentials  =  1
+              exchange potentials =  0
+
+   Grid:
+          nu (h_nu)  =  181  (0.01745)
+          mu (h_mu)  =  271  (0.01803)
+          R_infty    =  65.00
+
+   SCF: 
+          thresholds
+              scf iterations           =  3000
+              orbital energy           = 1.00E-12
+              orbital norm             = 1.00E-18
+              multipole moments recalc = 1.15E+00  (mpole=4)
+
+          orbitals are relaxed
+          Coulomb potentials are relaxed
+
+          multipole expansion coefficients =  4
+
+   MT support: OpenMP
+
+   (MC)SOR:
+          SOR method used for relaxing orbitals
 
           maximal number of Coulomb+exchange potentials per orbital =  1
 
@@ -928,532 +926,536 @@ command-line:  /home/jkob/github/x2dhf-v3/bin/xhf input-1 output-1
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
  ... retrieving data from disk ...
-         timestamp: 2023/06/20  17:45:32.23                                                         
+         timestamp: 2023/10/28  20:43:58.68                                                         
            version: x2dhf-v3       
              title: He                                                                              
-     total energy:                 -2.7670395697473795E+00
-     total electronic energy:      -2.7670395697473795E+00
-     virial ratio:                 -2.0159344772844960E+00
+     total energy:                 -2.7670395697451919E+00
+     total electronic energy:      -2.7670395697451919E+00
+     virial ratio:                 -2.0159344772837335E+00
 
    scf  orbital              energy               energy diff.      1-norm          overlap
    ---  -------      -----------------------      ------------     ---------        --------
-    1   1 sigma      -5.5027674480937550E-01       -3.33E-02        7.18E-03        0.00E+00
+    1   1 sigma      -5.5027674480733668E-01       -3.33E-02        7.18E-03        0.00E+00
  ... multipole moment expansion coefficients recalculated ...
-    2   1 sigma      -5.4908125184697165E-01        1.20E-03       -1.21E-03        0.00E+00
+    2   1 sigma      -5.4908125184501655E-01        1.20E-03       -1.21E-03        0.00E+00
  ... multipole moment expansion coefficients recalculated ...
-    3   1 sigma      -5.4932972340249364E-01       -2.48E-04       -8.63E-04        0.00E+00
+    3   1 sigma      -5.4932972340048170E-01       -2.48E-04       -8.63E-04        0.00E+00
  ... multipole moment expansion coefficients recalculated ...
-    4   1 sigma      -5.4954068776713227E-01       -2.11E-04       -7.71E-04        0.00E+00
+    4   1 sigma      -5.4954068776543141E-01       -2.11E-04       -7.71E-04        0.00E+00
  ... multipole moment expansion coefficients recalculated ...
-    5   1 sigma      -5.4966055126098334E-01       -1.20E-04       -6.76E-04        0.00E+00
+    5   1 sigma      -5.4966055125938551E-01       -1.20E-04       -6.76E-04        0.00E+00
  ... multipole moment expansion coefficients recalculated ...
-    6   1 sigma      -5.4968196923719082E-01       -2.14E-05       -5.69E-04        0.00E+00
+    6   1 sigma      -5.4968196923574597E-01       -2.14E-05       -5.69E-04        0.00E+00
  ... multipole moment expansion coefficients recalculated ...
-    7   1 sigma      -5.4960983310181444E-01        7.21E-05       -4.54E-04        0.00E+00
-    8   1 sigma      -5.4946615130171850E-01        1.44E-04       -3.35E-04        0.00E+00
-    9   1 sigma      -5.4926579798990782E-01        2.00E-04       -2.23E-04        0.00E+00
-   10   1 sigma      -5.4902478983190472E-01        2.41E-04       -1.24E-04        0.00E+00
+    7   1 sigma      -5.4960983310044798E-01        7.21E-05       -4.54E-04        0.00E+00
+    8   1 sigma      -5.4946615130035004E-01        1.44E-04       -3.35E-04        0.00E+00
+    9   1 sigma      -5.4926579798871922E-01        2.00E-04       -2.23E-04        0.00E+00
+   10   1 sigma      -5.4902478983068637E-01        2.41E-04       -1.24E-04        0.00E+00
 
-       total energy: -2.7690088855859885E+00
-
- ... saving data to disk ...
-   11   1 sigma      -5.4876733053195692E-01        2.57E-04       -4.18E-05        0.00E+00
-   12   1 sigma      -5.4851140062298187E-01        2.56E-04        1.95E-05        0.00E+00
-   13   1 sigma      -5.4826680864436494E-01        2.45E-04        5.93E-05        0.00E+00
-   14   1 sigma      -5.4805579674306237E-01        2.11E-04        8.08E-05        0.00E+00
-   15   1 sigma      -5.4788359886375382E-01        1.72E-04        8.54E-05        0.00E+00
-   16   1 sigma      -5.4775134636806921E-01        1.32E-04        7.72E-05        0.00E+00
-   17   1 sigma      -5.4765742880257973E-01        9.39E-05        6.07E-05        0.00E+00
-   18   1 sigma      -5.4759782990246175E-01        5.96E-05        4.02E-05        0.00E+00
-   19   1 sigma      -5.4756671929593725E-01        3.11E-05        1.93E-05        0.00E+00
-   20   1 sigma      -5.4755720199483759E-01        9.52E-06        6.69E-07        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-
-       total energy: -2.7671362925332428E+00
+       total energy: -2.7690088855846549E+00
 
  ... saving data to disk ...
-   21   1 sigma      -5.4756216867157148E-01       -4.97E-06       -1.40E-05        0.00E+00
+   11   1 sigma      -5.4876733053081739E-01        2.57E-04       -4.18E-05        0.00E+00
+   12   1 sigma      -5.4851140062203463E-01        2.56E-04        1.95E-05        0.00E+00
+   13   1 sigma      -5.4826680864332311E-01        2.45E-04        5.93E-05        0.00E+00
+   14   1 sigma      -5.4805579674240823E-01        2.11E-04        8.08E-05        0.00E+00
+   15   1 sigma      -5.4788359886311344E-01        1.72E-04        8.54E-05        0.00E+00
+   16   1 sigma      -5.4775134636739686E-01        1.32E-04        7.72E-05        0.00E+00
+   17   1 sigma      -5.4765742880199220E-01        9.39E-05        6.07E-05        0.00E+00
+   18   1 sigma      -5.4759782990189065E-01        5.96E-05        4.02E-05        0.00E+00
+   19   1 sigma      -5.4756671929537570E-01        3.11E-05        1.93E-05        0.00E+00
+   20   1 sigma      -5.4755720199430535E-01        9.52E-06        6.69E-07        0.00E+00
  ... multipole moment expansion coefficients recalculated ...
-   22   1 sigma      -5.4757500536832593E-01       -1.28E-05       -2.40E-05        0.00E+00
-   23   1 sigma      -5.4759012574162891E-01       -1.51E-05       -2.91E-05        0.00E+00
-   24   1 sigma      -5.4760326132763537E-01       -1.31E-05       -3.01E-05        0.00E+00
-   25   1 sigma      -5.4761158305776125E-01       -8.32E-06       -2.77E-05        0.00E+00
-   26   1 sigma      -5.4761362255114343E-01       -2.04E-06       -2.31E-05        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-   27   1 sigma      -5.4760911196861106E-01        4.51E-06       -1.74E-05        0.00E+00
-   28   1 sigma      -5.4759875503463640E-01        1.04E-05       -1.14E-05        0.00E+00
-   29   1 sigma      -5.4758388209868869E-01        1.49E-05       -5.93E-06        0.00E+00
-   30   1 sigma      -5.4756599026669139E-01        1.79E-05       -1.38E-06        0.00E+00
 
-       total energy: -2.7672816739398476E+00
-
- ... saving data to disk ...
-   31   1 sigma      -5.4754659149073359E-01        1.94E-05        1.98E-06        0.00E+00
-   32   1 sigma      -5.4752699413606720E-01        1.96E-05        4.10E-06        0.00E+00
-   33   1 sigma      -5.4750830811667206E-01        1.87E-05        5.09E-06        0.00E+00
-   34   1 sigma      -5.4749140359890203E-01        1.69E-05        5.14E-06        0.00E+00
-   35   1 sigma      -5.4747686896770120E-01        1.45E-05        4.49E-06        0.00E+00
-   36   1 sigma      -5.4746498105560071E-01        1.19E-05        3.37E-06        0.00E+00
-   37   1 sigma      -5.4745571939272164E-01        9.26E-06        2.04E-06        0.00E+00
-   38   1 sigma      -5.4744881582009186E-01        6.90E-06        6.82E-07        0.00E+00
-   39   1 sigma      -5.4744383624374504E-01        4.98E-06       -5.27E-07        0.00E+00
-   40   1 sigma      -5.4744027122848538E-01        3.57E-06       -1.49E-06        0.00E+00
-
-       total energy: -2.7671260190603455E+00
+       total energy: -2.7671362925327729E+00
 
  ... saving data to disk ...
-   41   1 sigma      -5.4743761053467099E-01        2.66E-06       -2.15E-06        0.00E+00
-   42   1 sigma      -5.4743539895654436E-01        2.21E-06       -2.50E-06        0.00E+00
-   43   1 sigma      -5.4743326986554042E-01        2.13E-06       -2.57E-06        0.00E+00
-   44   1 sigma      -5.4743096299733085E-01        2.31E-06       -2.43E-06        0.00E+00
-   45   1 sigma      -5.4742832383855800E-01        2.64E-06       -2.12E-06        0.00E+00
-   46   1 sigma      -5.4742529707562504E-01        3.03E-06       -1.72E-06        0.00E+00
-   47   1 sigma      -5.4742191103594751E-01        3.39E-06       -1.29E-06        0.00E+00
-   48   1 sigma      -5.4741825463043758E-01        3.66E-06       -8.70E-07        0.00E+00
-   49   1 sigma      -5.4741444454327737E-01        3.81E-06       -5.08E-07        0.00E+00
-   50   1 sigma      -5.4741061693597737E-01        3.83E-06       -2.21E-07        0.00E+00
-
-       total energy: -2.7671059826465396E+00
-
- ... saving data to disk ...
-   51   1 sigma      -5.4740689363192430E-01        3.72E-06       -2.07E-08        0.00E+00
-   52   1 sigma      -5.4740337558450980E-01        3.52E-06        9.53E-08        0.00E+00
-   53   1 sigma      -5.4740013635641804E-01        3.24E-06        1.37E-07        0.00E+00
-   54   1 sigma      -5.4739721951603992E-01        2.92E-06        1.20E-07        0.00E+00
-   55   1 sigma      -5.4739464054690234E-01        2.58E-06        6.17E-08        0.00E+00
-   56   1 sigma      -5.4739238890177822E-01        2.25E-06       -1.94E-08        0.00E+00
-   57   1 sigma      -5.4739043559649647E-01        1.95E-06       -1.08E-07        0.00E+00
-   58   1 sigma      -5.4738873866078164E-01        1.70E-06       -1.90E-07        0.00E+00
+   21   1 sigma      -5.4756216867103014E-01       -4.97E-06       -1.40E-05        0.00E+00
  ... multipole moment expansion coefficients recalculated ...
-   59   1 sigma      -5.4738724774181402E-01        1.49E-06       -2.59E-07        0.00E+00
-   60   1 sigma      -5.4738590981393309E-01        1.34E-06       -3.08E-07        0.00E+00
+   22   1 sigma      -5.4757500536768622E-01       -1.28E-05       -2.40E-05        0.00E+00
+   23   1 sigma      -5.4759012574109933E-01       -1.51E-05       -2.91E-05        0.00E+00
+   24   1 sigma      -5.4760326132719195E-01       -1.31E-05       -3.01E-05        0.00E+00
+   25   1 sigma      -5.4761158305725632E-01       -8.32E-06       -2.77E-05        0.00E+00
+   26   1 sigma      -5.4761362255075863E-01       -2.04E-06       -2.31E-05        0.00E+00
  ... multipole moment expansion coefficients recalculated ...
+   27   1 sigma      -5.4760911196812789E-01        4.51E-06       -1.74E-05        0.00E+00
+   28   1 sigma      -5.4759875503409083E-01        1.04E-05       -1.14E-05        0.00E+00
+   29   1 sigma      -5.4758388209831588E-01        1.49E-05       -5.93E-06        0.00E+00
+   30   1 sigma      -5.4756599026642028E-01        1.79E-05       -1.38E-06        0.00E+00
 
-       total energy: -2.7670787728566304E+00
+       total energy: -2.7672816739395909E+00
 
  ... saving data to disk ...
-   61   1 sigma      -5.4738468388446093E-01        1.23E-06       -3.35E-07        0.00E+00
-   62   1 sigma      -5.4738353688502905E-01        1.15E-06       -3.40E-07        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-   63   1 sigma      -5.4738244306934014E-01        1.09E-06       -3.26E-07        0.00E+00
-   64   1 sigma      -5.4738138556411231E-01        1.06E-06       -2.99E-07        0.00E+00
-   65   1 sigma      -5.4738035563688991E-01        1.03E-06       -2.63E-07        0.00E+00
-   66   1 sigma      -5.4737935099702528E-01        1.00E-06       -2.23E-07        0.00E+00
-   67   1 sigma      -5.4737837401842415E-01        9.77E-07       -1.83E-07        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-   68   1 sigma      -5.4737742995042993E-01        9.44E-07       -1.47E-07        0.00E+00
-   69   1 sigma      -5.4737652530609915E-01        9.05E-07       -1.16E-07        0.00E+00
-   70   1 sigma      -5.4737566661944048E-01        8.59E-07       -9.21E-08        0.00E+00
+   31   1 sigma      -5.4754659149041895E-01        1.94E-05        1.98E-06        0.00E+00
+   32   1 sigma      -5.4752699413570882E-01        1.96E-05        4.10E-06        0.00E+00
+   33   1 sigma      -5.4750830811631790E-01        1.87E-05        5.09E-06        0.00E+00
+   34   1 sigma      -5.4749140359864956E-01        1.69E-05        5.14E-06        0.00E+00
+   35   1 sigma      -5.4747686896739345E-01        1.45E-05        4.49E-06        0.00E+00
+   36   1 sigma      -5.4746498105535091E-01        1.19E-05        3.37E-06        0.00E+00
+   37   1 sigma      -5.4745571939248583E-01        9.26E-06        2.04E-06        0.00E+00
+   38   1 sigma      -5.4744881581991645E-01        6.90E-06        6.82E-07        0.00E+00
+   39   1 sigma      -5.4744383624330095E-01        4.98E-06       -5.27E-07        0.00E+00
+   40   1 sigma      -5.4744027122827577E-01        3.57E-06       -1.49E-06        0.00E+00
 
-       total energy: -2.7670692510588943E+00
+       total energy: -2.7671260190600555E+00
 
  ... saving data to disk ...
-   71   1 sigma      -5.4737485931532048E-01        8.07E-07       -7.51E-08        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-   72   1 sigma      -5.4737410693656474E-01        7.52E-07       -6.45E-08        0.00E+00
-   73   1 sigma      -5.4737341094059566E-01        6.96E-07       -5.94E-08        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-   74   1 sigma      -5.4737277070547363E-01        6.40E-07       -5.82E-08        0.00E+00
-   75   1 sigma      -5.4737218377625996E-01        5.87E-07       -5.97E-08        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-   76   1 sigma      -5.4737164639630276E-01        5.37E-07       -6.24E-08        0.00E+00
-   77   1 sigma      -5.4737115359129351E-01        4.93E-07       -6.54E-08        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-   78   1 sigma      -5.4737070030457846E-01        4.53E-07       -6.77E-08        0.00E+00
-   79   1 sigma      -5.4737028126225007E-01        4.19E-07       -6.88E-08        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-   80   1 sigma      -5.4736989201960484E-01        3.89E-07       -6.83E-08        0.00E+00
+   41   1 sigma      -5.4743761053460993E-01        2.66E-06       -2.15E-06        0.00E+00
+   42   1 sigma      -5.4743539895652282E-01        2.21E-06       -2.50E-06        0.00E+00
+   43   1 sigma      -5.4743326986529550E-01        2.13E-06       -2.57E-06        0.00E+00
+   44   1 sigma      -5.4743096299720406E-01        2.31E-06       -2.43E-06        0.00E+00
+   45   1 sigma      -5.4742832383835771E-01        2.64E-06       -2.12E-06        0.00E+00
+   46   1 sigma      -5.4742529707550625E-01        3.03E-06       -1.72E-06        0.00E+00
+   47   1 sigma      -5.4742191103573190E-01        3.39E-06       -1.29E-06        0.00E+00
+   48   1 sigma      -5.4741825463025440E-01        3.66E-06       -8.70E-07        0.00E+00
+   49   1 sigma      -5.4741444454304933E-01        3.81E-06       -5.08E-07        0.00E+00
+   50   1 sigma      -5.4741061693567672E-01        3.83E-06       -2.21E-07        0.00E+00
 
-       total energy: -2.7670633055165279E+00
+       total energy: -2.7671059826459716E+00
 
  ... saving data to disk ...
-   81   1 sigma      -5.4736952839459385E-01        3.64E-07       -6.63E-08        0.00E+00
+   51   1 sigma      -5.4740689363173844E-01        3.72E-06       -2.07E-08        0.00E+00
+   52   1 sigma      -5.4740337558445762E-01        3.52E-06        9.53E-08        0.00E+00
+   53   1 sigma      -5.4740013635638074E-01        3.24E-06        1.37E-07        0.00E+00
+   54   1 sigma      -5.4739721951601950E-01        2.92E-06        1.20E-07        0.00E+00
+   55   1 sigma      -5.4739464054685905E-01        2.58E-06        6.17E-08        0.00E+00
+   56   1 sigma      -5.4739238890176689E-01        2.25E-06       -1.94E-08        0.00E+00
+   57   1 sigma      -5.4739043559644607E-01        1.95E-06       -1.08E-07        0.00E+00
+   58   1 sigma      -5.4738873866087356E-01        1.70E-06       -1.90E-07        0.00E+00
  ... multipole moment expansion coefficients recalculated ...
-   82   1 sigma      -5.4736918719705985E-01        3.41E-07       -6.30E-08        0.00E+00
-   83   1 sigma      -5.4736886577553645E-01        3.21E-07       -5.87E-08        0.00E+00
-   84   1 sigma      -5.4736856211271645E-01        3.04E-07       -5.38E-08        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-   85   1 sigma      -5.4736827496318119E-01        2.87E-07       -4.87E-08        0.00E+00
-   86   1 sigma      -5.4736800390483276E-01        2.71E-07       -4.35E-08        0.00E+00
-   87   1 sigma      -5.4736774695161983E-01        2.57E-07       -3.90E-08        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-   88   1 sigma      -5.4736750498216513E-01        2.42E-07       -3.47E-08        0.00E+00
-   89   1 sigma      -5.4736727759618664E-01        2.27E-07       -3.11E-08        0.00E+00
-   90   1 sigma      -5.4736706445744931E-01        2.13E-07       -2.81E-08        0.00E+00
+   59   1 sigma      -5.4738724774182113E-01        1.49E-06       -2.59E-07        0.00E+00
+   60   1 sigma      -5.4738590981380275E-01        1.34E-06       -3.08E-07        0.00E+00
  ... multipole moment expansion coefficients recalculated ...
 
-       total energy: -2.7670605290187491E+00
+       total energy: -2.7670787728563990E+00
 
  ... saving data to disk ...
-   91   1 sigma      -5.4736686521230826E-01        1.99E-07       -2.58E-08        0.00E+00
-   92   1 sigma      -5.4736667938947670E-01        1.86E-07       -2.40E-08        0.00E+00
-   93   1 sigma      -5.4736650639505613E-01        1.73E-07       -2.25E-08        0.00E+00
+   61   1 sigma      -5.4738468388451733E-01        1.23E-06       -3.35E-07        0.00E+00
+   62   1 sigma      -5.4738353688522867E-01        1.15E-06       -3.40E-07        0.00E+00
  ... multipole moment expansion coefficients recalculated ...
-   94   1 sigma      -5.4736634552455254E-01        1.61E-07       -2.14E-08        0.00E+00
-   95   1 sigma      -5.4736619599624747E-01        1.50E-07       -2.05E-08        0.00E+00
+   63   1 sigma      -5.4738244306950645E-01        1.09E-06       -3.26E-07        0.00E+00
+   64   1 sigma      -5.4738138556408811E-01        1.06E-06       -2.99E-07        0.00E+00
+   65   1 sigma      -5.4738035563691390E-01        1.03E-06       -2.63E-07        0.00E+00
+   66   1 sigma      -5.4737935099711765E-01        1.00E-06       -2.23E-07        0.00E+00
+   67   1 sigma      -5.4737837401853096E-01        9.77E-07       -1.83E-07        0.00E+00
  ... multipole moment expansion coefficients recalculated ...
-   96   1 sigma      -5.4736605696592866E-01        1.39E-07       -1.97E-08        0.00E+00
-   97   1 sigma      -5.4736592759771630E-01        1.29E-07       -1.90E-08        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-   98   1 sigma      -5.4736580709901661E-01        1.20E-07       -1.82E-08        0.00E+00
-   99   1 sigma      -5.4736569467716922E-01        1.12E-07       -1.73E-08        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  100   1 sigma      -5.4736558960562531E-01        1.05E-07       -1.64E-08        0.00E+00
+   68   1 sigma      -5.4737742995045524E-01        9.44E-07       -1.47E-07        0.00E+00
+   69   1 sigma      -5.4737652530607406E-01        9.05E-07       -1.16E-07        0.00E+00
+   70   1 sigma      -5.4737566661927839E-01        8.59E-07       -9.21E-08        0.00E+00
 
-       total energy: -2.7670590439156397E+00
+       total energy: -2.7670692510586328E+00
 
  ... saving data to disk ...
-  101   1 sigma      -5.4736549128563095E-01        9.83E-08       -1.55E-08        0.00E+00
-  102   1 sigma      -5.4736539917083182E-01        9.21E-08       -1.45E-08        0.00E+00
+   71   1 sigma      -5.4737485931516838E-01        8.07E-07       -7.51E-08        0.00E+00
  ... multipole moment expansion coefficients recalculated ...
-  103   1 sigma      -5.4736531280080913E-01        8.64E-08       -1.35E-08        0.00E+00
-  104   1 sigma      -5.4736523177761809E-01        8.10E-08       -1.25E-08        0.00E+00
-  105   1 sigma      -5.4736515576764133E-01        7.60E-08       -1.15E-08        0.00E+00
+   72   1 sigma      -5.4737410693651256E-01        7.52E-07       -6.45E-08        0.00E+00
+   73   1 sigma      -5.4737341094045666E-01        6.96E-07       -5.94E-08        0.00E+00
  ... multipole moment expansion coefficients recalculated ...
-  106   1 sigma      -5.4736508447691468E-01        7.13E-08       -1.06E-08        0.00E+00
-  107   1 sigma      -5.4736501765004597E-01        6.68E-08       -9.81E-09        0.00E+00
-  108   1 sigma      -5.4736495505020111E-01        6.26E-08       -9.06E-09        0.00E+00
+   74   1 sigma      -5.4737277070546253E-01        6.40E-07       -5.82E-08        0.00E+00
+   75   1 sigma      -5.4737218377616448E-01        5.87E-07       -5.97E-08        0.00E+00
  ... multipole moment expansion coefficients recalculated ...
-  109   1 sigma      -5.4736489645791098E-01        5.86E-08       -8.39E-09        0.00E+00
-  110   1 sigma      -5.4736484165807564E-01        5.48E-08       -7.80E-09        0.00E+00
+   76   1 sigma      -5.4737164639630054E-01        5.37E-07       -6.24E-08        0.00E+00
+   77   1 sigma      -5.4737115359130573E-01        4.93E-07       -6.54E-08        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+   78   1 sigma      -5.4737070030455492E-01        4.53E-07       -6.77E-08        0.00E+00
+   79   1 sigma      -5.4737028126232579E-01        4.19E-07       -6.88E-08        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+   80   1 sigma      -5.4736989201959729E-01        3.89E-07       -6.83E-08        0.00E+00
 
-       total energy: -2.7670583000437459E+00
-
- ... saving data to disk ...
-  111   1 sigma      -5.4736479044174047E-01        5.12E-08       -7.27E-09        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  112   1 sigma      -5.4736474260203249E-01        4.78E-08       -6.81E-09        0.00E+00
-  113   1 sigma      -5.4736469793101961E-01        4.47E-08       -6.39E-09        0.00E+00
-  114   1 sigma      -5.4736465622751318E-01        4.17E-08       -6.01E-09        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  115   1 sigma      -5.4736461729387953E-01        3.89E-08       -5.66E-09        0.00E+00
-  116   1 sigma      -5.4736458093694917E-01        3.64E-08       -5.34E-09        0.00E+00
-  117   1 sigma      -5.4736454697729453E-01        3.40E-08       -5.03E-09        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  118   1 sigma      -5.4736451524442087E-01        3.17E-08       -4.73E-09        0.00E+00
-  119   1 sigma      -5.4736448557771888E-01        2.97E-08       -4.44E-09        0.00E+00
-  120   1 sigma      -5.4736445783318532E-01        2.77E-08       -4.16E-09        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-
-       total energy: -2.7670579159201161E+00
+       total energy: -2.7670633055165168E+00
 
  ... saving data to disk ...
-  121   1 sigma      -5.4736443187723105E-01        2.60E-08       -3.90E-09        0.00E+00
-  122   1 sigma      -5.4736440758705407E-01        2.43E-08       -3.64E-09        0.00E+00
-  123   1 sigma      -5.4736438485327854E-01        2.27E-08       -3.40E-09        0.00E+00
+   81   1 sigma      -5.4736952839454833E-01        3.64E-07       -6.63E-08        0.00E+00
  ... multipole moment expansion coefficients recalculated ...
-  124   1 sigma      -5.4736436357444385E-01        2.13E-08       -3.16E-09        0.00E+00
-  125   1 sigma      -5.4736434365889974E-01        1.99E-08       -2.95E-09        0.00E+00
-  126   1 sigma      -5.4736432502119658E-01        1.86E-08       -2.75E-09        0.00E+00
+   82   1 sigma      -5.4736918719710004E-01        3.41E-07       -6.30E-08        0.00E+00
+   83   1 sigma      -5.4736886577557819E-01        3.21E-07       -5.87E-08        0.00E+00
+   84   1 sigma      -5.4736856211248353E-01        3.04E-07       -5.38E-08        0.00E+00
  ... multipole moment expansion coefficients recalculated ...
-  127   1 sigma      -5.4736430758324595E-01        1.74E-08       -2.56E-09        0.00E+00
-  128   1 sigma      -5.4736429127083275E-01        1.63E-08       -2.39E-09        0.00E+00
-  129   1 sigma      -5.4736427601472060E-01        1.53E-08       -2.23E-09        0.00E+00
+   85   1 sigma      -5.4736827496291274E-01        2.87E-07       -4.87E-08        0.00E+00
+   86   1 sigma      -5.4736800390476836E-01        2.71E-07       -4.35E-08        0.00E+00
+   87   1 sigma      -5.4736774695170731E-01        2.57E-07       -3.90E-08        0.00E+00
  ... multipole moment expansion coefficients recalculated ...
-  130   1 sigma      -5.4736426175004449E-01        1.43E-08       -2.08E-09        0.00E+00
+   88   1 sigma      -5.4736750498225528E-01        2.42E-07       -3.47E-08        0.00E+00
+   89   1 sigma      -5.4736727759623327E-01        2.27E-07       -3.11E-08        0.00E+00
+   90   1 sigma      -5.4736706445743732E-01        2.13E-07       -2.81E-08        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
 
-       total energy: -2.7670577202743463E+00
-
- ... saving data to disk ...
-  131   1 sigma      -5.4736424841375153E-01        1.33E-08       -1.95E-09        0.00E+00
-  132   1 sigma      -5.4736423594747063E-01        1.25E-08       -1.82E-09        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  133   1 sigma      -5.4736422429525522E-01        1.17E-08       -1.71E-09        0.00E+00
-  134   1 sigma      -5.4736421340338071E-01        1.09E-08       -1.60E-09        0.00E+00
-  135   1 sigma      -5.4736420322226964E-01        1.02E-08       -1.50E-09        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  136   1 sigma      -5.4736419370508771E-01        9.52E-09       -1.40E-09        0.00E+00
-  137   1 sigma      -5.4736418480687354E-01        8.90E-09       -1.31E-09        0.00E+00
-  138   1 sigma      -5.4736417648676161E-01        8.32E-09       -1.23E-09        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  139   1 sigma      -5.4736416870640103E-01        7.78E-09       -1.15E-09        0.00E+00
-  140   1 sigma      -5.4736416142975308E-01        7.28E-09       -1.08E-09        0.00E+00
-
-       total energy: -2.7670576200332837E+00
+       total energy: -2.7670605290187291E+00
 
  ... saving data to disk ...
-  141   1 sigma      -5.4736415462373778E-01        6.81E-09       -1.01E-09        0.00E+00
+   91   1 sigma      -5.4736686521227340E-01        1.99E-07       -2.58E-08        0.00E+00
+   92   1 sigma      -5.4736667938954620E-01        1.86E-07       -2.40E-08        0.00E+00
+   93   1 sigma      -5.4736650639541207E-01        1.73E-07       -2.25E-08        0.00E+00
  ... multipole moment expansion coefficients recalculated ...
-  142   1 sigma      -5.4736414825796609E-01        6.37E-09       -9.42E-10        0.00E+00
-  143   1 sigma      -5.4736414230330643E-01        5.95E-09       -8.80E-10        0.00E+00
-  144   1 sigma      -5.4736413673332085E-01        5.57E-09       -8.22E-10        0.00E+00
+   94   1 sigma      -5.4736634552469599E-01        1.61E-07       -2.14E-08        0.00E+00
+   95   1 sigma      -5.4736619599632053E-01        1.50E-07       -2.05E-08        0.00E+00
  ... multipole moment expansion coefficients recalculated ...
-  145   1 sigma      -5.4736413152374608E-01        5.21E-09       -7.68E-10        0.00E+00
-  146   1 sigma      -5.4736412665085199E-01        4.87E-09       -7.17E-10        0.00E+00
-  147   1 sigma      -5.4736412209359453E-01        4.56E-09       -6.70E-10        0.00E+00
+   96   1 sigma      -5.4736605696607010E-01        1.39E-07       -1.97E-08        0.00E+00
+   97   1 sigma      -5.4736592759772917E-01        1.29E-07       -1.90E-08        0.00E+00
  ... multipole moment expansion coefficients recalculated ...
-  148   1 sigma      -5.4736411783189043E-01        4.26E-09       -6.26E-10        0.00E+00
-  149   1 sigma      -5.4736411384653105E-01        3.99E-09       -5.85E-10        0.00E+00
-  150   1 sigma      -5.4736411011976638E-01        3.73E-09       -5.47E-10        0.00E+00
+   98   1 sigma      -5.4736580709894200E-01        1.20E-07       -1.82E-08        0.00E+00
+   99   1 sigma      -5.4736569467707508E-01        1.12E-07       -1.73E-08        0.00E+00
  ... multipole moment expansion coefficients recalculated ...
+  100   1 sigma      -5.4736558960558535E-01        1.05E-07       -1.64E-08        0.00E+00
 
-       total energy: -2.7670575687982484E+00
-
- ... saving data to disk ...
-  151   1 sigma      -5.4736410663510937E-01        3.48E-09       -5.12E-10        0.00E+00
-  152   1 sigma      -5.4736410337690744E-01        3.26E-09       -4.79E-10        0.00E+00
-  153   1 sigma      -5.4736410033033489E-01        3.05E-09       -4.48E-10        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  154   1 sigma      -5.4736409748162695E-01        2.85E-09       -4.19E-10        0.00E+00
-  155   1 sigma      -5.4736409481788706E-01        2.66E-09       -3.92E-10        0.00E+00
-  156   1 sigma      -5.4736409232710925E-01        2.49E-09       -3.67E-10        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  157   1 sigma      -5.4736408999811803E-01        2.33E-09       -3.43E-10        0.00E+00
-  158   1 sigma      -5.4736408781987134E-01        2.18E-09       -3.21E-10        0.00E+00
-  159   1 sigma      -5.4736408578317053E-01        2.04E-09       -3.00E-10        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  160   1 sigma      -5.4736408387839419E-01        1.90E-09       -2.81E-10        0.00E+00
-
-       total energy: -2.7670575425870476E+00
+       total energy: -2.7670590439155811E+00
 
  ... saving data to disk ...
-  161   1 sigma      -5.4736408209693943E-01        1.78E-09       -2.63E-10        0.00E+00
-  162   1 sigma      -5.4736408043103446E-01        1.67E-09       -2.46E-10        0.00E+00
+  101   1 sigma      -5.4736549128561518E-01        9.83E-08       -1.55E-08        0.00E+00
+  102   1 sigma      -5.4736539917091620E-01        9.21E-08       -1.45E-08        0.00E+00
  ... multipole moment expansion coefficients recalculated ...
-  163   1 sigma      -5.4736407887284044E-01        1.56E-09       -2.30E-10        0.00E+00
-  164   1 sigma      -5.4736407741564119E-01        1.46E-09       -2.15E-10        0.00E+00
-  165   1 sigma      -5.4736407605308957E-01        1.36E-09       -2.01E-10        0.00E+00
+  103   1 sigma      -5.4736531280076606E-01        8.64E-08       -1.35E-08        0.00E+00
+  104   1 sigma      -5.4736523177761898E-01        8.10E-08       -1.25E-08        0.00E+00
+  105   1 sigma      -5.4736515576754363E-01        7.60E-08       -1.15E-08        0.00E+00
  ... multipole moment expansion coefficients recalculated ...
-  166   1 sigma      -5.4736407477879134E-01        1.27E-09       -1.88E-10        0.00E+00
-  167   1 sigma      -5.4736407358704664E-01        1.19E-09       -1.75E-10        0.00E+00
-  168   1 sigma      -5.4736407247260699E-01        1.11E-09       -1.64E-10        0.00E+00
+  106   1 sigma      -5.4736508447695731E-01        7.13E-08       -1.06E-08        0.00E+00
+  107   1 sigma      -5.4736501765009460E-01        6.68E-08       -9.81E-09        0.00E+00
+  108   1 sigma      -5.4736495505016536E-01        6.26E-08       -9.06E-09        0.00E+00
  ... multipole moment expansion coefficients recalculated ...
-  169   1 sigma      -5.4736407143053700E-01        1.04E-09       -1.53E-10        0.00E+00
-  170   1 sigma      -5.4736407045589175E-01        9.75E-10       -1.43E-10        0.00E+00
+  109   1 sigma      -5.4736489645798914E-01        5.86E-08       -8.39E-09        0.00E+00
+  110   1 sigma      -5.4736484165802168E-01        5.48E-08       -7.80E-09        0.00E+00
 
-       total energy: -2.7670575291818889E+00
-
- ... saving data to disk ...
-  171   1 sigma      -5.4736406954454342E-01        9.11E-10       -1.34E-10        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  172   1 sigma      -5.4736406869227094E-01        8.52E-10       -1.25E-10        0.00E+00
-  173   1 sigma      -5.4736406789521608E-01        7.97E-10       -1.17E-10        0.00E+00
-  174   1 sigma      -5.4736406715009722E-01        7.45E-10       -1.10E-10        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  175   1 sigma      -5.4736406645335589E-01        6.97E-10       -1.03E-10        0.00E+00
-  176   1 sigma      -5.4736406580171026E-01        6.52E-10       -9.60E-11        0.00E+00
-  177   1 sigma      -5.4736406519244785E-01        6.09E-10       -8.98E-11        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  178   1 sigma      -5.4736406462252107E-01        5.70E-10       -8.40E-11        0.00E+00
-  179   1 sigma      -5.4736406408952409E-01        5.33E-10       -7.86E-11        0.00E+00
-  180   1 sigma      -5.4736406359119716E-01        4.98E-10       -7.35E-11        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-
-       total energy: -2.7670575223257758E+00
+       total energy: -2.7670583000436491E+00
 
  ... saving data to disk ...
-  181   1 sigma      -5.4736406312509533E-01        4.66E-10       -6.87E-11        0.00E+00
-  182   1 sigma      -5.4736406268919491E-01        4.36E-10       -6.42E-11        0.00E+00
-  183   1 sigma      -5.4736406228155143E-01        4.08E-10       -6.01E-11        0.00E+00
+  111   1 sigma      -5.4736479044166320E-01        5.12E-08       -7.27E-09        0.00E+00
  ... multipole moment expansion coefficients recalculated ...
-  184   1 sigma      -5.4736406190031262E-01        3.81E-10       -5.61E-11        0.00E+00
-  185   1 sigma      -5.4736406154390016E-01        3.56E-10       -5.25E-11        0.00E+00
-  186   1 sigma      -5.4736406121058456E-01        3.33E-10       -4.91E-11        0.00E+00
+  112   1 sigma      -5.4736474260207246E-01        4.78E-08       -6.81E-09        0.00E+00
+  113   1 sigma      -5.4736469793108555E-01        4.47E-08       -6.39E-09        0.00E+00
+  114   1 sigma      -5.4736465622736086E-01        4.17E-08       -6.01E-09        0.00E+00
  ... multipole moment expansion coefficients recalculated ...
-  187   1 sigma      -5.4736406089872958E-01        3.12E-10       -4.59E-11        0.00E+00
-  188   1 sigma      -5.4736406060725407E-01        2.91E-10       -4.29E-11        0.00E+00
-  189   1 sigma      -5.4736406033474339E-01        2.73E-10       -4.01E-11        0.00E+00
+  115   1 sigma      -5.4736461729387931E-01        3.89E-08       -5.66E-09        0.00E+00
+  116   1 sigma      -5.4736458093685236E-01        3.64E-08       -5.34E-09        0.00E+00
+  117   1 sigma      -5.4736454697714398E-01        3.40E-08       -5.03E-09        0.00E+00
  ... multipole moment expansion coefficients recalculated ...
-  190   1 sigma      -5.4736406007979554E-01        2.55E-10       -3.76E-11        0.00E+00
+  118   1 sigma      -5.4736451524412311E-01        3.17E-08       -4.73E-09        0.00E+00
+  119   1 sigma      -5.4736448557793382E-01        2.97E-08       -4.44E-09        0.00E+00
+  120   1 sigma      -5.4736445783335341E-01        2.77E-08       -4.16E-09        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
 
-       total energy: -2.7670575188185951E+00
-
- ... saving data to disk ...
-  191   1 sigma      -5.4736405984142777E-01        2.38E-10       -3.51E-11        0.00E+00
-  192   1 sigma      -5.4736405961845236E-01        2.23E-10       -3.28E-11        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  193   1 sigma      -5.4736405941006971E-01        2.08E-10       -3.07E-11        0.00E+00
-  194   1 sigma      -5.4736405921520914E-01        1.95E-10       -2.87E-11        0.00E+00
-  195   1 sigma      -5.4736405903280860E-01        1.82E-10       -2.69E-11        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  196   1 sigma      -5.4736405886232342E-01        1.70E-10       -2.51E-11        0.00E+00
-  197   1 sigma      -5.4736405870282256E-01        1.60E-10       -2.35E-11        0.00E+00
-  198   1 sigma      -5.4736405855384018E-01        1.49E-10       -2.20E-11        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  199   1 sigma      -5.4736405841437663E-01        1.39E-10       -2.06E-11        0.00E+00
-  200   1 sigma      -5.4736405828396406E-01        1.30E-10       -1.92E-11        0.00E+00
-
-       total energy: -2.7670575170249845E+00
+       total energy: -2.7670579159204318E+00
 
  ... saving data to disk ...
-  201   1 sigma      -5.4736405816214595E-01        1.22E-10       -1.80E-11        0.00E+00
+  121   1 sigma      -5.4736443187730521E-01        2.60E-08       -3.90E-09        0.00E+00
+  122   1 sigma      -5.4736440758716509E-01        2.43E-08       -3.64E-09        0.00E+00
+  123   1 sigma      -5.4736438485333316E-01        2.27E-08       -3.40E-09        0.00E+00
  ... multipole moment expansion coefficients recalculated ...
-  202   1 sigma      -5.4736405804816535E-01        1.14E-10       -1.68E-11        0.00E+00
-  203   1 sigma      -5.4736405794136456E-01        1.07E-10       -1.57E-11        0.00E+00
-  204   1 sigma      -5.4736405784173381E-01        9.96E-11       -1.47E-11        0.00E+00
+  124   1 sigma      -5.4736436357439944E-01        2.13E-08       -3.16E-09        0.00E+00
+  125   1 sigma      -5.4736434365878028E-01        1.99E-08       -2.95E-09        0.00E+00
+  126   1 sigma      -5.4736432502121346E-01        1.86E-08       -2.75E-09        0.00E+00
  ... multipole moment expansion coefficients recalculated ...
-  205   1 sigma      -5.4736405774849506E-01        9.32E-11       -1.37E-11        0.00E+00
-  206   1 sigma      -5.4736405766138296E-01        8.71E-11       -1.29E-11        0.00E+00
-  207   1 sigma      -5.4736405757979378E-01        8.16E-11       -1.20E-11        0.00E+00
+  127   1 sigma      -5.4736430758331656E-01        1.74E-08       -2.56E-09        0.00E+00
+  128   1 sigma      -5.4736429127074215E-01        1.63E-08       -2.39E-09        0.00E+00
+  129   1 sigma      -5.4736427601466686E-01        1.53E-08       -2.23E-09        0.00E+00
  ... multipole moment expansion coefficients recalculated ...
-  208   1 sigma      -5.4736405750347794E-01        7.63E-11       -1.12E-11        0.00E+00
-  209   1 sigma      -5.4736405743205085E-01        7.14E-11       -1.05E-11        0.00E+00
-  210   1 sigma      -5.4736405736541638E-01        6.66E-11       -9.79E-12        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
+  130   1 sigma      -5.4736426174996478E-01        1.43E-08       -2.08E-09        0.00E+00
 
-       total energy: -2.7670575161075717E+00
-
- ... saving data to disk ...
-  211   1 sigma      -5.4736405730310844E-01        6.23E-11       -9.17E-12        0.00E+00
-  212   1 sigma      -5.4736405724487214E-01        5.82E-11       -8.60E-12        0.00E+00
-  213   1 sigma      -5.4736405719036441E-01        5.45E-11       -8.05E-12        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  214   1 sigma      -5.4736405713935365E-01        5.10E-11       -7.54E-12        0.00E+00
-  215   1 sigma      -5.4736405709151037E-01        4.78E-11       -7.05E-12        0.00E+00
-  216   1 sigma      -5.4736405704699931E-01        4.45E-11       -6.55E-12        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  217   1 sigma      -5.4736405700527113E-01        4.17E-11       -6.15E-12        0.00E+00
-  218   1 sigma      -5.4736405696624968E-01        3.90E-11       -5.75E-12        0.00E+00
-  219   1 sigma      -5.4736405692991275E-01        3.63E-11       -5.36E-12        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  220   1 sigma      -5.4736405689585199E-01        3.41E-11       -5.06E-12        0.00E+00
-
-       total energy: -2.7670575156388262E+00
+       total energy: -2.7670577202741948E+00
 
  ... saving data to disk ...
-  221   1 sigma      -5.4736405686383471E-01        3.20E-11       -4.74E-12        0.00E+00
-  222   1 sigma      -5.4736405683388956E-01        2.99E-11       -4.40E-12        0.00E+00
+  131   1 sigma      -5.4736424841374065E-01        1.33E-08       -1.95E-09        0.00E+00
+  132   1 sigma      -5.4736423594758632E-01        1.25E-08       -1.82E-09        0.00E+00
  ... multipole moment expansion coefficients recalculated ...
-  223   1 sigma      -5.4736405680596079E-01        2.79E-11       -4.09E-12        0.00E+00
-  224   1 sigma      -5.4736405677991029E-01        2.61E-11       -3.81E-12        0.00E+00
-  225   1 sigma      -5.4736405675563904E-01        2.43E-11       -3.57E-12        0.00E+00
+  133   1 sigma      -5.4736422429546372E-01        1.17E-08       -1.71E-09        0.00E+00
+  134   1 sigma      -5.4736421340354680E-01        1.09E-08       -1.60E-09        0.00E+00
+  135   1 sigma      -5.4736420322245949E-01        1.02E-08       -1.50E-09        0.00E+00
  ... multipole moment expansion coefficients recalculated ...
-  226   1 sigma      -5.4736405673272559E-01        2.29E-11       -3.37E-12        0.00E+00
-  227   1 sigma      -5.4736405671153876E-01        2.12E-11       -3.13E-12        0.00E+00
-  228   1 sigma      -5.4736405669164578E-01        1.99E-11       -2.97E-12        0.00E+00
+  136   1 sigma      -5.4736419370512257E-01        9.52E-09       -1.40E-09        0.00E+00
+  137   1 sigma      -5.4736418480683069E-01        8.90E-09       -1.31E-09        0.00E+00
+  138   1 sigma      -5.4736417648686486E-01        8.32E-09       -1.23E-09        0.00E+00
  ... multipole moment expansion coefficients recalculated ...
-  229   1 sigma      -5.4736405667289012E-01        1.88E-11       -2.78E-12        0.00E+00
-  230   1 sigma      -5.4736405665557264E-01        1.73E-11       -2.58E-12        0.00E+00
+  139   1 sigma      -5.4736416870647608E-01        7.78E-09       -1.15E-09        0.00E+00
+  140   1 sigma      -5.4736416142970579E-01        7.28E-09       -1.08E-09        0.00E+00
 
-       total energy: -2.7670575153988364E+00
-
- ... saving data to disk ...
-  231   1 sigma      -5.4736405663923038E-01        1.63E-11       -2.44E-12        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  232   1 sigma      -5.4736405662386489E-01        1.54E-11       -2.28E-12        0.00E+00
-  233   1 sigma      -5.4736405660949305E-01        1.44E-11       -2.10E-12        0.00E+00
-  234   1 sigma      -5.4736405659617948E-01        1.33E-11       -1.96E-12        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  235   1 sigma      -5.4736405658372345E-01        1.25E-11       -1.82E-12        0.00E+00
-  236   1 sigma      -5.4736405657215736E-01        1.16E-11       -1.72E-12        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  237   1 sigma      -5.4736405656126674E-01        1.09E-11       -1.62E-12        0.00E+00
-  238   1 sigma      -5.4736405655100184E-01        1.03E-11       -1.53E-12        0.00E+00
-  239   1 sigma      -5.4736405654135378E-01        9.65E-12       -1.42E-12        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  240   1 sigma      -5.4736405653240761E-01        8.95E-12       -1.29E-12        0.00E+00
-
-       total energy: -2.7670575152755785E+00
+       total energy: -2.7670576200332309E+00
 
  ... saving data to disk ...
-  241   1 sigma      -5.4736405652409448E-01        8.31E-12       -1.21E-12        0.00E+00
+  141   1 sigma      -5.4736415462376753E-01        6.81E-09       -1.01E-09        0.00E+00
  ... multipole moment expansion coefficients recalculated ...
-  242   1 sigma      -5.4736405651637554E-01        7.72E-12       -1.14E-12        0.00E+00
-  243   1 sigma      -5.4736405650903341E-01        7.34E-12       -1.08E-12        0.00E+00
-  244   1 sigma      -5.4736405650223618E-01        6.80E-12       -1.00E-12        0.00E+00
+  142   1 sigma      -5.4736414825787150E-01        6.37E-09       -9.42E-10        0.00E+00
+  143   1 sigma      -5.4736414230327823E-01        5.95E-09       -8.80E-10        0.00E+00
+  144   1 sigma      -5.4736413673334772E-01        5.57E-09       -8.22E-10        0.00E+00
  ... multipole moment expansion coefficients recalculated ...
-  245   1 sigma      -5.4736405649588593E-01        6.35E-12       -9.40E-13        0.00E+00
-  246   1 sigma      -5.4736405648998465E-01        5.90E-12       -8.88E-13        0.00E+00
+  145   1 sigma      -5.4736413152359376E-01        5.21E-09       -7.68E-10        0.00E+00
+  146   1 sigma      -5.4736412665071388E-01        4.87E-09       -7.17E-10        0.00E+00
+  147   1 sigma      -5.4736412209351526E-01        4.56E-09       -6.70E-10        0.00E+00
  ... multipole moment expansion coefficients recalculated ...
-  247   1 sigma      -5.4736405648446329E-01        5.52E-12       -8.52E-13        0.00E+00
-  248   1 sigma      -5.4736405647926722E-01        5.20E-12       -8.15E-13        0.00E+00
-  249   1 sigma      -5.4736405647423347E-01        5.03E-12       -7.58E-13        0.00E+00
+  148   1 sigma      -5.4736411783172656E-01        4.26E-09       -6.26E-10        0.00E+00
+  149   1 sigma      -5.4736411384641381E-01        3.99E-09       -5.85E-10        0.00E+00
+  150   1 sigma      -5.4736411011962272E-01        3.73E-09       -5.47E-10        0.00E+00
  ... multipole moment expansion coefficients recalculated ...
-  250   1 sigma      -5.4736405646965092E-01        4.58E-12       -6.72E-13        0.00E+00
 
-       total energy: -2.7670575152130081E+00
-
- ... saving data to disk ...
-  251   1 sigma      -5.4736405646529973E-01        4.35E-12       -6.29E-13        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  252   1 sigma      -5.4736405646145081E-01        3.85E-12       -5.69E-13        0.00E+00
-  253   1 sigma      -5.4736405645775532E-01        3.70E-12       -5.60E-13        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  254   1 sigma      -5.4736405645414354E-01        3.61E-12       -5.35E-13        0.00E+00
-  255   1 sigma      -5.4736405645089170E-01        3.25E-12       -4.70E-13        0.00E+00
-  256   1 sigma      -5.4736405644791897E-01        2.97E-12       -4.37E-13        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  257   1 sigma      -5.4736405644500286E-01        2.92E-12       -4.44E-13        0.00E+00
-  258   1 sigma      -5.4736405644245845E-01        2.54E-12       -3.94E-13        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  259   1 sigma      -5.4736405643988362E-01        2.57E-12       -3.94E-13        0.00E+00
-  260   1 sigma      -5.4736405643746977E-01        2.41E-12       -3.60E-13        0.00E+00
-
-       total energy: -2.7670575151808503E+00
+       total energy: -2.7670575687979611E+00
 
  ... saving data to disk ...
-  261   1 sigma      -5.4736405643534614E-01        2.12E-12       -3.12E-13        0.00E+00
+  151   1 sigma      -5.4736410663504564E-01        3.48E-09       -5.12E-10        0.00E+00
+  152   1 sigma      -5.4736410337673180E-01        3.26E-09       -4.79E-10        0.00E+00
+  153   1 sigma      -5.4736410033008998E-01        3.05E-09       -4.48E-10        0.00E+00
  ... multipole moment expansion coefficients recalculated ...
-  262   1 sigma      -5.4736405643336816E-01        1.98E-12       -3.01E-13        0.00E+00
-  263   1 sigma      -5.4736405643137553E-01        1.99E-12       -3.00E-13        0.00E+00
-  264   1 sigma      -5.4736405642954833E-01        1.83E-12       -2.64E-13        0.00E+00
+  154   1 sigma      -5.4736409748145998E-01        2.85E-09       -4.19E-10        0.00E+00
+  155   1 sigma      -5.4736409481792148E-01        2.66E-09       -3.92E-10        0.00E+00
+  156   1 sigma      -5.4736409232735972E-01        2.49E-09       -3.67E-10        0.00E+00
  ... multipole moment expansion coefficients recalculated ...
-  265   1 sigma      -5.4736405642801400E-01        1.53E-12       -2.39E-13        0.00E+00
+  157   1 sigma      -5.4736408999831609E-01        2.33E-09       -3.43E-10        0.00E+00
+  158   1 sigma      -5.4736408782006207E-01        2.18E-09       -3.21E-10        0.00E+00
+  159   1 sigma      -5.4736408578327356E-01        2.04E-09       -3.00E-10        0.00E+00
  ... multipole moment expansion coefficients recalculated ...
-  266   1 sigma      -5.4736405642634312E-01        1.67E-12       -2.52E-13        0.00E+00
-  267   1 sigma      -5.4736405642479524E-01        1.55E-12       -2.11E-13        0.00E+00
-  268   1 sigma      -5.4736405642336838E-01        1.43E-12       -1.78E-13        0.00E+00
-  269   1 sigma      -5.4736405642219910E-01        1.17E-12       -1.48E-13        0.00E+00
- ... multipole moment expansion coefficients recalculated ...
-  270   1 sigma      -5.4736405642098829E-01        1.21E-12       -1.69E-13        0.00E+00
+  160   1 sigma      -5.4736408387861823E-01        1.90E-09       -2.81E-10        0.00E+00
 
-       total energy: -2.7670575151643062E+00
+       total energy: -2.7670575425874904E+00
 
  ... saving data to disk ...
-  271   1 sigma      -5.4736405641980279E-01        1.19E-12       -1.56E-13        0.00E+00
-  272   1 sigma      -5.4736405641873587E-01        1.07E-12       -1.29E-13        0.00E+00
-  273   1 sigma      -5.4736405641782659E-01        9.09E-13       -1.14E-13        0.00E+00
-  274   1 sigma      -5.4736405641706254E-01        7.64E-13       -1.23E-13        0.00E+00
+  161   1 sigma      -5.4736408209709575E-01        1.78E-09       -2.63E-10        0.00E+00
+  162   1 sigma      -5.4736408043099738E-01        1.67E-09       -2.46E-10        0.00E+00
  ... multipole moment expansion coefficients recalculated ...
-  275   1 sigma      -5.4736405641630936E-01        7.53E-13       -1.50E-13        0.00E+00
-  276   1 sigma      -5.4736405641547425E-01        8.35E-13       -1.61E-13        0.00E+00
-  277   1 sigma      -5.4736405641460784E-01        8.66E-13       -1.44E-13        0.00E+00
+  163   1 sigma      -5.4736407887298033E-01        1.56E-09       -2.30E-10        0.00E+00
+  164   1 sigma      -5.4736407741578552E-01        1.46E-09       -2.15E-10        0.00E+00
+  165   1 sigma      -5.4736407605306581E-01        1.36E-09       -2.01E-10        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  166   1 sigma      -5.4736407477877780E-01        1.27E-09       -1.88E-10        0.00E+00
+  167   1 sigma      -5.4736407358697314E-01        1.19E-09       -1.75E-10        0.00E+00
+  168   1 sigma      -5.4736407247262409E-01        1.11E-09       -1.64E-10        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  169   1 sigma      -5.4736407143048682E-01        1.04E-09       -1.53E-10        0.00E+00
+  170   1 sigma      -5.4736407045583757E-01        9.75E-10       -1.43E-10        0.00E+00
+
+       total energy: -2.7670575291817956E+00
+
+ ... saving data to disk ...
+  171   1 sigma      -5.4736406954471328E-01        9.11E-10       -1.34E-10        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  172   1 sigma      -5.4736406869250387E-01        8.52E-10       -1.26E-10        0.00E+00
+  173   1 sigma      -5.4736406789540348E-01        7.97E-10       -1.17E-10        0.00E+00
+  174   1 sigma      -5.4736406715019448E-01        7.45E-10       -1.10E-10        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  175   1 sigma      -5.4736406645329749E-01        6.97E-10       -1.03E-10        0.00E+00
+  176   1 sigma      -5.4736406580158903E-01        6.52E-10       -9.60E-11        0.00E+00
+  177   1 sigma      -5.4736406519224001E-01        6.09E-10       -8.98E-11        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  178   1 sigma      -5.4736406462234743E-01        5.70E-10       -8.40E-11        0.00E+00
+  179   1 sigma      -5.4736406408935512E-01        5.33E-10       -7.85E-11        0.00E+00
+  180   1 sigma      -5.4736406359105239E-01        4.98E-10       -7.34E-11        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+
+       total energy: -2.7670575223254774E+00
+
+ ... saving data to disk ...
+  181   1 sigma      -5.4736406312499275E-01        4.66E-10       -6.87E-11        0.00E+00
+  182   1 sigma      -5.4736406268914339E-01        4.36E-10       -6.42E-11        0.00E+00
+  183   1 sigma      -5.4736406228151346E-01        4.08E-10       -6.01E-11        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  184   1 sigma      -5.4736406190036169E-01        3.81E-10       -5.61E-11        0.00E+00
+  185   1 sigma      -5.4736406154394035E-01        3.56E-10       -5.25E-11        0.00E+00
+  186   1 sigma      -5.4736406121069758E-01        3.33E-10       -4.91E-11        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  187   1 sigma      -5.4736406089889789E-01        3.12E-10       -4.59E-11        0.00E+00
+  188   1 sigma      -5.4736406060740705E-01        2.91E-10       -4.29E-11        0.00E+00
+  189   1 sigma      -5.4736406033475626E-01        2.73E-10       -4.02E-11        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  190   1 sigma      -5.4736406007989924E-01        2.55E-10       -3.75E-11        0.00E+00
+
+       total energy: -2.7670575188187998E+00
+
+ ... saving data to disk ...
+  191   1 sigma      -5.4736405984142511E-01        2.38E-10       -3.51E-11        0.00E+00
+  192   1 sigma      -5.4736405961836998E-01        2.23E-10       -3.28E-11        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  193   1 sigma      -5.4736405940989874E-01        2.08E-10       -3.07E-11        0.00E+00
+  194   1 sigma      -5.4736405921504083E-01        1.95E-10       -2.87E-11        0.00E+00
+  195   1 sigma      -5.4736405903276064E-01        1.82E-10       -2.68E-11        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  196   1 sigma      -5.4736405886237982E-01        1.70E-10       -2.51E-11        0.00E+00
+  197   1 sigma      -5.4736405870297533E-01        1.59E-10       -2.35E-11        0.00E+00
+  198   1 sigma      -5.4736405855379355E-01        1.49E-10       -2.20E-11        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  199   1 sigma      -5.4736405841439351E-01        1.39E-10       -2.05E-11        0.00E+00
+  200   1 sigma      -5.4736405828390455E-01        1.30E-10       -1.92E-11        0.00E+00
+
+       total energy: -2.7670575170248672E+00
+
+ ... saving data to disk ...
+  201   1 sigma      -5.4736405816215483E-01        1.22E-10       -1.79E-11        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  202   1 sigma      -5.4736405804815802E-01        1.14E-10       -1.68E-11        0.00E+00
+  203   1 sigma      -5.4736405794146581E-01        1.07E-10       -1.57E-11        0.00E+00
+  204   1 sigma      -5.4736405784169095E-01        9.98E-11       -1.47E-11        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  205   1 sigma      -5.4736405774842822E-01        9.33E-11       -1.37E-11        0.00E+00
+  206   1 sigma      -5.4736405766117713E-01        8.73E-11       -1.28E-11        0.00E+00
+  207   1 sigma      -5.4736405757975537E-01        8.14E-11       -1.20E-11        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  208   1 sigma      -5.4736405750350614E-01        7.62E-11       -1.12E-11        0.00E+00
+  209   1 sigma      -5.4736405743208572E-01        7.14E-11       -1.05E-11        0.00E+00
+  210   1 sigma      -5.4736405736547766E-01        6.66E-11       -9.81E-12        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+
+       total energy: -2.7670575161076956E+00
+
+ ... saving data to disk ...
+  211   1 sigma      -5.4736405730316284E-01        6.23E-11       -9.19E-12        0.00E+00
+  212   1 sigma      -5.4736405724481085E-01        5.84E-11       -8.61E-12        0.00E+00
+  213   1 sigma      -5.4736405719026648E-01        5.45E-11       -8.03E-12        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  214   1 sigma      -5.4736405713922509E-01        5.10E-11       -7.52E-12        0.00E+00
+  215   1 sigma      -5.4736405709154501E-01        4.77E-11       -7.02E-12        0.00E+00
+  216   1 sigma      -5.4736405704693203E-01        4.46E-11       -6.56E-12        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  217   1 sigma      -5.4736405700521451E-01        4.17E-11       -6.14E-12        0.00E+00
+  218   1 sigma      -5.4736405696623702E-01        3.90E-11       -5.74E-12        0.00E+00
+  219   1 sigma      -5.4736405692963697E-01        3.66E-11       -5.37E-12        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  220   1 sigma      -5.4736405689567347E-01        3.40E-11       -4.99E-12        0.00E+00
+
+       total energy: -2.7670575156384309E+00
+
+ ... saving data to disk ...
+  221   1 sigma      -5.4736405686384626E-01        3.18E-11       -4.70E-12        0.00E+00
+  222   1 sigma      -5.4736405683403921E-01        2.98E-11       -4.41E-12        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  223   1 sigma      -5.4736405680609557E-01        2.79E-11       -4.14E-12        0.00E+00
+  224   1 sigma      -5.4736405678004685E-01        2.60E-11       -3.85E-12        0.00E+00
+  225   1 sigma      -5.4736405675554822E-01        2.45E-11       -3.61E-12        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  226   1 sigma      -5.4736405673289878E-01        2.26E-11       -3.35E-12        0.00E+00
+  227   1 sigma      -5.4736405671148169E-01        2.14E-11       -3.17E-12        0.00E+00
+  228   1 sigma      -5.4736405669144483E-01        2.00E-11       -2.95E-12        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  229   1 sigma      -5.4736405667292831E-01        1.85E-11       -2.73E-12        0.00E+00
+  230   1 sigma      -5.4736405665542587E-01        1.75E-11       -2.59E-12        0.00E+00
+
+       total energy: -2.7670575153985379E+00
+
+ ... saving data to disk ...
+  231   1 sigma      -5.4736405663910159E-01        1.63E-11       -2.40E-12        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  232   1 sigma      -5.4736405662380450E-01        1.53E-11       -2.25E-12        0.00E+00
+  233   1 sigma      -5.4736405660965093E-01        1.42E-11       -2.09E-12        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  234   1 sigma      -5.4736405659629228E-01        1.34E-11       -1.99E-12        0.00E+00
+  235   1 sigma      -5.4736405658376452E-01        1.25E-11       -1.85E-12        0.00E+00
+  236   1 sigma      -5.4736405657216847E-01        1.16E-11       -1.73E-12        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  237   1 sigma      -5.4736405656126852E-01        1.09E-11       -1.62E-12        0.00E+00
+  238   1 sigma      -5.4736405655097409E-01        1.03E-11       -1.53E-12        0.00E+00
+  239   1 sigma      -5.4736405654135267E-01        9.62E-12       -1.41E-12        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  240   1 sigma      -5.4736405653246312E-01        8.89E-12       -1.29E-12        0.00E+00
+
+       total energy: -2.7670575152756820E+00
+
+ ... saving data to disk ...
+  241   1 sigma      -5.4736405652406339E-01        8.40E-12       -1.22E-12        0.00E+00
+  242   1 sigma      -5.4736405651634512E-01        7.72E-12       -1.13E-12        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  243   1 sigma      -5.4736405650915332E-01        7.19E-12       -1.07E-12        0.00E+00
+  244   1 sigma      -5.4736405650223663E-01        6.92E-12       -1.03E-12        0.00E+00
+  245   1 sigma      -5.4736405649585440E-01        6.38E-12       -9.38E-13        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  246   1 sigma      -5.4736405648991737E-01        5.94E-12       -8.81E-13        0.00E+00
+  247   1 sigma      -5.4736405648432984E-01        5.59E-12       -8.33E-13        0.00E+00
+  248   1 sigma      -5.4736405647898190E-01        5.35E-12       -7.84E-13        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  249   1 sigma      -5.4736405647409159E-01        4.89E-12       -6.87E-13        0.00E+00
+  250   1 sigma      -5.4736405646946085E-01        4.63E-12       -6.43E-13        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+
+       total energy: -2.7670575152126071E+00
+
+ ... saving data to disk ...
+  251   1 sigma      -5.4736405646523711E-01        4.22E-12       -5.89E-13        0.00E+00
+  252   1 sigma      -5.4736405646134223E-01        3.89E-12       -5.62E-13        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  253   1 sigma      -5.4736405645759789E-01        3.74E-12       -5.43E-13        0.00E+00
+  254   1 sigma      -5.4736405645419528E-01        3.40E-12       -5.05E-13        0.00E+00
+  255   1 sigma      -5.4736405645089548E-01        3.30E-12       -4.91E-13        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  256   1 sigma      -5.4736405644786967E-01        3.03E-12       -4.47E-13        0.00E+00
+  257   1 sigma      -5.4736405644503505E-01        2.83E-12       -4.37E-13        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  258   1 sigma      -5.4736405644229036E-01        2.74E-12       -4.07E-13        0.00E+00
+  259   1 sigma      -5.4736405643996511E-01        2.33E-12       -3.53E-13        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  260   1 sigma      -5.4736405643765984E-01        2.31E-12       -3.83E-13        0.00E+00
+
+       total energy: -2.7670575151811994E+00
+
+ ... saving data to disk ...
+  261   1 sigma      -5.4736405643546115E-01        2.20E-12       -3.54E-13        0.00E+00
+  262   1 sigma      -5.4736405643329977E-01        2.16E-12       -3.26E-13        0.00E+00
+  263   1 sigma      -5.4736405643136932E-01        1.93E-12       -2.79E-13        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  264   1 sigma      -5.4736405642945773E-01        1.91E-12       -2.55E-13        0.00E+00
+  265   1 sigma      -5.4736405642784036E-01        1.62E-12       -2.11E-13        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  266   1 sigma      -5.4736405642626718E-01        1.57E-12       -2.07E-13        0.00E+00
+  267   1 sigma      -5.4736405642482677E-01        1.44E-12       -1.94E-13        0.00E+00
+  268   1 sigma      -5.4736405642355868E-01        1.27E-12       -1.86E-13        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  269   1 sigma      -5.4736405642233277E-01        1.23E-12       -1.97E-13        0.00E+00
+  270   1 sigma      -5.4736405642101094E-01        1.32E-12       -1.98E-13        0.00E+00
+
+       total energy: -2.7670575151643484E+00
+
+ ... saving data to disk ...
+  271   1 sigma      -5.4736405641998753E-01        1.02E-12       -1.58E-13        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  272   1 sigma      -5.4736405641895947E-01        1.03E-12       -1.72E-13        0.00E+00
+  273   1 sigma      -5.4736405641795849E-01        1.00E-12       -1.61E-13        0.00E+00
+  274   1 sigma      -5.4736405641708230E-01        8.76E-13       -1.48E-13        0.00E+00
+  275   1 sigma      -5.4736405641618657E-01        8.96E-13       -1.45E-13        0.00E+00
+  276   1 sigma      -5.4736405641536123E-01        8.25E-13       -1.22E-13        0.00E+00
+  277   1 sigma      -5.4736405641467356E-01        6.88E-13       -1.13E-13        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+  278   1 sigma      -5.4736405641391972E-01        7.54E-13       -1.21E-13        0.00E+00
            
  ... orbital energy threshold reached ...
  ... multipole moment expansion coefficients recalculated ...
  ... saving data to disk ...
 
-     total energy:                 -2.7670575151579966E+00
-     total electronic energy:      -2.7670575151579966E+00
-     virial ratio:                 -2.0119792376020289E+00
+     total energy:                 -2.7670575151573322E+00
+     total electronic energy:      -2.7670575151573322E+00
+     virial ratio:                 -2.0119792376017731E+00
+
+     (MC)SOR iterations:                5560
 
      nuclear attraction energy:            -6.582097538730
      kinetic energy:                        2.734302653990
      one-electron energy:                  -3.847794884740
-     Coulomb energy:                        1.979072259356
+     Coulomb energy:                        1.979072259357
      exchange energy:                      -0.898334889774
      nuclear repulsion energy:              0.000000000000
      exchange-correlation energy (LXC):    -0.898334889774
 
         orbital                 energy             1-norm
-      1 sigma          -5.4736405641460784E-01    1.44E-13
+      1 sigma          -5.4736405641391972E-01    1.21E-13
 
 
      total energy uncertainty due to orbital norms not being equal 1:
-     absolute = +/-0.45E-12,  relative = +/-0.16E-10%
+     absolute = +/-0.34E-12,  relative = +/-0.12E-10%
 ///////////////////////////////////////////////////////////////////////////////////////////////
  CPU summary (sec):
     Lagrange multipliers ......................     0.33
-    normalization+orthogonalization ...........     0.03
-    multipole moments .........................     0.08
-    total energy ..............................     0.27
-    relaxation of orbitals ....................     5.71
-    relaxation of Coulomb & exchange potentials     2.46
-    relaxation of orbitals & potentials .......     8.17
-    SCF iterations ............................     8.61
+    normalization+orthogonalization ...........     0.05
+    multipole moments .........................     0.04
+    total energy ..............................     0.30
+    relaxation of orbitals ....................     6.20
+    relaxation of Coulomb & exchange potentials     2.47
+    relaxation of orbitals & potentials .......     8.66
+    SCF iterations ............................     9.08
 
  System clock summary (sec):
-    relaxation of orbitals ....................     5.72
-    relaxation of Coulomb & exchange potentials     2.48
-    relaxation of orbitals & potentials .......     8.20
+    multipole moments .........................     0.05
+    relaxation of orbitals ....................     6.22
+    relaxation of Coulomb & exchange potentials     2.47
+    relaxation of orbitals & potentials .......     8.69
 
  Speedup:                                           1.00
 ///////////////////////////////////////////////////////////////////////////////////////////////
-       start:  2023/06/20  17:45:32.38                                                         
-        stop:  2023/06/20  17:45:41.42                                                         
-  start-stop:                     9.04
+       start:  2023/10/28  20:43:58.75                                                         
+        stop:  2023/10/28  20:44:08.30                                                         
+  start-stop:                     9.55
 
 command-line:  /home/jkob/github/x2dhf-v3/bin/xhf input-2 output-1 output-2
-      system:  Linux gateway 5.14.0-284.11.1.el9_2.x86_64 x86_64 x86_64 GNU/Linux
-         CPU:  Intell(R) Xeon(R) Silver 4310 CPU @ 2.10GHz
+      system:  Linux nscobie 6.2.15-100.fc36.x86_64 x86_64 x86_64 GNU/Linux
+         CPU:  Intell(R) Core(TM) i5-8265U CPU @ 1.60GHz / CPU(s)=8 / OMP_THREAD_LIMIT=8
 ////////////////////////////////////////////////////////////////////////////////////////////////

@@ -16,6 +16,5 @@ scf 100 10 6 12 3
 conv 2000
 fixorb 1 2 
 omega 1.85 -1.87
-lm2 
 stop
 

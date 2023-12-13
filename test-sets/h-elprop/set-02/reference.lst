@@ -24,6 +24,8 @@
           H (  1.00)      (  0.00)   R =  2.00000 bohr = 1.05835 angstroms
 
    Method: HF
+
+   Nuclear potential: Coulomb
            finite electric field: -1.00E-03 au
 
    Electronic configuration:
@@ -60,8 +62,6 @@
 
    (MC)SOR:
           SOR method used for relaxing orbitals
-          SOR method used for relaxing Coulomb potentials
-          SOR method used for relaxing exchange potentials
 
           maximal number of Coulomb+exchange potentials per orbital =  1
 
@@ -90,7 +90,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
  ... retrieving data from disk ...
-         timestamp: 2023/06/12  20:02:00.72                                                         
+         timestamp: 2023/10/28  20:51:49.51                                                         
            version: x2dhf-v3       
              title: H F=+0.0                                                                        
  ... orbitals and potentials retrieved ... 
@@ -978,6 +978,8 @@
      total electronic energy:      -5.0000225005612831E-01
      virial ratio:                 -2.0000180011313446E+00
 
+     (MC)SOR iterations:               12440
+
      nuclear attraction energy:            -0.999995499668
      kinetic energy:                        0.499993249612
      one-electron energy:                  -0.500002250056
@@ -1036,27 +1038,28 @@
                                       -0.5876842533792577E-02
 ///////////////////////////////////////////////////////////////////////////////////////////////
  CPU summary (sec):
-    Lagrange multipliers ......................     3.12
-    normalization+orthogonalization ...........     0.45
+    Lagrange multipliers ......................     3.00
+    normalization+orthogonalization ...........     0.50
     multipole moments .........................     0.00
     total energy ..............................     0.32
-    relaxation of orbitals ....................    20.69
-    relaxation of Coulomb & exchange potentials    21.49
-    relaxation of orbitals & potentials .......    42.18
-    SCF iterations ............................    45.75
+    relaxation of orbitals ....................    20.31
+    relaxation of Coulomb & exchange potentials    21.04
+    relaxation of orbitals & potentials .......    41.35
+    SCF iterations ............................    44.85
 
  System clock summary (sec):
-    relaxation of orbitals ....................    21.63
-    relaxation of Coulomb & exchange potentials    21.55
-    relaxation of orbitals & potentials .......    43.17
+    multipole moments .........................     0.00
+    relaxation of orbitals ....................    20.37
+    relaxation of Coulomb & exchange potentials    21.08
+    relaxation of orbitals & potentials .......    41.46
 
- Speedup:                                           0.98
+ Speedup:                                           1.00
 ///////////////////////////////////////////////////////////////////////////////////////////////
-       start:  2023/06/12  20:02:07.60                                                         
-        stop:  2023/06/12  20:02:55.04                                                         
-  start-stop:                    47.44
+       start:  2023/10/28  20:51:53.27                                                         
+        stop:  2023/10/28  20:52:38.93                                                         
+  start-stop:                    45.66
 
 command-line:  /home/jkob/github/x2dhf-v3/bin/xhf input output output-1
-      system:  Linux gateway 5.14.0-284.11.1.el9_2.x86_64 x86_64 x86_64 GNU/Linux
-         CPU:  Intell(R) Xeon(R) Silver 4310 CPU @ 2.10GHz
+      system:  Linux nscobie 6.2.15-100.fc36.x86_64 x86_64 x86_64 GNU/Linux
+         CPU:  Intell(R) Core(TM) i5-8265U CPU @ 1.60GHz / CPU(s)=8 / OMP_THREAD_LIMIT=8
 ////////////////////////////////////////////////////////////////////////////////////////////////

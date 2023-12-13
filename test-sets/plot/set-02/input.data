@@ -1,0 +1,30 @@
+title  Ne+9
+!! Ne+9: OED : generating 1-6 sigma orbitals (sor)
+method oed
+nuclei  10.0 0.0  1.4
+config 4
+  1 pi +
+  1 pi +
+  1 pi +
+  1 pi +
+  1 pi +
+  1 pi + end
+grid 269 60.0
+orbpot hydrogen
+!orbpot old 
+lcao 
+ 1.0 7 1 11.0   0.0   1 0  1.0  
+ 1.0 6 1 11.0   0.0   1 0  1.0  
+ 1.0 5 1 11.0   0.0   1 0  1.0  
+ 1.0 4 1 11.0   0.0   1 0  1.0  
+ 1.0 3 1 11.0   0.0   1 0  1.0  
+ 1.0 2 1 11.0   0.0   1 0  1.0  
+scf  1500 20 12 10 3
+conv 2000
+omega 1.8
+fastscf
+tail
+plot 1
+stop
+
+

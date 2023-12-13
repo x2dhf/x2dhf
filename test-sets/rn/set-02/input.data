@@ -8,7 +8,7 @@ config  0
   9 pi                                                                            
   15 sigma end                                                                    
 grid 295 40.0
-orbpot hf
+orbpot hf 1
 scf  4000 10 8 12 3
 conv 1000
 stop

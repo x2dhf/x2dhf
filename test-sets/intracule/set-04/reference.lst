@@ -67,14 +67,12 @@
               multipole moments recalc = 1.00E+15  (mpole=4)
 
           orbitals are relaxed
-          Coulomb potentials are kept frozen
+          Coulomb potentials are relaxed
 
           multipole expansion coefficients =  4
 
    (MC)SOR:
           SOR method used for relaxing orbitals
-          SOR method used for relaxing Coulomb potentials
-          SOR method used for relaxing exchange potentials
 
           maximal number of Coulomb+exchange potentials per orbital =  1
 
@@ -96,7 +94,7 @@
    Memory usage:
           text+data                                      0.9 MB 
           bss (common block contributions)              64.7 MB
-          dynamical allocation                          89.5 MB 
+          dynamical allocation                         114.2 MB 
               orbitals                                   4.5 MB
               Coulomb potentials                         7.5 MB
               exchange potentials                       30.5 MB
@@ -104,8 +102,6 @@
  ... initializing orbitals from hydrogenic functions ...
  ... initializing multipole moment coefficients ...
  ... initializing Lagrange multipliers ...
-      Coulomb potentials not relaxed
-      exchange potentials not relaxed
      total energy:                  8.4451633161415067E+00
      total electronic energy:       8.4451633161415067E+00
      virial ratio:                  1.8628988107077831E+01
@@ -2767,6 +2763,7 @@
      total electronic energy:       3.0785559452462610E+00
      virial ratio:                  1.5465571395873210E+00
 
+     (MC)SOR iterations:               13650
 
      nuclear attraction energy:             1.869646905905
      kinetic energy:                        1.208909039341
@@ -2785,25 +2782,26 @@
      absolute = +/-0.00E+00,  relative = +/-0.00E+00%
 ///////////////////////////////////////////////////////////////////////////////////////////////
  CPU summary (sec):
-    Lagrange multipliers ......................     8.37
-    normalization+orthogonalization ...........     3.06
+    Lagrange multipliers ......................    10.05
+    normalization+orthogonalization ...........     3.79
     multipole moments .........................     0.00
-    total energy ..............................     2.22
-    relaxation of orbitals ....................    54.68
+    total energy ..............................     2.91
+    relaxation of orbitals ....................    73.74
     relaxation of Coulomb & exchange potentials     0.00
-    relaxation of orbitals & potentials .......    54.69
-    SCF iterations ............................    66.12
+    relaxation of orbitals & potentials .......    73.74
+    SCF iterations ............................    87.58
 
  System clock summary (sec):
-    relaxation of orbitals ....................    54.92
+    multipole moments .........................     0.00
+    relaxation of orbitals ....................    74.05
     relaxation of Coulomb & exchange potentials     0.00
-    relaxation of orbitals & potentials .......    54.92
+    relaxation of orbitals & potentials .......    74.05
 ///////////////////////////////////////////////////////////////////////////////////////////////
-       start:  2023/07/07  13:54:53.25                                                         
-        stop:  2023/07/07  13:56:03.40                                                         
-  start-stop:                    70.15
+       start:  2023/11/10  10:45:23.29                                                         
+        stop:  2023/11/10  10:46:56.40                                                         
+  start-stop:                    93.11
 
 command-line:  /home/jkob/github/x2dhf-v3/bin/xhf input output
       system:  Linux nscobie 6.2.15-100.fc36.x86_64 x86_64 x86_64 GNU/Linux
-         CPU:  Intell(R) Core(TM) i5-8265U CPU @ 1.60GHz
+         CPU:  Intell(R) Core(TM) i5-8265U CPU @ 1.60GHz / CPU(s)=8
 ////////////////////////////////////////////////////////////////////////////////////////////////

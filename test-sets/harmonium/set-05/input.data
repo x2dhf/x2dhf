@@ -1,21 +1,14 @@
-title Harmonium: 3 lowest pi states
-!! Harmonium: 3 lowest pi states
+title Hooke's atom LDA_X potential
+!! Hooke's atom: ground state when LDA_X potential is present
 method ted 
-pothooke 
-nuclei  2.0 0.0 2.0
-config -4
- 1 pi + - 
- 1 pi + -
- 1 pi + -   end
+pothooke
+dft xc_lda_x
+nuclei  1.0 1.0 1.0
+config 0
+ 1 sigma g  end
 grid 169 10.0
-orbpot  hydrogen 0 
+orbpot hydrogen 0 
 lcao
-  1.0  3 1 1.0   1.0  3 1  1.0    
-  1.0  2 1 1.0  -1.0  2 1  1.0    
-  1.0  2 1 1.0   1.0  2 1  1.0    
-scf  3000 10 8 14  3
-conv 5000
-omega 1.8 1.8
-!order col-wise
-altsweeps
+  1.0  1 0 1.0   1.0  1 0  1.0  
+scf  500 10 10 14  3
 stop

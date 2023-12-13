@@ -1,5 +1,5 @@
 title TlF
-!! TlF: HF cals with initial hydrogenic orbitals : optimal value of omega_orb too large!
+!! TlF: HF cals with initial hydrogenic orbitals : optimal omega values 
 method hf                                                                       
 nuclei  81.0 9.0  3.93898                                                       
 config  0                                                                       
@@ -8,7 +8,7 @@ config  0
   9 pi                                                                            
  17 sigma end                                                                    
 grid 445 50.0                                                                   
-orbpot hydrogen 0
+orbpot hydrogen 
 lcao
 1.0   4 3 13.0   0.0   2 1   13.0                                          
 1.0   5 2 13.0   0.0   2 1   13.0                                           
