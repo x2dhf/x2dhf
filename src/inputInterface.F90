@@ -2819,27 +2819,6 @@ contains
     return
   end subroutine read_scf
 
-  subroutine read_scforder
-    use params
-    use discrete
-    use scfshr
-    use solver
-    use commons
-    use data4II
-    implicit none
-    ! label: scforder
-    do iorb=1,norb
-       call inInt(itmp)
-       if (itmp.ne.inpiexit) then
-          iscforder(iorb)=itmp
-       else
-          write(iout6,'(/2x,"Error: missing or incorrect entry - see User''s guide."/)')
-          stop 'read_scforder'
-       endif
-    enddo
-    return
-  end subroutine read_scforder
-
   subroutine read_sor
     use params
     use discrete

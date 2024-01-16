@@ -326,11 +326,6 @@ contains
 
     co1lda=one
     co2lda=one
-    ! array iscforder is used to change the defaukt order of relaxation
-    ! of orbitals during scf process
-    do i=1,maxorb
-       iscforder(i)=0
-    enddo
 
     iout4kinpot=0
     
