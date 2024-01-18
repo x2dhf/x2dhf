@@ -23,9 +23,12 @@ openmp=
 optLevel=3
 pthread=
 print=
-tpool=
 realprec=8
+static=
 summary=
+tpool=
+
+
 # ok wall="-Wsurprising" 
 # ok wall="-Waliasing"
 # ok wall="-Wampersand"
@@ -104,7 +107,7 @@ ${bold}NAME${normal}
 ${bold}SYNOPSIS${normal}
        x2dhfctl help|-h|--help
 
-       x2dhfctl [-a] [-b] [-g] [-i 8] [-l|L] [-o|p|q] [-r 16] [f95|gfortran]
+       x2dhfctl [-a] [-b] [-g] [-i 8] [-l|L] [-o|p|q|s] [-r 16] [f95|gfortran]
        x2dhfctl [-a] [-b] [-g] [-i 8] [-l|L] [-m] [-r 16] ifort
        x2dhfctl log|showlog
        x2dhfctl tgz
@@ -241,6 +244,14 @@ ${bold}OPTIONS${normal}
            Sets the length of floating-point numbers to 16 bytes (8 is the
            default).
 
+       -s
+           On systems that provide libgfortran as a shared and a static
+           library, this option forces the use of the static version
+           (option -static-libgfortran is added to the linker).
+
+ Sets the length of floating-point numbers to 16 bytes (8 is the
+           default).
+
        -t
            Support for a multi-threaded (p-thread) version of coulExchSORPT and
            MCSORPT routines is added. It is carried out through a pool of
@@ -339,7 +350,7 @@ MUTEX=
 trace=-1
 TRACE=
 
-while getopts "abBDfghi:lLMopO:Pqr:tT:UWXv" option; do
+while getopts "abBDfghi:lLMopO:Pqr:stT:UWXv" option; do
     case $option in
 	a ) wall=-Wall;;
         b ) cleanBUILD;;
@@ -360,6 +371,7 @@ while getopts "abBDfghi:lLMopO:Pqr:tT:UWXv" option; do
 	P ) FFLAGS="$FFLAGS -DPRINT";;
 	r ) realprec=$OPTARG;
 	    [[ "$realprec" != "16" ]] && echo -e "Error: wrong value of option '-r'\n\n" && help && exit;;
+	s ) static=on;;
 	t ) tpool=on;;
 	T ) trace=$OPTARG;;
 	X ) TRACE="-DMUTEX";;		
@@ -408,6 +420,8 @@ status=$(grep 'q0' src/dgamit.F)
 
 if [[ $compiler == gfortran || $compiler == f95 ]]
 then
+    [[ -n $static ]] && LIB1=-static-libgfortran
+    
     export X2DHF=$(echo $PWD | sed -e 's/\//\\\//g' )
 
     if [[ -z $debug ]]
