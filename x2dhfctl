@@ -459,7 +459,13 @@ then
 	export LDOPT2="-llapack -lblas "
     fi
 
-    [[ $intprec == 8 ]] && FFLAGS="$FFLAGS -fdefault-integer-8" 
+    perl -pi -e 's/IPREC = \d/IPREC = 4/' src/params.f90    
+    if [[ $intprec == 8 ]]
+    then
+	FFLAGS="$FFLAGS -fdefault-integer-8"
+	perl -pi -e 's/IPREC = \d/IPREC = 8/' src/params.f90
+    fi
+    
     if [[ $realprec == 16 ]]
     then
 	FFLAGS="$FFLAGS -freal-8-real-16"
