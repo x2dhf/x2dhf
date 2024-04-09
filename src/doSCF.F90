@@ -13,7 +13,7 @@ module doSCF
 
   integer (KIND=IPREC) :: ibonus,iepoch,nepochs
   parameter (ibonus=3,iepoch=10,nepochs=5000)
-  integer (KIND=IPREC), dimension(maxorb) :: iorbiter
+  integer (KIND=IPREC), dimension(maxorb) :: iorbiter,iscforder
   integer (KIND=IPREC) :: inde,indn
   real (PREC), dimension(maxorb) :: deltaee,deltaNorm,eeOld
   real (PREC) :: deltaeeMax,deltaNormMax,iscf
