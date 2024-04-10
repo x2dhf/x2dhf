@@ -328,6 +328,7 @@ contains
     co2lda=one
 
     iout4kinpot=0
+    iout4dd=0
     
     incrni=10
     incrmu=10

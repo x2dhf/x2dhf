@@ -10,7 +10,6 @@ module inputInterface
   integer (KIND=IPREC) :: jrec,jump
   integer (KIND=IPREC),dimension(i40) :: istrt,inumb
   character*1, dimension(i80) :: ia
-  character*80 :: header
 
 contains
 
@@ -717,7 +716,6 @@ contains
     ! read the title of a current case (it must be the first input card)
     ! label: title
 
-    !call inCardh(header)
     call inCardTitle(title)
     call inStr(clabel)
     if (clabel.ne.'title'.and.clabel.ne.'TITLE') then
@@ -791,6 +789,7 @@ contains
        if (clabel.eq.'omegaopt') call read_omegaopt       
        if (clabel.eq.'orbpot') call read_orbpot
        if (clabel.eq.'order') call read_order
+       if (clabel.eq.'out4dd') call read_out4dd       
        if (clabel.eq.'plot') call read_plot       
        if (clabel.eq.'potgsz') call read_potgsz
        if (clabel.eq.'potgszg') call read_potgszg
@@ -2430,18 +2429,13 @@ contains
     return
   end subroutine read_order
 
-  ! subroutine read_out4dd
-  !   use params
-  !   use discrete
-  !   use scfshr
-  !   use solver
-  !   use commons
-  !   use data4II
-    
-  !   implicit none
-  !   iout4dd=1
-  !   return
-  ! end subroutine read_out4dd
+  subroutine read_out4dd
+    use params
+    use commons
+    implicit none
+    iout4dd=1
+    return
+  end subroutine read_out4dd
 
   subroutine read_potgsz
     use params

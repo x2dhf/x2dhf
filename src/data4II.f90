@@ -8,7 +8,7 @@ module data4II
 
     real (PREC) :: clo,cloe,co12,fmfield,ftmp,ftmp1,ftmp2,tmp1,tmp2,totchar,totq,z1t,z2t 
 
-    parameter (nmethods=6,nlabels=69,maxflags=40,maxdfts=2)
+    parameter (nmethods=6,nlabels=70,maxflags=40,maxdfts=2)
     character*4 cdftext(maxdfts),cdftcorrt(maxdfts)
     character*8 clabel,clabel1,clabel2,char8
     character*8 labellc(nlabels),cmethod(nmethods)
@@ -27,12 +27,12 @@ module data4II
          'potkh'    , 'print'    , 'prtevery' , 'scf'      , 'scfexch' ,&
          'sor'      , 'stop'     , 'title'    , 'xalpha'   , 'potharm2',&
          'pothooke' , 'potsap'   , 'lxcpolar' , 'detnan'   , 'fixnan'  ,&
-         'mcsor-ce' , 'mcsor-o'  , 'sor4orb'  , 'sor4pot'  ,            &
+         'mcsor-ce' , 'mcsor-o'  , 'sor4orb'  , 'sor4pot'  , 'out4dd'  ,&
          'slowexch' , 'chktoten' , 'coulexch' , 'fastscf'  , 'lcao4lda',&
          'omegaopt' , 'tail'     , 'kinpot'   , 'lxcpolar' , 'densthld',&
          'potcoul2' , 'potcoul3' , 'lm'       , 'lm0'      , 'lm1'     ,&
          'lm2'      , 'altsweep' , 'omegaz'   , 'intracul' , 'extracul',&
-         'fixpot'   , 'gauss'    , 'grid'     , 'homo'     , 'plot' /
+         'fixpot'   , 'gauss'    , 'grid'     , 'homo'     , 'plot'    /
 
     data cdftext /'lda','b88'/
     data cdftcorrt /'lyp','vwn'/

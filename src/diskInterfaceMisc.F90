@@ -16,6 +16,7 @@ contains
   subroutine writeDisk4dd 
     use blas
     use commons
+    use data4II
     use discrete
     use params
     use printUtils
@@ -26,7 +27,7 @@ contains
     use utils
     
     implicit none
-    integer (KIND=IPREC) :: i4,i1beg,iorb,ngrid,isym4nu,isym4mu,isymmetry
+    integer (KIND=IPREC) :: i4,i1beg,ngrid,isym4nu,isym4mu,isymmetry
     real (PREC), dimension(:), pointer :: psi,excp,f0,f4,&
               wk0,wk1,wk2,wk3,r8mxsize,r8mxsize1
     excp=>exchptr
@@ -43,7 +44,7 @@ contains
     open(9999,file='out4dd.dat', status='unknown',form='formatted')
     
     !  call getDateTime(datetime)
-    write(9999,'(a80)') header
+    write(9999,'(80a1)') title
     !  write(9999,'(a80)') datetime
     write(9999,'(" nnu nmu ")') 
     write(9999,formint) nni,nmu(1)
