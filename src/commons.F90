@@ -123,7 +123,7 @@ module commons
   
   integer (KIND=IPREC) :: iharm2xy,magfield,inclorb,iinterp,imethod,ipot,&
        ienterm,ienterm4init,inoterm,iftail,iplot,istep
-  integer (KIND=IPREC) :: iout4dd,iout4dft,iout4kinpot
+  integer (KIND=IPREC) :: iout4pair,iout4dft,iout4kinpot
 
   integer (KIND=IPREC) :: saveSCFdata,recalcMM
   integer (KIND=IPREC) :: io,ir, maxscf,idftex,idftcorr,ini4,iscmc,&

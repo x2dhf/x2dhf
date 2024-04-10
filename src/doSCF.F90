@@ -861,7 +861,7 @@ contains
     call getCpuTime(time2)
     ttoten=ttoten+(time2-time1)
  
-    if (iout4dd==1) call writeDisk4dd
+    if (iout4pair==1) call writeDisk4pair
   
     if (iout4dft==1) call writeDisk4dft
   

@@ -7,13 +7,10 @@ module diskInterfaceMisc
   implicit none
 
 contains
-  ! ### writeDisk4dd ### 
+  ! ### writeDisk4pair ### 
   !
-  !     Writes orbitals, potenials, Lagrange multipliers (diagonal 
-  !     and off-diagonal) and multipole expansion coefficients to a disk 
-  !     file in either formatted or unformatted form
-  !
-  subroutine writeDisk4dd 
+  !     Writes orbitals in formatted form for the x5dhf program to use.
+  subroutine writeDisk4pair 
     use blas
     use commons
     use data4II
@@ -41,7 +38,7 @@ contains
     r8mxsize =>scratchptr( 4*mxsize8+1: 5*mxsize8)            
     r8mxsize1 =>scratchptr( 5*mxsize8+1: 6*mxsize8)
     
-    open(9999,file='out4dd.dat', status='unknown',form='formatted')
+    open(9999,file='out4pair.dat', status='unknown',form='formatted')
     
     !  call getDateTime(datetime)
     write(9999,'(80a1)') title
@@ -206,7 +203,7 @@ contains
     
     close(9999)
     
-  end subroutine writeDisk4dd
+  end subroutine writeDisk4pair
 
   ! ### writeDisk4dft ### 
   !

@@ -27,7 +27,7 @@ module data4II
          'potkh'    , 'print'    , 'prtevery' , 'scf'      , 'scfexch' ,&
          'sor'      , 'stop'     , 'title'    , 'xalpha'   , 'potharm2',&
          'pothooke' , 'potsap'   , 'lxcpolar' , 'detnan'   , 'fixnan'  ,&
-         'mcsor-ce' , 'mcsor-o'  , 'sor4orb'  , 'sor4pot'  , 'out4dd'  ,&
+         'mcsor-ce' , 'mcsor-o'  , 'sor4orb'  , 'sor4pot'  , 'out4pair',&
          'slowexch' , 'chktoten' , 'coulexch' , 'fastscf'  , 'lcao4lda',&
          'omegaopt' , 'tail'     , 'kinpot'   , 'lxcpolar' , 'densthld',&
          'potcoul2' , 'potcoul3' , 'lm'       , 'lm0'      , 'lm1'     ,&

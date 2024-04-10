@@ -789,7 +789,7 @@ contains
        if (clabel.eq.'omegaopt') call read_omegaopt       
        if (clabel.eq.'orbpot') call read_orbpot
        if (clabel.eq.'order') call read_order
-       if (clabel.eq.'out4dd') call read_out4dd       
+       if (clabel.eq.'out4pair') call read_out4pair       
        if (clabel.eq.'plot') call read_plot       
        if (clabel.eq.'potgsz') call read_potgsz
        if (clabel.eq.'potgszg') call read_potgszg
@@ -2429,13 +2429,13 @@ contains
     return
   end subroutine read_order
 
-  subroutine read_out4dd
+  subroutine read_out4pair
     use params
     use commons
     implicit none
-    iout4dd=1
+    iout4pair=1
     return
-  end subroutine read_out4dd
+  end subroutine read_out4pair
 
   subroutine read_potgsz
     use params
