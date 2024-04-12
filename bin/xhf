@@ -80,6 +80,10 @@ ${bold}OPTIONS${normal}
            The hard-linked x2dhf-lxc binary is used when invoking the program
            x2dhf; see the option '-l' of the x2dhfctl script.
 
+       -L
+          The local copy of the program binary x2dhf is invoked instead of
+          the bin/x2dhf one. As a result the program can be recompiled when in use.
+
        -o
            The hard-linked x2dhf-openmp binary is used when invoking the program
            x2dhf; see the option '-o' of the x2dhfctl script. 
@@ -183,6 +187,9 @@ ${bold}POSITIONAL ARGUMENTS${normal}
            retrieved from <input_file_prefix>.[dat|orb|coul|exch] files and
            are saved into the <output_file_prefix>.[dat|orb|coul|exch]
            files
+
+
+
 
 ${bold}AUTHOR${normal}
        Jacek Kobus <jacek.kobus@umk.pl> 
@@ -413,7 +420,7 @@ function checkSetBinary {
 	ln $X2DHF_DIRECTORY/bin/x2dhf-$ext1-$ext2 x2dhf
 	ln $X2DHF_DIRECTORY/bin/x2dhf-$ext1-$ext2 .
     fi
-    binary=./x2dhf
+    binary=x2dhf
 }
 
 
@@ -421,9 +428,9 @@ cleanExit()
 {
     rm -f x2dhf-{s,lxc,openmp,pthread,tpool}
     rm -f x2dhf-{openmp-lxc,pthread-lxc,tpool-lxc}    
-    rm -f $sepBinary
     rm_2dhf_input
     rm_2dhf_output
+    rm -f x2dhf x2dhf-$system     
     exit
 }
 
@@ -444,8 +451,9 @@ ext2=
 pinfty=
 
 schedPolicy=batch
+localBinary=
 
-while getopts "DegIlopOPstv" Option
+while getopts "DegIlLopOPstv" Option
 do
     case $Option in
 	D ) showDebug; exit;;
@@ -453,6 +461,7 @@ do
 	g ) gprof=yes;;
 	I ) schedPolicy=idle;;		
 	l ) ext2=lxc;;
+	L) localBinary=yes;;
 	o ) ext1=openmp;;
 	O ) schedPolicy=normal;;	
 	p ) ext1=pthread;;
@@ -618,11 +627,22 @@ then
     #warning "making a hard link and continue ..."
     [[ -f x2dhf ]] || ln $X2DHF_DIRECTORY/bin/x2dhf .
     binary=x2dhf
+    echo "xx"
+    exit 
 fi
 
 sepBinary=x2dhf-$system
 
-[[ -f $sepBinary ]] || ln $binary $sepBinary >& /dev/null 
+if [[ $localBinary == yes ]]
+then
+    
+    rm -f x2dhf x2dhf-$system
+    cp -f $X2DHF_DIRECTORY/bin/x2dhf .
+    mv x2dhf x2dhf-$system
+    sepBinary=./x2dhf-$system
+else
+    [[ -f $sepBinary ]] || ln $binary $sepBinary >& /dev/null 
+fi
 
 [[ $2 == "" && $3 == "" ]] && message "Error: an argument is missing." 
 
