@@ -15,6 +15,7 @@ contains
     use commons
     use data4II
     use discrete
+    !use normOrtho
     use params
     use printUtils
     use inout
@@ -37,6 +38,10 @@ contains
     wk3 =>scratchptr( 3*mxsize8+1: 4*mxsize8)
     r8mxsize =>scratchptr( 4*mxsize8+1: 5*mxsize8)            
     r8mxsize1 =>scratchptr( 5*mxsize8+1: 6*mxsize8)
+
+    if (nel==1) then
+       call zeroArray(mxsize,excp)
+    endif
     
     open(9999,file='out4pair.dat', status='unknown',form='formatted')
     
@@ -125,6 +130,7 @@ contains
        do i4=1,ngrid
           r8mxsize(i4)=psi(i1beg+i4-1)
        enddo
+       ! call norm(iorb)
        
        write(9999,'(/" orbital=",i3,1x,a8,1x,a1," orbital function")') iorn(iorb),bond(iorb),gusym(iorb)
        call prtmatcw(nni,mxnmu,r8mxsize,9999)
