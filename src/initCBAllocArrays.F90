@@ -497,7 +497,7 @@ contains
   ! ### zgsz2 ###
   !
   !      Evaluate the model HF potential according to the formula derived by
-  !      Green, Sellin, Zachor (Phys. Rev. 184 (1969) 1) using Z1 centre
+  !      Green, Sellin, Zachor (Phys. Rev. 184 (1969) 1) using Z2 centre
   !
   function zgsz2(i,j)
     use params
@@ -1628,7 +1628,7 @@ contains
     enddo
   end subroutine initLP
 
-  ! ### initSupplSM ###
+  ! ### initSuppl ###
   !
   !     Initialises various supplementary arrays of case-dependent lengths
   !     supported by cw_suppl (one-electron potentials, Jacobians,

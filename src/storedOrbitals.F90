@@ -1412,15 +1412,16 @@ contains
     write(*,*)
 
 
-    ! initialize Coulomb and exchange potentials
-    if (hfIncl) then
-       call initCoulomb
-    else
-       ! calling initCoulombSAP(pot,f4) instead of initCoulomb seems to
+    ! initialize Coulomb potentials
+    if (ldaIncl) then
+       ! calling initCoulombSAP instead of initCoulomb seems to
        ! result in a slightly slower convergence rate
+       call initCoulombSAP       
+    else
        call initCoulomb
-       !call initCoulombSAP(pot,f4)
     endif
+
+    ! initialize exchange potentials    
     call initExchange
   end subroutine initStoredOrbs
 
