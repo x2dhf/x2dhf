@@ -195,16 +195,25 @@ contains
                 vetat=veta(in)
                 r1t=(r/2.0_PREC)*(vxi(imu)+veta(in))
                 r2t=(r/2.0_PREC)*(vxi(imu)-veta(in))
-                
-                excp(igp)=z1-effective_coulomb_charge(iz1,r1t)*co1lda+&
-                      z2-effective_coulomb_charge(iz2,r2t)*co2lda
-                if (abs(excp(igp))>infinity) then
-                   write(*,'("initCoulombSAP",i2,a8,3i5,2e12.4)') &
-                        iorn(iorb),bond(iorb),imu,in,iz1,r1t,effective_coulomb_charge(iz1,r1t)
-                   write(*,'("initCoulombSAP",i2,a8,3i5,2e12.4)') &
-                        iorn(iorb),bond(iorb),imu,in,iz2,r2t,effective_coulomb_charge(iz2,r2t)
-                   excp(igp)=excp(igp-1)
+
+                if (r1t>precis.and.r2t>precis) then
+                   excp(igp)=-effective_coulomb_charge(iz1,r1t)*co1lda/r1t &
+                             -effective_coulomb_charge(iz2,r2t)*co2lda/r2t
+                elseif (r1t>precis) then
+                   excp(igp)=-effective_coulomb_charge(iz1,r1t)*co1lda/r1t 
+                elseif (r2t>precis) then
+                   excp(igp)=-effective_coulomb_charge(iz2,r2t)*co1lda/r2t 
+                else
+                   excp(igp)=zero
                 endif
+                
+                ! if (abs(excp(igp))>infinity) then
+                !    write(*,'("initCoulombSAP",i2,a8,3i5,2e12.4)') &
+                !         iorn(iorb),bond(iorb),imu,in,iz1,r1t,effective_coulomb_charge(iz1,r1t)
+                !    write(*,'("initCoulombSAP",i2,a8,3i5,2e12.4)') &
+                !         iorn(iorb),bond(iorb),imu,in,iz2,r2t,effective_coulomb_charge(iz2,r2t)
+                !    excp(igp)=excp(igp-1)
+                ! endif
              enddo
           enddo
           excp1=>excp(i1b(iorb):)

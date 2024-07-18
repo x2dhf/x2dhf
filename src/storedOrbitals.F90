@@ -1415,8 +1415,8 @@ contains
     ! initialize Coulomb potentials
     if (ldaIncl) then
        ! calling initCoulombSAP instead of initCoulomb seems to
-       ! result in a slightly slower convergence rate
-       call initCoulombSAP       
+       ! make no difference in terms of the SCF convergence rate
+       call initCoulombSAP
     else
        call initCoulomb
     endif
