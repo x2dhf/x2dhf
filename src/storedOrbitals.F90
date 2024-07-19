@@ -304,14 +304,14 @@ contains
           mgx(2,iorb)=lhf1(i1start)
           mgx(3,iorb)=0
           lcaomap(iorb,1)=i1start
-          co1(iorb)=one
+          co1(iorb)=half
           eza1(iorb)=effz1(i1start)
           
           mgx(4,iorb)=nhf2(i1start)
           mgx(5,iorb)=lhf2(i1start)
           mgx(6,iorb)=0
           lcaomap(iorb,2)=i1start
-          co2(iorb)=one
+          co2(iorb)=half
           eza2(iorb)=effz2(i1start)
           if (gusym(iorb)=="u") co2(iorb)=-one
           
@@ -362,13 +362,13 @@ contains
           mgx(2,iorb)=lhf1(i1start)
           mgx(3,iorb)=0
           lcaomap(iorb,1)=i1start
-          co1(iorb)=one
+          co1(iorb)=half
           eza1(iorb)=effz1(i1start)
           mgx(4,iorb)=nhf2(i1start)
           mgx(5,iorb)=lhf2(i1start)
           mgx(6,iorb)=0
           lcaomap(iorb,2)=i1start
-          co2(iorb)=one
+          co2(iorb)=half
           eza2(iorb)=effz2(i1start)
           if (gusym(iorb)=="u") co2(iorb)=-one
           
@@ -420,14 +420,14 @@ contains
           mgx(2,iorb)=lhf1(i1start)
           mgx(3,iorb)=0
           lcaomap(iorb,1)=i1start
-          co1(iorb)=one
+          co1(iorb)=half
           eza1(iorb)=effz1(i1start)
           
           mgx(4,iorb)=nhf2(i1start)
           mgx(5,iorb)=lhf2(i1start)
           mgx(6,iorb)=0
           lcaomap(iorb,2)=i1start
-          co2(iorb)=one
+          co2(iorb)=half
           eza2(iorb)=effz2(i1start)
           if (gusym(iorb)=="u") co2(iorb)=-one
           
@@ -479,14 +479,14 @@ contains
           mgx(2,iorb)=lhf1(i1start)
           mgx(3,iorb)=0
           lcaomap(iorb,1)=i1start
-          co1(iorb)=one
+          co1(iorb)=half
           eza1(iorb)=effz1(i1start)
           
           mgx(4,iorb)=nhf2(i1start)
           mgx(5,iorb)=lhf2(i1start)
           mgx(6,iorb)=0
           lcaomap(iorb,2)=i1start
-          co2(iorb)=one
+          co2(iorb)=half
           eza2(iorb)=effz2(i1start)
           if (gusym(iorb)=="u") co2(iorb)=-one
           
@@ -686,7 +686,7 @@ contains
     integer (KIND=IPREC) ::  igp,ihf1,ihf2,ilabel,imu,in,inioff,iorderl,ishift,mxmax1,mxmax2, &
          nwf1,nwf2,ouf2dhf1,ouf2dhf2
     integer (KIND=IPREC) :: i,j,iorb,l1,m1,n1,l2,m2,n2,ns,np,nd,nf,nwf1n
-    real (PREC) :: costh1,costh2,psi1,psi2,psi1prev,psi2prev,shn1,shn2,r1t,r2t,rr,xnorm,z
+    real (PREC) :: co12,costh1,costh2,psi1,psi2,psi1prev,psi2prev,shn1,shn2,r1t,r2t,rr,xnorm,z
     integer (KIND=IPREC) :: zlda1, zlda2,icen
 
     real (PREC) :: sf4effz
@@ -1412,10 +1412,19 @@ contains
     write(*,*)
 
 
+    ! normalize mixing coefficients
+    do iorb=1,norb
+       co12=abs(co1(iorb))+abs(co2(iorb))
+       if (abs(co12)>epsilon(zero)) then
+          co1(iorb)=co1(iorb)/co12
+          co2(iorb)=co2(iorb)/co12
+       endif
+    enddo
+
     ! initialize Coulomb potentials
     if (ldaIncl) then
        ! calling initCoulombSAP instead of initCoulomb seems to
-       ! make no difference in terms of the SCF convergence rate
+       ! result in a bit smaller convergence rate
        call initCoulombSAP
     else
        call initCoulomb

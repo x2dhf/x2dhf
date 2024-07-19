@@ -22,10 +22,7 @@ contains
     
     implicit none
 
-    integer (KIND=IPREC) :: i3beg,igp,imu,in,inioff,iorb,iorb1,iorb2,iorb2t,irec,ishift,k
-    real (PREC), parameter :: slim=1.0_PREC
-    real (PREC), parameter :: zc1=1.0_PREC
-    real (PREC), parameter :: zc2=1.0_PREC
+    integer (KIND=IPREC) :: i3beg,igp,imu,in,inioff,iorb,iorb1,iorb2,iorb2t,irec,ishift,k,iz1,iz2
     real (PREC) :: ch1,ch2,crt1,crt2,ez1,ez2,ra1,ra2,vetat,vxit
     real (PREC), dimension(:), pointer :: excp,excp1,f4
 
@@ -36,34 +33,36 @@ contains
 
     print *,'... initializing Coulomb potentials (pottf) ...'
 
+    iz1=nint(z1)
+    iz2=nint(z2)
+
     if (.not.linitFuncsNoexch) then
        ! Initialization of Coulomb potentials
-       ! loop over orbitals
        do iorb=1,norb
           if (inhyd(iorb).eq.0) cycle
           ishift=i1b(iorb)-1
           ez1=eza1(iorb)
           ez2=eza2(iorb)
-          ch1=-1.00_PREC
-          ch2=-1.00_PREC
-
-          if (ez1.lt.precis) ch1=-2.00_PREC
-          if (ez2.lt.precis) ch2=-2.00_PREC
 
           crt1=abs(co1(iorb))
           crt2=abs(co2(iorb))
-          do imu=1,mxnmu
-             inioff=(imu-1)*nni
-             vxit=vxi(imu)
-             do in=1,nni
+          do in=1,nni
+             vetat=veta(in)
+             do imu=1,mxnmu
+                inioff=(imu-1)*nni
+                vxit=vxi(imu)
                 igp=ishift+inioff+in
-                vetat=veta(in)
-                if (imu.eq.1.and.in.eq.1) then
+                if (imu.eq.1.and.(in.eq.1.or.in.eq.nni)) then
                    excp(igp)=0.0_PREC
+                elseif (iz1/=0 .and. iz2/=0) then
+                   excp(igp)=-pottf(r,vetat,vxit)*crt1&
+                        -pottf(r,(-vetat),vxit)*crt2
                 else
-                   excp(igp)=pottf(r, vetat,vxit,zc1,ch1,slim)*crt1+pottf(r,(-vetat),vxit,zc2,ch2,slim)*crt2
+                   excp(igp)=-pottf(r,vetat,vxit)*crt1
                    !if (mod(igp,2000)==0) write(*,'(2i5,7e12.4)') imu,in,r,crt1,crt2,ez1,ez2,excp(igp)
+                   !write(*,'(2i5,7e12.4)') in,imu,excp(igp)                   
                 endif
+                !write(*,'("initCoulomb",2i4,4e12.4)') in,imu,vetat,vxit,crt1,excp(igp)
              enddo
           enddo
           excp1=>exchptr(i1b(iorb):)
@@ -183,37 +182,32 @@ contains
        iz2=nint(z2)
 
        do iorb=1,norb
-
           ishift=i1b(iorb)-1
+          co1lda=co1(iorb)
+          co2lda=co2(iorb)
 
           !  loop over grid points
-          do imu=1,mxnmu
-             inioff=(imu-1)*nni
-             vxit=vxi(imu)
-             do in=1,nni
+          do in=1,nni
+             do imu=1,mxnmu
+                inioff=(imu-1)*nni
+                vxit=vxi(imu)
                 igp=ishift+inioff+in
                 vetat=veta(in)
                 r1t=(r/2.0_PREC)*(vxi(imu)+veta(in))
                 r2t=(r/2.0_PREC)*(vxi(imu)-veta(in))
-
-                if (r1t>precis.and.r2t>precis) then
-                   excp(igp)=-effective_coulomb_charge(iz1,r1t)*co1lda/r1t &
-                             -effective_coulomb_charge(iz2,r2t)*co2lda/r2t
+                
+                if (iz1/=0 .and. iz2/=0) then
+                   if (r1t>precis.and.r2t>precis) then
+                      excp(igp)=-abs(z1-effective_coulomb_charge(iz1,r1t))*co1lda/r1t&
+                           -abs(z2-effective_coulomb_charge(iz2,r2t))*co2lda/r2t
+                   else
+                      excp(igp)=zero
+                   endif
                 elseif (r1t>precis) then
-                   excp(igp)=-effective_coulomb_charge(iz1,r1t)*co1lda/r1t 
-                elseif (r2t>precis) then
-                   excp(igp)=-effective_coulomb_charge(iz2,r2t)*co1lda/r2t 
+                   excp(igp)=-abs(z1-effective_coulomb_charge(iz1,r1t))*co1lda/r1t
                 else
                    excp(igp)=zero
                 endif
-                
-                ! if (abs(excp(igp))>infinity) then
-                !    write(*,'("initCoulombSAP",i2,a8,3i5,2e12.4)') &
-                !         iorn(iorb),bond(iorb),imu,in,iz1,r1t,effective_coulomb_charge(iz1,r1t)
-                !    write(*,'("initCoulombSAP",i2,a8,3i5,2e12.4)') &
-                !         iorn(iorb),bond(iorb),imu,in,iz2,r2t,effective_coulomb_charge(iz2,r2t)
-                !    excp(igp)=excp(igp-1)
-                ! endif
              enddo
           enddo
           excp1=>excp(i1b(iorb):)
@@ -225,25 +219,25 @@ contains
 
   ! ### pottf ###
   !
-  !     Calculates a Thomas-Fermi potential (a modified version of dentfa by Desclaux)
+  !     Calculates a Thomas-Fermi potential (a modified version of DENTFA by Desclaux)
   !
-  function pottf(r,ek,qk,dz,ch,slim)
+  function pottf(r,veta,vxi)
     use params
 
     implicit none
     real (PREC) :: pottf
-    real (PREC) :: ch,dz,ek,qk,r,slim,t,w
+    real (PREC) :: veta,vxi,r,rab,t,w
 
     pottf=0.0_PREC
-    if ((dz+ch).lt.1.e-04_PREC)  return
-    if (abs(qk+ek).lt.1.e-10_PREC) return
-
-    w=r*(qk+ek)/2.0_PREC*(dz+ch)**(1.0_PREC/3.0_PREC)
-    w=sqrt(w/0.885340_PREC)
+    if (abs(vxi+veta).lt.precis) return
+    !w=r*(qk+ek)/2.0_PREC*(dz+ch)**(1.0_PREC/3.0_PREC)
+    ! distance from either A or B centre
+    rab=r*(vxi+veta)/2.0_PREC
+    w=sqrt(rab/0.885340_PREC)
     t=w*(0.6011200_PREC*w+1.8106100_PREC)+1.0_PREC
     w=w*(w*(w*(w*(0.0479300_PREC*w+0.2146500_PREC)+0.7711200_PREC)+1.3951500_PREC)+1.8106100_PREC)+1.0_PREC
-    pottf=slim*(1.0_PREC-(t/w)*(t/w))*2.0_PREC/(r*(qk+ek))
-
+    pottf=(1.0_PREC-(t/w)*(t/w))/rab
+    !write(*,'(3e14.4)') rab,pottf,pottf*rab
   end function pottf
 
   ! ### slaterPot ###
