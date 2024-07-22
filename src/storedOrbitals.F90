@@ -644,24 +644,23 @@ contains
              write (*,*) 'Normalization of LCAOs'
           endif
           call norm94 (iorb,xnorm)
-          !write (*,1115) iorn(iorb),bond(iorb),gusym(iorb),xnorm
           if (lcaomap(iorb,1)/=0) ehc=ehf1(lcaomap(iorb,1))
           if (lcaomap(iorb,2)/=0) ehc=ehf2(lcaomap(iorb,2))
 
           write (*,1116) iorn(iorb),bond(iorb),gusym(iorb),xnorm,&
                lcaomap(iorb,1),lcaomap(iorb,2),ehc,eh(iorb)
 1115      format(i4,1x,a8,a1,3x,e22.16,2e16.2)
-          !1116      format(i4,1x,a8,a1,3x,e22.16,2i6,e14.4)
 1116      format(i4,1x,a8,a1,3x,e22.16,2i6,2f14.4)
        endif
     enddo
     write(*,*)
 
     ! initialize Coulomb and exchange potentials
-    if (hfIncl) then
-       call initCoulomb
-    else
+    ! initialize Coulomb potentials
+    if (ldaIncl) then
        call initCoulombSAP
+    else
+       call initCoulomb
     endif
     call initExchange
 
@@ -1423,8 +1422,6 @@ contains
 
     ! initialize Coulomb potentials
     if (ldaIncl) then
-       ! calling initCoulombSAP instead of initCoulomb seems to
-       ! result in a bit smaller convergence rate
        call initCoulombSAP
     else
        call initCoulomb
