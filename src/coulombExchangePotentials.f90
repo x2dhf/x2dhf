@@ -56,7 +56,7 @@ contains
                    excp(igp)=0.0_PREC
                 elseif (iz1/=0 .and. iz2/=0) then
                    excp(igp)=-pottf(r,vetat,vxit)*crt1&
-                        -pottf(r,(-vetat),vxit)*crt2
+                             -pottf(r,(-vetat),vxit)*crt2
                 else
                    excp(igp)=-pottf(r,vetat,vxit)*crt1
                    !if (mod(igp,2000)==0) write(*,'(2i5,7e12.4)') imu,in,r,crt1,crt2,ez1,ez2,excp(igp)
@@ -205,7 +205,7 @@ contains
                       excp(igp)=-effective_coulomb_charge(iz2,r2t)*co2lda/r2t
                    endif
                 elseif (r1t>precis) then
-                   excp(igp)=-abs(z1-effective_coulomb_charge(iz1,r1t))*co1lda/r1t
+                   excp(igp)=-effective_coulomb_charge(iz1,r1t)*co1lda/r1t
                 endif
                 if (abs(excp(igp))<1.0e-10_PREC) excp(igp)=-1.0e-10_PREC 
              enddo
