@@ -283,22 +283,21 @@ function makeArchive {
 }
 
 function makeLibxc {
-
-    if [[ ! -f libxc-${LIBXCVERSION}.tar.gz ]]
+    if [[ ! -f libxc-${LIBXCVERSION}.tar.bz2 ]]
     then
-	status=$(wget --no-check-certificate http://www.tddft.org/programs/libxc/down.php?file=${LIBXCVERSION}/libxc-${LIBXCVERSION}.tar.gz)
+        status=$(wget https://gitlab.com/libxc/libxc/-/archive/${LIBXCVERSION}/libxc-${LIBXCVERSION}.tar.bz2)
+	
 	if [[ $? != 0 ]]
 	then
 	    echo $status
 	    exit
 	fi
-	mv down.php\?file=${LIBXCVERSION}%2Flibxc-${LIBXCVERSION}.tar.gz libxc-${LIBXCVERSION}.tar.gz
     fi
 
     libxcDir=no
     if [[ ! -d libxc-${LIBXCVERSION} ]]
     then
-	tar xzf libxc-${LIBXCVERSION}.tar.gz
+	tar xjf libxc-${LIBXCVERSION}.tar.bz2
 	libxcDir=yes
     fi
 
@@ -316,7 +315,17 @@ EOF
     fi
 	
     cd libxc-${LIBXCVERSION}
-    
+    rpms="autoconf automake libtool m4"
+    continue=yes
+    for rpm in $rpms
+    do
+	rpm -qi $rpm >& /dev/null 
+	[[ $? == 1 ]] && echo "$rpm package is missing ... " && continue=no
+    done
+    [[ $continue == no ]] && echo "install missing packages and run the script again ..." && exit
+
+    [[ -f ./configure ]] || autoreconf -i 
+
     if [[ $VERBOSE == on ]] 
     then
 	./configure CFLAGS=-std=gnu99 --prefix=$INSTALLPREFIX/libxc
@@ -332,7 +341,7 @@ EOF
     cat <<EOF
 
     libxc is ready
-    libxc-${LIBXCVERSION} and libxc-${LIBXCVERSION}.tar.gz can be removed
+    libxc-${LIBXCVERSION} and libxc-${LIBXCVERSION}.tar.bz2 can be removed
 
 EOF
 }
