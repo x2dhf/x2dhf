@@ -110,7 +110,7 @@ ${bold}SYNOPSIS${normal}
        x2dhfctl [-a] [-b] [-g] [-i 8] [-l|L] [-o|p|q|s] [-r 16] [f95|gfortran]
        x2dhfctl [-a] [-b] [-g] [-i 8] [-l|L] [-m] [-r 16] ifort
        x2dhfctl log|showlog
-       x2dhfctl tgz
+       x2dhfctl bz2
 
 ${bold}DESCRIPTION${normal}
        This script employs the buildsystem generator CMake to facilitate the
@@ -172,8 +172,8 @@ ${bold}USAGE EXAMPLES${normal}
            directives; the executable x2dhf is copied as x2dhf and x2dhf-mkl to
            bin/ directory.
 
-       x2dhfctl tgz
-           Creates the tgz archive of the program files.
+       x2dhfctl bz2
+           Creates a bz2 archive of the program files.
 
 
 ${bold}OPTIONS${normal}
@@ -278,15 +278,15 @@ EOF
 }
 
 function makeArchive {
-    tar cvzf x2dhf-v3.tgz -T list_of_files_4_tgz.txt
+    tar cvjf x2dhf-v3.tar.bz2 -T list_of_files_4_bz2.txt
     exit
 }
 
 function makeLibxc {
     if [[ ! -f libxc-${LIBXCVERSION}.tar.bz2 ]]
     then
-        status=$(wget https://gitlab.com/libxc/libxc/-/archive/${LIBXCVERSION}/libxc-${LIBXCVERSION}.tar.bz2)
-	
+        status=$(wget --no-check-certificate https://gitlab.com/libxc/libxc/-/archive/${LIBXCVERSION}/libxc-${LIBXCVERSION}.tar.bz2)
+
 	if [[ $? != 0 ]]
 	then
 	    echo $status
@@ -322,10 +322,14 @@ EOF
 	rpm -qi $rpm >& /dev/null 
 	[[ $? == 1 ]] && echo "$rpm package is missing ... " && continue=no
     done
-    [[ $continue == no ]] && echo "install missing packages and run the script again ..." && exit
+    [[ $continue == no ]] && echo "install missing packages and run the script again" && exit
 
-    [[ -f ./configure ]] || autoreconf -i 
-
+    if [[ ! -f ./configure ]]
+    then
+	autoupdate
+	autoreconf -i 
+    fi
+    
     if [[ $VERBOSE == on ]] 
     then
 	./configure CFLAGS=-std=gnu99 --prefix=$INSTALLPREFIX/libxc
@@ -346,7 +350,7 @@ EOF
 EOF
 }
 
-[[ $1 == tgz ]] && makeArchive && exit 
+[[ $1 == bz2 ]] && makeArchive && exit 
 
 [[ $host == tc06 ]] && module add cmake/$CMVERSION 
 
