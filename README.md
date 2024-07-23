@@ -87,7 +87,7 @@ CMake are needed to compile and build the program. This can be done by running
 usage.
 
 `test-sets/` directory contains the dozens of specific examples and the testctl
-script should be used to list and run them.
+script should be used to list and run them (try 'testctl -h').
 
 `./lda_orbitals` and `./hf_orbitals` directories contain LDA and HF orbitals for a
 number of atomic systems. These orbitals can be used to start the SCF process. The data
@@ -99,9 +99,12 @@ Perl scripts to facilitate the usage of the program (run `source .x2dhfrc`
 to adjust the PATH variable accordingly). First of all try `xhf -h` and
 `testctl -h`. See also `elpropctl -h`, `lxcctl -h` and `pecctl -h`.
 
-To give the program a try, execute the following command: `cd tests; testctl run h/set-01.`
+To give the program a try, execute the following commands:
+ source .x2dhfrc
+ cd tests
+ testctl run h/set-01
 
 Jacek Kobus
 
-2023-12-13
+2024-07-23
 
