@@ -656,8 +656,7 @@ contains
     write(*,*)
 
     ! initialize Coulomb and exchange potentials
-    ! initialize Coulomb potentials
-    if (ldaIncl) then
+    if (ldaIncl.and.ldaSAPIncl) then
        call initCoulombSAP
     else
        call initCoulomb
@@ -1421,7 +1420,7 @@ contains
     enddo
 
     ! initialize Coulomb potentials
-    if (ldaIncl) then
+    if (ldaIncl.and.ldaSAPIncl) then
        call initCoulombSAP
     else
        call initCoulomb

@@ -97,7 +97,7 @@ contains
 #ifdef LIBXC
     lxcSupp=.true.
 #endif
-
+    ldaSAPIncl=.false.
     lpotCoulomb=.true.
     lpotCoul2=.false.
     lpotCoul3=.false.            

@@ -110,7 +110,7 @@ module commons
   logical lpotCoulomb,lpotCoul2,lpotCoul3,lpotFermi,lpotGauss,&
        lpotGSZ,lpotGSZG,lpotKH,lpotSAP,lspherium,lfefield,lmmoments,&
        lpotHarm2,lpotHarm3,lpotHooke,lintracule,lextracule
-  logical loffDiagLM ,hfIncl,homoIncl,lcaoIncl,ldaIncl,mcsorpt,mmoments,omegaIncl,openShell
+  logical loffDiagLM ,hfIncl,homoIncl,lcaoIncl,ldaIncl,ldaSAPIncl,mcsorpt,mmoments,omegaIncl,openShell
   logical lpotmcsor,lorbmcsor,lmcsorpt,lcoulexch,openmp,pthread,tpool
   logical lfixcoul,lfixexch,lfixorb,lfixorb4init,lfastexch,lfastscf,lcheckTotEnergy,&
        lplot,lpthreadpoolq,ltail

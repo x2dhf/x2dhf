@@ -775,7 +775,6 @@ contains
        if (clabel.eq.'extracul') call read_extracule
        if (clabel.eq.'intracul') call read_intracule
        if (clabel.eq.'lcao') call read_lcao
-       if (clabel.eq.'lcao4lda') call read_lcao4lda
        if (clabel.eq.'lxcpolar') lxcPolar=.true.
        if (clabel.eq.'mcsor') call read_mcsor
        if (clabel.eq.'mcsor-o') call read_mcsor_o
@@ -1879,40 +1878,6 @@ contains
     return
   end subroutine read_lcao
 
-
-  subroutine read_lcao4lda
-    use params
-    use discrete
-    use scfshr
-    use solver
-    use commons
-    use data4II
-   
-    implicit none
-    logical :: inhydStatus, inDFTStatus
-    
-    if (icompLEnc.ne.5) then
-       write(iout6,'(/2x,"Error: incorrect order of labels.")')
-       write(iout6,'( 2x,"Order expected: TITLE METHOD NUCLEI CONFIG GRID ORBPOT"/)')
-       stop 'read_lcao'
-    endif
-
-    ! icompLEnc=icompLEnc+1
-    icompLAdd=icompLAdd+1
-
-    call inFloat(co1lda)
-    if (abs(co1lda)<epsilon(zero)) then
-       co1lda=one
-       co2lda=one
-    else
-       call inFloat(co2lda)
-       if (abs(co2lda)<epsilon(zero)) then
-          co2lda=one
-       endif
-    endif
-    return
-  end subroutine read_lcao4lda
-
   subroutine read_maxsor
     use params
     use discrete
@@ -2361,6 +2326,11 @@ contains
     elseif (clabel.eq.'lda') then
        !ini=12
        ldaIncl=.true.
+       linitFuncsLDA=.true.
+    elseif (clabel.eq.'ldasap') then
+       !ini=12
+       ldaIncl=.true.
+       ldaSAPIncl=.true.
        linitFuncsLDA=.true.
     elseif (clabel.eq.'hf') then
        !ini=13

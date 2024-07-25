@@ -148,7 +148,6 @@ contains
 
   end subroutine initExchange
   
-
   subroutine initCoulombSAP 
     !USE, INTRINSIC :: IEEE_ARITHMETIC, ONLY: IEEE_IS_FINITE    
     use params
@@ -163,58 +162,52 @@ contains
     implicit none
 
     integer (KIND=IPREC) :: i3beg,igp,imu,in,inioff,iorb,iorb1,iorb2,iorb2t,irec,ishift,iz1,iz2,k
+    real (PREC), parameter :: sign4cp=-1.0_PREC
     real (PREC) :: ra1,ra2,r1t,r2t,vetat,vxit
-    real (PREC) :: infinity
     real (PREC), dimension(:), pointer :: excp,excp1,f4
 
     excp=>exchptr
     f4=>supplptr(i4b(9):)
     
-    infinity=huge(one)
-    
     if (OED.or.initFuncsOED) return
 
     print *,'... initializing Coulomb potentials (effective_coulomb_charge) ...'
-    
+
     if (.not.linitFuncsNoexch) then
        ! Initialization of Coulomb potentials
        iz1=nint(z1)
        iz2=nint(z2)
-
        do iorb=1,norb
           ishift=i1b(iorb)-1
           co1lda=co1(iorb)
           co2lda=co2(iorb)
-
-          do imu=1,mxnmu
-             inioff=(imu-1)*nni
-             vxit=vxi(imu)
-             do in=1,nni
+          do in=1,nni
+             do imu=1,mxnmu
+                inioff=(imu-1)*nni
                 igp=ishift+inioff+in
+                vxit=vxi(imu)
                 vetat=veta(in)
                 r1t=(r/2.0_PREC)*(vxi(imu)+veta(in))
                 r2t=(r/2.0_PREC)*(vxi(imu)-veta(in))
                 
                 if (iz1/=0 .and. iz2/=0) then
                    if (r1t>precis.and.r2t>precis) then
-                      excp(igp)=-effective_coulomb_charge(iz1,r1t)*co1lda/r1t&
-                                -effective_coulomb_charge(iz2,r2t)*co2lda/r2t
+                      excp(igp)=sign4cp*(z1-effective_coulomb_charge(iz1,r1t))*co1lda/r1t&
+                               +sign4cp*(z2-effective_coulomb_charge(iz2,r2t))*co2lda/r2t
                    elseif (r1t>precis) then
-                      excp(igp)=-effective_coulomb_charge(iz1,r1t)*co1lda/r1t
+                      excp(igp)=sign4cp*(z1-effective_coulomb_charge(iz1,r1t))*co1lda/r1t
                    elseif (r2t>precis) then
-                      excp(igp)=-effective_coulomb_charge(iz2,r2t)*co2lda/r2t
+                      excp(igp)=sign4cp*(z2-effective_coulomb_charge(iz2,r2t))*co2lda/r2t
                    endif
                 elseif (r1t>precis) then
-                   excp(igp)=-effective_coulomb_charge(iz1,r1t)*co1lda/r1t
+                   excp(igp)=sign4cp*(z1-effective_coulomb_charge(iz1,r1t))*co1lda/r1t
                 endif
-                if (abs(excp(igp))<1.0e-10_PREC) excp(igp)=-1.0e-10_PREC 
              enddo
           enddo
           excp1=>excp(i1b(iorb):)
           call prod(mxsize,f4,excp1)
        enddo
     endif
-
   end subroutine initCoulombSAP
 
   ! ### pottf ###
@@ -230,14 +223,12 @@ contains
 
     pottf=0.0_PREC
     if (abs(vxi+veta).lt.precis) return
-    !w=r*(qk+ek)/2.0_PREC*(dz+ch)**(1.0_PREC/3.0_PREC)
     ! distance from either A or B centre
     rab=r*(vxi+veta)/2.0_PREC
     w=sqrt(rab/0.885340_PREC)
     t=w*(0.6011200_PREC*w+1.8106100_PREC)+1.0_PREC
     w=w*(w*(w*(w*(0.0479300_PREC*w+0.2146500_PREC)+0.7711200_PREC)+1.3951500_PREC)+1.8106100_PREC)+1.0_PREC
     pottf=(1.0_PREC-(t/w)*(t/w))/rab
-    !write(*,'(3e14.4)') rab,pottf,pottf*rab
   end function pottf
 
   ! ### slaterPot ###
