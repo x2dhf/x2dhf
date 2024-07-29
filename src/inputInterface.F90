@@ -10,6 +10,7 @@ module inputInterface
   integer (KIND=IPREC) :: jrec,jump
   integer (KIND=IPREC),dimension(i40) :: istrt,inumb
   character*1, dimension(i80) :: ia
+  character*80 :: header
 
 contains
 
@@ -716,6 +717,7 @@ contains
     ! read the title of a current case (it must be the first input card)
     ! label: title
 
+    !call inCardh(header)
     call inCardTitle(title)
     call inStr(clabel)
     if (clabel.ne.'title'.and.clabel.ne.'TITLE') then
@@ -1870,10 +1872,10 @@ contains
        endif
     enddo
 
-    ! ini=5 enables to retrieve from complete/uncomplete dump file
-    ! if only one (the highest= the first) orbital is missing
-    ! the rest is retreived and the first is initialized as 
-    ! a hydrogenic one (ini is changed from 5 to 4)
+    ! ini=5 enables to retrieve from complete/uncomplete dump file if only
+    ! one (the highest= the first) orbital is missing the rest is retreived
+    ! and the first is initialized as a hydrogenic one (ini is changed from
+    ! 5 to 4)
 
     return
   end subroutine read_lcao
@@ -1886,7 +1888,6 @@ contains
     use commons
     use data4II
     implicit none
-    ! label: maxsor
     
     do iorb=1,norb
        call inInt(itmp1)
@@ -1971,7 +1972,7 @@ contains
     !       nthreads - number of threads used to relax grid points of a given colour 
     !   maxsororb(2) - maximal number of micro (mc)sor iterations during relaxation
     !                  of every orbital in an SCF cycle
-    !   maxsorpot(2) - maximal number of micro (mc)sor iterations during relaxation
+    !   maxsororb(1) - maximal number of macro (mc)sor iterations during relaxation
     !                  of every potential in an SCF cycle
     lorbmcsor=.true.
     if (mcsorpt) then
@@ -1984,15 +1985,11 @@ contains
        call inInt(itmp)
        if (itmp.ne.inpiexit) then
           maxsor2 = itmp
-          do i=1,norb
-             maxsororb(i)=maxsor2
-          enddo
+          maxsororb(2)=itmp
           call inInt(itmp)
           if (itmp.ne.inpiexit) then
              maxsor3 = itmp 
-             do i=1,norb
-                maxsorpot(i)=maxsor3
-             enddo
+             maxsororb(1)=itmp
           endif
        endif
     endif
@@ -2011,8 +2008,10 @@ contains
     implicit none
     ! label: mcsor-ce
     !    nthreads - number of threads used to relax grid points of a given colour 
-    !   maxsorpot - maximal number of (mc)sor iterations during relaxation
-    !               of every potential in an SCF cycle
+    !   maxsorpot(2) - maximal number of micro mcsor iterations during relaxation
+    !                  of every potential in an SCF cycle
+    !   maxsorpot(1) - maximal number of macro mcsor iterations during relaxation
+    !                  of every potential in an SCF cycle
     lpotmcsor=.true.
     if (mcsorpt) then
        lmcsorpt=.true.
@@ -2023,13 +2022,16 @@ contains
        nthreads = itmp
        call inInt(itmp)
        if (itmp.ne.inpiexit) then
-          maxsor3 = itmp 
-          do i=1,norb
-             maxsorpot(i)=maxsor3
-          enddo
+          maxsor2 = itmp
+          maxsorpot(2)=itmp
+          call inInt(itmp)
+          if (itmp.ne.inpiexit) then
+             maxsor3 = itmp 
+             maxsorpot(1)=itmp
+          endif
        endif
     endif
-
+       
     return
   end subroutine read_mcsor_ce
 
@@ -2332,6 +2334,12 @@ contains
        ldaIncl=.true.
        ldaSAPIncl=.true.
        linitFuncsLDA=.true.
+       ienterm4init=1
+       lfixorb4init=.true.
+       lfixorb=.true.       
+       do i=1,norb
+          ifixorb(i)=1
+       enddo
     elseif (clabel.eq.'hf') then
        !ini=13
        hfIncl=.true.
@@ -2783,6 +2791,28 @@ contains
     return
   end subroutine read_scf
 
+  subroutine read_scforder
+    use params
+    use discrete
+    use scfshr
+    use solver
+    use commons
+    use data4II
+    use doSCF, only : iscforder
+    implicit none
+    ! label: scforder
+    do iorb=1,norb
+       call inInt(itmp)
+       if (itmp.ne.inpiexit) then
+          iscforder(iorb)=itmp
+       else
+          write(iout6,'(/2x,"Error: missing or incorrect entry - see User''s guide."/)')
+          stop 'read_scforder'
+       endif
+    enddo
+    return
+  end subroutine read_scforder
+
   subroutine read_sor
     use params
     use discrete
@@ -2819,7 +2849,7 @@ contains
     ! label: sor4orb
     !     maxsororb(2) - maximal number of micro SOR iterations during relaxation
     !                    of an orbital in a single SCF cycle
-    !     maxsororb91) - maximal number of macro SOR iterations during relaxation
+    !     maxsororb(1) - maximal number of macro SOR iterations during relaxation
     !                    of an orbital in a single SCF cycle, i.e. every orbital
     !                    undergoes maxsor1*maxsor2 SOR iterations in a single SCF 
     !                    iteration

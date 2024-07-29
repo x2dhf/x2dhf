@@ -142,6 +142,14 @@ contains
           read(ouf2dhf1,*) rhf1(j),(phf1(i,j),i=1,nwf1)
        enddo
 
+       if (hfIncl) then       
+          do i=1,nwf1
+             do j=1,mxmax1
+                phf1(i,j)=phf1(i,j)/rhf1(j)
+             enddo
+          enddo
+       endif
+       
 #ifdef PRINT
 ! print=220: initStoredOrb4homo: Orbitals on centre Z1: i,nhf1(i),lhf1(i),ehf1(i) 
        if (iprint(220).ne.0) then
@@ -226,6 +234,14 @@ contains
        do j=1,mxmax2
           read(ouf2dhf2,*) rhf2(j),(phf2(i,j),i=1,nwf2)
        enddo
+
+       if (hfIncl) then
+          do i=1,nwf2
+             do j=1,mxmax2
+                phf2(i,j)=phf2(i,j)/rhf2(j)
+             enddo
+          enddo
+       endif
 
 #ifdef PRINT
 ! print=220: initStoredOrb4homo: Orbitals on centre Z2: i,nhf2(i),lhf2(i),ehf2(i) 
@@ -644,23 +660,28 @@ contains
              write (*,*) 'Normalization of LCAOs'
           endif
           call norm94 (iorb,xnorm)
+          !write (*,1115) iorn(iorb),bond(iorb),gusym(iorb),xnorm
           if (lcaomap(iorb,1)/=0) ehc=ehf1(lcaomap(iorb,1))
           if (lcaomap(iorb,2)/=0) ehc=ehf2(lcaomap(iorb,2))
 
           write (*,1116) iorn(iorb),bond(iorb),gusym(iorb),xnorm,&
                lcaomap(iorb,1),lcaomap(iorb,2),ehc,eh(iorb)
 1115      format(i4,1x,a8,a1,3x,e22.16,2e16.2)
+          !1116      format(i4,1x,a8,a1,3x,e22.16,2i6,e14.4)
 1116      format(i4,1x,a8,a1,3x,e22.16,2i6,2f14.4)
        endif
     enddo
     write(*,*)
 
     ! initialize Coulomb and exchange potentials
-    if (ldaIncl.and.ldaSAPIncl) then
-       call initCoulombSAP
-    else
-       call initCoulomb
+    if (ldaIncl) then
+       if (ldaSAPIncl) then
+          call initCoulombSAP
+          call initExchange
+          return
+       endif
     endif
+    call initCoulomb
     call initExchange
 
   end subroutine initStoredOrbs4homo
@@ -821,6 +842,13 @@ contains
        do j=1,mxmax1
           read(ouf2dhf1,*) rhf1(j),(phf1(i,j),i=1,nwf1)
        enddo
+       if (hfIncl) then
+          do i=1,nwf1
+             do j=1,mxmax1
+                phf1(i,j)=phf1(i,j)/rhf1(j)
+             enddo
+          enddo
+       endif
        close(ouf2dhf1)
 #ifdef PRINT
 ! print=220: initStoredOrb: Orbitals on centre Z1: i,nhf1(i),lhf1(i), ehf1(i)       
@@ -912,6 +940,14 @@ contains
           read(ouf2dhf2,*) rhf2(j),(phf2(i,j),i=1,nwf2)
        enddo
 
+       if (hfIncl) then
+          do i=1,nwf2
+             do j=1,mxmax2
+                phf2(i,j)=phf2(i,j)/rhf2(j)
+             enddo
+          enddo
+       endif
+       
 #ifdef PRINT
 ! print=220: initStoredOrb: Orbitals on centre Z2: i,nhf2(i),lhf2(i), ehf2(i)        
        if (iprint(220).ne.0) then
@@ -923,7 +959,6 @@ contains
           enddo
        endif
 #endif
-
 #ifdef PRINT      
 ! print=222: initStoredOrb: Orbitals on centre Z2: rhf2(j),(phf2(i,j),i=1,nwf2)        
        if (iprint(222).ne.0) then
@@ -1419,14 +1454,15 @@ contains
        endif
     enddo
 
-    ! initialize Coulomb potentials
-    if (ldaIncl.and.ldaSAPIncl) then
-       call initCoulombSAP
-    else
-       call initCoulomb
+    ! initialize Coulomb and exchange potentials
+    if (ldaIncl) then
+       if (ldaSAPIncl) then
+          call initCoulombSAP
+          call initExchange
+          return
+       endif
     endif
-
-    ! initialize exchange potentials    
+    call initCoulomb
     call initExchange
   end subroutine initStoredOrbs
 
