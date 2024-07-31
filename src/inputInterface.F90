@@ -1504,6 +1504,8 @@ contains
     tmp1=0.0_PREC
     tmp2=0.0_PREC
     call inInt(nni)
+    ! adjust nni first to provide correct value of hnu for nmucalc
+    nni=nnucalc(nni)
     call inFloat(tmp1)
     call inFloat(tmp2)
     if (abs(tmp2)>epsilon(zero)) then
@@ -1517,8 +1519,6 @@ contains
           write(iout6,*)'read_grid: missing item on GRID card'
           stop 'read_grid'
        endif
-       ! adjust nni first to provide correct value of hnu for nmucalc
-       nni=nnucalc(nni)
        rgrid(ngrids)=tmp1
        n=0
        nmu(1)=nmucalc(n)
@@ -1947,14 +1947,6 @@ contains
           maxsorpot(2)=itmp
        endif
     endif
-
-    nni=nnucalc(nni)
-    nmu(ngrids)=nmucalc(nmu(ngrids))
-    nmutot=nmu(ngrids)
-    mxnmu=nmutot
-    mxnmu8=nmutot+8
-    mxsize=nni*nmutot
-    mxsize8=(nni+8)*(nmutot+8)
 
     return
   end subroutine read_mcsor
@@ -2403,7 +2395,6 @@ contains
     character*8 :: arg
     call inStr(arg)
     meshOrdering=trim(arg)
-    
     return
   end subroutine read_order
 
@@ -2798,7 +2789,6 @@ contains
     use solver
     use commons
     use data4II
-    use doSCF, only : iscforder
     implicit none
     ! label: scforder
     do iorb=1,norb
@@ -2975,10 +2965,10 @@ contains
     use commons
     implicit none
 
-    integer (KIND=IPREC) :: ig,k5,k6,n,nk,ntemp
+    integer (KIND=IPREC) :: ig,k5,k6,k10,n,nk,ntemp
 
     real (PREC) :: hnu,xmi0
-    parameter (k5=5, k6=6)
+    parameter (k5=5, k6=6, k10=10)
 
     ! Since in this version of the program the 7 point integration
     ! formula is used the number of mesh points in the nu and mu
@@ -3010,7 +3000,6 @@ contains
     endif
 
     ! adjust, if necessary, the number of grid points in mu variable
-
 12  nk=(n-1)/k6
     if (k6*nk.ne.n-1) then
        n=n-1
@@ -3018,12 +3007,21 @@ contains
     endif
 
     ntemp=n
-22  nk=(n-6)/k5
-    if (k5*nk.ne.n-k5-1) then
-       n=n-1
-       goto 22
-    endif
 
+22  continue
+    if (meshOrdering/="middle".or.meshOrdering/="middlemt") then
+       nk=(n-6)/k5
+       if (k5*nk.ne.n-k5-1) then
+          n=n-1
+          goto 22
+       endif
+    else
+       nk=(n-3)/k10
+       if (k10*nk.ne.n-3) then
+          n=n-1
+          goto 22
+       endif
+    endif
     if (n.gt.1.and.n.ne.ntemp) goto 12
 
     nmu(ig)=n
@@ -3049,9 +3047,9 @@ contains
 
     implicit none
 
-    integer (KIND=IPREC) :: k5,k6,n,nk,ntemp
+    integer (KIND=IPREC) :: k5,k6,k10,n,nk,ntemp
 
-    parameter (k5=5, k6=6)
+    parameter (k5=5, k6=6, k10=10)
 
     ! Since in this version of the program the 7 point integration formula
     ! is used the number of mesh points in the nu and mu variables must be
@@ -3071,13 +3069,21 @@ contains
     endif
 
     ntemp=n
-
-22  nk=(n-6)/k5
-    if (k5*nk.ne.n-k5-1) then
-       n=n-1
-       goto 22
+22  continue
+    if (meshOrdering/="middle".or.meshOrdering/="middlemt") then
+       nk=(n-6)/k5
+       if (k5*nk.ne.n-k5-1) then
+          n=n-1
+          goto 22
+       endif
+    else
+       nk=(n-3)/k10
+       if (k10*nk.ne.n-3) then
+          n=n-1
+          goto 22
+       endif
     endif
-
+    
     if (n.gt.1.and.n.ne.ntemp) goto 12
     if (n.eq.1) then
        write(*,'("Error: cannot find commensurate grid size in nu."/)')
@@ -3085,7 +3091,7 @@ contains
     endif
 
     nnucalc=n
-
+    
   end function nnucalc
 
 end module inputInterface
