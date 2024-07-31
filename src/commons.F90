@@ -144,7 +144,7 @@ module commons
   
   integer (KIND=IPREC),dimension(30) :: i4b,i5b,i4e,i5e,i4si,i5si,i4ng,i5ng,iadext,iadnor,iadex1,iadex2,iadex3
   integer (KIND=IPREC),dimension(maxorb) :: i1b,i2b,i1e,i2e,i1si,i2si,i1ng,i2ng,i1mu,i2mu,ifixorb,iorn,&
-       inhyd,inhydlcao,inDFT,nn,ll,mm,iocc,isymOrb,lock,ige,ihomo,itouch,iloop
+       inhyd,inhydlcao,inDFT,nn,ll,mm,iocc,isymOrb,lock,ige,ihomo,iscforder,itouch,iloop
   integer (KIND=IPREC),dimension(2) :: maxsororb,maxsorpot
   
   integer (KIND=IPREC),dimension(2*maxorb) :: lagraon
@@ -162,8 +162,6 @@ module commons
   integer (KIND=IPREC) :: lxcFuncs
   
   character*4, dimension(10) :: cdftex,cdftcorr
-  
-  character*80 :: header
   
   real (PREC), dimension(1) :: rgrid
   real (PREC) :: rgrid_p  
