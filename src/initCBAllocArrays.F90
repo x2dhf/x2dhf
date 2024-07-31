@@ -2465,9 +2465,11 @@ contains
        stop "imcase has invalid value in mesh"
     endif
 
+
+    
     if (meshOrdering=="col-wise") then    
 
-       ! Natural column-wise ordering, boundary points are excluded,
+       ! Column-wise ordering, boundary points are excluded,
        ! the upper limit of mu variable is nmu.
 
        ! ?  values for points (j,nmu+1), (j,nmu+2) and (j,nmu+3) are calculated
@@ -2543,9 +2545,46 @@ contains
        goto 1000
     endif
 
+    if (meshOrdering=="middlemt") then        
+       i0=0
+       nmux=(nmu8-1)/2+1
+       nnix=(nni8-1)/2+1
 
+       do i=6,iend1
+          if (i.le.nmux) then
+             ii=nmux-i+6
+          else
+             !ii=nmu8-i+6
+             !ii=i
+             ii=nmu8-7-(i-nmux)
+          endif
+          i2=ii-4
+
+          do j=6,nni+3
+             if(j.le.nnix) then
+                jj=nnix-j+6
+             else
+                jj=j
+             endif
+             j2=jj-4
+
+             i0=i0+1
+             indx2(i0)=(i2-1)*nni  +j2
+             indx1(i0)=(ii-1)*nni8 +jj
+             indx1nu(i0)=j2
+             indx1mu(i0)=i2             
+          enddo
+       enddo
+
+       ngrid1=i0
+       ngrid2=i0
+
+       ! boundary points like in the itype=1 case
+       goto 1000
+    endif
+    
     if (meshOrdering=="row-wise") then        
-       ! natural row-wise ordering
+       ! row-wise ordering
        ! region i
        ngrid1=0
        do j=6,nni+3
@@ -2828,7 +2867,18 @@ contains
        write(*,'(/a8/,(10i8))') 'indx6a',(indx6a(i),i=1,ngrid6a)
        write(*,'(/a8/,(10i8))') 'indx6b',(indx6b(i),i=1,ngrid6b)
        write(*,'(/a8/,(10i8))') 'indx7 ',(indx7 (i),i=1,ngrid7 )
+    endif
 
+! print= 41: indx2,indx1nu,indx1mu             
+    if (iprint(42)/=0) then
+       do i=1,ngrid2
+          write(*,'(4i8$)') i,indx1nu(i),indx1mu(i),indx2 (i)             
+          if (mod(i-1,5)==0) then
+             write(*,'(5x,"x")') 
+          else
+             write(*,'(1x)') 
+          endif
+       enddo
     endif
 #endif    
 
@@ -2869,7 +2919,7 @@ contains
 
     if (meshOrdering=="col-wise") then        
 
-       ! Natural column-wise ordering, boundary points are excluded,
+       ! Column-wise ordering, boundary points are excluded,
        ! the upper limit of mu variable is nmu.
 
        ! ?  values for points (j,nmu+1), (j,nmu+2) and (j,nmu+3) are calculated
@@ -2938,8 +2988,44 @@ contains
        goto 1000
     endif
 
+    if (meshOrdering=="middlemt") then            
+       i0=0
+       nmux=(nmu8-1)/2+1
+       nnix=(nni8-1)/2+1
+
+       do i=6,iend1
+          if (i.le.nmux) then
+             ii=nmux-i+6
+          else
+             !ii=i ! ii=nmu8-i+6
+             !!ii=nmu8-4-i+6
+             !!ii=iend1-i+6
+             ii=nmu8-7-(i-nmux)
+          endif
+          i2=ii-4
+          !write(*,'(8i6)') nmu8,nmux,i,ii,i2
+          
+          do j=6,nni+3
+             if(j.le.nnix) then
+                jj=nnix-j+6
+             else
+                jj=j
+             endif
+             j2=jj-4
+
+             i0=i0+1
+          enddo
+       enddo
+!       stop "xx"
+       ngrid1=i0
+       ngrid2=i0
+
+       ! boundary points like in the col-wise case
+       goto 1000
+    endif
+    
     if (meshOrdering=="row-wise") then                
-       ! natural row-wise ordering
+       ! row-wise ordering
 
        ngrid1=0
        do j=6,nni+3

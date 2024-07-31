@@ -644,22 +644,26 @@ contains
     
     if (altSweeps) then
        if (meshOrdering=='col-wise')  &
-            write(iout6,'(/10x,"ordering: natural column-wise + forward/backward sweeps")') 
+            write(iout6,'(/10x,"ordering: column-wise + forward/backward sweeps")') 
        if (meshOrdering=='middle')    &
             write(iout6,'(/10x,"ordering: middle + forward/backward sweeps")')
+       if (meshOrdering=='middlemt')    &
+            write(iout6,'(/10x,"ordering: middle + forward/backward sweeps")')
        if (meshOrdering=='row-wise')  &
-            write(iout6,'(/10x,"ordering: natural row-wise + forward/backward sweeps")')
+            write(iout6,'(/10x,"ordering: row-wise + forward/backward sweeps")')
        if (meshOrdering=='rrow-wis') &
-            write(iout6,'(/10x,"ordering: reversed natural row-wise + forward/backward sweeps")')
+            write(iout6,'(/10x,"ordering: row-wise + forward/backward sweeps")')
     else
        if (meshOrdering=='col-wise')  &
-            write(iout6,'(/10x,"ordering: natural column-wise")')
+            write(iout6,'(/10x,"ordering: column-wise")')
        if (meshOrdering=='middle')    &
             write(iout6,'(/10x,"ordering: middle")')
+       if (meshOrdering=='middlemt')    &
+            write(iout6,'(/10x,"ordering: middle for MCSOR")')
        if (meshOrdering=='row-wise')  &
-            write(iout6,'(/10x,"ordering: natural row-wise")')
+            write(iout6,'(/10x,"ordering: row-wise")')
        if (meshOrdering=='rrow-wis') &
-            write(iout6,'(/10x,"ordering: reversed natural row-wise")')
+            write(iout6,'(/10x,"ordering: reversed row-wise")')
     endif
 
     write(iout6,*)

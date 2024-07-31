@@ -2371,17 +2371,17 @@ contains
     ! label: order
 
     ! arg  - type of (mc)sor sweeps (ordering) for each grid
-    !      = col-wise  - the natural column-wise ordering for mesh points
+    !      = col-wise  - the column-wise ordering for mesh points
     !	   = middle    - the 'middle' type of sweep (default) 
-    !	   = row-wise  - the natural row-wise ordering for mesh points
-    !	   = rcol-wise - the reversed natural column-wise ordering (see mesh for details)
+    !	   = row-wise  - the row-wise ordering for mesh points
+    !	   = rcol-wise - the reversed column-wise ordering (see mesh for details)
 
     
     ! iorder  - type of (mc)sor sweeps (ordering) for each grid
-    !      = 1   - natural column-wise ordering for the mesh points
+    !      = 1   - column-wise ordering for the mesh points
     !	   = 2   - default 'middle' type of sweep 
-    !	   = 3   - natural row-wise
-    !	   = 4   - reversed natural (column-wise) ordering (see mesh for details)
+    !	   = 3   - row-wise
+    !	   = 4   - reversed (column-wise) ordering (see mesh for details)
 
 
 

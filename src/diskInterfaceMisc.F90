@@ -9,13 +9,12 @@ module diskInterfaceMisc
 contains
   ! ### writeDisk4pair ### 
   !
-  !     Writes orbitals in formatted form for the x5dhf program to use.
-  subroutine writeDisk4pair 
+  !     Writes orbital in formatted form for the x5dhf program to use.
+  subroutine writeDisk4pair
     use blas
     use commons
     use data4II
     use discrete
-    !use normOrtho
     use params
     use printUtils
     use inout
@@ -38,10 +37,6 @@ contains
     wk3 =>scratchptr( 3*mxsize8+1: 4*mxsize8)
     r8mxsize =>scratchptr( 4*mxsize8+1: 5*mxsize8)            
     r8mxsize1 =>scratchptr( 5*mxsize8+1: 6*mxsize8)
-
-    if (nel==1) then
-       call zeroArray(mxsize,excp)
-    endif
     
     open(9999,file='out4pair.dat', status='unknown',form='formatted')
     
@@ -85,7 +80,8 @@ contains
        ! isymmetry=isymOrb(iorb) 
        ! orbital 1sigma is even, its derivatives are odd functions
        isymmetry=-1
-       
+
+       !write(*,'("Warning! no call to pop2pot!!!")')
        call pot2pot(r8mxsize,f4)
        
        write(9999,'(/" orbital=",i3,1x,a8,1x,a1," Coulomb potential" )') iorn(iorb),bond(iorb),gusym(iorb)
@@ -130,7 +126,6 @@ contains
        do i4=1,ngrid
           r8mxsize(i4)=psi(i1beg+i4-1)
        enddo
-       ! call norm(iorb)
        
        write(9999,'(/" orbital=",i3,1x,a8,1x,a1," orbital function")') iorn(iorb),bond(iorb),gusym(iorb)
        call prtmatcw(nni,mxnmu,r8mxsize,9999)
@@ -221,6 +216,7 @@ contains
 
     use blas
     use commons
+    use data4II
     use dftvxc    
     use discrete
     use elocc
@@ -234,12 +230,12 @@ contains
 
     implicit none
     
-    integer (KIND=IPREC) :: i,iborb,iborb1,ibpot,ibpot1,iorb,iorb1,ipc,&
+    integer (KIND=IPREC) :: iborb,iborb1,ibpot,ibpot1,iorb1,ipc,&
          ngorb,ngorb1,ngpot,ngpot1,isiorb1
     
     real (PREC) :: const13,ocdown,ocup,tmpf
     real (PREC),dimension(:), pointer :: psi,excp,e,f0,f1,f2,f3,f4,fock1,fock2,&
-         wk2,wk3,wk4,wk5,wk6,wk7,wk8,wk9,wk10,wk11,wk12,wk13
+         wk2,wk3,wk4,wk5,wk6,wk7,wk8,wk9,wk10,wk11,wk12,wk13,work
 
     parameter (const13=1.0_PREC/3.0_PREC)
 
@@ -250,9 +246,11 @@ contains
     f1=>supplptr(i4b(6):)
     f2=>supplptr(i4b(7):)
     f4=>supplptr(i4b(9):)
-    
-    fock1 =>scratchptr(          1:   mxsize8)
-    fock2 =>scratchptr(   mxsize8+1: 2*mxsize8)
+
+    work=>scratchptr    
+    fock1   => work(           1: 1*mxsize8)
+    fock2   => work( 1*mxsize8+1: 2*mxsize8)
+
     wk2 =>scratchptr( 2*mxsize8+1: 3*mxsize8)
     wk3 =>scratchptr( 3*mxsize8+1: 4*mxsize8)
     wk4 =>scratchptr( 4*mxsize8+1: 5*mxsize8)            
@@ -389,7 +387,7 @@ contains
     
     open(9999,file='out4dft.dat', status='unknown',form='formatted')
     
-    write(9999,'(a80)') header
+    write(9999,'(80a1)') title
     write(9999,'(" nnu nmu ")') 
     write(9999,formint) nni,nmu(1)
     write(9999,'(" r  rinf")') 
@@ -406,6 +404,100 @@ contains
     
   end subroutine writeDisk4dft
 
+  ! ### writeDisk4lxc ### 
+  !
+  !     Writes orbitals, potenials, Lagrange multipliers (diagonal 
+  !     and off-diagonal) and multipole expansion coefficients to a disk 
+  !     file in either formatted or unformatted form
+  !
+  subroutine writeDisk4lxc 
+
+    use blas
+    use commons
+    use data4II
+    use dftvxc    
+    use discrete
+    use elocc
+    use memory
+    use params
+    use printUtils
+    use scfshr
+    use sharedMemory
+    use solver
+    use utils
+
+    implicit none
+    
+    integer (KIND=IPREC) :: iborb,iborb1,ibpot,ibpot1,iorb1,ipc,&
+         ngorb,ngorb1,ngpot,ngpot1,isiorb1
+    
+    real (PREC) :: tmpf,zshift
+    real (PREC),dimension(:), pointer :: fock1,fock2,work
+
+    work=>scratchptr    
+    fock1   => work(           1: 1*mxsize8)
+    fock2   => work( 1*mxsize8+1: 2*mxsize8)
+    
+    !   contributions from one-electron terms
+    iorb=1
+    iborb=i1b(iorb)
+    ngorb=i1si(iorb)
+    ibpot=i2b(iorb)
+    ngpot=i2si(iorb)
+    
+    open(9999,file='out4dft-1.dat', status='unknown',form='formatted')
+    
+    write(9999,'("###",80a1)') title
+    write(9999,'("### nnu nmu ")') 
+    write(9999,formint) nni,nmu(1)
+    write(9999,'("### r  rinf")') 
+    write(9999,formfp64) r,rinf
+    write(9999,'("### z1 z2 ")') 
+    write(9999,formfp64) z1,z2
+    write(9999,'("### norb nel  ")')
+    write(9999,formint) norb,nel
+    
+    write(9999,'(/"### DFT potential" )')
+    !call prtmatcw(nni,mxnmu,fock1,9999)
+    zshift=r/two
+
+    i=1
+    do j=nni-1,1,-1
+       write(9999,'(f10.4,f20.10)') (r/two*vxi(i)*veta(j)+zshift),-fock1((i-1)*nni+j)
+    enddo
+    
+    j=1
+    do i=2,mxnmu-4
+       write(9999,'(f10.4,f20.10)') (r/two*vxi(i)*veta(j)+zshift),-fock1((i-1)*nni+j)
+    enddo
+    !endif
+    close(9999)
+
+    open(9999,file='out4dft-2.dat', status='unknown',form='formatted')
+    
+    write(9999,'(/"### -1/r" )')
+    zshift=r/two
+
+    ! j=nni
+    ! do i=mxnmu-4,2,-1
+    !    write(9999,'(f10.4,f20.10)') (r/two*vxi(i)*veta(j)+zshift),-one/(r/two*vxi(i)*veta(j)+zshift)                 
+    ! enddo
+       
+    i=1
+    do j=nni-1,1,-1
+       write(9999,'(f10.4,f20.10)') (r/two*vxi(i)*veta(j)+zshift),-one/(r/two*vxi(i)*veta(j)+zshift)                 
+    enddo
+    
+    j=1
+    do i=2,mxnmu-4
+       write(9999,'(f10.4,f20.10)') (r/two*vxi(i)*veta(j)+zshift),-one/(r/two*vxi(i)*veta(j)+zshift)                 
+    enddo
+    !endif
+    close(9999)
+    
+  end subroutine writeDisk4lxc
+
+  
   ! ### writeDisk4kinpot ### 
   !
   !     Calculates and writes to disk the Pauli and von Weizsaecker kinetic potentials.
