@@ -223,7 +223,7 @@ contains
     lfixexch=.false.
 
     lfixorb4init=.false.    
-    ienterm4init=0
+    ienterm4init=1
     
     ! and DFT approach is switched off
     idftex=0
