@@ -56,7 +56,7 @@
               orbital norm             = 1.00E-16
               multipole moments recalc = 1.15E+00  (mpole=4)
 
-          orbitals are relaxed
+          orbitals are kept frozen
           Coulomb potentials are relaxed
           exchange potential for each pair of orbitals is relaxed once per single scf iteration
 
@@ -87,7 +87,7 @@
    Memory usage:
           text+data                                      0.9 MB 
           bss (common block contributions)              64.7 MB
-          dynamical allocation                           0.4 MB 
+          dynamical allocation                           0.6 MB 
               orbitals                                   0.0 MB
               Coulomb potentials                         0.0 MB
               exchange potentials                        0.0 MB
@@ -97,68 +97,78 @@
  ... initializing exchange potentials ...
  ... initializing multipole moment coefficients ...
  ... initializing Lagrange multipliers ...
+
+     orbitals kept frozen until potentials get converged:
+       1 sigma    
      total energy:                 -4.8000173389821588E-01
      total electronic energy:      -4.8000173389821588E-01
      virial ratio:                 -1.6666786458034821E+00
 
    scf  orbital              energy               energy diff.      1-norm          overlap
    ---  -------      -----------------------      ------------     ---------        --------
-    1   1 sigma      -4.9563746774306811E-01       -1.56E-02        1.97E-01        0.00E+00
-    2   1 sigma      -5.0065132683631741E-01       -5.01E-03        3.82E-02        0.00E+00
-    3   1 sigma      -5.0055633048282810E-01        9.50E-05        2.48E-04        0.00E+00
-    4   1 sigma      -5.0023875950017904E-01        3.18E-04       -4.33E-04        0.00E+00
-    5   1 sigma      -5.0009305343051158E-01        1.46E-04        2.92E-04        0.00E+00
-    6   1 sigma      -5.0004064040890761E-01        5.24E-05        2.89E-04        0.00E+00
-    7   1 sigma      -5.0001943721333508E-01        2.12E-05        1.52E-04        0.00E+00
-    8   1 sigma      -5.0000944419574767E-01        9.99E-06        6.86E-05        0.00E+00
-    9   1 sigma      -5.0000453438358561E-01        4.91E-06        3.11E-05        0.00E+00
-   10   1 sigma      -5.0000215838511530E-01        2.38E-06        1.46E-05        0.00E+00
+  Warning: energy diff. set to 2.0E-12. This message is shown only once!
+    1   1 sigma      -4.8000173389821588E-01        2.00E-12        8.45E-06        0.00E+00
+    2   1 sigma      -4.8000173389821588E-01        2.00E-12        8.45E-06        0.00E+00
+    3   1 sigma      -4.8000173389821588E-01        2.00E-12        8.45E-06        0.00E+00
+    4   1 sigma      -4.8000173389821588E-01        2.00E-12        8.45E-06        0.00E+00
+           
+ ... initial relaxation of potentials with fixed orbitals reached the threshold ...
+ ... SCF continues with both orbitals and potentials being relaxed ...
+    5   1 sigma      -4.9559930471170721E-01       -1.56E-02        1.97E-01        0.00E+00
+    6   1 sigma      -5.0065233409624554E-01       -5.05E-03        3.83E-02        0.00E+00
+    7   1 sigma      -5.0055751371503932E-01        9.48E-05        2.22E-04        0.00E+00
+    8   1 sigma      -5.0023474842709958E-01        3.23E-04       -4.44E-04        0.00E+00
+    9   1 sigma      -5.0009342509468035E-01        1.41E-04        3.02E-04        0.00E+00
+   10   1 sigma      -5.0004076449779988E-01        5.27E-05        2.86E-04        0.00E+00
 
-       total energy: -5.0000215838511530E-01
-
- ... saving data to disk ...
-   11   1 sigma      -5.0000103020541431E-01        1.13E-06        6.98E-06        0.00E+00
-   12   1 sigma      -5.0000049013878622E-01        5.40E-07        3.32E-06        0.00E+00
-   13   1 sigma      -5.0000023580127617E-01        2.54E-07        1.59E-06        0.00E+00
-   14   1 sigma      -5.0000011518380005E-01        1.21E-07        7.55E-07        0.00E+00
-   15   1 sigma      -5.0000005787932900E-01        5.73E-08        3.58E-07        0.00E+00
-   16   1 sigma      -5.0000003064885079E-01        2.72E-08        1.70E-07        0.00E+00
-   17   1 sigma      -5.0000001771371605E-01        1.29E-08        8.07E-08        0.00E+00
-   18   1 sigma      -5.0000001157052321E-01        6.14E-09        3.83E-08        0.00E+00
-   19   1 sigma      -5.0000000865311134E-01        2.92E-09        1.82E-08        0.00E+00
-   20   1 sigma      -5.0000000726758820E-01        1.39E-09        8.64E-09        0.00E+00
-
-       total energy: -5.0000000726758820E-01
+       total energy: -5.0004076449779988E-01
 
  ... saving data to disk ...
-   21   1 sigma      -5.0000000660957022E-01        6.58E-10        4.11E-09        0.00E+00
-   22   1 sigma      -5.0000000629706587E-01        3.13E-10        1.95E-09        0.00E+00
-   23   1 sigma      -5.0000000614865048E-01        1.48E-10        9.26E-10        0.00E+00
-   24   1 sigma      -5.0000000607814488E-01        7.05E-11        4.40E-10        0.00E+00
-   25   1 sigma      -5.0000000604468609E-01        3.35E-11        2.09E-10        0.00E+00
-   26   1 sigma      -5.0000000602879113E-01        1.59E-11        9.92E-11        0.00E+00
-   27   1 sigma      -5.0000000602123917E-01        7.55E-12        4.71E-11        0.00E+00
-   28   1 sigma      -5.0000000601765060E-01        3.59E-12        2.24E-11        0.00E+00
-   29   1 sigma      -5.0000000601595174E-01        1.70E-12        1.06E-11        0.00E+00
-   30   1 sigma      -5.0000000601514116E-01        8.11E-13        5.02E-12        0.00E+00
+   11   1 sigma      -5.0001945938114878E-01        2.13E-05        1.51E-04        0.00E+00
+   12   1 sigma      -5.0000943674845066E-01        1.00E-05        6.85E-05        0.00E+00
+   13   1 sigma      -5.0000453339105277E-01        4.90E-06        3.12E-05        0.00E+00
+   14   1 sigma      -5.0000211012095230E-01        2.42E-06        1.46E-05        0.00E+00
+   15   1 sigma      -5.0000102954653747E-01        1.08E-06        7.11E-06        0.00E+00
+   16   1 sigma      -5.0000049168297467E-01        5.38E-07        3.30E-06        0.00E+00
+   17   1 sigma      -5.0000023621579348E-01        2.55E-07        1.57E-06        0.00E+00
+   18   1 sigma      -5.0000011520026333E-01        1.21E-07        7.52E-07        0.00E+00
+   19   1 sigma      -5.0000005785835122E-01        5.73E-08        3.58E-07        0.00E+00
+   20   1 sigma      -5.0000003063699150E-01        2.72E-08        1.70E-07        0.00E+00
 
-       total energy: -5.0000000601514116E-01
+       total energy: -5.0000003063699150E-01
 
  ... saving data to disk ...
-   31   1 sigma      -5.0000000601475125E-01        3.90E-13        2.38E-12        0.00E+00
-   32   1 sigma      -5.0000000601457129E-01        1.80E-13        1.14E-12        0.00E+00
-   33   1 sigma      -5.0000000601448702E-01        8.43E-14        5.32E-13        0.00E+00
-   34   1 sigma      -5.0000000601444761E-01        3.94E-14        2.40E-13        0.00E+00
+   21   1 sigma      -5.0000001771013791E-01        1.29E-08        8.07E-08        0.00E+00
+   22   1 sigma      -5.0000001157029861E-01        6.14E-09        3.83E-08        0.00E+00
+   23   1 sigma      -5.0000000865283079E-01        2.92E-09        1.82E-08        0.00E+00
+   24   1 sigma      -5.0000000726735028E-01        1.39E-09        8.64E-09        0.00E+00
+   25   1 sigma      -5.0000000660948907E-01        6.58E-10        4.11E-09        0.00E+00
+   26   1 sigma      -5.0000000629699959E-01        3.12E-10        1.95E-09        0.00E+00
+   27   1 sigma      -5.0000000614859841E-01        1.48E-10        9.26E-10        0.00E+00
+   28   1 sigma      -5.0000000607852735E-01        7.01E-11        4.40E-10        0.00E+00
+   29   1 sigma      -5.0000000604468131E-01        3.38E-11        2.08E-10        0.00E+00
+   30   1 sigma      -5.0000000602877781E-01        1.59E-11        9.94E-11        0.00E+00
+
+       total energy: -5.0000000602877781E-01
+
+ ... saving data to disk ...
+   31   1 sigma      -5.0000000602126171E-01        7.52E-12        4.72E-11        0.00E+00
+   32   1 sigma      -5.0000000601765004E-01        3.61E-12        2.23E-11        0.00E+00
+   33   1 sigma      -5.0000000601595185E-01        1.70E-12        1.06E-11        0.00E+00
+   34   1 sigma      -5.0000000601514416E-01        8.08E-13        5.03E-12        0.00E+00
+   35   1 sigma      -5.0000000601475469E-01        3.89E-13        2.37E-12        0.00E+00
+   36   1 sigma      -5.0000000601457151E-01        1.83E-13        1.13E-12        0.00E+00
+   37   1 sigma      -5.0000000601448469E-01        8.68E-14        5.34E-13        0.00E+00
+   38   1 sigma      -5.0000000601444361E-01        4.11E-14        2.48E-13        0.00E+00
            
  ... orbital energy threshold reached ...
  ... saving data to disk ...
 
-     total energy:                 -5.0000000601444761E-01
-     total electronic energy:      -5.0000000601444761E-01
-     virial ratio:                 -1.9999946296706541E+00
+     total energy:                 -5.0000000601444361E-01
+     total electronic energy:      -5.0000000601444361E-01
+     virial ratio:                 -1.9999946296706466E+00
 
-     (MC)SOR iterations:                 680
-
+     (MC)SOR iterations:                 720
 
      nuclear attraction energy:            -1.000002697208
      kinetic energy:                        0.500002691194
@@ -170,35 +180,35 @@
      exchange energy (DFT/LXC):             0.000000000000
 
         orbital                 energy             1-norm
-      1 sigma          -5.0000000601444761E-01   -2.40E-13
+      1 sigma          -5.0000000601444361E-01   -2.48E-13
 
 
      total energy uncertainty due to orbital norms not being equal 1:
-     absolute = +/-0.12E-12,  relative = +/-0.24E-10%
+     absolute = +/-0.12E-12,  relative = +/-0.25E-10%
 ///////////////////////////////////////////////////////////////////////////////////////////////
  CPU summary (sec):
-    Lagrange multipliers ......................     0.02
+    Lagrange multipliers ......................     0.03
     normalization+orthogonalization ...........     0.00
     multipole moments .........................     0.00
     total energy ..............................     0.00
-    relaxation of orbitals ....................     0.05
-    relaxation of Coulomb & exchange potentials     0.05
-    relaxation of orbitals & potentials .......     0.10
-    SCF iterations ............................     0.13
+    relaxation of orbitals ....................     0.16
+    relaxation of Coulomb & exchange potentials     0.06
+    relaxation of orbitals & potentials .......     0.22
+    SCF iterations ............................     0.25
 
  System clock summary (sec):
     multipole moments .........................     0.00
-    relaxation of orbitals ....................     0.01
+    relaxation of orbitals ....................     0.02
     relaxation of Coulomb & exchange potentials     0.01
-    relaxation of orbitals & potentials .......     0.01
+    relaxation of orbitals & potentials .......     0.03
 
- Speedup:                                           7.46
+ Speedup:                                           7.40
 ///////////////////////////////////////////////////////////////////////////////////////////////
-       start:  2023/10/28  15:00:44.86                                                         
-        stop:  2023/10/28  15:00:44.90                                                         
-  start-stop:                     0.03
+       start:  2024/07/31  22:40:41.33                                                         
+        stop:  2024/07/31  22:40:41.43                                                         
+  start-stop:                     0.11
 
-command-line:  /home/jkob/github/x2dhf-v3/bin/xhf input output
-      system:  Linux nscobie 6.2.15-100.fc36.x86_64 x86_64 x86_64 GNU/Linux
-         CPU:  Intell(R) Core(TM) i5-8265U CPU @ 1.60GHz / CPU(s)=8 / OMP_THREAD_LIMIT=8
+command-line:  /home/jkob/github/x2dhf/bin/xhf input output
+      system:  Linux neptun 6.2.15-100.fc36.x86_64 x86_64 x86_64 GNU/Linux
+         CPU:  Intell Core Processor (Haswell, IBRS) / CPU(s)=20 / OMP_THREAD_LIMIT=20
 ////////////////////////////////////////////////////////////////////////////////////////////////
