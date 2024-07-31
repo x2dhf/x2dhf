@@ -2222,7 +2222,6 @@ contains
     if (lmcsorpt) then
        allocate(itemp1(ngrid1),stat=error)
        allocate(itemp2(ngrid1),stat=error)       
-       !print *,"ngrid1=",ngrid1
        
        do i=1,ngrid1
           itemp1(i)=cw_sor(iadnor(1)+i-1)
@@ -2554,8 +2553,6 @@ contains
           if (i.le.nmux) then
              ii=nmux-i+6
           else
-             !ii=nmu8-i+6
-             !ii=i
              ii=nmu8-7-(i-nmux)
           endif
           i2=ii-4
