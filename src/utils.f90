@@ -602,13 +602,10 @@ contains
     use blas
 
     implicit none
-    integer (KIND=IPREC) :: j,n,n9
+    integer (KIND=IPREC) :: j,n
     real (PREC), dimension(nni+8,*) :: f,fd
-    data n9/9/
+    integer (KIND=IPREC), parameter :: n9=9
     character :: trans = 'n'
-#ifdef BLAS    
-    external dgemv
-#endif
 
     ! The following loop runs now till j=mxnmu so that the derivatives are
     ! also defined in the tail region, i.e. for (i,mxnmu-3),...,(i,mxnmu)
@@ -629,14 +626,11 @@ contains
     use blas
 
     implicit none
-    integer (KIND=IPREC) :: j,n,n9
+    integer (KIND=IPREC) :: j,n
 
     real (PREC), dimension(nni+8,*) :: f,fd
-    data n9/9/
+    integer (KIND=IPREC), parameter :: n9=9
     character :: trans = 'n'
-#ifdef BLAS    
-    external dgemv
-#endif
 
     ! The following loop runs now till j=mxnmu so that the derivatives are
     ! also defined in the tail region, i.e. for (i,mxnmu-3),...,(i,mxnmu)
@@ -675,15 +669,12 @@ contains
     use blas
 
     implicit none
-    integer (KIND=IPREC) :: j,n,n8,n9
+    integer (KIND=IPREC) :: j,n,n8
 
     real (PREC), dimension(nni+8,n+8) :: f,fd
     real (PREC), dimension(n+8,nni+8) :: wtran1,wtran2
-    data n9/9/
+    integer (KIND=IPREC), parameter :: n9=9
     character :: trans = 'n'
-#ifdef BLAS    
-    external dgemv
-#endif
 
     ! To allow for the differentiation over ni variable in the form of
     ! matrix times vector the array f has to be transposed first.  Results
@@ -709,15 +700,12 @@ contains
     use blas
 
     implicit none
-    integer (KIND=IPREC) :: j,n,n8,n9
+    integer (KIND=IPREC) :: j,n,n8
 
     real (PREC), dimension(nni+8,n+8) :: f,fd
     real (PREC), dimension(n+8,nni+8) :: wtran1,wtran2
-    data n9/9/
+    integer (KIND=IPREC), parameter :: n9=9
     character :: trans = 'n'
-#ifdef BLAS    
-    external dgemv
-#endif
     
     ! To allow for the differentiation over ni variable in the form
     ! of matrix times vector the array f has to be transposed first.
@@ -800,6 +788,31 @@ contains
        enddo
     enddo
   end subroutine multf4
+
+
+  ! ### multf4 ###
+  !
+  !     Multiplies a given array (of length mxnmu) by 1/F4
+  !
+  subroutine multf4rev(a)
+    use params
+    use discrete
+    !  use commons
+    implicit none
+    integer (KIND=IPREC) :: i,ii,j
+    real (PREC), dimension(*) :: a
+
+    do i=1,mxnmu
+       ii=(i-1)*nni
+       do j=1,nni
+          if (abs(vxi(i))<epsilon(zero)) then
+             a(ii+j)=zero
+          else
+             a(ii+j)=a(ii+j)/(half*r*vxi(i))
+          endif
+       enddo
+    enddo
+  end subroutine multf4rev
 
   ! ### pmtx ###
   !

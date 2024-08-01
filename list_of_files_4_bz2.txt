@@ -37,7 +37,6 @@ docs/users-guide.pdf
 ./src/elocc.f90
 ./src/exchContribs.f90
 ./src/fock.F90
-./src/getDateTime.f90
 ./src/initCBAllocArrays.F90
 ./src/initOrbitalsPotentials.F90
 ./src/initVariables.F90
