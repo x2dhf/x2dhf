@@ -16,5 +16,5 @@ config  0
 grid  200 30.0
 orbpot old
 scf 1000 10 4 7 3                                                                  
-omega 1.25 1.25
+!omega 1.25 1.25
 stop                      
