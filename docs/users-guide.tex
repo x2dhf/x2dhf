@@ -32,8 +32,6 @@
 \newcommand{\ft}[1]{\texttt{#1}}
 \newcommand{\fb}[1]{\textbf{#1}}
 
-
-
 \begin{document}
 
 \thispagestyle{empty}
@@ -1161,103 +1159,5 @@ Use \texttt{testctl list} to see dozens of examples of the x2dhf usage; try
 
 \texttt{xhf} can be used to perform a number of
 additional tasks; see \texttt{xhf help|-h|--help}.
-
-\end{document}
-
-\section{Useful hints}
-
-\begin{enumerate}
-\item The program should be easy to use provided you can start a
-  calculation for a specific system. You should not encounter any serious
-  problems when the system contains atoms from the first two rows of the
-  Periodic Table. Then even the rough hydrogenic estimates of the orbitals
-  should prove adequate and after an initial couple of dozen of iterations,
-  a smooth convergence should set in.
-
-  If, however, a system contains more than 15-20 electrons the initial
-  estimates of the orbitals have to be good enough to avoid
-  divergences. Then, you have to choose the parameters of the hydrogenic
-  orbitals carefully or perform the finite basis set calculations using the
-  GAUSSIAN program, to provide the initialization data for orbitals.
-
-  One can also use the HFS method to produce initial estimates of orbitals
-  and Coulomb potentials. For example, to start calculations for the
-  neon atom one can use the following input data:
-
-  \verbatiminput{../examples/ne/ne-a.data}
-
-  This input produces good enough HFS initial estimates so that the
-  calculations can be continued at the HF level with the corresponding
-  input:
-
-  \verbatiminput{../examples/ne/ne-b.data}
-
-  One can also use the HF method with some model potential, e.g. the model
-  potential of Green, Sellin, Zachor (label POTGSZ) or the Superposition of
-  Atomic Potentials due to Susi Lehtola (POTSAP).
-
-\item Choose smaller values of the relaxation parameters ($1.7\leq
-  \omega\leq 1.85$) to avoid divergences in the first few dozens of
-  SCF iterations (values as small as 0.2 may be used for very heavy
-  systems). Set the maximum number of SCF iterations to a small value
-  -- between 20 and 500 -- and/or impose crude convergence criteria
-  for the orbital energy and normalization.
-
-\item Once the orbitals and potentials have reached the initial
-  convergence, the relaxation parameters should be increased to their
-  (near) optimum value (see the \textbf{omega} label and
-  Example~\ref{example-c2a}).
-
-  It is possible to set $\omega_{pot}$ to its near-optimal value by
-  calculating it from a~semi-empirical formula; see the \ft{omega}
-  label. As a rule of thumb the optimal value of the orbital
-  relaxation parameter is somewhat smaller and, by~default,
-  is~obtained by scaling the $\omega_{pot}$ value by 0.98 (see
-  \ft{initVariables}).
-
-
-\item In the case of convergence problems try to perform calculations on a
-  sparser grid. For example, the $[61\times 79/30]$ grid is
-  sufficient to check the quality of the initial data for the Ne$_2$
-  system.
-
-\item \label{section:hints} How to stop the program gracefully during
-  a lengthy calculation without killing the process and interrupting
-  disk read/write operations?  All you have to do is to create a (zero
-  length) file named \texttt{stop\_x2dhf} in a working directory by
-  typing \texttt{xhf stop} (you can also use the Unix \texttt{touch}
-  command to~this end). The program stops whenever this file is
-  detected upon the completion of a~current orbital/potential
-  relaxation.
-\end{enumerate}
-\end{description}
-
-\end{document}
-
-\begin{description}
-\item \hspace*{0.5cm} \texttt{xhf stop}\\ creates a
-  \texttt{stop\_x2dhf} file in a current directory to stop a running
-  calculation % (see Section~\ref{section:hints})
-\end{description}
-
-\begin{description}
-\item \hspace*{0.5cm} \texttt{xhf mkgauss filename}\\ creates
-  symbolic links \texttt{gaussian.out} and \texttt{gaussian.pun} to
-  files \texttt{filename.\-out} and \texttt{filename.pun},
-  respectively (see e.g. Example~\ref{example-bf}).
-\end{description}
-
-\begin{description}
-\item \hspace*{0.5cm} \texttt{xhf rmgauss}\\ removes
-  \texttt{gaussian.out} and \texttt{gaussian.pun} files from a current
-  directory
-\end{description}
-
-\begin{description}
-\item \hspace*{0.5cm} \texttt{xhf clean} \\ removes
-  \texttt{*.[dat|orb|coul|exch]} files
-\end{description}
-
-Use \texttt{xhf -h|help} to get the complete list of available options.
 
 \end{document}
