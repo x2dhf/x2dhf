@@ -44,6 +44,9 @@ docs/users-guide.pdf
 ./src/inputInterface.F90
 ./src/integrals.F90
 ./src/lagrangeMultipliers.F90
+./src/libxc_inc.f90
+./src/libxc_funcs.f90
+./src/libxc_master_f90.F90
 ./src/machine.F90
 ./src/memory.f90
 ./src/nabla.f90
