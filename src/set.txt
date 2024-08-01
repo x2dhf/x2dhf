@@ -24,8 +24,6 @@ inout.F90
 inputInterface.F90
 integrals.F90 
 lagrangeMultipliers.F90
-libxc_funcs.f90
-libxc_master_f90.F90
 machine.F90
 memory.f90 
 nabla.f90 
