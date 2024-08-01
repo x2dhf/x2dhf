@@ -45,7 +45,7 @@ storedOrbitals.F90
 summary.F90
 totalEnergy.F90
 totalEnergyLXC.F90
-utils.F90 
+utils.f90 
 x2dhf.F90 
 $ENV{SRC1} 
 $ENV{SRC2} )
