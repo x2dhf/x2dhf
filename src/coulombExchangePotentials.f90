@@ -1,7 +1,7 @@
 ! SPDX-License-Identifier: GPL-2.0-or-later
 
 ! Copyright (C) 1996       Leif Laaksonen, Dage Sundholm               
-! Copyright (C) 1996-2023  Jacek Kobus 
+! Copyright (C) 1996-2024  Jacek Kobus 
 
 module coulombExchangePotentials
   implicit none
@@ -181,7 +181,6 @@ contains
           ishift=i1b(iorb)-1
           co1lda=co1(iorb)
           co2lda=co2(iorb)
-          !print *,iorb,co1lda,co2lda
           do in=1,nni
              do imu=1,mxnmu
                 inioff=(imu-1)*nni
@@ -195,8 +194,6 @@ contains
                    if (r1t>precis.and.r2t>precis) then
                       excp(igp)=sign4cp*(z1-effective_coulomb_charge(iz1,r1t))*co1lda/r1t&
                            +sign4cp*(z2-effective_coulomb_charge(iz2,r2t))*co2lda/r2t
-                       !    z1-effective_coulomb_charge(iz1,r1t),&
-                        !   z2-effective_coulomb_charge(iz2,r2t),excp(igp)
                    elseif (r1t>precis) then
                       excp(igp)=sign4cp*(z1-effective_coulomb_charge(iz1,r1t))*co1lda/r1t
                    elseif (r2t>precis) then

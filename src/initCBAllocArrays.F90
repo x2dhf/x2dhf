@@ -1,7 +1,7 @@
 ! SPDX-License-Identifier: GPL-2.0-or-later
 
 ! Copyright (C) 1996       Leif Laaksonen, Dage Sundholm               
-! Copyright (C) 1996-2023  Jacek Kobus 
+! Copyright (C) 1996-2024  Jacek Kobus 
 
 module initCBAllocArrays
   use params, only : IPREC, PREC
@@ -27,7 +27,6 @@ contains
   ! *   NO SUBROUTINES CALLED                                                  *
   ! *                                                                          *
   ! *   WRITTEN BY FARID A PARPIA, AT OXFORD  LAST REVISION: 25 JAN 1988       *
-  ! *                                                                          *
   ! ****************************************************************************
 
   subroutine es (f,s2f,s3f)

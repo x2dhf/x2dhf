@@ -1,3 +1,7 @@
+! SPDX-License-Identifier: GPL-2.0-or-later
+
+! Copyright (C) 1996-2024  Jacek Kobus 
+
 module solver
   use params
   integer (KIND=IPREC) :: icase,ifill,muoffs,maxsor1,maxsor2,maxsor3,nthreads,nthreads4coulexch

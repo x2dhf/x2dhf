@@ -1,3 +1,7 @@
+! SPDX-License-Identifier: GPL-2.0-or-later
+
+! Copyright (C) 2024  Jacek Kobus 
+
 module discrete
   use params
   integer (KIND=IPREC) :: ngrids,nni,mxnmu,mxsize,mxsize8,ngrid1,ngrid2,ngrid6a,ngrid6b,ngrid7

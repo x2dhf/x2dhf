@@ -1,5 +1,6 @@
 ! SPDX-License-Identifier: GPL-2.0-or-later
-! Copyright (C) 1996-2023  Jacek Kobus 
+
+! Copyright (C) 1996-2024  Jacek Kobus 
 ! Copyright (C) 2018       Susi Lehtola
 
 module interpolate

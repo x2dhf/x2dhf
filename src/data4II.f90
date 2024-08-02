@@ -1,3 +1,6 @@
+! SPDX-License-Identifier: GPL-2.0-or-later
+
+! Copyright (C) 1996-2024  Jacek Kobus 
 
 module data4II
   use params

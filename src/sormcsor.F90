@@ -1,7 +1,7 @@
 ! SPDX-License-Identifier: GPL-2.0-or-later
 
 ! Copyright (C) 1996       Leif Laaksonen, Dage Sundholm               
-! Copyright (C) 1996-2023  Jacek Kobus 
+! Copyright (C) 1996-2024  Jacek Kobus 
 
 module sormcsor
   implicit none

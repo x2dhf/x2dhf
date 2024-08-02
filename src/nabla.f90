@@ -1,5 +1,6 @@
 ! SPDX-License-Identifier: GPL-2.0-or-later
-! Copyright (C) 2010-2023  Jacek Kobus 
+
+! Copyright (C) 2010-2024  Jacek Kobus 
 
 module nabla
   implicit none

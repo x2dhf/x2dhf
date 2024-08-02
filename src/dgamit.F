@@ -1,4 +1,4 @@
-c     jkob 8-04-2021
+c     J.Kobus 8-04-2021
 c     in dint d1mach is called instead if r1mach
 
 c     in I1MACH the following lines were added
