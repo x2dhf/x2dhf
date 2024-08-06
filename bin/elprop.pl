@@ -1,7 +1,7 @@
 #!/usr/bin/perl  
 
 # SPDX-License-Identifier: GPL-2.0+
-# Copyright (C) 2002-2023 Jacek Kobus 
+# Copyright (C) 2002-2024 Jacek Kobus 
 
 # This script facilitates the calculation of polarizabilities and
 # hyperpolarizabilities from a series of calculations performed by means of

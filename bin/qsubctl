@@ -44,7 +44,7 @@ ${bold}AUTHOR${normal}
 
 ${bold}COPYRIGHT${normal}
        SPDX-License-Identifier: GPL-2.0-or-later
-       Copyright © 2023 Jacek Kobus
+       Copyright © 2024 Jacek Kobus
 
 EOF
     exit
