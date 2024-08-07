@@ -1,0 +1,22 @@
+title Harmonium: 2 lowest states
+!! Harmonium: two lowest sigma states
+method ted 
+pothooke 
+nuclei  2.0 0.0 2.0
+config -2
+ 1 sigma   
+ 1 sigma    end
+!grid 669 20.0
+grid 269 20.0
+orbpot hydrogen 0 
+lcao
+  1.0  1 0 1.0  -1.0  1 0  1.0    
+  1.0  1 0 1.0   1.0  1 0  1.0  
+scf  5500 10 12 14  3
+!omega 1.6 1.6
+!sor 1 1
+!fixorb 1
+conv 3000
+!altsweeps
+!print 65
+stop

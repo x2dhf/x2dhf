@@ -1,0 +1,1007 @@
+#!/bin/bash
+
+# testctl - runs x2dhf for predefined test sets to check its correctness
+
+# Copyright © 2023 Jacek Kobus 
+
+# This program is free software; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by the Free
+# Software Foundation; either version 2 of the License, or (at your option)
+# any later version.
+
+# SPDX-License-Identifier: GPL-2.0+
+
+bold=$(tput bold)
+normal=$(tput sgr0)
+prog=$(basename $0 | sed -e 's/\.\///')
+
+debug1=
+debug2=
+debug3=
+debug4=
+debug5=
+debug6=
+
+
+function help {
+
+    cat <<EOF | less -r
+
+${bold}NAME${normal}
+      $(basename $0) - runs x2dhf for a predefined test set to check the correctness
+      of the program.
+
+${bold}SYNOPSIS${normal}
+
+      $prog help|-h|--help
+
+      $prog [-s] info
+
+      $prog list [regexp]
+
+      $prog log
+
+      $prog cat|catc|catr <test-set-id>
+
+      $prog run <test-set-id>
+
+      $prog runall [regexp]
+
+      $prog save <test-set-id>
+
+      $prog [-D1|2|3|4|5|6] elprop [<test-set>]
+
+${bold}USAGE EXAMPLES${normal}
+
+      Below <test-set-id> corresponds to a particular test found in
+      test-set directory, e.g. be/set-01, be/set-02 or licl/set-01.
+      <test-set> corresponds to the name a subdirectory, e.g. licl or o2.  
+
+      $prog cat|catc <test-set-id> [current.lst]
+            Shows the output of the currently running or completed case.
+
+      $prog catr <test-set-id> [reference.lst]
+            Shows the reference output of the currently running or completed case.
+
+      $prog data <test-set-id>
+            Display the content of the input data for a given test.
+
+      $prog [-D2] elprop [<test-set>]
+            Use the reference outputs for different fefield values and
+            elprop.pl script to calculate various electrical properties of
+            a given system, if specified, or use the output data from
+            set-01, set-02, ..., set-05 subdirectories of a current
+            directory, otherwise. Add -D2 option to get an assesment of the
+            accuracy of the propeties.
+
+	    It is assumed that the results of calculations for various
+            values of the external electric field are stored according to
+            the scheme:
+
+               0   set-01
+              -F   set-02    
+             -2F   set-03    
+              +F   set-04    
+             +2F   set-05    
+
+      $prog info 
+            Outputs information about all available test sets.
+
+      $prog [-s] info <test-set-id> | <perl-regexp>
+            Outputs information about <test-set-id> test set or a selected test
+            or tests' names matching a given Perl regular expression.
+            If option '-s' is used the status ("ready" or "unknown") is also given.
+
+      $prog list [<perl-regexp>]
+            Lists all available test sets or their subset selected by a given 
+            Perl-compatible regular expression (PCRE).
+
+      $prog lst <test-set-id>
+            Display the content of the reference output for a given test.
+
+      $prog ready <test-set-id>
+            Creates the status file (named 'status') with the message:
+              ready ($(date "+%Y-%m-%d %H:%M:%S"))
+
+      $prog run <test-set-id>
+            Runs a given test.
+
+      $prog [-d] runall [<perl-regexp>]
+            Runs all available test sets or their subset selected by a given 
+            Perl-compatible regular expression (PCRE).
+
+
+      $prog save <test-set-id>
+            Saves the output of a given test to its "home" directory.
+
+      $prog stop
+            Stops the x2dhf program.
+
+      $prog summary
+            Displays the content of the reference-result.log and
+            current-result.log files, i.e. the information printed upon
+            complition of a test run.
+
+      $prog tail <test-set-id>
+            Shows the progress of the running program by printing the last
+            20 lines of current.lst.
+
+
+${bold}OPTIONS${normal}
+
+      -b jobfile
+         Run $0 for a number of tests specified in a jobfile. 
+
+      -c
+         Upon completion of the test its working directory
+         <test-set-id> is removed.
+
+      -C
+         Removes all test directories.
+
+      -d
+         Use the 'dry-run' mode.
+
+      -D 1|2|3|4|5|6
+         Pass "--debug1", "--debug2", ... option to elprop.pl script.
+
+      -h
+         Shows this help.
+
+      -p <test-set-id>
+         Copies orbitals and potentials from already completed test <test-set-id>
+         into the current one.
+
+      -q
+         The qsubctl script is used to submit the job to a PBS server.
+
+      -s
+         Shows the status of a test (ready/unknown) when displaying the test info.
+
+      -v
+         Verbose mode.
+
+${bold}AUTHOR${normal}
+       Jacek Kobus <jacek.kobus@umk.pl> 
+
+${bold}COPYRIGHT${normal}
+       SPDX-License-Identifier: GPL-2.0-or-later
+       Copyright © 2023 Jacek Kobus
+
+EOF
+    exit
+    
+}
+
+[[ -z "$1" || "$1" == "-h" || "$1" == "help" || "$1" == "--help" ]] && help 
+
+
+#find -name \*input\*.data -exec perl -pi -e 's/^\s*(scf\s+\d+\s+\d+\s+\d+\s+\d+)(\s*\d?)?/\1 3\n/' {} \;
+
+
+function exec4lxc {
+    [[ -d $prefix ]] || mkdir -p $prefix
+    testset=$testSetsDir/$prefix
+    cd $prefix
+    if [[ -d $testset ]]
+    then
+	cp $testset/*  .
+    else
+	echo "Error: $testset not found ..."
+	exit
+    fi
+
+    if [[ ! -f run ]]
+    then
+	echo "Error: run script is missing in $testSetsDir/$2 ... quitting ..."
+	exit
+    fi
+
+    ncases=$(ls input-*.data|wc -l)
+    for (( case=1; case<=$ncases; case++ ))
+    do 
+	[[ -f reference-$case.lst ]] || echo "Warning! reference-$case.lst is missing ..." 
+
+	refResult=reference-$case-result.log
+	currResult=current-$case-result.log
+	$dryrun bash run $case
+
+	#echo "------------------------------------------------------------------------"
+	printDelimiter 2
+	echo -n "TEST: "
+	grep -P '^!!' $testSetsDir/$set/input-$case.data  | sed -e 's/!!/  /i'
+	echo 
+	
+	[[ -f $refResult ]]  && echo -e "REFERENCE: " && cat $refResult
+	[[ -f $currResult ]] && echo -e "\nCURRENT: " && cat $currResult
+	[[ "$clean" == "yes" ]] && rm -rf $prefix 
+    done
+    cd - >& /dev/null
+    exit
+}
+
+function save4lxc {
+    cd $prefix
+    testset=$testSetsDir/$prefix
+
+    ncases=$(ls input-*.data|wc -l)
+    for (( case=1; case<=$ncases; case++ ))
+    do 
+	[[ -f current-$case.lst ]] || echo "Warning! current-$case.lst is missing ..." 
+
+	refResult=$testSetsDir/$prefix/reference-$case.lst
+	currResult=current-$case.lst
+	cp $currResult $refResult
+	cp input-$case.data $testSetsDir/$2/
+	[[ "$clean" == "yes" ]] && rm -rf $prefix 
+    done
+    cd - >& /dev/null
+    exit
+}
+
+function actionDATA {
+
+    set=$1
+    if [[ $set =~ 'set-' ]]
+    then
+	dataFiles=$(ls $testSetsDir/$set/*.data)
+	for df in $dataFiles
+	do
+	    echo -e "\n---------- $(basename $df) ----------"
+	    cat $df
+	    echo "---------- $(basename $df) ----------"
+	done
+    fi
+    exit
+}
+
+function actionELPROP {
+
+    # In case the F value is not included in an output file it can be
+    # given as the last argument. 2DHF program (ver. September 2002
+    # onwards) includes the value in its output and thus the variable $F
+    # should be left empty.
+
+    if [[ -z $set ]]
+    then
+	testSetsDir=$PWD
+	if [[ $PWD =~ test-sets ]]
+	then
+	    lst=reference.lst
+	else
+	    lst=current.lst
+	fi
+    else
+	testSetsDir=$X2DHF_DIRECTORY/test-sets/$set
+	lst=reference.lst
+    fi
+    
+    F=
+    testset=
+    verbose=
+
+    # It is assumed that the results of calculations for various values of the
+    # external electric field are stored according to the scheme
+
+    #   0   set-01
+    #  -F   set-02    
+    # -2F   set-03    
+    #  +F   set-04    
+    # +2F   set-05    
+
+    res_0=${testSetsDir}/set-01/$lst
+    res_m1=${testSetsDir}/set-02/$lst
+    res_m2=${testSetsDir}/set-03/$lst
+    res_p1=${testSetsDir}/set-04/$lst
+    res_p2=${testSetsDir}/set-05/$lst
+
+    missing=0
+    for (( i=1; i<=5; i++ ))
+    do
+	if [[ ! -f ${testSetsDir}/set-0$i/$lst ]]
+	then
+	    echo ${testSetsDir}/set-0$i/$lst is missing ...
+	    missing=1
+	fi 
+    done
+    
+    [[ $missing == 1 ]] && echo "Error: some output files are missing ... quitting ..." && exit  
+
+    $X2DHF_DIRECTORY/bin/elprop.pl \
+	$debug1 $debug2 $debug3 $debug4 $debug5 $debug6 \
+	$res_m2 $res_m1 $res_0 $res_p1 $res_p2 $F
+    
+    exit
+}
+
+function actionINFO {
+
+    if [[ -z "$1" ]]
+    then
+	sets=$(ls $testSetsDir)
+	for set in $sets
+	do
+	    showSetInfo $set
+	done
+	exit
+    fi
+
+    set=$1
+    if [[ $set =~ 'set-' ]]
+    then
+	dataFiles=$(ls $testSetsDir/$set/*.data)
+	for df in $dataFiles
+	do
+	    grep -P '^!!' $df | sed -e 's/!!/  /i'
+	done
+	if [[ -n $status && -f $testSetsDir/$set/$test/status ]]
+	then
+	    printf "%-18s\n"  " status: $(cat $testSetsDir/$set/$test/status)"
+	fi
+	cd - >& /dev/null
+	exit
+    else
+	# is $set a name of a directory or its beginning 
+	set=$(echo $set | sed -e 's/+/\\+/')
+	sets=$(ls $testSetsDir/ | xargs -n1 | grep -iP "^${set}$")
+	for set in $sets
+	do
+	    [[ -d $testSetsDir/$set ]] && showSetInfo $set
+	done
+	exit
+    fi
+}
+
+function actionLIST {
+
+    regexp=''
+    sets=$(ls $testSetsDir)
+    if [[ -n $1 ]]
+    then
+	regexp=$1
+    fi
+
+    for set in $sets
+    do
+	if [[ $set =~ $regexp || ${set}/ =~ $regexp ]]
+	then
+	    cd $testSetsDir/$set
+	    tests=$(ls)
+	    cd - >& /dev/null
+	    printf "\n%12s: " ${set}
+	    i=0
+	    for test in $tests
+	    do
+		((i++))
+		if (( i>$maxsets ))
+		then
+		    i=1
+		    printf "\n %-13s" " "
+		fi
+		printf "%20s"  $set/$test
+	    done
+	    echo ""
+	else
+	    continue
+	fi
+    done | grep -iP "^$|$regexp" | sed '/^$/N;/^\n$/D' 
+    exit
+}
+
+function actionLST {
+
+    set=$1
+    if [[ $set =~ 'set-' ]]
+    then
+	lstFiles=$(ls $testSetsDir/$set/*.lst)
+	for lstFile in $lstFiles
+	do
+	    echo -en "\n---------- $(basename $lstFile) ----------\n"
+	    cat $lstFile
+	done
+    fi
+    exit
+}
+
+separator () {
+    echo
+    for ((i=1; i<=$1; i++))
+    do
+	echo -n "----------"
+    done
+    echo    
+    echo ">>>" $2 "<<<"
+    for ((i=1; i<=$1; i++))
+    do
+	echo -n "----------"
+    done
+    echo
+}
+
+function actionRUN {
+    # prepare working directory
+    prefix=$1
+    [[ $prefix =~ lxc ]] && exec4lxc  
+
+    if [[ $prefix =~ set ]]
+    then
+	[[ -d $prefix ]] || mkdir -p $prefix
+    else
+	echo "Incorrect argument! Did you mean \"$run $prefix/set-01|2|...\"?"
+	exit 1
+    fi
+    cd $prefix
+    testset=$testSetsDir/$prefix
+    if [[ -d $testset ]]
+    then
+	cp -a $testSetsDir/$prefix/*  .
+    else
+	echo "Error: $testset not found ..."
+	exit
+    fi
+    
+    if [[ ! -f run ]]
+    then
+	echo "Error: run script is missing in $testSetsDir/$prefix ... quitting ..."
+	exit
+    fi
+
+    [[ -f reference.lst ]] || echo "Warning! reference.lst is missing ..." 
+
+    showHeader $set    
+    
+    refResult=reference-result.log
+    currResult=current-result.log
+    markStart
+    $dryrun bash run 
+    [[ $? != 0 ]] && exit 1
+    markStop
+    
+
+    [[ -f $refResult ]]  && echo -e "REFERENCE: " && cat $refResult
+    [[ -f $currResult ]] && echo -e "\nCURRENT: " && cat $currResult
+    echo ""
+    cd - >& /dev/null
+    [[ "$clean" == "yes" ]] && rm -rf $prefix 
+
+    exit
+}
+
+
+function actionRunAll {
+
+    regexp=''
+    if [[ -n $1 ]]
+    then
+	regexp=$1
+    fi
+
+    rm -f $log
+    pwd=$PWD
+    systems=$(ls $testSetsDir/)
+    for system in $systems
+    do
+	if [[ $system =~ $regexp || ${system}/ =~ $regexp ]]
+	then
+	    sets=$(ls $testSetsDir/$system)
+	    for set in $sets
+	    do
+		#echo $testSetsDir/$system/$set
+		#$0 info $system/$set
+		if [[ -n $1 ]]
+		then
+		    regexp1="^$system"
+		    if [[ $system/$set =~ $regexp1 ]]
+		    then
+			#echo $system/$set
+			#separator $sepCount >> $log
+			separator $sepCount $system/$set 
+			#2>1 $prog run $system/$set >> $log
+			if [[ -z $qsub ]]
+			then
+			    $dryrun $0 run $system/$set
+			else
+			    $dryrun qsubctl $system/$set
+			fi
+		    else
+			continue
+		    fi
+		else
+		    $dryrun $run $system/$set
+		fi
+	    done
+	fi
+    done
+    exit
+    
+}
+
+
+function actionSaveAll {
+    cp /dev/null $log
+    tail -f $log &
+    tailpid=$$
+    systems=$(ls $testSetsDir/)
+    for system in $systems
+    do
+	cd $system >& /dev/null
+	sets=$(ls $testSetsDir/$system)
+	for set in $sets
+	do
+	    #echo $testSetsDir/$system/$set
+	    #$0 info $system/$set
+	    if [[ -n $1 ]]
+	    then
+		regexp="^$1/"
+		if [[ $system/$set =~ $regexp ]]
+		then
+		    #echo $system/$set
+		    #separator $sepCount >> $log
+		    [[ -d $system/$set ]] && $0 save $system/$set
+		    echo "... test set $system/$set saved ..."
+		    kill $tailpid 
+		    exit
+		else
+		    continue
+		fi
+	    else
+		$dryrun $run $system/$set
+	    fi
+	done
+    done
+    exit
+    
+}
+
+markStart () {
+    rm -f runStart runStop
+    (LANG=us_US; date "+%Y-%m-%d %H:%M:%S" > runStart)
+}
+
+markStop () {
+    (LANG=us_US; date "+%Y-%m-%d %H:%M:%S" > runStop)
+}
+
+
+message () {
+    cat <<EOF
+  $1
+  Or try './$(basename $0)|$(basename $0) -h|--help|help'.
+EOF
+    exit
+}
+
+
+
+cleanAll () {
+
+    sets=$(ls $testSetsDir)
+    for set in $sets
+    do
+	cd $testSetsDir/$set
+	tests=$(ls)
+	cd - >& /dev/null
+	for test in $tests
+	do
+	    [[ -d $set/$test ]] && rm -rf $set/$test && echo "$set/$test removed ..."
+	done
+    done
+    exit
+
+}
+
+
+printDelimiter() {
+
+    if [[ $1 == 1 ]]
+    then
+	del="="
+	printf "\n   "    
+	for ((i=1;i<=$width;i++))
+	do
+	    printf "$del"
+	done
+	printf "\n\n"
+    else
+	del="-"
+	printf "\n   "    
+	for ((i=1;i<=$width;i++))
+	do
+	    printf "$del"
+	done
+	printf "\n\n"    
+    fi	   
+}
+
+showSetInfo () {
+    tmpfile=$(mktemp)
+    cd $testSetsDir/$set
+    tests=$(ls)
+    cd - >& /dev/null
+    [[ "$tests" == "" ]] && return
+    printDelimiter 1
+    
+    run=0
+    for test in $tests
+    do
+	dataFiles=$(ls $testSetsDir/$set/$test/*.data 2>/dev/null)
+	[[ -z $dataFiles ]] && printf "%12s\n"  "$set/$test -> " && continue
+	#[[ -z $dataFiles ]] && printf "%12s\n"  "$set/$test\n  -> " && continue
+
+	if [[ $run == 0 ]]
+	then
+	    run=1
+	else
+	    printDelimiter 2
+	    #echo -e "\n   ---------------------------------------------------------------------------------\n"
+	fi
+	for df in $dataFiles
+	do
+	    grep -P '^!!' $df  | perl -p -e 's/!!(.*:)/\1/i' > $tmpfile
+	    nlines=$(wc -l $tmpfile | awk '{print $1}')
+	    printf "   %-20s \n" "$set/$test "
+	    echo "         " $(cat $tmpfile) | fmt -c --width=$width
+	done
+	#fn=$(ls $testSetsDir/$set/$test/*.data 2>/dev/null)
+	if [[ -n $status && -f $testSetsDir/$set/$test/status ]]
+	then
+	    printf "%-28s\n " "               status: $(cat $testSetsDir/$set/$test/status)"
+	fi
+    done
+     printDelimiter 1
+     rm -f $tmpfile
+}    
+
+showHeader () {
+    cd $testSetsDir/$set
+    dataFiles=$(ls *.data)
+    echo ""
+    for df in $dataFiles
+    do
+	echo "TEST: "
+	echo "    " $(grep -P '^!!' $df  | sed -e 's/!!/  /i')
+	echo ""
+    done
+    cd - >& /dev/null
+}    
+
+
+
+[[ $1 == "help" || $1 == "-h" || $1 == "--help" ]] && help
+
+n=50         # tail -$n 
+sepCount=8   # 8x10 dashes are used as separator
+log=/tmp/$(basename $0).log
+
+status=$(which x2dhf 2>/dev/null)
+
+if [[ -z $status ]] 
+then 
+    cat <<EOF
+    x2dhf has not been found.
+    Execute: "cd ..; source .x2dhfrc"
+EOF
+    exit 1
+fi
+
+if [[ -z $X2DHF_DIRECTORY ]]
+then
+    echo "Error! X2DHF_DIRECTORY is unset. "
+    echo "Tests are expected to be in '\$X2DHF_DIRECTORY/test-sets/' directory."
+    echo "Some tests need LDA orbitals located in '\$X2DHF_DIRECTORY/lda_orbitals/'."
+    exit
+fi  
+
+
+testSetsDir=$X2DHF_DIRECTORY/test-sets
+
+clean=no
+cleanAll=no
+cont=no
+debug=
+dryrun=
+fixnan=
+force=
+interp=
+jobfile=
+maxscf=2000
+maxsets=4 # maximum number of sets printed in a single line (see list action)
+prevset=
+qsub=
+status=
+verbose=
+width=$(stty size 2> /dev/null | gawk '{print $2}')
+let width=$width-10
+
+while getopts "b:cCdD:fin:p:qsv" option; do
+    case $option in
+	b ) jobfile=$OPTARG;;
+	c ) clean=yes;;
+	C ) cleanAll;;
+	d ) dryrun="echo dry-run:";;
+	D ) [[ $OPTARG == 1 ]] && debug1="--debug1";
+	    [[ $OPTARG == 2 ]] && debug2="--debug2";
+	    [[ $OPTARG == 3 ]] && debug3="--debug3";
+	    [[ $OPTARG == 4 ]] && debug4="--debug4";
+	    [[ $OPTARG == 5 ]] && debug5="--debug5";
+	    [[ $OPTARG == 6 ]] && debug6="--debug6";
+	    ;;
+	f ) force=yes;;
+        h ) help; exit;;
+        i ) interp=yes; fixnan=fixnan;;
+	n ) maxscf=$OPTARG;;
+	p ) prevset=$OPTARG;;
+	q ) qsub=on;;
+	s ) status=yes;;
+	v ) set -x;;
+	* ) echo "Error: unknown option" && help && exit
+    esac
+done
+
+shift $((OPTIND-1))
+
+if [[ -n $jobfile ]]
+then
+    regexp='^\s*#'
+    while read test
+    do
+	[[ $test =~ $regexp ]] && continue 
+	printDelimiter 1
+	echo -n "   "
+	$dryrun bash $0 run $test
+    done <$jobfile
+    printDelimiter 1
+    exit
+fi
+
+action=$1
+[[ -z $action ]] && help && exit 1
+
+set=$2
+
+# Is x2dhf available via the PATH? If not try using the binary file from
+# x2dhf working directory.
+
+x2dhf=$(which x2dhf >& /dev/null)
+
+[[ $action == "log" ]] && cat $log && exit
+
+if [[ $action == "run" ]]
+then
+    if [[ -z $qsub ]]
+    then
+	actionRUN $set
+    else
+	$dryrun qsubctl $set
+	exit
+    fi
+fi
+
+[[ $action == "runall"  ]] && actionRunAll $set 
+
+[[ $action == "saveall"  ]] && actionSaveAll $set
+
+[[ $action == "list"  ]] && actionLIST $set
+
+[[ $action == "info" ]] && actionINFO $set
+
+[[ $action == "lst" && -n $2 ]] && actionLST $set
+
+[[ $action == "elprop" ]] && actionELPROP && exit
+
+if [[ -n $prevset ]]
+then
+    prevprefix=$(echo "$prevset" | sed -e 's/\//-/')
+    echo cp $prevprefix/output-[12].* $prefix/
+fi
+
+# prepare working directory
+
+#prefix=$(echo "$2" | sed -e 's/\//-/')
+prefix=$2
+if [[ $prefix =~ set ]]
+then
+    [[ -d $prefix ]] || mkdir -p $prefix
+fi
+
+# Is x2dhf available via PATH? If not try using the binary file from x2dhf
+# working directory.  
+
+if [[ -n $prevset ]]
+then
+    #prevprefix=$(echo "$prevset" | sed -e 's/\//-/')
+    prevprefix=$prevset
+    cp $prevprefix/output-[12].* $prefix/
+    exit
+fi
+
+#x2dhf=$(which x2dhf >& /dev/null)
+
+cd $prefix >& /dev/null
+
+if [[ ! -f x2dhf ]]
+then
+   if [[ -z $x2dhf && -f $X2DHF_DIRECTORY/bin/x2dhf ]]
+   then
+       [[ -f $X2DHF_DIRECTORY/bin/x2dhf ]] || ln $X2DHF_DIRECTORY/bin/x2dhf . 
+   else
+       echo "Error! x2dhf command not found neither via PATH nor in the current directory ... "
+   fi
+fi
+
+cd - >& /dev/null
+
+
+if [[ $action == "cat" || $action == "catc" ]]
+then
+
+    #prefix=$(echo "$2" | sed -e 's/\//-/')
+    prefix=$2
+    [[ -f $prefix/current.lst ]] && cat $prefix/current.lst && exit 
+
+    [[ -n $3 ]] && [[ -f $prefix/$3 ]] && cat $prefix/$3 && exit 
+    
+    nlst=$(ls $prefix/*.lst 2>/dev/null | wc -l)
+
+    [[ $nlst == 0 ]] && echo "no '*'.lst files found in $prefix/*.lst" && exit    
+    if [[ $nlst == 1 ]]
+    then
+	fn=$(ls $prefix/*.lst)
+	[[ -f $prefix/${fn}.lst ]] && cat $prefix/${fn}.lst
+    else
+	echo -e "choose one of the following files:\n"
+	echo -n ""
+	cd "$prefix" >& /dev/null
+	ls current*.lst |xargs -n4
+	cd - >& /dev/null
+	echo -en "\nand run: "
+	echo \""$(basename $0) $1 $2 <filename>"\"
+	exit
+    fi
+    exit
+fi
+
+if [[ $action == "catr" ]]
+then
+    [[ -f $testSetsDir/$2/$3 ]] && cat $testSetsDir/$2/$3 && exit
+
+    prefix=$(echo $2 | cut -d/ -f1,2)
+    
+    if [[ -f $testSetsDir/$prefix/reference.lst ]]
+    then
+	cat $testSetsDir/$prefix/reference.lst
+    else
+	nlst=$(ls $testSetsDir/$prefix/*.lst 2>/dev/null | wc -l)
+	
+	[[ $nlst == 0 ]] && echo "no '*'.lst files found in $testSetsDir/$2/ " && exit    
+	
+	if [[ $nlst == 1 ]]
+	then
+	    fn=$(ls $testSetsDir/$prefix/*.lst)
+	    cat $testSetsDir/$prefix/$fn
+	else
+	    echo "choose one of the files:"
+	    cd $testSetsDir/$prefix/ >& /dev/null
+	    ls reference*.lst
+	    cd - >& /dev/null
+	fi
+    fi
+    exit
+fi
+
+[[ $action == "data" && -n $set ]] && actionDATA $set
+
+if [[ $action == "edit" ]]
+then
+    if [[ "$2" != "" ]]
+    then
+	#cd $testSetsDir/$2/
+	dataFiles=$(ls $testSetsDir/$2/*.data)
+	$EDITOR $dataFiles
+    fi
+    exit
+fi
+
+
+if [[ $action == "grepe" ]]
+then
+    #prefix=$(echo "$2" | sed -e 's/\//-/')
+    prefix=$2
+    grep -iP '^\s{5,}total energy:' $prefix/current.lst
+    exit
+fi
+
+
+
+if [[ $action == "tail" ]]
+then
+    #prefix=$(echo "$2" | sed -e 's/\//-/')
+    prefix=$2
+    tail -20 $prefix/current.lst
+    exit
+fi
+
+
+
+if [[ $action == "summary" ]]
+then
+    prefix=$2
+    cd $prefix
+   
+    testset=$testSetsDir/$2
+    if [[ -d $testset ]]
+    then
+	cp $testSetsDir/$2/*  .
+    else
+	echo "Error: $testset not found ..."
+	exit
+    fi
+
+    [[ -f reference-result.log ]] || echo "Warning! reference-result.log is missing ..." 
+
+    refResult=reference-result.log
+    currResult=current-result.log
+    showHeader $set
+    [[ -f $refResult ]]  && echo -e "REFERENCE: " && cat $refResult
+    [[ -f $currResult ]] && echo -e "\nCURRENT: " && cat $currResult
+    cd - >& /dev/null
+    exit
+fi
+
+if [[ $action == "stop" ]]
+then
+    #prefix=$(echo "$2" | sed -e 's/\//-/')
+    prefix=$2
+    cd $prefix
+    xhf stop
+    cd - >& /dev/null
+    exit
+fi
+
+
+
+if [[ $action == "save" ]]
+then
+    prefix=$2
+    [[ $prefix =~ lxc ]] && save4lxc 
+    
+    prefix=$2
+    [[ -d $prefix ]] || message "Error: directory $prefix does not exist." 
+    cd $prefix
+
+    testset=$testSetsDir/$2
+    outputFiles=$(ls current*.lst)
+    for outputFile in $outputFiles
+    do
+	referenceFile=$(echo $outputFile| sed -e 's/current/reference/')
+	[[ -f ${outputFile} ]] && cp ${outputFile} $testset/${referenceFile}
+    done
+    exit
+fi
+
+if [[ $action == "ready" || $action == "unknown" ]]
+then
+    testset=$testSetsDir/$2
+    echo $action '('$(date "+%Y-%m-%d %H:%M:%S")')' > $testset/status
+    exit
+fi
+
+
+if [[ $action == "some" ]]
+then
+    testSets=(h/set-01 h/set-02)
+
+    for i in  ${testSets[@]}
+    do
+	./$prog info $i
+	./$prog run $i
+	echo ""
+    done
+    exit
+fi
+
+echo "Error: unknown action $1 ... see $prog -h ..."
+
+exit
+
+

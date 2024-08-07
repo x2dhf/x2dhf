@@ -1,0 +1,12 @@
+title He
+!! He:  SCF energy for the LDA_X + XC_GGA_C_LYP functionals
+method dft
+dft xc_lda_x xc_gga_c_lyp
+nuclei  2.0 0.0  2.0 
+config 0
+ 1 sigma  end
+grid  191 65.0
+orbpot old
+scf  3000 10 12 18 3
+conv 3000
+stop 

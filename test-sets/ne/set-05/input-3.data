@@ -1,0 +1,14 @@
+title Ne 
+!! Ne: cont'ed HF : energy threshold=10^-8 
+method HF
+nuclei  10.0  0.0  2.0
+config  0
+1 pi
+2 sigma
+1 sigma   end
+grid 169 65.0
+orbpot old
+scf 1500 10 8 12 3
+conv 2000
+stop
+

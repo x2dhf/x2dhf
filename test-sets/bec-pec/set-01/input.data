@@ -1,0 +1,32 @@
+!! BeC: R-dependence of total energy and orbital energies
+TITLE bec 
+METHOD hf ! dft
+NUCLEI  4.0  6.0  2.20
+CONFIG  0
+        1 pi + . + .
+        4 sigma end
+!grid  397 643 100.0
+grid  197 60.0
+orbpot hydrogen 
+!interp
+lcao
+1.0   2 1  4.0     1.0   2 1 6.0  
+1.0   2 0  4.0     0.0   1 0 6.0  
+1.0   1 0  4.0     0.0   1 0 6.0  
+0.0   2 0  4.0     1.0   2 0 6.0  
+0.0   1 0  4.0     1.0   1 0 6.0  
+scf 6000 10 8 12 3
+conv 2000
+stop
+
+norbs=5
+orblabels=1sigma 2sigma 3sigma 4sigma 1pi
+
+rinit=1.6
+rnext=1.8 2.0 2.2 2.4 2.6 2.8 3.0 3.2 3.4 3.6 3.8 4.0 
+
+offsetTop=4.0
+
+#pngsize=1024,768
+
+

@@ -1,0 +1,12 @@
+title He
+!! He: SCF calculations with B88 functional 
+method dft
+dft b88
+nuclei  2.0 0.0  2.0 
+config 0
+ 1 sigma  end
+grid  91 35.0
+orbpot old
+scf  5000 10 10 18 3
+omega 1.8
+stop 

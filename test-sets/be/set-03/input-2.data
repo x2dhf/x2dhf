@@ -1,0 +1,12 @@
+title Be
+!! Be: HF/DFT cont'ed : xc_lda_x functional : energy threshold=10^-10 
+method hf
+dft XC_LDA_X 
+nuclei 4.0 0.0 2.386
+config 0
+2 sigma end
+grid 269 65.0
+orbpot old
+scf 1000 10 10 14 3
+
+stop

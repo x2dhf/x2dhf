@@ -1,0 +1,17 @@
+title Be-Be R = 3.750
+!! Be-Be: initial HF atomic orbitals + break : grid 241x301/50.0, SCF accuracy 10^-12' 
+method hf
+nuclei  4.0 4.0  3.750
+break 
+config 0
+  1 sigma u
+  1 sigma g 
+  1 sigma u 
+  1 sigma g end
+grid 269 50.0 
+orbpot hf 0
+scf 10000 10 12 14 3
+conv 2000
+lm 1 2  2 3  3 4 
+stop
+

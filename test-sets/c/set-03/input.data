@@ -1,0 +1,14 @@
+title C (1S)
+!! C 1S: HF cals with initial HF orbitals 
+method hf 
+nuclei  6.0 0.0  2.0 
+config 0
+ 1 sigma
+ 2 sigma  end
+grid  190 40.0
+orbpot hf
+scf  1500 10 12 18 3
+conv 3000
+omega 1.8
+!fixorb
+stop 

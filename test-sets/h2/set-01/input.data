@@ -1,0 +1,15 @@
+title H2
+!! H2 : hydrogen-like starting orbitals : R=1.4 : hf/sor 
+!!    : forced inversion symmetry : normalization threshold=10^-8
+method hf
+nuclei  1.0 1.0  1.4
+!nuclei  1.0 1.0  2.0
+!break 
+config 0
+  1 sigma g end
+grid 169 40.0 
+orbpot hydrogen
+lcao
+ 1.0 1 0 1.0   1.0   1 0  1.0 
+scf  400 10 16 8 3
+stop

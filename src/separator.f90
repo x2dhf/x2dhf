@@ -1,9 +1,0 @@
-module separator_m
-  implicit none
-contains
-  subroutine separator
-
-    write(*,'(/,"////////////////////////////////////////////////////////////////////////////////////////////////",/)')
-
-  end subroutine separator
-end module separator_m

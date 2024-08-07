@@ -1,0 +1,13 @@
+title He: Hook's atom ground state (ungerade) 
+!! He: Hooke's atom ground state (ungerade)
+method ted 
+pothooke 
+nuclei  1.0 1.0 1.0
+config 0
+ 1 sigma u end
+grid 169 20.0
+orbpot hydrogen 0 
+lcao
+  1.0  1 0 1.0   -1.0  1 0  1.0  
+scf  500 10 10 14  3
+stop

@@ -1,0 +1,1004 @@
+
+#  SPDX-License-Identifier: GPL-2.0-or-later
+#  Copyright © 2023 Jacek Kobus
+
+
+function statusOld {
+
+    counter=$(cat $pwd/${system}-$oldR/.x2dhf-counter)
+    lst=$pwd/$oldDir/$system-$oldR-$method-${counter}.lst 	
+    nan=$(grep -P 'sigma.*NaN' $lst| head -1)
+    [[ -n $nan ]] && return 1
+
+    running=$(grep 'running' $lst)
+    [[ -n $running ]] && return 0
+
+    energy=$(grep 'orbital energy threshold reached' $lst)
+    [[ -n $energy ]] && return 0
+
+    norm=$(grep 'orbital normalization threshold reached' $lst)
+    [[ -n $norm ]]  && return 0
+
+    stop=$(grep 'stop_x2dhf detected' $lst)
+    [[ -n $stop ]] && return 1
+
+    iter=$(grep 'scf iteration limit reached' $lst)
+    [[ -n $iter ]] && return 0
+    return 1
+}
+
+
+function cont {
+    newR=$1
+    newDir=$system-$newR
+    inputData=$system-$newR.data
+
+    oldR=$newR
+    oldDir=$system-$oldR
+
+    if [[ -f $newDir/.status ]]; then
+	status=$(cat $newDir/.status)
+    else
+	status=
+    fi
+    [[ "$status" == "running" ]] && echo "... already running for $newR ... quitting ..." && exit 
+    [[ "$status" == "... orbital normalization threshold reached ..." ]] && echo "... already finished for $new ..." && exit 
+    [[ "$status" == "... orbital normalization threshold reached ..." ]] \
+	&& echo "... already finished for $newDir... quitting ..." && exit
+    [[ "$status" == "NaN" ]] && echo "... NaNs found in $newDir ... quitting ..." && exit
+
+    runNext
+}
+
+
+
+function contALL {
+
+    if [[ "$1" == "init" ]]
+    then
+	shift
+
+	for r in $rinit
+	do
+	    newR=$r
+	    newDir=$system-$newR
+	    runInit
+    	done 
+
+	oldR=$(echo $rinit | gawk '{print $NF}')
+	oldDir=$system-$oldR
+	for r in $rnext
+	do
+	    newR=$r
+	    newDir=$system-$newR
+	    inputData=$system-$newR.data
+	    if [[ -f $oldDir/.status ]]; then
+		status=$(cat $oldDir/.status)
+	    else
+		status=
+	    fi
+#	    [[ "$status" == "running" ]] && echo "... already running for $oldR ..." 
+#	    [[ "$status" == "... orbital normalization threshold reached ..." ]] && echo "... already finished for $old ..." 
+	    
+	    if [[ -f $newDir/.status ]]
+	    then
+		status=$(cat $newDir/.status)
+	    else
+		status=
+	    fi
+
+            [[ "$status" == "running" ]] && echo "... already running for $newDir... quitting ..." && exit
+            [[ "$status" == "orbital normalization threshold reached" ]] &&\
+                echo "... already finished for $newDir... quitting ..." && exit
+	    [[ "$status" == "orbital energy threshold reached" ]] &&\
+		echo "... already finished for $newDir... quitting ..." && exit
+            [[ "$status" == "NaN" ]] && echo "... NaNs found in $newDir ... quitting ..." && exit
+
+	    fwait 
+	    runNext 
+	    oldR=$newR
+	    oldDir=$system-$oldR
+	done 
+	exit
+    fi
+
+    if [[ "$1" == "cont" ]]
+    then
+
+	for r in $rinit
+	do
+	    newR=$r
+	    newDir=$system-$newR
+	    oldR=$newR
+	    oldDir=$system-$oldR
+
+	    inputData=$system-$newR.data
+	    if [[ -f $newDir/.status ]]
+	    then
+		status=$(cat $newDir/.status)
+	    else
+		status=
+	    fi
+
+	    [[ "$status" == "running" ]] && \
+		echo "... already running for $newR ..." && continue 
+	    [[ "$status" == "orbital normalization threshold reached" ]] &&\
+		echo "... orbital normalization threshold reached for $newR ..." && continue 
+	    [[ "$status" == "orbital energy threshold reached" ]] &&\
+		echo "... orbital energy threshold reached for $newR ..." && continue 
+            [[ "$status" == "NaN" ]] && echo "... NAN detected for $newR ..." && continue 
+
+	    runNext 
+	done 
+
+	for r in $rnext
+	do
+	    newR=$r
+	    newDir=$system-$newR
+	    oldDir=$system-$oldR
+
+	    inputData=$system-$newR.data
+	    if [[ -f $newDir/.status ]]
+	    then
+		status=$(cat $newDir/.status)
+	    else
+		status=
+	    fi
+	    [[ "$status" == "running" ]] && \
+		echo "... already running for $newR ..." && continue 
+	    [[ "$status" == "orbital normalization threshold reached" ]] &&\
+		echo "... orbital normalization threshold reached for $newR ..." && continue 
+	    [[ "$status" == "orbital energy threshold reached" ]] &&\
+		echo "... orbital energy threshold reached for $newR ..." && continue 
+            [[ "$status" == "NaN" ]] && echo "... NAN detected for $newR ..." && continue 
+
+	    runNext
+	    oldR=$newR
+	done 
+    fi
+
+    if [[ "$1" == "lst5" ]]; then
+	shift
+	for r in $rinit; do
+	    newDir=$system-$r
+	    lst5 
+    	done 
+	
+	for r in $rnext; do
+	    newDir=$system-$r
+	    lst5 
+	done 
+	exit
+    fi
+
+
+    if [[ "$1" == "next" ]]; then
+	# 
+	oldR=$(echo $rinit | gawk '{print $NF}')
+	oldDir=$system-$oldR
+	for r in $rnext; do
+	    newR=$r
+	    newDir=$system-$newR
+	    inputData=$system-$newR.data
+	    if [[ -f $newDir/.status ]]; then
+		status=$(cat $newDir/.status)
+	    else
+		status=
+	    fi
+	    [[ "$status" == "running" ]] && echo "... already running for $newR ..." 
+	    [[ "$status" == "... orbital normalization threshold reached ..." ]] && echo "... already finished for $newR ..." 
+	    [[ "$status" == "NaN" ]] && echo "... NaNs found in $newDir ... quitting ..." && exit
+
+	    fwait 
+	    runNext 
+	    oldR=$newR
+	    oldDir=$system-$oldR
+	done 
+    fi
+
+    
+    if [[ "$1" == "rm" ]]; then
+	shift
+	for r in $rinit; do
+	    remove $pwd/${system}-$r
+    	done 
+	
+	for r in $rnext; do
+	    remove $pwd/${system}-$r
+	done 
+	exit
+    fi
+
+
+    if [[ "$1" == "rminit" ]]; then
+	shift
+	for r in $rinit; do
+	    remove $pwd/${system}-$r
+    	done 
+	exit
+    fi
+
+
+    if [[ "$1" == "rmnext" ]]; then
+	shift
+	for r in $rnext; do
+	    remove $pwd/${system}-$r
+    	done 
+	exit
+    fi
+
+    if [[ "$1" == "rmorbpot" ]]; then
+	shift
+	find . -name \*.orb  | xargs rm -f
+	find . -name \*.coul | xargs rm -f
+	find . -name \*.exch | xargs rm -f
+	exit
+    fi	
+
+
+    if [[ "$1" == "status" ]]; then
+	shift
+	for r in $rinit; do
+	    newR=$r
+	    newDir=$system-$newR
+#	    getStatus 
+	    getStatus4All
+    	done 
+	
+	for r in $rnext; do
+	    newR=$r
+	    newDir=$system-$newR
+#	    getStatus 
+	    getStatus4All
+	done 
+	exit
+    fi
+    
+    
+    if [[ "$1" == "setstatus" ]]; then
+	shift
+	for r in $rinit; do
+	    newR=$r
+	    newDir=$system-$newR
+	    setStatus 
+    	done 
+
+	for r in $rnext; do
+	    newR=$r
+	    newDir=$system-$newR
+	    setStatus 
+	done 
+	exit
+    fi
+
+    
+    if [[ "$1" == "stop" ]]; then
+	shift
+	for r in $rinit; do
+	    newDir=$system-$r
+	    if [[ -d $newDir ]]; then
+		cd $newDir >& /dev/null
+		xhf stop
+		cd - >& /dev/null
+	    fi
+    	done 
+	
+	for r in $rnext; do
+	    newDir=$system-$r
+	    if [[ -d $newDir ]]; then
+		cd $newDir >& /dev/null
+		xhf stop
+		cd - >& /dev/null
+	    fi
+	done 
+	exit
+    fi
+    
+
+    if [[ "$1" == "progress" ]]; then
+	shift
+	for r in $rinit; do
+	    progress $r
+    	done 
+	
+	for r in $rnext; do
+	    progress $r
+	done 
+	exit
+    fi
+    
+
+    if [[ "$1" == "progress" ]]; then
+	shift
+	for r in $rinit; do
+	    newDir=$system-$r
+	    progress
+    	done 
+	
+	for r in $rnext; do
+	    newDir=$system-$r
+	    progress
+	done 
+	exit
+    fi
+}
+
+
+function progress {
+    newDir=$system-$1
+    [[ ! -d $newDir ]] && echo "missing $newDir ..." && return	 
+    echo -e "... $newDir ..." 
+    cd $newDir >& /dev/null
+    newest=$(ls -t *.lst | head -1)
+    grep '/overlap' $newest | tail -n $ntail4progress
+    echo
+    cd - >& /dev/null
+
+
+
+
+
+}
+
+
+function genInputData {
+    cp $pwd/input.data $pwd/$newDir/$system-$newR.data
+    perl -pi -e "s/^title.*/title $system $method $r/i" $pwd/$newDir/$system-$newR.data
+    perl -pi -e "s/(nuclei\s+\d+\.?\d+?\s+\d+\.?\d+?)\s+.*$/\1 $newR/i" $pwd/$newDir/$system-$newR.data
+
+    if [[ -n $optLAGRA ]]; then
+	perl -pi -e "s/^lagra.*/lagra $optLAGRA/i;" $pwd/$newDir/$system-$newR.data;
+    fi
+
+    if [[ -n $optOMEGA ]]; then
+	perl -pi -e "s/^omega.*/omega $optOMEGA/i;" $pwd/$newDir/$system-$newR.data; 
+    fi
+
+    if [[ -n $optSCF ]]; then
+	perl -pi -e "s/^scf.*/scf $optSCF/i;" $pwd/$newDir/$system-$newR.data; 
+    fi
+
+    if [[ -n $optORBPOT ]]; then
+	perl -pi -e "s/^orbpot.*/orbpot $optORBPOT/i;" $pwd/$newDir/$system-$newR.data
+    fi
+
+    if [[ -n $optADD ]]; then
+	perl -pi -e "s/^stop/$args\nstop/i;" $pwd/$newDir/$system-$newR.data
+    fi
+
+    if [[ -n $optDELETE ]]; then
+	sed -ie "/^.*$args.*/d" $pwd/$newDir/$system-$newR.data
+    fi
+
+    inputData=$pwd/$newDir/$system-$newR.data
+}
+
+function getSource {
+    if [[ -f ../$oldDir/.x2dhf-counter ]]
+    then
+	counter=$(cat ../$oldDir/.x2dhf-counter)
+    else
+	counter=1
+    fi
+    #    source=$pwd/$oldDir/$system-$oldR-$method-$counter
+    source=../$oldDir/$system-$oldR-$method-$counter
+    if [[ ! -f ${source}.orb ]]; then 
+	echo "missing $source ... quitting ..."
+	exit
+    fi
+}
+
+
+function getStatus {
+    [[ ! -d $pwd/${system}-$newR/ ]] && echo "$pwd/${system}-$newR/ does not exist ..." && return	
+    echo -e "\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+    echo -e "R="$newR 	
+    counter=
+    lst=
+    pid=
+    status=
+    if [[ -f $pwd/${system}-$newR/.pid ]]
+    then
+        pid=$(cat $pwd/${system}-$newR/.pid)
+    fi
+
+    if [[ -f $pwd/${system}-$newR/.status ]]
+    then
+	status=$(cat $pwd/${system}-$newR/.status)
+    fi
+    
+    if [[ -f $pwd/${system}-$newR/.x2dhf-counter ]]
+    then
+	counter=$(cat $pwd/${system}-$newR/.x2dhf-counter)
+    fi
+
+    if [[ -f $pwd/${system}-$newR/$system-$newR-$method-${counter}.lst 	 ]]    
+    then
+	lst=$newDir/$system-$newR-$method-${counter}.lst 	
+    fi
+    [[ -n $pid ]] && echo "pid="$pid
+    [[ -n $comm ]] && echo "comm="$comm
+    [[ -n $counter ]] && echo "counter="$counter
+    [[ -n $lst ]] && echo "lst="$lst
+    [[ -n $status ]] && echo "status="$status
+    echo -e "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
+}
+
+
+function getStatus4All {
+    if [[ -f $pwd/${system}-$newR/.status ]]; then
+	text=$(grep '^orbpot' $pwd/${system}-$newR/$system-$newR.data)
+	printf "%12s %-40s /  %-25s\n"  "$newR:   " "$(cat $pwd/${system}-$newR/.status)" "$text"    
+    else
+	printf "%12s %-40s\n"  "$newR:   " "status not available"
+    fi
+}
+
+function final {
+    cd $newDir >& /dev/null
+    getSource
+    finaltarget=$system-$newR-final
+    xhf move $source $finaltarget
+    mv $source.lst $finaltarget.lst
+    cd - >& /dev/null
+}
+
+
+
+
+
+function ftop {
+    ps -elf | grep x2dhf-$system | grep -v grep
+}
+
+
+function fwait {
+
+    maxwait=5
+    for (( i=1; i<=$maxwait; i++ )); do 
+	if [[ ! -f $oldDir/.status ]]
+	then
+	    echo "missing $oldDir/.status ... waiting ..."
+	    sleep $delay
+	else
+	    break
+	fi
+    done
+
+    stat=$(grep -iP "$message2|$message3|$message4" $oldDir/.status)
+    [[ -n $stat ]] && return
+
+    stat=$(grep -iP "$message1" $oldDir/.status)
+    [[ -z $stat ]] &&  echo "unknown status ... try \"xhfctl setstatus $oldR\" ..." && exit
+    scfIters=0
+
+    lst=$(ls -t $oldDir/*.lst | head -1)
+    [[ -z $lst ]] && exit
+
+    while (( $scfIters < $scfIters2wait ))
+    do
+	scfIters=$(grep  -iP '\d+\s+1\s+sigma' $lst | gawk '{print $1}' | tail -1)
+	[[ $scfIters == "" ]] && scfIters=1
+	sleep 1
+    done
+}
+
+
+function init {
+    newR=$1
+    newDir=$system-$newR
+    inputData=$system-$newR.data
+    if [[ -f $newDir/.status ]]
+    then
+	status=$(cat $newDir/.status)
+    else
+	status=
+    fi
+
+    [[ "$status" == "$message1" ]] && echo "... already running ... quitting ..." && exit
+    if [[ "$optFORCE" == "no" ]]
+    then 
+	[[ "$status" == "$message2"  || "$status" == "$message3" ]] \
+	    &&  echo "... already finished ... use '--force' to run this case " && exit
+    fi
+    
+
+    runInit $newR
+}
+
+function listing {
+    [[ ! -d $newDir ]] && echo "missing $newDir ..." && return	 
+    echo -e "... $newDir ..." 
+    cd $newDir >& /dev/null
+    newest=$(ls -t *.lst | head -1)
+    tail -n$ntail4lst $newest | grep -v 'multipole moment expansion coefficients recalculated'
+    echo	 
+    cd - >& /dev/null
+}
+
+function lst5 {
+    [[ ! -d $newDir ]] && echo "missing $newDir ..." && return	 
+    echo -e "... $newDir ..." 
+    cd $newDir >& /dev/null
+    newest=$(ls -t *.lst | head -1)
+    tail -n$ntail4lst5 $newest 
+    echo
+    cd - >& /dev/null
+}
+
+function tot10 {
+    [[ ! -d $newDir ]] && echo "missing $newDir ..." && return	 
+    echo -e "... $newDir ..." 
+    cd $newDir >& /dev/null
+    newest=$(ls -t *.lst | head -1)
+    grep -i total $newest | tail -n $ntail4tot10 
+    echo
+    cd - >& /dev/null
+}
+
+
+
+function next {
+    if [[ -z $2 ]]; then
+	oldR=$1
+	newR=$1
+    else
+	oldR=$2
+	newR=$1
+    fi
+    oldDir=$system-$oldR
+    newDir=$system-$newR
+    inputData=$system-$newR.data
+    if [[ -f $oldDir/.status ]]
+    then
+	status=$(cat $oldDir/.status)
+    else
+	status=
+    fi
+
+    if [[ $status != "running" ]] && [[ "$optFORCE" == "no" ]]
+    then
+	statusOld 
+	[[ $? -eq 1 ]] && echo "check status for $oldR ... use '--force' to run this case " && exit
+    fi
+
+    if [[ -f $newDir/.status ]]; then
+	status=$(cat $newDir/.status)
+    else
+	status=
+    fi
+
+    [[ "$status" == "running" ]] && echo "... already running for $newDir... quitting ..." && exit
+    [[ "$status" == "... orbital normalization threshold reached ..." ]] && [[ "$optFORCE" == "no" ]] \
+	&& echo "... already finished for $newDir... use '--force' to run this case " && exit
+   
+    [[ "$status" == "NaN" ]] && echo "... NaNs found in $newDir ... quitting ..." && exit
+
+    runNext
+}
+
+function remove {
+    rm -rf $1
+    echo "removing $(basename $1) ..."
+}
+
+function resetCounter {
+    echo "0" > .x2dhf-counter
+    echo "" > .status
+}
+
+function runInit {
+
+    #   - creates $system-$newR subdirectory
+    #   - creates input data file 
+    #   - performs initial run to obtain fairly good solution
+
+    [[ ! -d $pwd/$newDir ]] &&  mkdir $pwd/$newDir
+    #    [[ ! -e $pwd/$newDir/xhf ]] &&  cp -l $binDir/xhf $pwd/$newDir/xhf  
+    #    [[ ! -e $pwd/$newDir/x2dhf ]] &&  cp -l $binDir/x2dhf $pwd/$newDir/x2dhf      
+    cd $newDir >& /dev/null
+    resetCounter
+    genInputData  
+    input=$(basename -s .data $inputData)
+    setTarget
+
+    cat <<EOF > run4$method	
+     	xhf -s $input $target > $system-$newR-$method-${counter}.lst
+	echo "completed" > .status
+        rm .pid
+EOF
+
+    chmod +x run4$method
+    [[ $orbpot =~ qrhf ]] && xhf mk1dhf ../qrhf-a ../qrhf-b
+    [[ $orbpot =~ gauss ]] && xhf mkgauss ../gaussian
+
+    ./run4$method &
+
+    sleep $delay
+    jobname=x2dhf-$system.*\-$newR
+    pid=$(pgrep -f $jobname)
+    if [[ -n $pid ]]
+    then
+	echo "running" > .status
+	echo "$pid" > .pid 
+    fi
+    printf "%12s %-40s\n"  "$newR:   " "running"
+#    cat ./run4$method
+    
+    cd - >& /dev/null
+
+
+}
+
+function runNext {
+
+    if [[ -f $pwd/$newDir/.status ]]
+    then
+	energy=$(cat $pwd/$newDir/.status | grep 'orbital energy threshold reached')
+	norm=$(cat $pwd/$newDir/.status | grep 'orbital normalization threshold reached')
+	nan=$(cat $pwd/$newDir/.status | grep 'NaN detected')
+	[[ -n $energy ]] && [[ "$optForce" == "no" ]] \
+	    && echo "$newDir: orbital energy threshold reached ... use '--force' to run this case " && exit
+	[[ -n $norm ]] && [[ "$optForce" == "no" ]] \
+	    && echo "$newDir: orbital normalization threshold reached ... use '--force' to run this case " && exit
+	[[ -n $nan ]] && echo "$newDir: NaN detected ... quitting ..." && exit
+    fi
+
+    [[ ! -d $pwd/$newDir ]] &&  mkdir $pwd/$newDir
+
+# fixme
+#    [[ ! -e $pwd/$newDir/xhf ]] &&  cp -l $binDir/xhf $pwd/$newDir/xhf  
+#    [[ ! -e $pwd/$newDir/x2dhf ]] &&  cp -l $binDir/x2dhf $pwd/$newDir/x2dhf      
+
+    cd $newDir >& /dev/null
+
+    if [[ -f $pwd/$newDir/.x2dhf-counter ]]; then
+	counter=$(cat $pwd/$newDir/.x2dhf-counter)
+    else
+	counter=1
+    fi
+
+    if [[  $newR == $oldR ]]; then
+	getSource
+	locsource=$(basename ${source}.orb .orb)
+    else
+	getSource
+
+	if [[ -f ${source}.dat && -s ${source}.dat ]]; then
+	    ln -s ${source}.dat . >& /dev/null
+	    ln -s ${source}.orb . >& /dev/null 
+	    ln -s ${source}.coul . >& /dev/null
+	    ln -s ${source}.exch . >& /dev/null
+
+	    locsource=$(basename ${source}.orb .orb)
+	else
+	    echo "$source files seem to have zero size ... "
+	    exit
+	fi
+    fi
+
+    genInputData  
+    orbpot='orbpot old'
+    perl -pi -e "s/^orbpot.*$/orbpot old/i" $pwd/$newDir/$system-$newR.data
+
+    input=$(basename -s .data $inputData)
+
+    setTarget
+
+    if [[ $newR != $oldR ]]; then
+	sed -i 's/!interp/interp/' $inputData || echo exit
+    fi
+
+    cat <<EOF > run4$method	
+    	xhf -s $input $locsource $target > $system-$newR-$method-${counter}.lst 
+	echo "completed" > .status
+        rm .pid
+EOF
+
+    chmod +x run4$method >& /dev/null
+   ./run4$method & 
+ 
+    sleep $delay
+    jobname=x2dhf-$system.*\-$newR
+    pid=$(pgrep -f $jobname)
+    if [[ -n $pid ]]; then
+	echo "running" > .status
+	echo "$pid" > .pid 
+    fi
+
+    printf "%12s %-40s\n"  "$newR:   " "running"
+    cd - >& /dev/null
+}
+
+function setCounter {
+    [[ ! -f $pwd/$new/.x2dhf-counter ]] && echo "0" > .x2dhf-counter
+}
+
+
+function setStatus {
+    [[ ! -d $pwd/${system}-$newR/ ]] && echo "$pwd/${system}-$newR/ does not exist ..." && return 
+    
+    if [[ -f $pwd/${system}-$newR/.pid ]]
+    then
+	pid=$(pgrep -F $pwd/${system}-$newR/.pid)
+    else
+        pid=
+    fi	
+
+    if [[ -n $pid ]]
+    then
+	echo "running" > $pwd/${system}-$newR/.status
+    else
+	rm -f $pwd/${system}-$newR/.pid
+	rm -f $pwd/${system}-$newR/.status
+	counter=$(cat $pwd/${system}-$newR/.x2dhf-counter)
+	lst=$pwd/$newDir/$system-$newR-$method-${counter}.lst 	
+	nan=$(grep -P 'sigma.*NaN' $lst| head -1)
+	[[ -n $nan ]] && echo "NaN detected"> $pwd/${system}-$newR/.status && exit
+	energy=$(grep 'orbital energy threshold reached' $lst)
+	[[ -n $energy ]] && echo "orbital energy threshold reached"> $pwd/${system}-$newR/.status && exit
+	norm=$(grep 'orbital normalization threshold reached' $lst)
+	[[ -n $norm ]] && echo "orbital normalization threshold reached"> $pwd/${system}-$newR/.status && exit
+	stop=$(grep 'stop_x2dhf detected' $lst)
+	[[ -n $stop ]] && echo "stop_x2dhf detected"> $pwd/${system}-$newR/.status && exit
+	iter=$(grep 'scf iteration limit reached' $lst)
+	[[ -n $iter ]] && echo "scf iteration limit reached" > $pwd/${system}-$newR/.status && exit
+	improve=$(grep 'solution cannot be further improved' $lst)
+	[[ -n $improve ]] && echo "solution cannot be further improved" > $pwd/${system}-$newR/.status && exit
+
+    fi
+}
+
+function setSource {
+#    oldR=$(echo $source | sed -e 's/$system\-//')
+    source=$pwd/$oldDir/$system-$oldR-final
+    echo "source="$source 
+}
+
+function setTarget {
+    target=$(ls -lt $pwd/$newDir/$system-$newDir-*.orb 2>/dev/null)
+    if [[ -z $target ]]; then
+	if [[ -f $pwd/$newDir/.x2dhf-counter ]]; then
+	    counter=$(cat $pwd/$newDir/.x2dhf-counter)
+	    let counter++
+	else
+	    counter=1
+	fi
+	echo $counter > $pwd/$newDir/.x2dhf-counter
+	target=$system-$newR-$method-$counter
+    else
+	target=$(echo $target| head -1 |gawk '{print $9}')
+	target=$(basename -s .orb $target)
+    fi
+}
+
+
+function tgz {
+
+    find . -name \*.lst | tar czf $system.tgz -T - 
+
+}
+function wait {
+    oldDir=$system-$oldR
+    if [[ -f $oldDir/.status ]]; then
+	status=$(cat $oldDir/.status)
+    else
+	status=
+    fi
+
+    # fixme 
+
+    [[ "$status" == "NaN" ]] && echo "... NaNs found in $newDir ... quitting ..." && exit
+
+    if [[ "$status" == "running" ]]
+    then
+	echo "... already running for $oldR ... waiting ..." 
+	fwait $scfIters2wait
+    fi
+
+    if [[ "$status" == "$message2" || "$status" == "$message3" || "$status" == "$message4" ]]
+    then
+	echo "... $status ..."
+	return
+    else
+	echo "Error: unknown status (fwait) ..."
+	exit
+    fi
+}
+
+
+function genGPlotScript4etot {
+
+    plot=plot
+    # plot=$(echo $plot \"$gpdata\" u 1:\(\$2+$offset\) w l t \"totEnergy\"  )
+    # plot=$(echo $plot \"$gpdata\" u 1:\(\$2\) w l t \"totEnergy\"  )
+    plot=$(echo $plot \"$gpdata\" u 1:\(\$2\) w l t \"\"  )
+    
+    echo "set title 'Total energy'" > $gpscript
+    # for ((i=1; i<=$norbs; i++ )); do
+    # 	let j=$i+1
+	
+
+    # 	 (( $i < $norbs )) && plot=$(echo $plot ",")
+    # done
+
+    #set format y "%t"; set ytics (5,10)
+    #set format y "%+-5.1f"; set ytics
+    #set format y "10^{%L}"; set ytics
+    #set mytics
+    #set terminal postscript eps enhanced "Times-Roman" 18
+    #set output '| display png:-'
+    echo "set terminal png"                        >> $gpscript
+    echo "set output \"$plotDir/${system}-$method-etot.png\""             >> $gpscript
+
+    echo set offsets $offsetLeft,$offsetRight,$offsetTop,$offsetBottom     >> $gpscript
+
+    echo set auto fix                            >> $gpscript
+    #echo set log x                               >> $gpscript
+#    echo set offsets 0.05,0.15,1,1e-1            >> $gpscript
+
+    echo "set xlabel \"$system separation (au)\""     >> $gpscript
+
+    if [[ "$method" == "dft" ]]; then
+	echo 'set ylabel "DFT total energy (au)"' >> $gpscript
+
+    elif [[ "$method" == "hfs" ]]; then
+	echo 'set ylabel "HFS total energy (au)"' >> $gpscript
+
+    elif [[ "$method" == "hf" ]]; then
+	echo 'set ylabel "HF total energy (au)"' >> $gpscript
+    fi
+#    echo set log y                               >> $gpscript
+    echo $plot                                   >> $gpscript
+#    echo pause 300                               >> $gpscript
+    
+}
+
+
+function genGPlotScript4eorb {
+
+    plot=plot
+    for ((i=1; i<=$norbs; i++ ))
+    do
+	let j=$i+1
+	let k=$i-1
+	plot=$(echo $plot \"$gpdata\" u 1:$j w l t \"${orblabels[$k]}\"  )
+	 (( $i < $norbs )) && plot=$(echo $plot ",")
+    done
+    echo "set title 'Orbital energies'" > $gpscript
+    
+    echo "set terminal png"                       >> $gpscript
+    echo "set output \"$plotDir/${system}-$method-eorb.png\""             >> $gpscript
+    echo set offsets $offsetLeft,$offsetRight,$offsetTop,$offsetBottom     >> $gpscript
+    echo set auto fix                            >> $gpscript
+#    echo set log x                               >> $gpscript
+#    echo set offsets 0.05,0.15,1,1e-1            >> $gpscript
+
+    echo "set xlabel \"$system separation (au)\""     >> $gpscript
+
+    if [[ "$method" == "dft" ]]; then
+	echo 'set ylabel "DFT orbital energies (absolute values in au)"' >> $gpscript
+
+    elif [[ "$method" == "hfs" ]]; then
+	echo 'set ylabel "HFS orbital energies (absolute values in au)"' >> $gpscript
+
+    elif [[ "$method" == "hf" ]]; then
+	echo 'set ylabel "HF orbital energies (absolute values in au)"' >> $gpscript
+    fi
+
+    #echo set log y                               >> $gpscript
+    #echo set yrange [0.05:600]                   >> $gpscript
+    echo $plot                                   >> $gpscript
+#    echo pause 300                               >> $gpscript
+    
+}
+
+
+
+function genPlot4etot {
+
+    gpdata=$plotDir/$system-$method-etot.data
+    gpscript=$plotDir/$system-$method-etot.gp
+
+    [[ -z $plotDir ]] && echo "plotDir variable is not set ... " && exit
+
+    cp /dev/null $gpdata
+
+    offset=0
+    for r in $rinit; do
+	line=$r
+	
+	counter=$(cat $pwd/${system}-$r/.x2dhf-counter)
+	lst=$system-$r/$system-$r-$method-${counter}.lst 	
+	totalEnergy=$(grep 'total energy:              ' $lst|tail -1)
+	totalEnergy=$(echo $totalEnergy | gawk -F: '{print $2}')
+	#totalEnergy=$(echo $totalEnergy |perl -pe 's/([-\d.]+)e(?:\+|(-))?(\d+)/$1*10^$2$3/gi')	
+	#totalEnergy=$(echo "$totalEnergy + $offset" | bc -l)
+	line=$(echo $line "  " $totalEnergy)
+	#echo -e '###'"\n" $line > /tmp/.line
+	echo  $line > /tmp/.line
+	cat /tmp/.line >> $gpdata
+    done 
+
+    for r in $rnext; do
+	line=$r
+	counter=$(cat $pwd/${system}-$r/.x2dhf-counter)
+	lst=$system-$r/$system-$r-$method-${counter}.lst 	
+
+	totalEnergy=$(grep 'total energy:              ' $lst|tail -1)
+	totalEnergy=$(echo $totalEnergy | gawk -F: '{print $2}')
+	#totalEnergy=$(echo $totalEnergy |perl -pe 's/([-\d.]+)e(?:\+|(-))?(\d+)/$1*10^$2$3/gi')	
+	#totalEnergy=$(echo "$totalEnergy + $offset" | bc -l)
+	line=$(echo $line "  " $totalEnergy)
+	#echo -e '###'"\n" $line > /tmp/.line
+	echo $line > /tmp/.line
+	cat /tmp/.line >> $gpdata
+    done
+
+    genGPlotScript4etot
+
+    
+    if [[ $1 =~ dis ]]; then
+	gnuplot < $gpscript
+	display $plotDir/${system}-$method-etot.png
+    fi
+}
+
+
+
+function genPlot4eorb {
+
+    gpdata=$plotDir/$system-$method-eorb.data
+    gpscript=$plotDir/$system-$method-eorb.gp
+
+    [[ -z $plotDir ]] && echo "plotDir variable is not set ... " && exit
+
+    cp /dev/null $gpdata
+
+    for r in $rinit
+    do
+	line=$r
+	
+	counter=$(cat $pwd/${system}-$r/.x2dhf-counter)
+	lst=$system-$r/$system-$r-$method-${counter}.lst 	
+	[[ ! -e $lst ]] && echo "$lst does not exist ... " && exit
+	grep -A$norbs -P '^\s+orbital\s+energy\s+1\-norm' $lst | tail -n $norbs | \
+	    while read norb symmetry energy norm
+	    do
+		#energy=$(echo $energy | perl -pe 's/([-\d.]+)e(?:\+|(-))?(\d+)/$1*10^$2$3/gi' )
+		#energy=$(echo "$energy + 0.0" | bc -l)
+		line=$(echo $line "  " $energy )
+		#echo -e '###'"\n" $line > /tmp/.line
+		echo $line > /tmp/.line
+            done
+	cat /tmp/.line >> $gpdata
+    done 
+
+    for r in $rnext
+    do
+	line=$r
+	counter=$(cat $pwd/${system}-$r/.x2dhf-counter)
+	lst=$system-$r/$system-$r-$method-${counter}.lst 	
+	[[ ! -e $lst ]] && echo "$lst does not exist ... " && exit
+	grep -A$norbs -P '^\s+orbital\s+energy\s+1\-norm' $lst | tail -n $norbs | \
+	    while read norb symmetry energy norm
+	    do
+		#energy=$(echo $energy | perl -pe 's/([-\d.]+)e(?:\+|(-))?(\d+)/$1*10^$2$3/gi' )
+		#energy=$(echo "$energy + 0.0" | bc -l)
+		line=$(echo $line "  " $energy )
+		#echo -e '###'"\n" $line > /tmp/.line
+		echo $line > /tmp/.line
+        done
+	cat /tmp/.line >> $gpdata
+    done
+
+    genGPlotScript4eorb
+
+    if [[ $1 =~ dis ]]
+    then
+	gnuplot <$gpscript
+	display $plotDir/${system}-$method-eorb.png
+    fi
+
+}
+

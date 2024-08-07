@@ -1,0 +1,434 @@
+#!/usr/bin/bash
+
+# SPDX-License-Identifier: GPL-2.0-or-later
+# Copyright (C) 2023 Jacek Kobus
+
+. $X2DHF_DIRECTORY/bin/.pecctlFunctions
+
+bold=$(tput bold)
+normal=$(tput sgr0)
+prog=$(basename $0 | sed -e 's/\.\///')
+
+function help {
+
+cat <<EOF | less -r   
+
+${bold}NAME${normal}
+      $prog - runs x2dhf for a predefined set of R values so that the
+      R-dependence of the total energy and orbital enegies can be easily
+      generated and plotted.
+
+
+${bold}SYNOPSIS${normal}
+
+       $prog -h|--help|help
+
+       $prog lst|lst5|rm|status R
+       $prog init R 
+       $prog stop R 
+       $prog cont R 
+       $prog next R old_R
+
+       $prog --all init 
+       $prog --all stop
+       $prog --all cont
+       $prog --all lst|lst5|tot10
+       $prog --all progress|status
+       $prog --all rm|rminit|rmnext
+       $prog --all rmorbpot
+
+       $prog --plot etot|eorb [disp]
+
+
+${bold}DESCRIPTION${normal}
+
+This script can be used to automate 2D HF calculations of the potential energy
+curve (PEC) for a given diatomic molecule.
+
+It is assumed that this script is run in a separate directory, say, lih-pec,
+that is going to hold 2DHF results for several internuclear distances. Each set
+of results will be placed in separate subdirectories, e.g. lih-1.0, lih-2.0,
+etc. (provided the TITLE card reads, say, "TITLE lih " and R values are
+specified as 1.0, 2.0, etc).
+
+This directory must contain data necessary to start the x2dhf
+calculations. First of all it must contain input.data that will be used (as a
+sort of template) to perform calculation for a given R value. In case 'orbpot
+qrhf' is specified the script expects also the qrtf-a and qrhf-b files in the
+subdirectory, too. When 'orbpot gauss' is used instead the appropriate
+gaussian.out and gaussian.pun files should be copied there .
+
+By default the script expects to find x2dhf and xhf files in the
+$X2DHF_DIRECTORY/bin directory. Therefore the environment variable
+\$X2DHF_DIRECTORY has to be set accordingly.
+
+In order to run a single case type:
+# $prog init 2e0
+
+To stop|continue the calculation type:
+# $prog stop|cont 2e0
+
+To use the output functions of this case to start another type:
+# $prog next 2.2e0 2e0
+
+Option '--all' can be used to perform certain actions for all predefined set of
+R vales. Those are defined by adding (after the stop card) the following two 
+cards
+
+  rinit=1.0 1.5 
+  rnext=2.0 2.2 2.4 2.6 2.8 
+        3.0 4.0 5.0 6.0
+
+The first is used to define those cases that will be started by using the
+initial functions as defined by the orbpot label. The second defines the cases
+which will use the preliminary or final orbitals and potentials of the
+corresponding previous case (note that the rnext card can be continued). That is
+the case R=2.0 is started as soon as R=1.5 results are available, case R=2.2
+when a relatively stable functions for R=2.0 case are ready and so on. The
+scfIters2wait variable determines how many SCF iterations are expected to
+produce an output good enough to be used as a source of initial orbitals and
+potentials for the next case.
+
+
+
+
+Just type 
+# $prog --all init
+to perform calculations for the (hopefully) whole set of defined R values.
+
+In order to check how the calculations proceed type
+# $prog --all status|progress
+
+To examine the status of a particular case use
+# $prog status R
+
+To examine a particular case, say R=2.4, in more detail use
+# $prog lst 2.4
+
+There are several additional parameters defining the way the script works and
+plots are being generated. They are defined within the script and input data
+(consult the the script and examine test-sets/*-pec examples).
+
+${bold}AUTHOR${normal}
+       Jacek Kobus <jacek.kobus@umk.pl> 
+
+${bold}COPYRIGHT${normal}
+       SPDX-License-Identifier: GPL-2.0-or-later
+       Copyright © 2023 Jacek Kobus
+
+
+EOF
+}
+
+[[ $1 == '-h' ]] && help && exit
+
+clean_exit()
+{
+    echo "... clean exit ..."
+
+}
+
+trap "clean_exit" EXIT
+
+[[ $1 == "" || "$1" == "help" ]] && help && exit
+
+# lst extension is assumed for output files
+
+#inputData=$X2DHF_DIRECTORY/tests/input/input.data
+#plotDir=$X2DHF_DIRECTORY/tests/plot
+
+inputData=$PWD/input.data
+plotDir=$PWD/plot
+
+if [[ ! -d $PWD/plot ]]
+then
+#    echo "Warning: plot subdirectory is missing ... creating one and continue ..."
+    mkdir plot
+fi
+
+system=$(grep -iP '^title' $inputData | gawk '{print $2}')
+if [[ -z $system ]]; then
+    echo "TITLE: the system name is missing ..."
+    exit
+fi
+method=$(grep -iP '^method' $inputData | gawk '{print $2}')
+
+rinit=$(grep -iP '^rinit' $inputData | gawk -F= '{print $2}')
+
+[[ -z $rinit ]] && echo "... Error: rinit not set ..." && exit
+
+# rnext values may be continued on the next line, e.g.
+# rnext=1e0 2e0
+#       3e0 4e0 .....
+
+rnext=$(grep -A1 -iP '^rnext' $inputData | tr -s '\n' ' ' | gawk -F= '{print $2}')
+[[ -z $rnext ]] && echo "... Error: rnext not set ..." && exit
+
+orbpot=$(grep -iP '^orbpot' $inputData | gawk '{print $2}')
+
+norbs=$(grep -iP '^norbs' $inputData | gawk -F= '{print $2}')
+[[ -z $norbs ]] && echo "... Warning: norbs not set ..." && exit
+
+orblabels=($(grep -iP '^orblabels' $inputData | gawk -F= '{print $2}'))
+#orblabels=('1 sigma' '2 sigma')
+[[ -z ${orblabels[0]} ]] && echo "... Warning: orblabels not set ..." 
+
+delay=1   # allow new task to start before establishing and setting its status
+ntail4lst=150
+ntail4lst5=5
+ntail4progress=5
+ntail4tot10=5 
+scfIters2wait=20
+
+message1="running"
+message2="orbital normalization threshold reached"
+message3="orbital energy threshold reached"
+message4="solution cannot be further improved"
+
+
+# http://www.gnuplot.info/docs_4.0/gpcard.pdf
+# offsets from center of graph offsets <left>,<right>,<top>,<bottom>
+
+offsetLeft=0.2
+offsetRight=0.5
+offsetTop=0.5
+offsetBottom=0.5
+
+
+# allowed actions
+actions="
+cont
+help
+init
+lst
+next
+plot
+progress
+rm
+rmorbpot
+setstatus
+status
+stop
+tgz
+top
+"
+
+optForce=no
+
+optALL=
+optLAGRA=
+optORBPOT=
+optPLOT=
+optPRINT=
+optSCF=
+
+pwd=$(pwd)
+
+
+if [[ "$1" =~ "-" ]]; then
+
+    set -- $(getopt --options=f --longoptions=add:,delete:,help,all,config:,lagra:,omega:,orbpot:,plot:,print:,scf:  \
+	--  "$@")
+
+    args=$(echo $@ | sed -e "s/'//g")
+
+    set -- $args
+
+    while [[ $# -gt 1 ]]
+    do
+	cc=$(echo $1)
+	case "$cc" in
+	    --force) optForce=yes; shift;;
+
+	    --help) help; shift; exit;;
+	    
+	    --all) shift; optALL=yes;;
+	    
+	    --config) shift; perl -pi -e "s/^config.*/config $1/; s/'//g" input/input.data; shift; exit;;
+	    
+	    --lagra) shift; 
+		args=
+		while [[ $# -gt 1 ]]; do
+		    [[ $1 =~ '--' ]] && break
+		    args=$(echo $args $1)
+		    shift
+		done 
+		optLAGRA=$args
+		;;
+	    
+
+	    --omega) shift; 
+		args=
+		while [[ $# -gt 1 ]]; do
+		    [[ $1 =~ '--' ]] && break
+		    args=$(echo $args $1)
+		    shift
+		done 
+		optOMEGA=$args
+		;;
+		
+	    
+	    --orbpot) shift; 
+		optORBPOT=$1; shift;;
+	    
+
+	    --plot) shift; optPLOT=$1; shift;; 
+	    
+	    --print) shift; 
+		args=
+		while [[ $# -gt 1 ]]; do
+		    [[ $1 =~ '--' ]] && break
+		    args=$(echo $args $1)
+		    shift
+		done 
+		optPRINT=$args
+		;;
+
+	    --scf) shift; 
+		args=
+		while [[ $# -gt 1 ]]; do
+		    [[ $1 =~ '--' ]] && break
+		    args=$(echo $args $1)
+		    shift
+		done 
+		optSCF=$args
+		;;
+		
+
+	    --add) shift; 
+		args=
+		while [[ $# -gt 1 ]]; do
+		    [[ $1 =~ '--' ]] && break
+		    args=$(echo $args $1)
+		    shift
+		done 
+		optADD=$args
+		;;
+
+
+	    --delete) shift; 
+		args=
+		while [[ $# -gt 1 ]]; do
+		    [[ $1 =~ '--' ]] && break
+		    args=$(echo $args $1)
+		    shift
+		done 
+		optDELETE=$args
+		;;
+
+	    --) shift; break;;
+	esac
+    done
+fi
+
+[[ "$optALL" == "yes" ]] && contALL $1 && exit
+
+if [[ "$1" == "status" ]]; then
+    if [[ $2 == "" ]]; then
+	ps -e -ouser:6,pid:5,pcpu:6,time:10,cmd:30 | grep x2dhf-$system  | grep -v grep
+	exit
+    fi
+    newR=$2
+    newDir=$system-$newR
+    getStatus 
+    exit
+fi
+
+[[ "$1" == "init" ]] && init $2 && exit
+
+if [[ "$1" == "lst" ]]; then
+    newDir=$system-$2
+    listing $2
+    exit
+fi
+
+if [[ "$1" == "lst5" ]]; then
+    newDir=$system-$2
+    lst5 
+    exit 
+fi
+
+[[ "$1" == "cont" ]] && cont $2 && exit 
+
+[[ "$1" == "next" ]] && next $2 $3 &&  exit
+
+# fixme check status before removing
+[[ "$1" == "rm" ]] && remove $pwd/${system}-$2 && exit
+
+if [[ "$1" == "setstatus" ]]
+then
+    if [[ $2 == "" ]]
+    then
+	ps -e -ouser:6,pid:5,pcpu:6,time:10,cmd:30 | grep x2dhf-$system  | grep -v grep
+	exit
+    fi
+    newR=$2
+    newDir=$system-$newR
+    setStatus 
+    exit
+fi
+
+if [[ "$1" == "stop" ]]; then
+    newR=$2
+    pwd=$(pwd)
+    newDir=$system-$newR
+    cd $newDir >& /dev/null
+    xhf stop >& /dev/null
+    cd - >& /dev/null
+    exit
+fi
+
+if [[ "$1" == "progress" ]]; then
+    shift
+    progress $1 
+    exit
+fi
+
+if [[ "$1" == "tgz" ]]; then
+    $0 --all status > status
+    tar -hcf $system.tar ./status 
+    find . -name \*.lst | tar -rhf $system.tar -T -  
+    find . -name \*.data | tar -rhf $system.tar -T -  
+    find . -name \*.status | tar -rhf $system.tar -T -  
+    find . -name \*.x2dhf-counter | tar -rhf $system.tar -T -  
+    tar -hrf $system.tar ./input
+    tar -hrf $system.tar ./pecctl ./.pecctl-functions ./.pecctl-plot
+    gzip -c $system.tar > $system.tgz
+    exit
+fi
+
+[[ "$1" == "top" ]] && ftop && exit
+
+#[[ "$1" == "wait" ]] && wait && exit
+
+if [[ "$1" == "cat" ]]; then
+    newR=$2
+    newDir=${system}-$newR
+    inputData=$system-$newR.data
+    cat $pwd/$newDir/$inputData
+fi
+
+if [[ "$optPLOT" == "etot" ]]
+then
+    genPlot4etot $1 
+    exit  
+fi
+
+if [[ "$optPLOT" == "eorb" ]]
+then
+    genPlot4eorb $1 
+    exit  
+fi
+
+echo "unknown action $1 ... try using "
+
+for action in $actions; do
+    echo -n $action " "
+done
+
+
+
+echo ""
+exit
+
+

@@ -1,0 +1,22 @@
+title Ne 
+!! Ne: SCF energy for the xc_lda_c_pw functional
+method dft
+!dft xc_lda_x 
+!dft xc_gga_x_pbe
+!dft xc_gga_x_b88
+!dft xc_lda_c_vwn
+dft xc_lda_c_pw
+!dft xc_gga_c_pbe
+!dft xc_gga_c_lyp
+nuclei  10.0  0.0  2.0
+config  0
+1 pi
+2 sigma
+1 sigma   end
+grid 410 200.0
+orbpot old
+scf 4500 10 12 14 3
+conv 2000
+!omega 1.86 1.86
+stop
+

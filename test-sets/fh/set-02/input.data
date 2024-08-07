@@ -1,0 +1,12 @@
+title FH
+!! FH: HF cals with initial atomic LDA orbitals : energy threshold 10^-10
+method hf
+nuclei 9.0  1.0  1.7328
+config 0
+  1 pi                                                                            
+  3 sigma  end                                                                    
+grid 200 40.0
+orbpot lda
+scf 2000 10 10 14 3
+stop                    
+

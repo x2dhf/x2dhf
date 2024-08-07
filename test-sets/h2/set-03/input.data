@@ -1,0 +1,13 @@
+title H2
+!! H2 : HF atomic starting orbitals : R=1.4 : hf/sor
+!!    : forced inversion symmetry : normalization threshold=10^-8
+method hf
+nuclei  1.0 1.0  1.4
+!break 
+config 0
+  1 sigma g end
+grid 169 40.0 
+orbpot hf
+scf  1000 10 16 8 3
+!omega 1.95 -1.87 
+stop

@@ -1,0 +1,12 @@
+
+grep -P 'total energy:\s{6}' reference-1.lst | tail -1  > reference-result.log
+grep -P 'total energy:\s{6}' reference-2.lst | tail -1 >> reference-result.log
+grep -P 'total energy:\s{6}' reference-3.lst | tail -1 >> reference-result.log
+
+xhf input-1 tmp            2>/dev/null > current-1.lst
+xhf input-2 tmp current-hf 2>/dev/null > current-2.lst
+xhf input-3 tmp current-hf 2>/dev/null > current-3.lst
+grep -P 'total energy:\s{6}' current-1.lst | tail -1  > current-result.log
+grep -P 'total energy:\s{6}' current-2.lst | tail -1 >> current-result.log
+grep -P 'total energy:\s{6}' current-3.lst | tail -1 >> current-result.log
+

@@ -1,0 +1,34 @@
+title LiH
+!! LiH: energy contribution due to XC_LDA_X functional (HF density)
+method hf
+!lxcPolar
+!dft lda
+dft xc_lda_x
+!dft xc_lda_c_pw
+!dft vwn
+!dft xc_lda_c_vwn
+!dft b88
+!dft xc_gga_x_b88
+!dft xc_gga_c_pbe
+!dft lyp
+!dft xc_gga_c_lyp
+!dft xc_hyb_lda_xc_lda0
+!dft xc_hyb_lda_xc_lda0
+!dft XC_HYB_LDA_XC_CAM_LDA0
+!dft XC_HYB_GGA_XC_B3LYP
+!dft XC_HYB_GGA_XC_LC_BOP
+!dft XC_HYB_GGA_XC_LC_PBEOP
+!dft XC_HYB_GGA_XC_CAMY_PBEH
+nuclei  3.0 1.0  3.015 
+config 0
+  2 sigma  end
+grid 250  60.0
+orbpot hydrogen
+!orbpot old
+lcao
+ 1.0   1 0 3.0   -1.0   1 0 1.0   
+ 1.0   1 0 3.0    1.0   1 0 1.0   
+scf 10000 10 12  14 3
+conv 2000
+omega 1.85 1.85
+stop

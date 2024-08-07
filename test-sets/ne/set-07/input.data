@@ -1,0 +1,14 @@
+title Ne
+!! Ne: HF calculations with initial LDA orbitals : energy threshold=10^-8 
+method hf
+nuclei  10.0  0.0  2.0
+config  0
+1 pi
+2 sigma
+1 sigma   end
+grid 169 35.0
+orbpot lda
+scf 2000 10 8 12 3
+conv 2000
+stop
+

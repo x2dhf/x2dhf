@@ -1,0 +1,17 @@
+title Be-Be  R = 2.673 A
+!! Be-Be: initial HF atomic orbitals (qrhf) : grid 241x271/50.0, SCF accuracy 10^-4' 
+method hf
+nuclei  4.0 4.0  2.6728 angstrom
+config 0
+  1 sigma u
+  1 sigma g 
+  1 sigma u 
+  1 sigma g end
+grid 269 50.0 
+!orbpot lda 0 ! hf 0 
+orbpot hf 0
+scf 10000 10 4 12 3
+conv 1000
+!omega 1.2 1.2
+stop
+

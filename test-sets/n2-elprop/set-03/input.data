@@ -1,0 +1,22 @@
+title N2: HF cals with F=-0.0016 
+!! N2: HF cals with F=-0.0016 
+method hf
+nuclei  7.0 7.0 2.068
+break
+config  0
+  1 pi    u
+  1 sigma g
+  1 sigma u
+  1 sigma g
+  1 sigma u
+  1 sigma g end
+grid 445 200.0
+fefield -0.0016
+orbpot old
+scf 10000 10 14 16 3
+conv 10000
+mmoments
+altsweeps
+lm 1 2  2 3  3 4  4 5 
+stop
+

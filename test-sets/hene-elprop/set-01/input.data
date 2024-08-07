@@ -1,0 +1,22 @@
+title  HeNe F=0.0
+!! HeNe: HF cals with hydrogenic initial orbitals : grid 445/200.0
+method hf
+nuclei  2.0 10.0 2.750 angstroms                                                
+config  0                                                                       
+1 pi                                                                            
+1 sigma                                                                         
+1 sigma                                                                         
+1 sigma                                                                         
+1 sigma  end                                                                    
+grid   445 200.0                                                            
+orbpot hydrogen 0                                                                     
+lcao                                                                            
+ 0.0   2 1  8.0     1.0   2 1  6.0                                             
+ 1.0   1 0  2.0     0.0   2 0  8.0                                             
+ 0.0   2 0  2.0     1.0   2 1  8.0                                             
+ 0.0   2 0  2.0     1.0   2 0 10.0                                             
+ 0.0   1 0  2.0     1.0   1 0 10.0                                             
+scf 6000 10 14 16 3                                                            
+conv 6000                                                                       
+mmoments
+stop 

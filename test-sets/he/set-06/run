@@ -1,0 +1,6 @@
+[[ -f reference.lst ]] && grep -P 'exchange-correlation energy.*DFT' reference.lst \
+           | tail -3 > reference-result.log
+[[ ! -f output-1.orb ]] && xhf input-1 output-1  2>/dev/null > current.lst
+xhf input-2 output-1 output-2 2>/dev/null >> current.lst
+xhf input-3 output-1 output-2 2>/dev/null >> current.lst
+grep -P 'exchange-correlation energy.*[DFT|LXC]' current.lst | tail -3 > current-result.log

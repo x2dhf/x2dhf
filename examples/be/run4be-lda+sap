@@ -1,5 +1,0 @@
-./xhf be-lda+sap-1 be-lda+sap-1              > be-lda+sap-1.lst
-./xhf be-lda+sap-2 be-lda+sap-1 be-lda+sap-2 > be-lda+sap-2.lst
-./xhf be-lda+sap-3 be-lda+sap-2 be-lda+sap-3 > be-lda+sap-3.lst
-./xhf be-lda+sap-4 be-lda+sap-3 be-lda+sap-4 > be-lda+sap-4.lst
-

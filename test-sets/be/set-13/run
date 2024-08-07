@@ -1,0 +1,22 @@
+[[ -f reference.lst ]] && grep -Pi 'total energy:\s{10}' reference.lst > reference-result.log
+#inout i32 i32
+xhf input-1 be-hf tmp1 2>/dev/null >  current.lst
+
+#inout i32 i32f
+xhf input-2 tmp1  tmp2 2>/dev/null >> current.lst
+
+#inout i32 i64
+xhf input-3 be-hf tmp1 2>/dev/null >> current.lst
+
+#inout i64 i64f
+xhf input-4 tmp1 tmp2  2>/dev/null >> current.lst
+
+#inout i32 r128
+xhf input-5 be-hf tmp1 2>/dev/null >> current.lst
+
+#inout r128 r128f
+xhf input-6 tmp1 tmp2 2>/dev/null >> current.lst
+
+grep -Pi 'total energy:\s{10}' current.lst > current-result.log
+
+

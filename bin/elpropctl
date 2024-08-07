@@ -1,0 +1,78 @@
+#!/usr/bin/bash
+
+# In case the F value is not included in an output file it can be
+# given as the last argument. 2DHF program (ver. September 2002
+# onwards) includes the value in its output and thus the variable $F
+# should be left empty.
+
+# SPDX-License-Identifier: GPL-2.0+
+# Copyright (C) 2002-2023 Jacek Kobus 
+
+testSetsDir=$X2DHF_DIRECTORY/$PWD
+
+F=
+testset=
+verbose=
+width=80
+lst=current.lst
+debug1=
+debug2=
+debug3=
+debug4=
+debug5=
+debug6=
+
+while getopts "d:f:ht:" option
+do
+    case $option in
+	d ) [[ $OPTARG == 1 ]] && debug1="--debug1";
+	    [[ $OPTARG == 2 ]] && debug2="--debug2";
+	    [[ $OPTARG == 3 ]] && debug3="--debug3";
+	    [[ $OPTARG == 4 ]] && debug4="--debug4";
+	    [[ $OPTARG == 5 ]] && debug5="--debug5";
+	    [[ $OPTARG == 6 ]] && debug6="--debug6";
+	    ;;	
+	f ) F=$OPTARG;;
+        h ) help; exit;;
+	t ) testSetsDir=$X2DHF_DIRECTORY/test-sets/$OPTARG;
+	    lst=reference.lst;
+	    ;;
+	* ) echo "Error: unknown option" && help && exit
+    esac
+done
+
+shift $((OPTIND-1))
+
+# It is assumed that the results of calculations for various values of the
+#   external electric field are stored according to the scheme
+
+#   0   set-01
+#  -F   set-02    
+# -2F   set-03    
+#  +F   set-04    
+# +2F   set-05    
+
+
+
+ res_0=${testSetsDir}/set-01/$lst
+res_m1=${testSetsDir}/set-02/$lst
+res_m2=${testSetsDir}/set-03/$lst
+res_p1=${testSetsDir}/set-04/$lst
+res_p2=${testSetsDir}/set-05/$lst
+
+missing=0
+for (( i=1; i<=5; i++ ))
+do
+    if [[ ! -f ${testSetsDir}/set-0$i/$lst ]]
+    then
+	echo ${testSetsDir}/set-0$i/$lst is missing ...
+	missing=1
+    fi 
+done
+
+[[ $missing == 1 ]] && echo "Error: some output files are missing ... quitting ..." && exit  
+
+$X2DHF_DIRECTORY/bin/elprop.pl \
+    $debug1 $debug2 $debug3 $debug4 $debug5 $debug6 \
+    $res_m2 $res_m1 $res_0 $res_p1 $res_p2 $F 
+

@@ -1,0 +1,11 @@
+title He
+!! He: B88 exchange energy with HF density : grid 91x151/35.0
+method dft
+dft b88
+nuclei  2.0 0.0  2.0 
+config 0
+ 1 sigma  end
+grid  91 35.0
+orbpot old
+scf  0 10 12 18 3
+stop 

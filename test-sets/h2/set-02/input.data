@@ -1,0 +1,12 @@
+title H2
+!! H2 : LDA starting orbitals : R=1.4 : hf/sor
+!!    : forced inversion symmetry : normalization threshold=10^-8
+method hf
+nuclei  1.0 1.0  1.4
+!break 
+config 0
+  1 sigma g end
+grid 169 40.0 
+orbpot lda
+scf  1000 10 16 8 3
+stop

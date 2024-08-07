@@ -1,0 +1,19 @@
+title Be
+!! Be:  SCF energy for the XC_GGA_X_B88 functional 
+method dft
+!dft xc_lda_x 
+!dft xc_gga_x_pbe
+dft xc_gga_x_b88
+!dft xc_lda_c_vwn
+!dft xc_lda_c_pw
+!dft xc_gga_c_pbe
+!dft xc_gga_c_lyp
+nuclei  4.0 0.0  2.0 
+config 0
+ 1 sigma  
+ 1 sigma  end
+grid  191 65.0
+orbpot old
+scf  3000 10 12 18 3
+conv 3000
+stop 

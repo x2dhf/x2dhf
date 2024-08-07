@@ -1,0 +1,23 @@
+!! Ca: HF cals with initial hydrogenic orbitals : extended grid R_inf=200.0  
+title Ca  R = 3.0
+method hf
+nuclei  20.0 0.0 2.0
+config  0
+2 pi
+6 sigma end
+!grid 295 40.0
+grid  451 200.0
+orbpot hydrogen
+lcao
+ 1.0   3 1 14.0     0.0   2 1 5.0   
+ 1.0   2 1 16.0     0.0   2 1 5.0   
+ 1.0   4 0 15.0     0.0   2 1 5.0   
+ 1.0   3 1 15.0     0.0   2 1 5.0   
+ 1.0   3 0 15.0    -0.0   2 0 9.0   
+ 1.0   2 1 16.0     0.0   2 0 9.0   
+ 1.0   2 0 18.0     0.0   1 0 9.0   
+ 1.0   1 0 18.0    -0.0   1 0 9.0   
+scf  2000 10 8 12 3
+conv 1000
+stop
+

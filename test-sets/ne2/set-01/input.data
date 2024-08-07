@@ -1,0 +1,18 @@
+title Ne-Ne  R = 3.075 A
+!! Ne-Ne: initial HF (qrhf) orbitals : energy threshold=10^-4 
+method hf
+nuclei  10.0 10.0 3.075 angstroms
+!break
+config  0
+  1 pi g
+  1 pi u
+  1 sigma u
+  1 sigma u
+  1 sigma u
+  1 sigma g
+  1 sigma u   
+  1 sigma g end     
+grid  200 30.0
+orbpot hf 0 
+scf 1000 10 4 7 3                                                                  
+stop                      

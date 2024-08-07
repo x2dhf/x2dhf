@@ -1,0 +1,21 @@
+title  Ne+9
+!! Ne+9: OED : generating 1-3 sigma orbitals (mcsor-o 4) 
+method oed
+nuclei  10.0 0.0  1.4
+config 7
+  1 sigma +
+  1 sigma +  
+  1 sigma + end
+grid 269 60.0
+orbpot hydrogen
+lcao
+ 1.0 2 1 10.5   0.0   1 0  1.0  
+ 1.0 2 0 10.5   0.0   1 0  1.0  
+ 1.0 1 0 10.5   0.0   1 0  1.0  
+scf 500 20 12 8 3
+
+mcsor 4
+fastscf
+stop
+
+

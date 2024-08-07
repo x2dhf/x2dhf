@@ -1,0 +1,13 @@
+title NaCl F=+0.0008
+!! NaCl: HF cals with F=+0.0008
+method hf
+nuclei  11.0 17.0  4.4613
+config  0
+  3 pi
+  8 sigma  end
+grid  449 200.0
+fefield +0.0008
+orbpot old
+scf 5000 10 14 16 3
+conv 5000
+stop

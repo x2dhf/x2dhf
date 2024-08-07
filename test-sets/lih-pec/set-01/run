@@ -1,0 +1,22 @@
+
+if [[ -f reference.lst ]]
+then
+    echo "REFERENCE: "
+    cat reference.lst 
+fi
+
+echo -e "\nCURRENT: "
+
+pecctl --all init | tee current.lst
+
+
+cat <<EOF
+
+ To see the results use:
+
+   pecctl --plot etot disp
+   pecctl --plot eorb disp
+
+and compare with the data in test-sets/lih-pec/set-01/plot.
+
+EOF

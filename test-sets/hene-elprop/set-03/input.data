@@ -1,0 +1,18 @@
+title  HeNe F=-0.002
+!! HeNe: HF cals with F=-0.002
+method hf
+nuclei  2.0 10.0 2.750 angstroms                                                
+config  0                                                                       
+1 pi                                                                            
+1 sigma                                                                         
+1 sigma                                                                         
+1 sigma                                                                         
+1 sigma  end                                                                    
+grid   445 200.0
+fefield -0.002
+orbpot old
+scf 6000 10 14 16 3                                                            
+conv 6000
+lm 2 3 3 4
+mmoments
+stop 

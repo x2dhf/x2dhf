@@ -1,0 +1,14 @@
+if [[ -s reference.lst ]]
+then
+   grep -P 'total electronic energy:' reference.lst | tail -1  > reference-result.log
+   grep -P '1 sigma '      reference.lst | tail -2 | head -1  >>   reference-result.log
+fi
+
+xhf input output 2>/dev/null > current.lst
+
+if [[ -s current.lst ]]
+then
+   grep -P 'total electronic energy:' current.lst | tail -1  > current-result.log
+   grep -P '1 sigma '      current.lst | tail -2 | head -1  >> current-result.log
+fi
+

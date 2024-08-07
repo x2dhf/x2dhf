@@ -1,0 +1,241 @@
+///////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////  FINITE DIFFERENCE 2D HARTREE-FOCK  ////////////////////////////// 
+////////////////////////////             version 3.0             ////////////////////////////// 
+///////////////////////////////////////////////////////////////////////////////////////////////
+ ... start of input data ...
+  title Ne                                                                        
+  method dft                                                                      
+  dft xc_lda_x  xc_lda_c_vwn                                                      
+  nuclei  10.0  0.0  2.0                                                          
+  config  0                                                                       
+  1 pi                                                                            
+  2 sigma                                                                         
+  1 sigma   end                                                                   
+  grid 210 65.0                                                                   
+  orbpot old                                                                      
+  scf 4500 10 12 14 3                                                             
+  conv 2000                                                                       
+  stop                                                                            
+ ... end of input data  ...
+         
+
+   Atomic/molecular system: 
+
+          Ne( 10.00)      (  0.00)   R =  2.00000 bohr = 1.05835 angstroms
+
+
+      Libxc version = 6.0.0
+               name = lda_x
+               kind = XC_EXCHANGE
+             family = LDA
+              nspin = XC_UNPOLARIZED
+       reference(s) = [1] P. A. M. Dirac.,  Math. Proc. Cambridge Philos. Soc. 26, 376 (1930)
+                      [2] F. Bloch.,  Z. Phys. 57, 545 (1929)
+
+
+      Libxc version = 6.0.0
+               name = lda_c_vwn
+               kind = XC_CORRELATION
+             family = LDA
+              nspin = XC_UNPOLARIZED
+       reference(s) = [1] S. H. Vosko, L. Wilk, and M. Nusair.,  Can. J. Phys. 58, 1200 (1980)
+
+
+   Electronic configuration:
+
+           1  pi         + - + - 
+           3  sigma      + - 
+           2  sigma      + - 
+           1  sigma      + - 
+
+
+          total charge            =  0
+          number of
+              electrons           = 10
+              orbitals            =  4
+              Coulomb potentials  =  4
+              exchange potentials =  0
+
+   Grid:
+          nu (h_nu)  =  181  (0.01745)
+          mu (h_mu)  =  271  (0.01803)
+          R_infty    =  65.00
+
+   SCF: 
+          thresholds
+              scf iterations           =  4500
+              orbital energy           = 1.00E-12
+              orbital norm             = 1.00E-14
+              multipole moments recalc = 1.15E+00
+
+          orbitals are relaxed
+          Coulomb potentials are relaxed
+
+          multipole expansion coefficients =  4
+
+   MT support: OpenMP
+
+   (MC)SOR:
+          SOR method used for relaxing orbitals
+          SOR method used for relaxing Coulomb potentials
+          SOR method used for relaxing exchange potentials
+
+          maximal number of Coulomb+exchange potentials per orbital =  5
+
+          micro and macro SOR iterations for orbitals   =  10  1
+          micro and macro SOR iterations for potentials =  10  1
+
+          ordering: middle
+
+          overrelaxation parameters:   orbitals       potentials 
+                                        1.926       1.978   1.978
+
+   Machine accuracy      =    2.22E-16
+
+   Constants: 
+               pi        =    3.1415926535897931E+00
+               bohr      =    5.2917721067121204E-01 angstroms
+
+
+   Memory usage:
+          text+data                                      0.9 MB 
+          bss (common block contributions)              64.7 MB
+          dynamical allocation                          30.4 MB 
+              orbitals                                   1.5 MB
+              Coulomb potentials                         2.2 MB
+              exchange potentials                        8.2 MB
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+ ... retrieving data from disk ...
+         timestamp: 2023/04/24  20:58:43.49                                                         
+           version: x2dhf-v3       
+             title: Ne                                                                              
+
+     total energy:                 -1.2823348126381879E+02
+     total electronic energy:      -1.2823348126381879E+02
+     virial ratio:                 -2.0038736478511949E+00
+
+   scf  orbital              energy               energy diff.      1-norm          overlap
+   ---  -------      -----------------------      ------------     ---------        --------
+    1   1 sigma      -3.0305854687200647E+01       -1.19E-12        6.62E-14        0.00E+00
+    1   2 sigma      -1.3228085648713019E+00       -1.63E-13       -1.29E-11        3.48E-11
+    1   3 sigma      -4.9803412792339685E-01       -3.52E-13        2.41E-12        5.46E-12
+    1   1 pi         -4.9803412790975621E-01       -3.07E-13       -9.55E-15        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+
+    2   1 sigma      -3.0305854687202519E+01       -1.87E-12        6.17E-14        0.00E+00
+    2   2 sigma      -1.3228085648717336E+00       -4.32E-13       -1.29E-11        3.48E-11
+    2   3 sigma      -4.9803412792359403E-01       -1.97E-13        2.36E-12        5.47E-12
+    2   1 pi         -4.9803412791009194E-01       -3.36E-13       -7.21E-14        0.00E+00
+
+    3   1 sigma      -3.0305854687204796E+01       -2.28E-12        2.62E-14        0.00E+00
+    3   2 sigma      -1.3228085648720516E+00       -3.18E-13       -1.30E-11        3.48E-11
+    3   3 sigma      -4.9803412792389068E-01       -2.97E-13        2.38E-12        5.50E-12
+    3   1 pi         -4.9803412791047741E-01       -3.85E-13       -1.08E-13        0.00E+00
+
+    4   1 sigma      -3.0305854687201993E+01        2.80E-12       -2.70E-14        0.00E+00
+    4   2 sigma      -1.3228085648723731E+00       -3.22E-13       -1.29E-11        3.48E-11
+    4   3 sigma      -4.9803412792415003E-01       -2.59E-13        2.38E-12        5.52E-12
+    4   1 pi         -4.9803412791065504E-01       -1.78E-13       -1.38E-13        0.00E+00
+
+    5   1 sigma      -3.0305854687201688E+01        3.06E-13        2.40E-14        0.00E+00
+    5   2 sigma      -1.3228085648727834E+00       -4.10E-13       -1.29E-11        3.48E-11
+    5   3 sigma      -4.9803412792426727E-01       -1.17E-13        2.40E-12        5.54E-12
+    5   1 pi         -4.9803412791080781E-01       -1.53E-13       -1.12E-13        0.00E+00
+
+    6   1 sigma      -3.0305854687199776E+01        1.91E-12        6.88E-15        0.00E+00
+    6   2 sigma      -1.3228085648729220E+00       -1.39E-13       -1.29E-11        3.48E-11
+    6   3 sigma      -4.9803412792422996E-01        3.73E-14        2.45E-12        5.55E-12
+    6   1 pi         -4.9803412791086110E-01       -5.33E-14       -6.14E-14        0.00E+00
+
+    7   1 sigma      -3.0305854687199222E+01        5.54E-13        1.93E-14        0.00E+00
+    7   2 sigma      -1.3228085648729486E+00       -2.66E-14       -1.28E-11        3.48E-11
+    7   3 sigma      -4.9803412792426549E-01       -3.55E-14        2.51E-12        5.56E-12
+    7   1 pi         -4.9803412791073853E-01        1.23E-13       -1.11E-14        0.00E+00
+
+    8   1 sigma      -3.0305854687197911E+01        1.31E-12        3.33E-15        0.00E+00
+    8   2 sigma      -1.3228085648728687E+00        7.99E-14       -1.28E-11        3.48E-11
+    8   3 sigma      -4.9803412792424240E-01        2.31E-14        2.53E-12        5.55E-12
+    8   1 pi         -4.9803412791058044E-01        1.58E-13        4.97E-14        0.00E+00
+
+    9   1 sigma      -3.0305854687197503E+01        4.09E-13        1.02E-14        0.00E+00
+    9   2 sigma      -1.3228085648728864E+00       -1.78E-14       -1.28E-11        3.48E-11
+    9   3 sigma      -4.9803412792409318E-01        1.49E-13        2.55E-12        5.54E-12
+    9   1 pi         -4.9803412791041168E-01        1.69E-13        1.11E-13        0.00E+00
+
+   10   1 sigma      -3.0305854687197769E+01       -2.66E-13        3.11E-15        0.00E+00
+   10   2 sigma      -1.3228085648726342E+00        2.52E-13       -1.28E-11        3.48E-11
+   10   3 sigma      -4.9803412792383739E-01        2.56E-13        2.55E-12        5.51E-12
+   10   1 pi         -4.9803412791038149E-01        3.02E-14        1.44E-13        0.00E+00
+ ... multipole moment expansion coefficients recalculated ...
+
+       total energy: -1.2823348126383658E+02
+
+ ... saving data to disk ...
+
+   11   1 sigma      -3.0305854687197041E+01        7.28E-13       -8.99E-15        0.00E+00
+   11   2 sigma      -1.3228085648722576E+00        3.77E-13       -1.28E-11        3.48E-11
+   11   3 sigma      -4.9803412792354784E-01        2.90E-13        2.57E-12        5.50E-12
+   11   1 pi         -4.9803412791012747E-01        2.54E-13        1.21E-13        0.00E+00
+
+   12   1 sigma      -3.0305854687197591E+01       -5.51E-13        1.24E-14        0.00E+00
+   12   2 sigma      -1.3228085648720249E+00        2.33E-13       -1.28E-11        3.48E-11
+   12   3 sigma      -4.9803412792351054E-01        3.73E-14        2.58E-12        5.48E-12
+   12   1 pi         -4.9803412790976864E-01        3.59E-13        1.35E-13        0.00E+00
+
+   13   1 sigma      -3.0305854687197225E+01        3.66E-13        1.02E-14        0.00E+00
+   13   2 sigma      -1.3228085648718793E+00        1.46E-13       -1.28E-11        3.48E-11
+   13   3 sigma      -4.9803412792324941E-01        2.61E-13        2.53E-12        5.47E-12
+   13   1 pi         -4.9803412790977042E-01       -1.78E-15        1.61E-13        0.00E+00
+           
+ ... orbital energy threshold reached ...
+ ... multipole moment expansion coefficients recalculated ...
+ ... saving data to disk ...
+
+     total energy:                 -1.2823348126382569E+02
+     total electronic energy:      -1.2823348126382569E+02
+     virial ratio:                 -2.0038736478511638E+00
+
+     nuclear attraction energy:          -309.988206417634
+     kinetic energy:                      127.738666652238
+     one-electron energy:                -182.249539765396
+     Coulomb energy:                       65.726488358500
+     exchange energy:                     -11.710429856924
+     nuclear repulsion energy:              0.000000000000
+     exchange-correlation energy (LXC):   -11.710429856924
+
+        orbital                 energy             1-norm
+      1 pi             -4.9803412790978285E-01   -1.61E-13
+      3 sigma          -4.9803412792322810E-01   -2.53E-12
+      2 sigma          -1.3228085648718881E+00    1.28E-11
+      1 sigma          -3.0305854687197076E+01   -1.02E-14
+
+
+     total energy uncertainty due to orbital norms not being equal 1:
+     absolute = +/-0.14E-09,  relative = +/-0.11E-09%
+///////////////////////////////////////////////////////////////////////////////////////////////
+ CPU summary (sec):
+    Lagrange multipliers ......................     0.09
+    normalization+orthogonalization ...........     0.02
+    multipole moments .........................     0.02
+    total energy ..............................     0.06
+    relaxation of orbitals ....................     1.94
+    relaxation of Coulomb & exchange potentials     2.57
+    relaxation of orbitals & potentials .......     4.50
+    SCF iterations ............................     4.63
+
+ System clock summary (sec):
+    relaxation of orbitals ....................     1.72
+    relaxation of Coulomb & exchange potentials     0.99
+    relaxation of orbitals & potentials .......     2.71
+
+ Speedup:                                           1.66
+///////////////////////////////////////////////////////////////////////////////////////////////
+       start:  2023/04/24  21:05:37.13                                                         
+        stop:  2023/04/24  21:05:40.28                                                         
+  start-stop:                     3.14
+
+command-line:  /home/jkob/tmp/tests/x2dhf-v3/bin/xhf input-8 output-1 output-2
+      system:  Linux s7-0.fizyka.umk.pl 3.10.0-1160.81.1.el7.x86_64 x86_64 x86_64 GNU/Linux
+         CPU:  Intell(R) Xeon(R) CPU E5-2630 v3 @ 2.40GHz
+////////////////////////////////////////////////////////////////////////////////////////////////

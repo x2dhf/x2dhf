@@ -1,0 +1,25 @@
+!! O2: HF cals F=+0.0 : grid 631x1171/200.0 
+title  O2  F=+0.000                                                                
+method hf                                                                       
+nuclei  8.0 8.0 1.20752 angstrom                                                
+break
+config  0                                                                       
+1 pi    g + . + .                                                               
+1 pi    u                                                                       
+1 sigma g                                                                       
+1 sigma u                                                                       
+1 sigma g                                                                       
+1 sigma u                                                                       
+1 sigma g end                                                                   
+!grid 445 200.0
+grid 645 200.0
+!fefield +0.00025
+orbpot  hf 0
+scf 15000 10 14 16 3
+!omega 1.90 1.90
+conv 15000
+!lm 1 2 2 3 3 4 4 5 6 7
+lm 1 2 6 7
+mmoments
+stop                                                                            
+

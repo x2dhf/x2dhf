@@ -1,0 +1,12 @@
+title Be
+!! Be: SCF cont'ed : energy threshold 10^-10
+method hf
+nuclei 4.0 0.0 2.386
+config 0
+2 sigma end
+grid 169 35.0
+!orbpot lda
+orbpot old
+scf 3000 10 10 14 3
+
+stop

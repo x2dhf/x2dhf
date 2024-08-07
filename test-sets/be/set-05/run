@@ -1,0 +1,5 @@
+[[ -f reference.lst ]] && grep 'exchange-correlation energy (DFT)' reference.lst | \
+                                               gawk -F: '{print $2}' > reference-result.log
+xhf input be-hf output 2>/dev/null > current.lst
+grep 'exchange-correlation energy (DFT)' current.lst | gawk -F: '{print $2}' > current-result.log
+

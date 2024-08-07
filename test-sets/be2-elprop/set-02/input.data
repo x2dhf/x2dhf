@@ -1,0 +1,19 @@
+title Be2: HF cals with initial hydrogenic orbitals, F=-0.0001 
+!! Be2: HF cals with initial hydrogenic orbitals, F=-0.0001 : grid 331x541/200.0
+method hf
+nuclei  4.0 4.0  3.750
+break
+config 0
+1 sigma u
+1 sigma g
+1 sigma u
+1 sigma g end
+grid 343 200.0
+fefield -0.0001
+orbpot old
+scf 7000 10 14 18 3
+conv 7000
+omega 1.95 1.95
+lm 1 2  3 4
+mmoments
+stop

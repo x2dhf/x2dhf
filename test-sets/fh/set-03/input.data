@@ -1,0 +1,13 @@
+title FH
+!! FH: HF cals with initial atomic LDA orbitals : no convergence : omega 1.8 1.8
+method hf
+nuclei 9.0  1.0  1.7328
+config 0
+  1 pi                                                                            
+  3 sigma  end
+grid 241 45.0
+orbpot lda
+scf 4000 10 7 14 3
+omega 1.8 1.8
+stop                    
+

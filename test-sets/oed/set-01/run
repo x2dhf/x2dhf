@@ -1,0 +1,5 @@
+grep -iP '^\s+1 sigma.*\de' reference.lst > reference-result.log
+xhf input output 2>/dev/null > current.lst
+grep -iP '^\s+1 sigma.*\de' current.lst > current-result.log
+
+

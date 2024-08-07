@@ -1,0 +1,627 @@
+#!/bin/bash
+
+# x2dhfctl - builds various versions of the x2dhf program and - if needed -
+# also LIBXC library. In order to change cmake and compiler options edit
+# the appropriate (environment) variables below.
+
+# SPDX-License-Identifier: GPL-2.0+
+# Copyright (C) 2023 Jacek Kobus 
+
+
+bold=$(tput bold)
+normal=$(tput sgr0)
+prog=$(echo $0 | sed -e 's/\.\///')
+
+debug=
+force=
+intprec=4
+lxc=
+LXC=
+mcsorpt=
+MKL=
+openmp=
+optLevel=3
+pthread=
+print=
+tpool=
+realprec=8
+summary=
+# ok wall="-Wsurprising" 
+# ok wall="-Waliasing"
+# ok wall="-Wampersand"
+# many, many warnings wall="-Warray-temporaries"
+# ok wall="-Wc-binding-type"
+# ok wall="-Wcharacter-truncation"
+# ok wall="-Wline-truncation"
+
+# initCBAllocArrays.f90:1170:17:
+# 1170 |           i3e(k)=iend
+# wall="-Wconversion"
+# to examine wall="-Wconversion-extra"
+# to examine wall="-Wextra"
+# to examine wall="-Wimplicit-interface"
+# only dgamit wall="-Wimplicit-procedure"
+# ok wall="-Winteger-division"
+# ok wall="-Wintrinsics-std"
+# ok wall="-Wno-overwrite-recursive"
+# ok wall="-Wreal-q-constant"
+# ok wall="-Wsurprising"
+# ok wall="-Wtabs"
+#ok wall="-Wundefined-do-loop"
+# to check: gamma dint wall="-Wintrinsic-shadow"
+# wall="-Wuse-without-only"
+# ok wall="-Wunused-parameter"
+# ok wall="-Walign-commons"
+# ok wall="-Wrealloc-lhs"
+# ok wall="-Wrealloc-lhs-all"
+# ok wall="-Wtarget-lifetime"
+# ok wall="-Wzerotrip"
+# ok wall="-Wdo-subscript"
+# partialy corrected wall="-Wunused-dummy-argument"
+# only dgamit show warnings wall="-Wcompare-reals"
+#wall="-Wconversion-extra"
+# ok wall="-fcheck=array-temps"
+# ok wall="$wall -fcheck=bounds
+# ok wall="-fcheck=mem -fcheck=pointer"
+
+export INSTALLPREFIX=$PWD
+BIN=bin
+BUILD=build
+SRC=src
+host=$(hostname -s)
+log=$PWD/log/$(basename $0).log
+
+rm -f $log >& /dev/null
+
+LIBXCVERSION=6.0.0
+
+export CMVERSION=3.14.0
+export VERBOSE=off
+
+. .x2dhfrc
+
+function cleanBUILD {
+
+    [[ -d build ]] || return
+    cd build
+    rm -rf CMakeCache.txt  CMakeFiles  cmake_install.cmake install_manifest.txt  Makefile *.mod >& /dev/null
+    cd - >& /dev/null
+    
+}
+
+function help {
+    cat <<EOF | more
+
+${bold}NAME${normal}
+      x2dhfctl - builds (via cmake) various versions of the x2dhf program 
+                 and, if needed, also the Libxc library.
+
+${bold}SYNOPSIS${normal}
+     $prog help|-h|--help
+
+     $prog [-b] [-g] [-i 8] [-l|L] [-o|p|q] [-r 16] [f95|gfortran]
+     $prog [-b] [-g] [-i 8] [-l|L] [-m] [-r 16] ifort
+     $prog log|showlog
+
+${bold}DESCRIPTION${normal}
+
+     This script employs the buildsystem generator CMake to facilitate the
+     building of various versions of the x2dhf program. The gfortran or
+     ifort compilers can be used. A multi-threaded versions of the program
+     can be build if the OpenMP or pthread support is available.
+
+     The DFT support is facilitated via the libxc library. The lxcctl
+     script is provided to help test the support of the x2dhf program for
+     the various libxc functionals.
+
+     
+
+${bold}USAGE EXAMPLES${normal}
+
+     $prog -b [f95|gfortran]
+            Clears $BUILD/ directory and starts afresh to build a default version of
+            the x2dhf program using (by default) the gfortran compiler; the
+            executable x2dhf is copied to bin/ directory (run 'source .x2dhfrc' to
+            add \$PWD/bin to the PATH variable).
+
+     $prog -b ifort
+            Clears $BUILD/ directory and starts afresh using the ifort compiler to
+            build a default version of the x2dhf program; the executable x2dhf is
+            copied to bin/ directory.
+
+     $prog -L
+            The $LIBXCVERSION version of the libxc library is downloaded to the
+            current directory, compiled and installed (see libxc/). Update the
+            value of \$LIBXCVERSION variable to install its latest version.
+
+     $prog -b -l
+            Clears $BUILD/ directory and builds afresh the x2dhf program with the
+            Libxc support added; the executable x2dhf is copied as x2dhf and
+            x2dhf-lxc to bin/ directory.
+
+     $prog -b -o
+            Clears $BUILD/ directory and builds afresh the x2dhf program with
+	    the coulExchSOR and MCSOR routines parallelized using OpenMP directives.
+	    The executable x2dhf is copied as x2dhf and x2dhf-openmp to bin/
+	    directory.
+
+     $prog -b -p
+            Clears $BUILD/ directory and builds afresh x2dhf program with the
+            multi-threaded versions of the coulExchSOR and MCSOR routines. The
+            executable x2dhf is copied as x2dhf and x2dhf-pthread to bin/
+            directory (tested on systems supporting the Native POSIX Threads
+            Library; the glibc releases 2.17 and 2.35).
+
+     $prog -b -l -o|p
+            Clears $BUILD/ directory and builds afresh the x2dhf program with
+	    LIBXC and OpenMP or pthread support added. The executable x2dhf is
+	    copied as x2dhf and x2dhf-openmp-lxc (or x2dhf-pthread-lxc) to bin/
+	     directory.
+
+     $prog -b -m ifort
+            Clears $BUILD/ directory and builds afresh the x2dhf program with the
+            coulExchSOR and MCSOR routines parallelized by means of MKL OpenMP
+            directives; the executable x2dhf is copied as x2dhf and x2dhf-mkl to
+            bin/ directory.
+
+ 
+${bold}OPTIONS${normal}
+
+      -a    
+            Switches on the '-Wall' option of the gfortran compiler.
+
+      -b    
+            Starts a new build of the program by creating/cleaning $BUILD/ directory.
+
+      -B 
+            the BLAS library support is added (see blas.F90).
+
+      -D
+            Include additional print statements via DEBUG pragma. Use 'xhf -D' 
+            command to get the list of available printouts.
+
+      -e    
+            Switches on the '-ffpe-summary=none' option of the gfortran compiler.  
+
+      -f 
+            Forces the rebuilding of the libxc libraries (see -L option).
+
+
+      -g 
+            Turns on debugging options.
+
+      -i 8
+            Sets the length of integer variables to 8 bytes (4 is the default).
+
+      -l
+            The Libxc support is added provided that the libxc library is
+            available (see -L option). In addition, the x2dhf binary is saved as
+            x2dhf-lxc in bin/ directory.
+
+      -L
+            The latest version of the libxc library is downloaded, compiled and
+            installed (use -f option to rebuild the library).
+
+      -M 
+            The Math Kernel Library support is added (requires the ifort compiler).
+
+      -o
+            OpenMP directives are included in coulExchSOR routine and the
+            relaxation of Colulomb and exchange potentials is parallelized. In
+            addition, the x2dhf binary is saved as x2dhf-openmp in bin/
+            directory.
+
+            If the mcsor-o and mcsor-ce labels (cards) are used the relaxation of
+            orbitals and potentials is additionally parallelized since the MCSOR
+            routine is employed instead of the SOR one to relax a single
+            orbital/potential.
+
+      -O level
+            Set the level of optimisation (3 by default).
+
+      -p
+            Support for a multi-threaded (p-thread) version of the coulExchSORPT
+            routine is added. In addition, the x2dhf binary is saved as
+            x2dhf-pthread in bin/ directory.
+
+      -P
+            Include additional print statements via the PRINT pragma. Use 
+            'xhf -P' command to get the list of available printouts.
+
+      -r 16
+            Sets the length of floating-point numbers to 16 bytes (8 is the
+            default).
+
+      -t
+            Support for a multi-threaded (p-thread) version of coulExchSORPT and
+            MCSORPT routines is added. It is carried out through a pool of
+            pre-created threads at the beginning of the program (see
+            x2dhhf.F90). In addition, the x2dhf binary is saved as x2dhf-tpool
+            in bin/ directory.
+
+      -T 0|1|2|3
+            Switches on tracing, i.e. extra printouts are included in the code
+            via TRACE, TRACE1, etc pragmas.
+
+      -X
+            Set pragma MUTEX (used in some C routines).
+      -v 
+            Turns on the verbose mode during compilation and linking. 
+
+${bold}AUTHORS${normal}
+       Jacek Kobus <jacek.kobus@umk.pl> 
+
+${bold}COPYRIGHT${normal}
+       Copyright © 2023 Jacek Kobus
+
+EOF
+}
+
+function makeLibxc {
+
+    if [[ ! -f libxc-${LIBXCVERSION}.tar.gz ]]
+    then
+	status=$(wget --no-check-certificate http://www.tddft.org/programs/libxc/down.php?file=${LIBXCVERSION}/libxc-${LIBXCVERSION}.tar.gz)
+	if [[ $? != 0 ]]
+	then
+	    echo $status
+	    exit
+	fi
+	mv down.php\?file=${LIBXCVERSION}%2Flibxc-${LIBXCVERSION}.tar.gz libxc-${LIBXCVERSION}.tar.gz
+    fi
+
+    libxcDir=no
+    if [[ ! -d libxc-${LIBXCVERSION} ]]
+    then
+	tar xzf libxc-${LIBXCVERSION}.tar.gz
+	libxcDir=yes
+    fi
+
+    if [[ $libxcDir == no && $force == "" ]]
+    then
+	cat<<-EOF 
+	    Warning!  
+	    Directory libxc-${LIBXCVERSION}/ has been detected. 
+            It is assumed that the libxc library files are already there. 
+            To rebuild the library run the script again with '-f' option.
+            Or remove the directory and run the script again.
+EOF
+	    exit
+    fi
+	
+    cd libxc-${LIBXCVERSION}
+    
+    if [[ $VERBOSE == on ]] 
+    then
+	./configure CFLAGS=-std=gnu99 --prefix=$INSTALLPREFIX/libxc
+	make -j $maxcpus VERBOSE=0
+	make install
+    else
+	>& $log ./configure CFLAGS=-std=gnu99 --prefix=$INSTALLPREFIX/libxc
+	2>&1 >> $log make -j $maxcpus VERBOSE=0
+	    2>&1 >> $log make install
+    fi
+    cd - >& /dev/null
+}
+
+
+[[ $host == tc06 ]] && module add cmake/$CMVERSION 
+
+[[ $1 == "help" || $1 == "-h" || $1 == "--help" ]] && help && exit
+
+[[ $1 == log || $1 == showlog ]] && cat $log && exit
+
+FFLAGS=
+MUTEX=
+trace=-1
+TRACE=
+
+while getopts "abBDfghi:lLMopO:Pqr:tT:UWXv" option; do
+    case $option in
+	a ) wall=-Wall;;
+        b ) cleanBUILD;;
+	B ) BLAS=on;;
+	D ) FFLAGS="$FFLAGS -DDEBUG";;	
+        e ) summary="-ffpe-summary=none";;
+        f ) force=on;;
+        g ) debug=on;;
+        h ) help; exit;;
+	i ) intprec=$OPTARG;
+	    [[ "$intprec" != "8" ]] && echo -e "Error: wrong value of option '-i'\n\n" &&  help && exit;;
+	l ) lxc=on;;
+	L ) LXC=on;; 
+	M ) MKL=on;;
+	o ) openmp=on;;
+	O ) optLevel=$OPTARG;;
+	p ) pthread=on;;
+	P ) FFLAGS="$FFLAGS -DPRINT";;
+	r ) realprec=$OPTARG;
+	    [[ "$realprec" != "16" ]] && echo -e "Error: wrong value of option '-r'\n\n" && help && exit;;
+	t ) tpool=on;;
+	T ) trace=$OPTARG;;
+	X ) TRACE="-DMUTEX";;		
+	v ) export VERBOSE=on;;
+	* ) echo "Error: unknown option" && help && exit
+    esac
+done
+
+shift $((OPTIND-1))
+
+compiler=${1:-gfortran}
+
+maxcpus=$(lscpu |grep 'CPU(s)' |head -1 | gawk '{print $2}')
+#maxcpus=$((maxcpus-4))
+
+[[ -d tests ]] || mkdir tests
+[[ -d log ]] || mkdir log
+
+
+FC=
+LDOPT1=
+LDOPT2=
+LDOPT3=
+LDOPT4=
+LIB1=
+LIB2=
+SRC1=
+SRC2=
+
+[[ $trace == 0 ]] && TRACE="$TRACE -DTRACE"
+[[ $trace == 1 ]] && TRACE="$TRACE -DTRACE -DTRACE1"
+[[ $trace == 2 ]] && TRACE="$TRACE -DTRACE -DTRACE1 -DTRACE2"
+[[ $trace == 3 ]] && TRACE="$TRACE -DTRACE -DTRACE1 -DTRACE2 -DTRACE3"
+
+if [[ $LXC == on ]] 
+then 
+    makeLibxc
+    cp libxc/bin/xc-info bin/
+    cp libxc-${LIBXCVERSION}/src/xc-threshold bin/
+    exit
+fi
+
+export SETTXT=set.txt
+status=$(grep 'q0' src/dgamit.F)
+[[ -n $status ]] && perl -pi -e 's/q0/d0/g' src/dgamit.F
+
+if [[ $compiler == gfortran || $compiler == f95 ]]
+then
+    export X2DHF=$(echo $PWD | sed -e 's/\//\\\//g' )
+
+    if [[ -z $debug ]]
+    then 
+	FFLAGS="$FFLAGS -O$optLevel $summary $wall -ffree-line-length-none -fmax-array-constructor=90000 "
+    else
+	FFLAGS="$FFLAGS -O0 -fbacktrace -fcheck=bounds -g -pg $wall -ffree-line-length-none -fmax-array-constructor=90000"
+    fi
+    
+    if [[ -n $openmp ]]
+    then
+	#FCOPT5=-omp_lib
+	FFLAGS="$FFLAGS -fopenmp -DOPENMP $TRACE"
+	LDOPT1="-fopenmp "
+    fi
+
+    if [[ -n $pthread ]]
+    then
+	FFLAGS="$FFLAGS -DPTHREAD $TRACE"
+	LDOPT1="-lpthread "
+    fi
+
+    if [[ -n $tpool ]]
+    then
+	LDOPT1="-lpthread "
+	FFLAGS="$FFLAGS -DTPOOL $TRACE" 
+    fi
+
+    if [[ -n $BLAS ]]
+    then
+	FFLAGS="$FFLAGS -DBLAS"
+	#FFLAGS="$FFLAGS -DBLAS -fexternal-blas"
+	# -finline-matmul-limit=n
+	# -fno-protect-parens
+	export LDOPT2="-llapack -lblas "
+    fi
+
+    [[ $intprec == 8 ]] && FFLAGS="$FFLAGS -fdefault-integer-8" 
+    if [[ $realprec == 16 ]]
+    then
+	FFLAGS="$FFLAGS -freal-8-real-16"
+	perl -pi -e 's/d0/q0/g' src/dgamit.F
+    fi
+fi
+
+
+if [[ $compiler == ifort ]]
+then
+    # Remember to 
+    # source $IFORTDIR/bin/ifortvars.sh intel64
+    # before running the program in a separate shell
+
+    host=$(hostname -s)
+
+    FFLAGS="$FFLAGS -O$optLevel -132 -DIFORT"    
+
+    [[ -n $debug ]] && FFLAGS="$FFLAGS -O1 -g -check -132 -DIFORT"    
+
+    #openmp=-openmp
+    [[ -n $openmp ]] && FFLAGS="$FFLAGS -openmp -DOPENMP"    
+
+    if [[ -n $BLAS ]]
+    then
+	FFLAGS="$FFLAGS -DBLAS"
+	LDOPT2="-lblas "
+    fi
+
+    
+    #[[ -n $MKL ]] && FFLAGS="$FFLAGS -DMKL"
+
+    if [[ $host == tor7 || $host == polon7 ]]
+    then
+	IFORTDIR=/opt/intel/
+	IFORTVERSION=11.0.074
+	MKLVERSION=10.1.0.015
+	source $IFORTDIR/fc/$IFORTVERSION/bin/ifortvars.sh intel64
+	FC=$IFORTDIR/fc/$IFORTVERSION/bin/intel64/ifort
+
+	[[ -n $openmp ]] && LIB1=$IFORTDIR/fc/$IFORTVERSION/lib/intel64/libiomp5.a
+	[[ -n $MKL ]] && LIB1=$IFORTDIR/mkl/$MKLVERSION/lib/em64t/libiomp5.a
+    fi
+
+    if [[ $host == "tc06" ]]; then
+        [[ -n $openmp ]] && FCOPT6="-qopenmp"
+        export IFORTVERSION=2017.2.050
+        MKLVERSION=10.1.0.015
+        export MKLROOT=/home/opt/intel/$IFORTVERSION/compilers_and_libraries/linux/mkl/
+        module add intel/$IFORTVERSION mkl/$IFORTVERSION
+        FC=/home/opt/intel/$IFORTVERSION/bin/ifort
+        [[ -n $openmp && -z $MKL ]] && LDOPT1="-qopenmp "
+        [[ -n $openmp && -n $MKL ]] && LIB1=/opt/intel/mkl/$MKLVERSION/lib/em64t/libiomp5.a
+    fi
+fi
+
+if [[ -n $lxc ]]
+then
+    if [[ ! -d $PWD/libxc ]]
+    then
+	echo "./libxc is missing ... try running \"$0 -L\" first "
+	exit 1
+    fi
+    SRC1=libxc_master_f90.F90
+    SRC2=libxc_funcs.f90 
+    LIB3="-L $PWD/libxc/lib"
+    LDOPT3="-lxcf90 "
+    LDOPT4="-lxc "
+    FFLAGS="$FFLAGS -DLIBXC"
+fi
+
+export SRC1 SRC2
+export FC FFLAGS
+export LDOPT1 LDOPT2 LDOPT3 LDOPT4
+export LIB1 LIB2 LIB3
+
+# FIXME
+if [[ $compiler == lapack ]]; then
+
+    if [[ -z $debug ]]
+    then
+	FCOPT1=-O6
+	FCOPT2=-ffree-line-length-none
+	export FCOPT1 FCOPT2
+    fi
+    
+    if [[ -n $debug ]]
+    then
+	FCOPT1=-O1
+	FCOPT2=-g
+	FCOPT3=-check
+	export FCOPT1 FCOPT2 FCOPT3
+    fi
+
+    [[ $intprec == 8 ]] && INTPREC="-fdefault-integer-8" 
+    [[ $realprec == 16 ]] && REALPREC="-freal-8-real-16" 
+    
+    SETTXT=set.txt
+fi
+
+if [[ -n $pthread || -n $tpool ]]
+then
+    # maxorb in src/c/sorpt.h must be equal to maxorb parameter (see params.f90)
+    maxorb=$(grep -iP "parameter\s+::\s+maxorb" src/params.f90 |gawk '{print $NF}')
+    perl -pi -e "s/maxorb \d+/maxorb $maxorb/" src/c/sorpt.h 
+    
+    mkdir -p $BUILD/CMakeFiles/x2dhf.dir/
+
+    [[ -n $pthread ]] && cfiles="coulExch_pthread relax_single_pot_pthread mcsor_pthread mcsor_single_colour_pthread sorpt "
+
+    #[[ -n $tpool ]] && cfiles="exchsorptdrv1 exchsorsingle1 mcsorptdrv1 mcsorpt_pthread sorpt "
+    [[ -n $tpool ]] && cfiles="coulExch_tpool relax_single_pot_tpool mcsor_tpool mcsor_single_colour_tpool sorpt "
+    
+    [[ -n $pthread || -n $tpool ]] && cfiles="$cfiles"
+    libopt=
+    for cfile in $cfiles
+    do
+	libopt="$libopt CMakeFiles\/x2dhf.dir\/${cfile}.o"
+    done
+
+    if [[ -z $LIB1 ]]
+    then
+	LIB1="$libopt"
+    else
+	LIB1="$libopt $LIB1"
+    fi
+    
+    cfilesall="coulExch relax_single_pot mcsor* sorpt "    
+    for cfile in $cfilesall
+    do
+	rm -f $BUILD/x2dhf $BUILD/CMakeFiles/x2dhf.dir/${cfile}*.o
+    done
+
+    directive=
+    [[ -n $pthread ]] && directive="-DPTHREAD"    
+    [[ -n $tpool ]] && directive="-DTPOOL"
+
+    directive=$(echo $directive $TRACE)
+    
+    cd $BUILD/CMakeFiles/x2dhf.dir/
+    if [[ -n $debug ]]
+    then
+	cflags="-g -O0 -Wall "
+    else
+	cflags="-O2"
+    fi
+
+    if [[ -n $pthread ]]
+    then
+	gcc -c $cflags $directive \
+	    $INSTALLPREFIX/$SRC/c/coulExch_pthread.c \
+	    $INSTALLPREFIX/$SRC/c/relax_single_pot_pthread.c\
+	    $INSTALLPREFIX/$SRC/c/mcsor_pthread.c \
+	    $INSTALLPREFIX/$SRC/c/mcsor_single_colour_pthread.c \
+	    $INSTALLPREFIX/$SRC/c/sorpt.c
+    fi
+    
+    if [[ -n $tpool ]]
+    then
+	gcc -c $cflags $directive $INSTALLPREFIX/$SRC/c/coulExch_tpool.c \
+	    $INSTALLPREFIX/$SRC/c/relax_single_pot_tpool.c \
+	    $INSTALLPREFIX/$SRC/c/mcsor_tpool.c \
+	    $INSTALLPREFIX/$SRC/c/mcsor_single_colour_tpool.c \
+	    $INSTALLPREFIX/$SRC/c/sorpt.c
+    fi
+
+    cd - >& /dev/null
+fi
+export FFLAGS
+
+#echo FFLAGS=$FFLAGS
+
+[[ -d $BUILD ]] || mkdir $BUILD
+[[ -d $BIN ]] || mkdir $BIN
+
+cd $BUILD
+2>&1 >> $log cmake -S ../$SRC
+[[ $? > 0 ]] && cat $log && exit
+
+2>&1 >> $log  make -j$maxcpus  install
+[[ $? > 0 ]] && cat $log && exit
+
+[[ $VERBOSE == on ]] && cat $log 
+
+cp x2dhf ../bin/x2dhf
+[[ -z $pthread && -z $openmp && -z $tpool ]] && cp x2dhf ../bin/x2dhf-s
+
+if [[ -z $lxc ]]
+then
+    [[ -n $openmp ]]                             && cp x2dhf ../bin/x2dhf-openmp
+    [[ -n $pthread ]]                            && cp x2dhf ../bin/x2dhf-pthread
+    [[ -n $tpool ]]                              && cp x2dhf ../bin/x2dhf-tpool
+    [[ -z $openmp && -z $pthread && -z $tpool ]] && cp x2dhf ../bin/x2dhf-s    
+else
+    [[ -n $openmp ]]                             && cp x2dhf ../bin/x2dhf-openmp-lxc 
+    [[ -n $pthread && -z $tpool ]]               && cp x2dhf ../bin/x2dhf-pthread-lxc
+    [[ -n $tpool ]]                              && cp x2dhf ../bin/x2dhf-tpool-lxc
+    [[ -z $openmp && -z $pthread && -z $tpool ]] && cp x2dhf ../bin/x2dhf-s-lxc
+fi
+    
+cd ..
+

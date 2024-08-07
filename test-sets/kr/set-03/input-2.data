@@ -1,0 +1,13 @@
+title Kr
+!! Kr : cont'ed with relaxation of orbitals and potentials : hf/sor : energy threshold=10^-10
+method hf
+nuclei  36.0 0.0 3.779452 
+config  0
+ 1 delta
+ 4 pi    
+ 8 sigma  end
+grid 700 60.0
+orbpot old
+SCF 5000 10 10 12 3
+conv 2000
+stop

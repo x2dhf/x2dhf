@@ -1,0 +1,15 @@
+title LiBr F=-0.00025
+!! LiBr: HF cals with F=-0.00025 
+method hf                                                                       
+nuclei  3.0 35.0  4.1015
+config  0                                                                       
+ 1 delta
+ 4 pi
+ 9 sigma  end
+grid  1043 200.0
+fefield -0.00025
+orbpot old
+scf 6000 10 14 16 3                                                            
+conv 6000                                                                       
+mmoments
+stop                                                                            

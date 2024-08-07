@@ -1,0 +1,25 @@
+title NaCl F=0.0
+!! NaCl: HF cals with initial hydrogenic orbitals and F=0.0 : grid 449/200.0 : energy threshold=10^-12
+method hf
+nuclei  11.0 17.0  4.4613
+config  0
+  3 pi
+  8 sigma  end
+grid  449 200.0
+orbpot hydrogen 0
+lcao
+  1.0   2 1 11.0     0.0   3 1 15.0   
+  0.0   3 1 5.0      1.0   3 1 15.0   
+  0.0   3 1 5.0      1.0   2 1 16.0   
+  1.0   2 1 11.0     0.0   2 1  6.0   
+  1.0   2 0 11.0     0.0   2 1  6.0   
+  1.0   1 0 11.0     0.0   2 1  6.0   
+  0.0   3 0 10.0     1.0   3 1 14.0   
+  0.0   3 0 10.0     1.0   3 0 15.0   
+  0.0   2 1 10.0     1.0   2 1 16.0   
+  0.0   2 0 11.0     1.0   2 0 17.0   
+  0.0   1 0 11.0     1.0   1 0 17.0   
+scf 5000 10 14 16 3
+conv 5000
+mmoments
+stop

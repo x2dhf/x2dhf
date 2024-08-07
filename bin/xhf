@@ -1,0 +1,769 @@
+#!/bin/bash 
+
+# xhf - facilities the usage of the x2dhf program
+
+# SPDX-License-Identifier: GPL-2.0+
+# Copyright (C) 1996-2023 Jacek Kobus 
+
+
+bold=$(tput bold)
+normal=$(tput sgr0)
+
+INPUT_TMP="2dhf_input"
+OUTPUT_TMP="2dhf_output"
+
+#  see ./src/rrec for the choice of 31
+FIRST_FORT_FILE=31
+
+prog=$(echo $0 $@)
+
+if [[ -z $X2DHF_DIRECTORY ]]
+then
+    X2DHF_DIRECTORY=${PWD%tests}
+    export X2DHF_DIRECTORY
+fi
+
+verbose=0
+
+help () {
+    cat <<EOF | more
+${bold}NAME${normal}
+      xhf - facilities the usage of the x2dhf program
+
+${bold}SYNOPSIS${normal}
+      xhf [-h|--help|help]
+
+      xhf [-l|o|p|s|t] <input_data_prefix> [<input_file_prefix>] <output_file_prefix>
+
+      xhf checkpoint|clean|stop
+
+      xhf [-v] cp|copy <file1> <file2>
+      xhf [-v] mv|move <file1> <file2>
+      xhf [-v] rm|remove <file> 
+
+      xhf mk1dhf|mk1dlda <file1> [<file2>]
+      xhf rm1dhf|rm1dlda
+
+      xhf mkgauss <file>
+      xhf rmgauss 
+
+      xhf [-v] rmtmp
+
+By default the program name is set to x2dhf-<input_data_prefix> and this
+name -- instead of the bare x2dhf one -- is used when running a particular
+case to help distinguish various concurrently running instances
+of the x2dhf program.
+
+The x2dhf binary itself is a hard link (by default or if option '-s' is
+used) to ../bin/x2dhf-s, i.e. the basic form of the program. However, if
+any of the options '-o|p|t' is used the x2dhf file is linked to
+../bin/x2dhf-openmp|pthread|tpool binary executables, respectively. By the
+way, if in addition option '-l' is used the x2dhf file is linked to the
+corresponding files ../bin/x2dhf-openmp|pthread|tpool-lxc.
+
+${bold}OPTIONS${normal}
+
+      -I
+            Runs the x2dhf binary using the idle scheduling policy (SCHED_IDLE)
+            instead of the default batch one (SCHED_BATCH).
+
+      -g
+            Runs gprof to profile the x2dhf code compiled with '-pg' flag
+            (see the option '-g' of the x2dhfctl script).
+
+      -h|--help
+            Shows this help.
+
+      -l
+            The hard-linked x2dhf-lxc binary is used when invoking the program
+            x2dhf; see the option '-l' of the x2dhfctl script.
+
+      -o
+            The hard-linked x2dhf-openmp binary is used when invoking the program
+            x2dhf; see the option '-o' of the x2dhfctl script. 
+
+      -p
+            The hard-linked x2dhf-pthread binary is used when invoking the program
+            x2dhf; see the option '-p' of the x2dhfctl script. 
+
+      -O
+            Runs the x2dhf binary using the normal scheduling policy (SCHED_OTHER)
+            instead of the default batch one (SCHED_BATCH).
+
+      -P
+            Show the list of pragma PRINT write statements.
+
+      -s
+            The hard-linked x2dhf-s binary is used when invoking the program x2dhf.
+
+      -t
+            The hard-linked x2dhf-tpool binary is used when invoking the program
+            x2dhf, see the option '-t' of the x2dhfctl script. 
+
+      -v
+            Verbose mode.
+
+${bold}POSITIONAL ARGUMENTS${normal}
+
+      xhf help
+            Prints this message.
+
+      xhf checkpoint
+            Copies 2dhf_output.* files into 2dhf_output-checkpoint.* 
+
+      xhf cp|copy <file1> <file2>
+            Copies <file1>.{dat,orb,coul,exch} files into corresponding 
+            <file2>.* ones.
+
+      xhf mv|move <file1> <file2>
+            Moves <file1>.{dat,orb,coul,exch} files into corresponding 
+            <file2>.* ones.
+
+      xhf |rm remove <file> 
+            Removes <file>.{dat,orb,coul,exch} files.
+
+      xhf clean
+            Removes all orbital and potential files plus zero-size files
+            in the current directory.
+
+      xhf mk1dhf <file1> [<file2>]
+            Creates symbolic links 1dhf_centreA.orb and 1dhf_centreB.orb that
+            point to the <file1> and <file2> files, respectively, which contain 
+            radial orbitals for atoms A and B obtained from qrhf program; 
+            if file2 is missing file1 is used.
+
+      xhf mkgauss <file>
+            Creates symbolic links gaussian.out and gaussian.pun that point 
+            to the <file>.out and <file>.pun files, respectively.
+
+      xhf mkfinal <file1>  <file2> 
+            Creates symbolic links with prefix <files2> that point to the 
+            corresponding files with <file1> prefix. 
+
+      xhf mk1dlda <file1> [<file2>]
+            Creates symbolic links 1dlda_centreA.orb and 1dlda_centreB.orb 
+            that point to the <file1> and <file2> files, respectively, 
+            with contain radial LDA orbitals for atoms A and B used to 
+            generate SAP potentials (see initLDA and sap routines for 
+            detailes); if file2 is missing file1 is used.
+
+      xhf rm1dhf
+            Removes symbolic links 1dhf_centreA and 1dhf_centreB.
+
+      xhf rmgauss 
+            Removes symbolic links gaussian.out and gaussian.pun.
+
+      xhf rm1dlda
+            Removes symbolic links 1dlda_centreA and 1dlda_centreB.
+
+      xhf rmtmp
+            Removes current temporary files ($INPUT_TMP.*, $OUTPUT_TMP 
+            and fort.*). 
+
+      xhf stop
+	    Stops a currently running x2dhf program.
+
+      xhf tail [n]
+	    Show the last n (100 by default) lines of the newest output file 
+            (its .lst extenstion is assumed).
+
+
+      xhf virt <file-vsigma> <file-vpi> <file-vdelta> <file-vphi>
+	    Makes symbolic links of the given files with virtual orbitals 
+            to their default names
+
+      xhf [-l|o|p|s|t] <input_data_prefix> <output_file_prefix> 
+            Runs the x2dhf program for input data read from the 
+            <input_data_prefix>.data file; orbitals and potentials are saved 
+            in the <output_file_prefix>.[dat|orb|coul|exch] files. 
+
+      xhf [-l|o|p|s|t] <input_data_prefix> <input_file_prefix> <output_file_prefix> 
+            Runs the x2dhf program for input data read from the 
+            <input_data_prefix>.data file; orbitals and potentials are retrieved 
+            from <input_file_prefix>.[dat|orb|coul|exch] files and are saved 
+            into the <output_file_prefix>.[dat|orb|coul|exch] files 
+
+
+${bold}AUTHOR${normal}
+       Jacek Kobus <jacek.kobus@umk.pl> 
+
+${bold}COPYRIGHT${normal}
+       SPDX-License-Identifier: GPL-2.0-or-later
+       Copyright © 1996-2023 Jacek Kobus
+
+EOF
+}
+
+function showDebug {
+    2>/dev/null grep -iP -A1 'ifdef DEBUG' $X2DHF_DIRECTORY/src/*  |\
+	grep -vP 'ifdef DEBUG' |grep -v '\-\-' |gawk -F! '{print $2}' | sort
+}
+
+
+function showPrint {
+    2>/dev/null grep -iP -A1 'ifdef PRINT' $X2DHF_DIRECTORY/src/*  |\
+	grep -vP 'ifdef PRINT' |grep -v '\-\-' |gawk -F! '{print $2}' | sort
+}
+
+
+
+[[ -z "$1" || "$1" == "-h" || "$1" == "help" || "$1" == "--help" ]] && help && exit
+
+function checkpoint {
+
+    # copies $2|$3.{dat,orb,coul,exch} into $2|$3.dat-checkpoint-1|2, etc
+    
+    if [[ -n $3 ]]
+    then
+	output=$3
+    else
+	output=$2
+    fi
+
+    for i in 1 2 3 4 5 6 7 8 9
+    do
+	[[ -f $output-$i.dat ]] && continue
+	cp $output.dat  $output-checkpoint-$i.dat   >& /dev/null   
+	cp $output.orb  $output-checkpoint-$i.orb   >& /dev/null
+	cp $output.coul $output-checkpoint-$i.coul  >& /dev/null 
+	cp $output.exch $output-checkpoint-$i.exch  >& /dev/null
+	break 
+    done
+    
+    fort=$(ls fort.* >& /dev/null)
+    for file in $fort
+    do 
+	echo "$file"
+	ext=$(echo $file | sed s/"fort."//)
+	cp $file fort-checkpoint-$i.$ext >& /dev/null
+    done
+    exit
+
+}
+
+function cleanDir {
+    # removes all orbital and potential binary files
+    rm -f *.dat *.orb *.coul *.exch *.fort.* fort.* fort-checkpoint.* stop_x2dhf *~ >& /dev/null
+    
+    # remove all zero byte files
+    fort=$(ls * 2> /dev/null)
+    for file in $fort
+    do
+	[[ -s $file ]] || rm -f $file >& /dev/null 
+    done
+    exit
+}
+
+function copy {
+    # copy input into output files
+    if [[ "$2" != "" && "$3" != "" ]]
+    then
+	[[ $verbose == "1" ]] && message "copying $2.dat, $2.orb, ... into $3.dat, $3.orb, ..."
+	
+        cp $2.dat  $3.dat  >& /dev/null
+        cp $2.orb  $3.orb  >& /dev/null
+        cp $2.coul $3.coul >& /dev/null
+        cp $2.exch $3.exch >& /dev/null
+	
+	if [[ -e $2.fort.$FIRST_FORT_FILE  && -s $2.fort.$FIRST_FORT_FILE ]]
+	then
+	    fort=$(ls $2.fort.*)
+	    for file in $fort; do 
+		ext=$(echo $file | sed s/"$2.fort."//)
+		cp $file ${3}.fort.$ext >& /dev/null
+	    done
+	fi
+    else
+	message "Error: missing argument(s)"
+    fi
+    exit
+}
+
+
+
+message () {
+    cat <<EOF
+  $1
+  Or try './$(basename $0)|$(basename $0) -h|--help|help'.
+EOF
+    exit
+}
+
+function mk1dhf {
+    # creats symbolic links 1dhf_centreA, etc
+    if [[ "$2" != "" && "$3" != "" ]]
+    then
+	ln -s $2 1dhf_centreA.orb >& /dev/null 
+	ln -s $3 1dhf_centreB.orb >& /dev/null
+    elif [[ "$2" != "" && "$3" == "" ]]; then
+	ln -s $2 1dhf_centreA.orb >& /dev/null 
+	ln -s $2 1dhf_centreB.orb >& /dev/null 
+    else
+	message "Error: a missing argument"
+    fi
+    exit
+}
+
+function mk1dlda {
+    # creats symbolic links 1dlda_centreA, etc
+    if [[ -n "$2" && -n "$3" ]]
+    then
+        ln -s $2 1dlda_centreA.orb >& /dev/null 
+	ln -s $3 1dlda_centreB.orb >& /dev/null 
+    elif [[ -n "$2"  && -z "$3" ]]
+    then
+	ln -s $2 1dlda_centreA.orb >& /dev/null 
+	ln -s $2 1dlda_centreB.orb >& /dev/null 
+    else
+	message "Error: missing argument(s)"
+    fi
+	exit
+}
+
+function mkgauss {
+    # creats symbolic links gauss94*
+    [[ "$2" == "" ]] && message "Error: a missing argument"
+    rm -f gaussian.out gaussian.pun >& /dev/null 
+    ln -s $2.out gaussian.out >& /dev/null 
+    ln -s $2.pun gaussian.pun >& /dev/null 
+    exit
+}
+
+function mkfinal {
+    [[ "$2" == "" || "$3" == "" ]] && message "Error: missing argument(s)"
+    
+    for ext in dat orb coul exch
+    do
+	ln -s $2.$ext $3.$ext >& /dev/null 
+    done
+    exit 
+}
+
+function move {
+    # moves input into output files
+    if [[ "$2" != "" && "$3" != "" ]]
+    then
+	[[ $verbose == "1" ]] && message "moving $2.dat, $2.orb, ... into $3.dat, $3.orb, ..."
+	
+        mv $2.dat  $3.dat  >& /dev/null
+        mv $2.orb  $3.orb  >& /dev/null
+        mv $2.coul $3.coul >& /dev/null
+        mv $2.exch $3.exch >& /dev/null
+	
+	if [[ -e $2.fort.$FIRST_FORT_FILE  && -s $2.fort.$FIRST_FORT_FILE ]]
+	then
+	    fort=$(ls $2.fort.*)
+	    for file in $fort
+	    do 
+		ext=$(echo $file | sed s/"$2.fort."//)
+		mv $file ${3}.fort.$ext >& /dev/null
+	    done
+	fi
+    else
+	message "Error: missing argument(s)"
+    fi
+    exit
+}
+
+rm_2dhf_input () {
+    for file in $INPUT_TMP.dat $INPUT_TMP.orb $INPUT_TMP.coul $INPUT_TMP.exch
+    do
+	[[ -e $file ]] || [[ -h file ]] && rm -f $file  
+    done
+}
+
+rm_2dhf_output () {
+     for file in $OUTPUT_TMP.dat $OUTPUT_TMP.orb $OUTPUT_TMP.coul $OUTPUT_TMP.exch
+     do
+ 	 [[ -e $file ]] || [[ -h $file ]] && rm -f $file  >& /dev/null;
+     done
+}
+
+
+
+function checkSetBinary {
+
+    if [[ -n $ext1 && ! -f $X2DHF_DIRECTORY/bin/x2dhf-$ext1 ]]
+    then
+	message "$X2DHF_DIRECTORY/bin/x2dhf-$ext1 is missing ... "
+	#message "go to $X2DHF_DIRECTORY and run ./x2dhfctl -$version  "
+	#
+	exit
+    fi
+
+    rm -f x2dhf
+    if [[ -z $ext1 && -z $ext2 ]]
+    then
+	ln $X2DHF_DIRECTORY/bin/x2dhf .
+    elif [[ -n $ext1 && -z $ext2 ]]
+    then
+	ln $X2DHF_DIRECTORY/bin/x2dhf-$ext1 x2dhf
+	ln $X2DHF_DIRECTORY/bin/x2dhf-$ext1 .
+    elif [[ -n $ext1 && -n $ext2 ]]
+    then
+	ln $X2DHF_DIRECTORY/bin/x2dhf-$ext1-$ext2 x2dhf
+	ln $X2DHF_DIRECTORY/bin/x2dhf-$ext1-$ext2 .
+    fi
+    binary=./x2dhf
+}
+
+
+cleanExit()
+{
+    rm -f x2dhf-{s,lxc,openmp,pthread,tpool}
+    rm -f x2dhf-{openmp-lxc,pthread-lxc,tpool-lxc}    
+    rm -f $sepBinary
+    rm_2dhf_input
+    rm_2dhf_output
+    exit
+}
+
+trap "cleanExit" INT
+
+rm -f x2dhf x2dhf-* >& /dev/null
+
+binary=
+gprof=
+lxc=
+mcsormt=
+openmp=
+pthread=
+s=
+tpool=
+ext1=
+ext2=
+
+schedPolicy=batch
+
+while getopts "DgIlopOPstv" Option
+do
+    case $Option in
+	D ) showDebug; exit;;	
+	g ) gprof=yes;;
+	I ) schedPolicy=idle;;		
+	l ) ext2=lxc;;
+	o ) ext1=openmp;;
+	O ) schedPolicy=normal;;	
+	p ) ext1=pthread;;
+	P ) showPrint; exit;;
+	s ) ext1=s;;
+	t ) ext1=tpool;;
+	v ) verbose=1; shift ;;
+  esac
+done
+
+shift $((OPTIND-1))
+
+checkSetBinary 
+
+action=$1
+
+actions=(checkpoint clean copy mk1dhf mk1dlda mkgauss mkfinal move rm1dhf
+	 rm1dlda rmgauss tail cp mv rm stop)
+
+for (( i=0; i< ${#actions[@]}; i++ ))
+do
+    [[ $action == ${actions[$i]} ]]  && break
+done
+     
+if [[ $i == ${#actions[@]} ]]
+then
+    [[ -e $action.data ]] || message "Error: unknown action $action."
+fi
+
+[[ $action == "checkpoint" ]] && checkpoint $1 $2 $3
+
+[[ $action == "clean" ]] && cleanDir
+
+[[ $action == "copy" || $action == "cp" ]] && copy $1 $2 $3
+
+[[ $action == "mk1dhf" ]] && mk1dhf $1 $2 $3
+
+[[ $action == "mkgauss" ]] && mkgauss $1 $2
+
+[[ $action == "mkfinal" ]] && mkfinal $1 $2
+
+[[ $action == "mk1dlda" ]] && mk1dlda $1 $2 $3
+
+[[ $action == "move" || $action == "mv" ]] && move $1 $2 $3
+
+[[ $action == "remove" || $action == "rm" ]] && remove $1 $2 $3
+
+# removes symbolic links 1dhf_centreA and 1dhf_centreB
+[[ $action == "rm1dhf" ]] && rm -f 1dhf_centreA.orb 1dhf_centreB.orb && exit 
+
+# removes symbolic links gaussian*
+[[ $action == "rmgauss" ]] && rm -f gaussian.out gaussian.pun && exit 
+
+# removes symbolic links 1dlda_centreA and 1dlda_centreB
+[[ $action == "rm1dlda" ]] && rm -f 1dlda_centreA.orb 1dlda_centreB.orb &&  exit 
+
+if [[ $action == tail ]]  
+then
+    num=${2:-100}
+    newest_lst=$(ls -t *.lst | head -1)
+    tail -$num $newest_lst
+    exit
+fi
+
+# removes all current temporary files  ($INPUT_TMP.*, $OUTPUT_TMP and fort.*) 
+if [[ $action == "rmtmp" ]]
+then
+	[[ $verbose == "1" ]] && message "wait ... removing temporary files ..."
+	rm -f $INPUT_TMP.dat $INPUT_TMP.orb $INPUT_TMP.coul $INPUT_TMP.exch >& /dev/null
+	rm -f $OUTPUT_TMP.dat $OUTPUT_TMP.orb $OUTPUT_TMP.coul $OUTPUT_TMP.exch >& /dev/null
+	rm -f fort.* >& /dev/null
+	exit
+fi
+
+# stops the x2dhf program
+[[ $action == "stop" ]] && touch stop_x2dhf && exit
+
+# makes symbolic links to sigma virtual orbitals
+if [[ $action == "vsigma" ]]
+then
+    ln -s $2.dat 2dhf_vsigma.dat
+    ln -s $2.orb 2dhf_vsigma.orb
+    exit
+fi
+
+# makes symbolic links to pi virtual orbitals
+if [[ $action == "vpi" ]]
+then
+    ln -s $2.dat 2dhf_vpi.dat 
+    ln -s $2.orb 2dhf_vpi.orb
+    exit
+fi
+
+# makes symbolic links to delta virtual orbitals
+if [[ $action == "vdelta" ]]
+then
+    ln -s $2.dat 2dhf_vdelta.dat
+    ln -s $2.orb 2dhf_vdelta.orb
+    exit
+fi
+
+# makes symbolic links to phi virtual orbitals
+if [[ $action == "vphi" ]]
+then
+    ln -s $2.dat 2dhf_vphi.dat
+    ln -s $2.orb 2dhf_vphi.orb
+    exit
+fi
+
+[[ -e stop_x2dhf ]] && rm stop_x2dhf >& /dev/null
+
+# get rid of 2dhf_* leftovers first (to avoid messing up the input and output files)
+
+rm_2dhf_input
+rm_2dhf_output
+
+system=$1
+
+[[ -z $binary ]] && binary=$(which x2dhf 2>/dev/null)
+
+if [[ -z $binary ]] 
+then 
+    #warning "x2dhf command not found neither via PATH nor in the current directory ... "
+    #warning "making a hard link and continue ..."
+    [[ -f x2dhf ]] || ln $X2DHF_DIRECTORY/bin/x2dhf .
+    binary=x2dhf
+fi
+
+sepBinary=x2dhf-$system
+
+[[ -f $sepBinary ]] || ln $binary $sepBinary >& /dev/null 
+
+[[ $2 == "" && $3 == "" ]] && message "Error: an argument is missing." 
+
+if [[ $3 != "" ]]
+then
+    # resume calculations from a previous run
+    # check if $system input data file contains a line of the form
+    #   orbpot old
+    #   orbpot noexch
+    #   orbpot nodat
+   
+    init=$(grep -iP '^\s*orbpot' $system.data | gawk '{print $2}')
+
+    if [[ $init != "old" && $init != "noexch" && $init != "nodat" ]]
+    then
+	line=$(grep -iP '^\s*orbpot' $system.data)
+	if [[ -z $line ]]
+	then
+	    echo "Error: orbpot card is missing. Check $system.data."
+	    exit
+	else    	    
+	    message "Error: a spurious argument detected; check '$line' card."
+	fi
+    fi
+    
+    # make symbolic links to temporary output files needed by x2dhf
+
+    for file in $3.dat $3.orb $3.coul $3.exch
+    do
+	ext=$(echo $file | sed s/${3}'.'//)
+	[[ -e $file ]] || touch $file >& /dev/null
+	ln -s $file $OUTPUT_TMP.$ext  >& /dev/null
+    done
+
+    # check if fort files are present
+
+    if [[ -e $2.fort.$FIRST_FORT_FILE ]]
+    then
+	# move $2.fort.* files into their fort.* ones
+	tf="${2}.fort."
+	
+	# this trick must be used to circumvent deficiences of tcsh shell
+	fortCount=$(sh -c "ls ${tf}*" |wc -l)
+
+	if [[ $fortCount != 0 ]]
+	then
+	    for ((n=1; n<=$fortCount; n++))
+	    do
+		m=$(($n+$FIRST_FORT_FILE-1));
+		mv $2.fort.$m fort.$m
+	    done
+	fi
+    fi
+    # move $2.* input files into their $INPUT_TMP.* counterparts
+
+    for file in $2.dat $2.orb $2.coul $2.exch
+    do
+	ext=$(echo $file | sed s/${2}'.'//)
+	[[ -e $file ]] && touch $file >& /dev/null
+	ln -s $file $INPUT_TMP.$ext  >& /dev/null
+    done
+fi
+
+if [[ $3 == "" ]]
+then
+    # a new calculation
+    # check that $system input data file is compatible and does not contain
+    # line of the form
+    #   orbpot old
+    #   orbpot noexch
+    #   orbpot nodat
+   
+    init=$(grep -iP '^\s*orbpot' $system.data | gawk '{print $2}')
+
+    if [[ $init == "" || $init == "old" || $init == "noexch" || $init == "nodat" ]]
+    then
+	line=$(grep -iP '^\s*orbpot' $system.data)
+	if [[ -z $line ]]
+	then
+	    echo "Error: orbpot card is missing. Check $system.data."
+	    exit
+	else    	    
+	    message "Error: a spurious argument detected; check '$line' card."
+	fi
+    fi
+
+    # move $2.* input files into their $INPUT_TMP.* counterparts
+    for file in $2.dat $2.orb $2.coul $2.exch
+    do
+	ext=$(echo $file | sed s/${2}'.'//)
+	[[ -e $file ]] && touch $file >& /dev/null
+	ln -s $file $OUTPUT_TMP.$ext  >& /dev/null
+    done
+fi
+
+#/bin/nice -n 19 ./$sepBinary < $system.data
+
+if [[ -z $gprof ]]
+then
+    if [[ $schedPolicy == batch ]]
+    then
+	chrt -b 0 ./$sepBinary < $system.data
+    elif [[ $schedPolicy == idle ]]
+    then
+	chrt -i 0 ./$sepBinary < $system.data
+    elif [[ $schedPolicy == normal ]]
+    then
+	 chrt -o 0 ./$sepBinary < $system.data
+    else
+	echo "Error: unknown scheduling policy ... quiting ..."
+	exit 1
+    fi
+	 
+    #strace  ./$sepBinary < $system.data
+    #  ./$sepBinary < $system.data  
+else
+    chrt -o 0 gprof ./$sepBinary < $system.data  
+fi
+
+machine=$(cat /proc/cpuinfo | grep 'model name'| gawk -F: '{print $2}' |
+	      sed s/\ Inte/Intel/|head -1 | sed -r  's/^\ //' )
+
+cat <<EOF
+command-line:  $prog
+      system:  $(uname -nsrpio)
+         CPU:  $machine
+////////////////////////////////////////////////////////////////////////////////////////////////
+EOF
+
+if [[ $3 == '' ]]; then
+
+# if fort.* files were formed move them to their $2.for.* counterparts 
+
+    if [[ -e fort.$FIRST_FORT_FILE && -s fort.$FIRST_FORT_FILE ]]; then
+
+	fortCount=$(sh -c "ls fort.*" |wc -l)
+	if [[ $fortCount != 0 ]]; then
+	    for ((n=1; n<=$fortCount; n++)); do
+		m=$(($n+$FIRST_FORT_FILE-1));
+		if [[ -e $2.fort.$m ]]; then
+		    message " Error: Cannot move fort.$m since $2.fort.$m already exits"
+		    rm_2dhf
+		    exit
+		else
+		    mv fort.$m $2.fort.$m 
+		fi
+	    done;
+	fi
+	if [[ ! -s $2.exch ]]; then
+	    rm -f $2.exch >& /dev/null
+	fi
+    fi
+
+else
+
+    # if fort.* files were formed move them to their $3.for.* counterparts 
+    if [[ -e fort.$FIRST_FORT_FILE && -s fort.$FIRST_FORT_FILE ]]; then
+	fortCount=$(sh -c "ls fort.*" |wc -l)
+	if [[ $fortCount != 0 ]]; then
+	    for ((n=1; n<=$fortCount; n++)); do
+		m=$(($n+$FIRST_FORT_FILE-1));
+		if [[ -e $3.fort.$m ]]; then
+		    message " Error: Cannot move fort.$m since $3.fort.$m already exits"
+		    exit
+		else
+		    mv fort.$m $3.fort.$m 
+		fi
+	    done;
+	fi
+
+	rm_2dhf
+
+	if [[ ! -s $2.exch ]]; then
+	    rm -f $2.exch >& /dev/null
+	fi
+
+	if [[ ! -s $3.exch ]]; then
+	    rm -f $3.exch >& /dev/null
+	fi
+    fi
+fi
+
+[[ -e stop_x2dhf ]] && rm stop_x2dhf >& /dev/null
+
+#[[ -f .status || -f .pid ]] && rm -f .pid .status 
+
+cleanExit
+    
+
+
+
+
+
+

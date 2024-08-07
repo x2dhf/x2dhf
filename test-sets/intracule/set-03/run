@@ -1,0 +1,5 @@
+[[ -f reference.lst ]] && grep -P '[123] sigma' reference.lst 2>/dev/null | tail -3 > reference-result.log
+xhf input output 2>/dev/null > current.lst
+grep -P '[123] sigma' current.lst 2>/dev/null | tail -3 > current-result.log
+
+

@@ -1,0 +1,16 @@
+title  BH F=0.0
+!! BH: HF cals with hydrogenic initial orbitals : grid 331x601/200.0
+method hf
+nuclei  5.0 1.0  2.3289                                                         
+config 0                                                                        
+3 sigma  end                                                                    
+grid 349 200.0                                                                  
+orbpot hydrogen 0 
+lcao                                                                            
+ 1.0   2 1 4.0    -1.0   1 0 1.0  
+ 1.0   2 0 4.0     0.0   1 0 1.0                                                
+ 1.0   1 0 5.0     0.0   1 0 1.0                                                
+scf  4000 10 14 16 3                                                           
+conv 4000                                                                       
+mmoments
+stop 

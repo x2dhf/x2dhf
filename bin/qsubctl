@@ -1,0 +1,86 @@
+#!/bin/bash
+
+help() {
+    cat <<EOF
+Usage: $(basename $0) -s|status 
+       $(basename $0) -q|queue 
+       $(basename $0) <test-set-id>
+
+
+Available queues on the gateway server:	  
+   small - 5 nodes, 64GB RAM each
+  medium - 7 nodes, 128GB RAM each
+   large - 9 nodes, 512GB RAM each
+     gpu - 2 nodes, 64GB RAM plus 2 A40 GPU cards per node
+EOF
+    exit
+}
+
+while getopts "qhs" option; do
+    case $option in
+	q ) qstat -q; exit;;
+        h ) help; exit;;
+        s ) qstat -n -u $USER; exit;;
+	* ) echo "Error: unknown option" && help && exit
+    esac
+done
+
+shift $((OPTIND-1))
+
+[[ $1 == "" || $1 == status ]] && qstat -n -u $USER && exit 0
+
+[[ $1 == queue ]] && qstat -q && exit 0
+
+
+export TERM=xterm-256color
+
+test=$1
+job=$(echo $test |sed -e 's/\//-/')
+
+
+
+cat <<EOF > /tmp/$job
+#PBS -m be
+#PBS -k oe
+#PBS -l nodes=1:ppn=12
+#PBS -l mem=20000mb
+#PBS -l walltime=200:0:0
+#PBS -N $job
+##PBS -q tasq
+##PBS -q medium
+#PBS -q small
+
+cd $HOME/github/x2dhf-v3/
+source .x2dhfrc
+cd $HOME/github/x2dhf-v3/tests
+testctl run $test
+EOF
+
+qsub /tmp/$job
+
+exit
+
+
+cat <<EOF > /tmp/$job
+#PBS -m be
+#PBS -k oe
+#PBS -l nodes=1:ppn=12
+#PBS -l mem=20000mb
+#PBS -l walltime=200:0:0
+#PBS -N $job
+##PBS -q tasq
+#PBS -q small
+
+cd $HOME/github/x2dhf-v3/
+source .x2dhfrc
+cd $HOME/github/x2dhf-v3/tests/o2-elprop/set-01
+xhf input-1 output output-1 > current-1.lst 
+EOF
+
+qsub /tmp/$job
+
+exit
+
+
+
+

@@ -1,0 +1,21 @@
+title 3D harmonic potentials (extracule Hamiltonian)
+!! He: 3D harmonic potential at geometric centre (extracule Hamiltonian) : 1-4 lowest sigma states
+method oed ! ted !oed 
+extracule 1
+nuclei  2.0 0.0 0.2
+config  -2
+ 1 sigma  + 
+ 1 sigma  + 
+ 1 sigma  + 
+ 1 sigma  +   end
+grid 369 10.0
+orbpot  hydrogen 0 
+lcao
+ 1.0  3 1 1.0  -1.0  3 1  1.0    
+ 1.0  2 1 1.0   1.0  2 1  1.0    
+ 1.0  2 0 1.0  -1.0  2 0  1.0    
+ 1.0  1 0 1.0   1.0  1 0  1.0  
+scf  5000 10 8 12  3
+omega 1.6 1.6
+conv 4000
+stop

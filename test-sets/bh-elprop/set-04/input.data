@@ -1,0 +1,13 @@
+title  BH F=+0.0004
+!! BH: HF cals with F=+0.0004
+method hf
+nuclei  5.0 1.0  2.3289                                                         
+config 0                                                                        
+3 sigma  end                                                                    
+grid 349 200.0
+fefield 0.0004
+orbpot old
+scf  4000 10 14 16 3                                                           
+conv 4000                                                                       
+mmoments
+stop 

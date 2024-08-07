@@ -1,0 +1,21 @@
+title intracule Hamiltonian: 2 lowest sigma gerade states
+!! intracule Hamiltionian: 2 lowest sigma gerade states
+method oed 
+!intracule 0.5 
+intracule 0.1 ! 0.25 !1
+!intracule .3801291298654152 !   1/5.26137*2
+!intracule .0365372881294004 !   1/54.7386*2
+nuclei  1.0 1.0 2.0
+!break 
+config 0
+ 1 sigma g +  
+ 1 sigma g +   end
+grid 269 60.0
+orbpot hydrogen 0 ! old
+lcao
+  1.0  1 0 1.0  -1.0  1 0  1.0    
+  1.0  1 0 1.0   1.0  1 0  1.0  
+scf  5000 10 12 14 3
+!omega 1.8 1.8
+conv 5000
+stop

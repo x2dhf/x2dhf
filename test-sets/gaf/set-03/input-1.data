@@ -1,0 +1,13 @@
+title GaF  R = 3.353
+!! GaF: starting HF cals with initial HF atomic orbitals 
+method hf
+nuclei  31.0 9.0  3.353
+config  0
+1 delta
+4 pi
+10 sigma end
+grid 295 40.0
+orbpot hf 2
+scf  500 10 4 12 3
+stop
+

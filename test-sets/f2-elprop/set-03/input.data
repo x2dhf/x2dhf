@@ -1,0 +1,22 @@
+title F2 F=-0.002
+!! F_2: HF cals with F=-0.002 
+method hf                                                                       
+nuclei  9.0 9.0 2.66816 ! 2.6681                                                
+break                                                                           
+config  0                                                                       
+1 pi    g                                                                       
+1 pi    u                                                                       
+1 sigma g                                                                       
+1 sigma u                                                                       
+1 sigma g                                                                       
+1 sigma u                                                                       
+1 sigma g end                                                                   
+grid 445 200.0
+fefield -0.002                                                                
+orbpot old ! hydrogen                                                          
+scf 8000 10 15 16 3                                                            
+conv 8000                                                                       
+lm 1 2  2 3 3 4 4 5 
+altsweeps
+stop                                                                            
+         

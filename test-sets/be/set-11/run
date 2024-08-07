@@ -1,0 +1,4 @@
+[[ -f reference.lst ]] && grep -iP '^\s+[345] sigma.*e' reference.lst > reference-result.log
+xhf input be-hf tmp 2>/dev/null > current.lst
+grep -iP '^\s+[345] sigma.*e' current.lst  > current-result.log
+

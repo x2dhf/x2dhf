@@ -1,0 +1,26 @@
+title N2: HF cals with initial hydrogenic orbitals, F=0.0 
+!! N2: HF cals with initial hydrogenic orbitals, F=0.0 : grid 445/200.0 
+method hf
+nuclei  7.0 7.0 2.068
+config  0
+  1 pi    u
+  1 sigma g
+  1 sigma u
+  1 sigma g
+  1 sigma u
+  1 sigma g end
+grid 445 200.0
+orbpot hydrogen 0
+lcao
+  0.5   2 1 5.0     0.5   2 1 5.0   
+  1.5   2 1 5.0     0.0   2 1 5.0   
+  0.5   2 0 7.0    -0.5   2 0 7.0   
+  0.5   2 0 7.0     0.5   2 0 7.0   
+  0.5   1 0 7.0    -0.5   1 0 7.0   
+  0.5   1 0 7.0     0.5   1 0 7.0   
+scf 5500 10 14 16 3
+conv 5000
+mmoments
+altsweeps
+stop
+

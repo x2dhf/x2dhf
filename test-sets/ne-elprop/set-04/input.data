@@ -1,0 +1,16 @@
+title Ne: F=+0.0005 
+!! Ne: HF with F=+0.0005
+method hf
+nuclei  10.0  0.0  2.0
+config  0
+1 pi
+2 sigma
+1 sigma   end
+grid 347 200.0
+fefield +0.0005
+orbpot old
+scf 2500 10 15 15 3
+conv 2000
+mmoments
+stop
+

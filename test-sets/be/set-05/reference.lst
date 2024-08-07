@@ -1,0 +1,142 @@
+///////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////  FINITE DIFFERENCE 2D HARTREE-FOCK  ////////////////////////////// 
+////////////////////////////             version 3.0             ////////////////////////////// 
+///////////////////////////////////////////////////////////////////////////////////////////////
+ ... start of input data ...
+  title Be                                                                        
+  method dft                                                                      
+  dft lda                                                                         
+  nuclei  4.0  0.0  2.386                                                         
+  config  0                                                                       
+  2 sigma  end                                                                    
+  grid 169 35.0                                                                   
+  orbpot old                                                                      
+  scf 000 10 10 6 3                                                               
+  stop                                                                            
+ ... end of input data  ...
+         
+
+   Atomic/molecular system: 
+
+          Be(  4.00)      (  0.00)   R =  2.38600 bohr = 1.26262 angstroms
+
+   Method: DFT     
+                    lda  functional (alpha = 0.66667)
+
+   Electronic configuration:
+
+           2  sigma      + - 
+           1  sigma      + - 
+
+
+          total charge            =  0
+          number of
+              electrons           =  4
+              orbitals            =  2
+              Coulomb potentials  =  2
+              exchange potentials =  1
+
+   Grid:
+          nu (h_nu)  =  151  (0.02094)
+          mu (h_mu)  =  181  (0.02262)
+          R_infty    =  35.00
+
+   SCF: 
+          thresholds
+              scf iterations           =     0
+              orbital energy           = 1.00E-10
+              orbital norm             = 1.00E- 6
+              multipole moments recalc = 1.15E+00  (mpole=4)
+
+          orbitals are relaxed
+          Coulomb potentials are relaxed
+
+          multipole expansion coefficients =  4
+
+   MT support: OpenMP
+
+   (MC)SOR:
+          SOR method used for relaxing orbitals
+          SOR method used for relaxing Coulomb potentials
+          SOR method used for relaxing exchange potentials
+
+          maximal number of Coulomb+exchange potentials per orbital =  1
+
+          micro and macro SOR iterations for orbitals   =  10  1
+          micro and macro SOR iterations for potentials =  10  1
+
+          ordering: middle
+
+          overrelaxation parameters:   orbitals       potentials 
+                                        1.917       1.973   1.973
+
+   Machine accuracy      =    2.22E-16
+
+   Constants: 
+               pi        =    3.1415926535897931E+00
+               bohr      =    5.2917721067121204E-01 angstroms
+
+
+   Memory usage:
+          text+data                                      0.9 MB 
+          bss (common block contributions)              64.7 MB
+          dynamical allocation                          13.7 MB 
+              orbitals                                   0.4 MB
+              Coulomb potentials                         0.8 MB
+              exchange potentials                        1.9 MB
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+ ... retrieving data from disk ...
+         timestamp: 2023/04/12  18:45:27.00                                                         
+           version: x2dhf-v3       
+             title: Be                                                                              
+     total energy:                 -1.4218547186334611E+01
+     total electronic energy:      -1.4218547186334611E+01
+     virial ratio:                 -1.9756759093671428E+00
+ ... skipping scf iterations ...
+ ... multipole moment expansion coefficients recalculated ...
+ ... saving data to disk ...
+
+     total energy:                 -1.4218547186334611E+01
+     total electronic energy:      -1.4218547186334611E+01
+     virial ratio:                 -1.9756759093671430E+00
+
+     nuclear attraction energy:           -33.635188495924
+     kinetic energy:                       14.573022711565
+     one-electron energy:                 -19.062165784359
+     Coulomb energy:                        7.156052617212
+     exchange energy:                      -2.312434019187
+     nuclear repulsion energy:              0.000000000000
+     exchange-correlation energy (DFT):    -2.312434019187
+
+        orbital                 energy             1-norm
+      2 sigma          -1.6596625614161598E-01    9.85E-07
+      1 sigma          -3.7506866982844089E+00   -1.14E-09
+
+
+     total energy uncertainty due to orbital norms not being equal 1:
+     absolute = +/-0.19E-05,  relative = +/-0.14E-04%
+///////////////////////////////////////////////////////////////////////////////////////////////
+ CPU summary (sec):
+    Lagrange multipliers ......................     0.00
+    normalization+orthogonalization ...........     0.00
+    multipole moments .........................     0.00
+    total energy ..............................     0.00
+    relaxation of orbitals ....................     0.00
+    relaxation of Coulomb & exchange potentials     0.00
+    relaxation of orbitals & potentials .......     0.00
+    SCF iterations ............................     0.00
+
+ System clock summary (sec):
+    relaxation of orbitals ....................     0.00
+    relaxation of Coulomb & exchange potentials     0.00
+    relaxation of orbitals & potentials .......     0.00
+///////////////////////////////////////////////////////////////////////////////////////////////
+       start:  2023/06/15  19:55:10.77                                                         
+        stop:  2023/06/15  19:55:10.84                                                         
+  start-stop:                     0.07
+
+command-line:  /home/jkob/github/x2dhf-v3/bin/xhf input be-hf output
+      system:  Linux p21 5.14.0-284.11.1.el9_2.x86_64 x86_64 x86_64 GNU/Linux
+         CPU:  Intell(R) Xeon(R) Gold 6336Y CPU @ 2.40GHz
+////////////////////////////////////////////////////////////////////////////////////////////////

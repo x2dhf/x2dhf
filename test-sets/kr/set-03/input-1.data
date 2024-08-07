@@ -1,0 +1,13 @@
+title Kr
+!! Kr : LDA starting orbitals : hf/sor : energy threshold=10^-2
+method hf
+nuclei  36.0 0.0 3.779452 
+config  0
+ 1 delta
+ 4 pi    
+ 8 sigma  end
+grid 700 60.0
+!orbpot gauss
+orbpot lda
+SCF 1000 10 2 10 3
+stop

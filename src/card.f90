@@ -3,10 +3,10 @@ module card
 
   parameter (i40=40, i80=80)
 
-  integer :: jrec,jump
+  integer (KIND=IPREC) :: jrec,jump
 
 
-  integer, dimension(i40) :: istrt,inumb
+  integer (KIND=IPREC),dimension(i40) :: istrt,inumb
   character*1, dimension(i80) :: ia
   character*80 :: header
 end module card

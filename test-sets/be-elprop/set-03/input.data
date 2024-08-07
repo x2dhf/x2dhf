@@ -1,0 +1,12 @@
+title Be F=-0.001
+!! Be initial hydrogenic orbitals, F=-0.0002 : grid 349x643/200.0
+method  hf 
+nuclei  4.0  0.0  2.386                                                         
+config  0                                                                       
+2 sigma  end                                                                    
+grid 350 200.0                                                                  
+orbpot old
+scf 1500 10 16 18 3
+fefield -0.001                                                            
+mmoments
+stop                                                                            

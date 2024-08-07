@@ -1,0 +1,17 @@
+title Be
+!! Be: change of grid (mu): 151x217/35 --> 151x150/35 
+method hf
+nuclei 4.0 0.0 2.386
+config 0
+2 sigma end
+!grid 151 35.0
+!grid 169 217 35.0   
+!grid 120 217 35.0 ! fails
+grid 151 150 35.0 ! works fine
+interp 
+!orbpot lda
+orbpot old
+scf 20 10 8 8 3
+
+omega 1.6 1.6
+stop

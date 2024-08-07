@@ -1,0 +1,14 @@
+!! Ar: HF cals with initial HF atomic orbitals : grid 349 200.0  
+title Ar  R = 3.0
+method hf
+nuclei  18.0 0.0  3.0
+config  0
+2 pi
+5 sigma end
+!grid 295 40.0
+grid 349 200.0
+orbpot hf
+scf  5000 10 12 15 3
+conv 2000
+stop
+

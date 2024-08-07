@@ -1,0 +1,14 @@
+title Be
+!! Be: converged HF orbs : DFT energy contribution for xc_lda_x functional 
+method dft
+!dft XC_LDA_X 
+dft lda
+nuclei 4.0 0.0 2.386
+config 0
+2 sigma end
+grid 169 35.0
+orbpot old
+!orbpot lda
+scf 000 10 7 14 3
+
+stop

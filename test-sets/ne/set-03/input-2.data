@@ -1,0 +1,21 @@
+title Ne 
+!! Ne+6: DFT lda : virtual orbital 3 sigma 
+method dft
+dft lda 
+nuclei  10.0  0.0  2.0
+config  5
+1 sigma +
+2 sigma   end
+grid 169 65.0
+orbpot old
+lcao
+1.0   2 1   8.0     0.0   1 0 9.0  1  0
+1.0   2 0   9.0     0.0   1 0 9.0  0  1
+1.0   1 0  10.0     0.0   1 0 9.0  0  1  
+scf 100 10 6 12 3 
+conv 2000
+fixorb 1 2 
+omega 1.85 -1.87
+lm2 
+stop
+

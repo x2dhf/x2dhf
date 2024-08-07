@@ -1,0 +1,11 @@
+title He
+!! He: HF calculations with initial HF orbital : grid 91x151/35.0
+method hf 
+nuclei  2.0 0.0  2.0 
+config 0
+ 1 sigma  end
+grid  91 35.0
+orbpot hf
+scf  6000 10 12 18 3
+conv 3000
+stop 

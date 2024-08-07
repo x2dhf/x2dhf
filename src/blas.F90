@@ -1,125 +1,77 @@
-! ***************************************************************************
-! *                                                                         *
-! *   Copyright (C) 1996 Leif Laaksonen, Dage Sundholm                      *
-! *   Copyright (C) 1996-2010 Jacek Kobus <jkob@fizyka.umk.pl>              *
-! *                                                                         *
-! *   This program is free software; you can redistribute it and/or modify  *
-! *   it under the terms of the GNU General Public License version 2 as     *
-! *   published by the Free Software Foundation.                            *
-! *                                                                         *
-! ***************************************************************************
+! SPDX-License-Identifier: GPL-2.0-or-later
+
+! Copyright (C) 1996       Leif Laaksonen, Dage Sundholm               
+! Copyright (C) 1996-2023  Jacek Kobus 
+
 ! ### blas ###
 !
 !     This is simplified replacement for BLAS routines: dcopy, daxpy, dscal,
 !     ddot, mxv. Note that ix and iy are ignored and are set to 1.
 
-module blas_m
+module blas
   implicit none
+  
 contains
-  function  dot(n,dx,ix,dy,iy)
+#if !defined(BLAS)
+  function ddot(n,dx,ix,dy,iy)
     use params
     implicit none
-    integer :: ix,iy,n
-    real (PREC) :: dot
+    integer (KIND=IPREC) :: i,ix,iy,n
+    real (PREC) :: ddot
+    real (PREC), dimension(*) :: dx,dy
+    ddot=0.0_PREC
+    do i=1,n
+       ddot=ddot+dx(i)*dy(i)
+    enddo
+  end function ddot
+
+  subroutine  dcopy(n,dx,ix,dy,iy)
+    use params
+    implicit none
+    integer (KIND=IPREC) :: i,ix,iy,n
     real (PREC), dimension(*) :: dx,dy
 
-#ifdef HAVE_BLAS
-    DOUBLE PRECISION, EXTERNAL :: ddot
-
-    dot=ddot(n,dx,ix,dy,iy)
-#else
-    integer :: i
-
-    dot=0.0_PREC
     do i=1,n
-       dot=dot+dx(i)*dy(i)
-    enddo
-#endif
-
-  end function dot
-
-
-  subroutine  copy(n,dx,ix,dy,iy)
+        dy((i-1)*iy+1)=dx((i-1)*ix+1)
+     enddo
+   end subroutine dcopy
+   
+  subroutine  daxpy(n,da,dx,ix,dy,iy)
     use params
     implicit none
-    integer :: ix,iy,n
-    real (PREC), dimension(*) :: dx,dy
-
-#ifdef HAVE_BLAS
-    call dcopy(n,dx,ix,dy,iy)
-#else
-    integer::i
-
-    do i=1,n
-       dy(i)=dx(i)
-    enddo
-#endif
-
-  end subroutine copy
-
-  subroutine  axpy(n,da,dx,ix,dy,iy)
-    use params
-    implicit none
-    integer :: ix,iy,n
+    integer (KIND=IPREC) :: i,ix,iy,n
     real (PREC) :: da
     real (PREC), dimension(*) :: dx,dy
-
-#ifdef HAVE_BLAS
-    call daxpy(n,da,dx,ix,dy,iy)
-#else
-    integer :: i
-
     do i=1,n
        dy(i)=da*dx(i)+dy(i)
     enddo
-#endif
-  end subroutine axpy
+  end subroutine daxpy
 
-  subroutine  scal(n,da,dx,ix)
+  subroutine  dscal(n,da,dx,ix)
     use params
     implicit none
-    integer :: ix,n
+    integer (KIND=IPREC) :: i,ix,n
     real (PREC) :: da
     real (PREC), dimension(*) :: dx
-
-#ifdef HAVE_BLAS
-    call dscal(n,da,dx,ix)
-#else
-    integer :: i
-
     do i=1,n
        dx(i)=da*dx(i)
     enddo
-#endif
+  end subroutine dscal
 
-  end subroutine scal
-
+  ! ### dgemv ###
+  !
   !     Multiplies the matrix DX(nr,nc) times the vector DV(nc) and stores
   !     the result in the vector DY(nr) (simplified version of DGEMV)
   !
-  subroutine gemv (nr1,nc,dx,dv,dvr)
+  subroutine dgemv (trans,nr1,nc,alpha,dx,lda,dv,incx,beta,dvr,incy)
     use params
     implicit none
-    integer :: nc, nr1
+    integer (KIND=IPREC) :: nc, nr1
     real (PREC), dimension(nr1,*) :: dx
     real (PREC), dimension(*) :: dv,dvr
-
-#ifdef HAVE_BLAS
-    character :: trans = 'n'
-    integer :: M, N
-    double precision :: alpha = 1.0, beta = 0.0
-    integer :: lda
-    integer :: incx = 1, incy = 1
-
-    ! Matrix size
-    M = nr1
-    N = nc
-    lda = M
-
-    call dgemv(trans, M, N, alpha, dx, lda, dv, incx, beta, dvr, incy)
-#else
-    integer :: inc, inr
-    real (PREC) :: s
+    character :: trans
+    real (PREC) :: alpha,beta,s
+    integer (KIND=IPREC) :: incx,incy,inc,inr,lda
 
     do inr=1,nr1
        s=0.0_PREC
@@ -128,6 +80,16 @@ contains
        enddo
        dvr(inr)=s
     enddo
+  end subroutine dgemv
 #endif
-  end subroutine gemv
-end module blas_m
+  
+  subroutine  dcopyi(n,dx,ix,dy,iy)
+    use params
+    implicit none
+    integer (KIND=IPREC) :: i,ix,iy,n
+    real (PREC), dimension(*) :: dx,dy
+    do i=1,n
+        dy((i-1)*iy+1)=-dx((i-1)*ix+1)
+     enddo
+  end subroutine dcopyi
+end module blas

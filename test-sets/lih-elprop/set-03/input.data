@@ -1,0 +1,15 @@
+title LiH F=-0.0002
+!! LiH: HF calc with F=-0.002 
+method hf
+nuclei  3.0 1.0  3.015 
+config 0
+  2 sigma  end
+grid 250  150.0  
+fefield -0.0002
+orbpot old
+lcao
+ 1.0   1 0 3.0   -1.0   1 0 1.0   
+ 1.0   1 0 3.0    1.0   1 0 1.0   
+scf 10000 10 14 16 3
+conv 2000
+stop

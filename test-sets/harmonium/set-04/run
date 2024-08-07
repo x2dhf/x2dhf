@@ -1,0 +1,12 @@
+if [[ -s reference.lst ]]
+then
+     grep -P '[123] sigma '      reference.lst | tail -3 > reference-result.log
+fi
+
+xhf input output 2>/dev/null > current.lst
+
+if [[ -s current.lst ]]
+then
+	grep -P '[123] sigma '      reference.lst | tail -3 > current-result.log
+fi
+

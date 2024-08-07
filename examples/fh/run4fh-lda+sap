@@ -1,5 +1,0 @@
-./xhf fh-lda+sap-1 fh-lda+sap-1               > fh-lda+sap-1.lst
-./xhf fh-lda+sap-2 fh-lda+sap-1 fh-lda+sap-2  > fh-lda+sap-2.lst
-./xhf fh-lda+sap-3 fh-lda+sap-2 fh-lda+sap-3  > fh-lda+sap-3.lst
-./xhf fh-lda+sap-4 fh-lda+sap-3 fh-lda+sap-4  > fh-lda+sap-4.lst
-

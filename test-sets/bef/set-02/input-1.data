@@ -1,0 +1,13 @@
+title  BeF R=1.3610A                                                            
+!! BeF: HF cals with initial HF orbitals (incomplete run): R = 2.3289 : grid 349/200.0
+method hf                                                                       
+nuclei  4.0 9.0 1.3610 angstroms                                                
+config  0                                                                       
+1 pi                                                                            
+1 sigma +                                                                       
+4 sigma  end                                                                    
+grid 451 200.0                                                                  
+orbpot hf
+scf 50 10 16 500 3
+                                                             
+stop                                                                            

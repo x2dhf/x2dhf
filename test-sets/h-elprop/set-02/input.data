@@ -1,0 +1,14 @@
+title H F=-0.001
+!! H: exact initial 1s orbital, F=-0.001 : grid 331x6001/200.0
+method hf
+nuclei  1.0 0.0  2.0
+config 0
+  1 sigma + end
+grid 343 200.0
+fefield -0.001
+orbpot old
+lcao
+ 1.0 1 0 1.0   0.0   1 0  1.0 
+scf  1000 10 15 16 3
+mmoments
+stop

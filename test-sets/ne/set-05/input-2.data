@@ -1,0 +1,15 @@
+title Ne 
+!! Ne: HF fixed GSZ orbitals : normalization threshold=10^-4 
+method HF
+nuclei  10.0  0.0  2.0
+config  0
+1 pi
+2 sigma
+1 sigma   end
+grid 169 65.0
+orbpot old
+scf 500 10 12 4 3
+conv 2000
+fixorb
+stop
+

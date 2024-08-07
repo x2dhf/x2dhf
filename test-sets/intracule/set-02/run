@@ -1,0 +1,10 @@
+if [[ -f reference.lst ]]
+then
+    grep -P -A2 'orbital\s+energy\s+1-norm' reference.lst 2>/dev/null > reference-result.log
+fi
+
+xhf input output 2>/dev/null > current.lst
+
+grep -P -A2 'orbital\s+energy\s+1-norm' current.lst 2>/dev/null > current-result.log
+
+

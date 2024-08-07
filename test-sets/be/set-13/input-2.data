@@ -1,0 +1,14 @@
+!! Be: testing "inout" label : inout i32 i32f
+title Be
+method hf
+nuclei 4.0 0.0 2.386
+config 0
+2 sigma end
+grid 169 35.0 ! 151x211/35.0
+!grid 151 211 35.0
+!orbpot lda
+orbpot old
+scf 10 10 8 8 3
+
+inout i32 i32f
+stop

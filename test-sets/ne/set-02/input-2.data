@@ -1,0 +1,22 @@
+title Ne 
+!! Ne: HF with hydrogen orbitals : energy threshold=10^-10 : mcsor (x2dhfctl -bo)
+method hf
+nuclei  10.0  0.0  2.0
+config  0
+1 pi
+2 sigma
+1 sigma   end
+!grid 169 65.
+grid 210 65.0
+orbpot old
+lcao
+1.0   2 1   6.0     0.0   1 0 9.0   
+1.0   2 1   8.0     0.0   1 0 9.0
+1.0   2 0   9.0     0.0   1 0 9.0  
+1.0   1 0  10.0     0.0   1 0 9.0   
+scf 4500 10 10 12 3
+conv 200
+!omega -1.85 -1.87
+mcsor
+stop
+

@@ -1,0 +1,9 @@
+if [[ -f reference.lst ]]
+then
+  grep -P 'total energy:\s{6}' reference.lst | tail  -4| sed '1d'|sed '2d' >> reference-result.log		
+fi
+
+[[ ! -f output-1.orb ]] && xhf input-1 output-1  2>/dev/null > current.lst
+
+xhf input-2 output-1 output-2 2>/dev/null >> current.lst
+grep -P 'total energy:\s{6}' current.lst | tail  -4| sed '1d'|sed '2d' >> current-result.log

@@ -1,0 +1,14 @@
+title He
+!! He: HF calculations with initial hydrogen-like orbitals : grid 349/200.0 : sor
+method hf 
+nuclei  2.0 0.0  2.0 
+config 0
+ 1 sigma  end
+grid 349 200.0
+!grid 445 697 200.0
+orbpot hydrogen
+lcao 
+1.0  1 0 2.0    1.0   1 0 1.0  
+scf  6000 10 12 18 3
+conv 3000
+stop 

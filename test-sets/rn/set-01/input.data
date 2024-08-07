@@ -1,0 +1,16 @@
+!! Rn: HF cals with initial HF atomic orbitals : grid 541x751/60.0 : energy threshold 10^-8
+title Rn  R = 3.0
+method hf
+nuclei  86.0 0.0 3.0
+config  0
+  1 phi                                                                           
+  4 delta                                                                         
+  9 pi                                                                            
+  15 sigma end                                                                    
+grid 545 60.0
+orbpot hf
+scf  14000 10 8 12 3
+omega 1.95 1.991                                                                
+conv 2000
+stop
+

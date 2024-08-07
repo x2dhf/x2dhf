@@ -1,0 +1,12 @@
+title C (3P)
+!! C 3P: HF cals with initial HF orbitals and converged potentials 
+method hf 
+nuclei  6.0 0.0  2.0 
+config 0
+ 1 pi + . + .
+ 2 sigma  end
+grid  190 40.0
+orbpot hf
+scf  1500 10 12 18 3
+conv 3000
+stop 

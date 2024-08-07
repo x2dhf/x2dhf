@@ -1,0 +1,18 @@
+title FH F=0.0 R = 1.7328                                                         
+!! FH: HF cals with hydrogenic initial orbitals : extended grid 451x871/200.00 for futher finite-field cals
+method hf                                                                       
+nuclei  9.0 1.0 1.7328                                                          
+config  0                                                                       
+1 pi                                                                            
+3 sigma  end                                                                    
+grid 451 200.0                                                                  
+orbpot hydrogen 0
+lcao
+1.0   2 1 7.0    0.0   2 1 5.0                                               
+1.0   2 1 7.0    0.0   2 0 8.0                                               
+1.0   2 0 8.0    0.0   1 0 9.0                                               
+1.0   1 0 9.0    0.0   1 0 9.0                                               
+scf 4000 10 15 18 3 
+conv 1500
+mmoments
+stop                                                                            

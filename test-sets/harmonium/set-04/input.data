@@ -1,0 +1,21 @@
+title Harmonium: 3 lowest sigma states
+!! Harmonium: 3 lowest sigma states
+method ted 
+pothooke 
+nuclei  2.0 0.0 2.0
+config -4
+ 1 sigma 
+ 1 sigma   
+ 1 sigma    end
+grid 169 10.0
+orbpot  hydrogen 0 
+lcao
+  1.0  3 0 1.0   1.0  3 0  1.0    
+  1.0  1 0 1.0  -1.0  1 0  1.0    
+  1.0  1 0 1.0   1.0  1 0  1.0    
+scf  3000 10 8 14  3
+conv 5000
+omega 1.8 1.8
+!order col-wise
+altsweeps
+stop

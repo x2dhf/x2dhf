@@ -1,0 +1,12 @@
+title C (1D)
+!! C 1D: HF cals with initial HF orbitals : output files from set-01 case reqired 
+method hf 
+nuclei  6.0 0.0  2.0 
+config 0
+ 1 pi + -
+ 2 sigma  end
+grid  190 40.0
+orbpot old
+scf  1500 10 12 18 3
+conv 3000
+stop 

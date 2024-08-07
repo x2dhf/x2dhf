@@ -1,0 +1,16 @@
+title LiH
+!! LiH: HF cals with initial hydrogenic orbitals : energy threshold 10^-12
+method hf
+nuclei  3.0 1.0  3.015 
+config 0
+  2 sigma  end
+grid 250  60.0
+orbpot hydrogen
+!orbpot old
+lcao
+ 1.0   1 0 3.0   -1.0   1 0 1.0   
+ 1.0   1 0 3.0    1.0   1 0 1.0   
+scf 10000 10 12 14 3
+conv 2000
+omega 1.85 1.85
+stop

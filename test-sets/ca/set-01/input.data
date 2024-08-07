@@ -1,0 +1,12 @@
+!! Ca: HF cals with initial HF atomic orbitals 
+title Ca  R = 3.0
+method hf
+nuclei  20.0 0.0 2.0
+config  0
+2 pi
+6 sigma end
+grid 295 40.0
+orbpot hf
+scf  2000 10 8 12 3
+stop
+

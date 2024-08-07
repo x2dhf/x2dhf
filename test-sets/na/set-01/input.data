@@ -1,0 +1,19 @@
+title Na 
+!! Na: HF cals with initial hydrogenic orbitals : energy threshold=10^-8 
+method hf
+nuclei  11.0  0.0  2.0
+config  0
+1 pi
+1 sigma +
+3 sigma   end
+grid 169 35.0
+orbpot hydrogen
+lcao
+1.0   2 1   6.0     0.0   1 0 9.0
+1.0   3 0   6.0     0.0   1 0 9.0
+1.0   2 1   8.0     0.0   1 0 9.0
+1.0   2 0   9.0     0.0   1 0 9.0  
+1.0   1 0  10.0     0.0   1 0 9.0   
+scf 1000 10 8 12 3
+stop
+

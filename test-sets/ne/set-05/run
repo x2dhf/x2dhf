@@ -1,0 +1,6 @@
+grep -P 'total energy:\s{6}' reference.lst | tail -1 > reference-result.log
+[[ -f output-1.orb ]] || xhf input-1 output-1 2>/dev/null > current.lst
+[[ -f output-2.orb ]] || xhf input-2 output-1 output-2 2>/dev/null >> current.lst
+[[ -f output-3.orb ]] || xhf input-3 output-2 output-3 2>/dev/null >> current.lst
+grep -P 'total energy:\s{6}' current.lst | tail -1 > current-result.log
+

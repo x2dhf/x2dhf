@@ -1,0 +1,13 @@
+!! AlF: HF cals with initial HF atomic orbitals : energy threshold = 10^-4
+title AlF  R = 3.126
+method hf
+nuclei  13.0 9.0  3.126
+config  0
+2 pi
+7 sigma end
+grid 269 40.0
+orbpot hf
+scf  2000 10 4 12 3
+conv 2000
+stop
+

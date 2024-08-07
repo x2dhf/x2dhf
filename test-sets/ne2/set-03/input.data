@@ -1,0 +1,29 @@
+title Ne-Ne  R = 3.075 A
+!! Ne-Ne: initial hydrogenic orbitals : energy threshold=10^-4 
+method hf
+nuclei  10.0 10.0 3.075 angstroms
+!break
+config  0
+  1 pi g
+  1 pi u
+  1 sigma u
+  1 sigma u
+  1 sigma u
+  1 sigma g
+  1 sigma u   
+  1 sigma g end     
+grid  200 30.0
+orbpot hydrogen
+lcao 
+  0.5   2 1  7.0    -0.5   2 1  7.0                                                
+  0.5   2 1  7.0     0.5   2 1  7.0                                                
+  0.5   2 1  8.0    -0.5   2 1  8.0                                               
+  0.5   2 0 10.0    -0.5   2 0 10.0                                               
+  0.5   1 0 10.0    -0.5   1 0 10.0    
+  0.5   2 1  8.0     0.5   2 1  8.0                                               
+  0.5   2 0 10.0     0.5   2 0 10.0                                               
+  0.5   1 0 10.0     0.5   1 0 10.0    
+scf 1000 10 4 7 3                                                                  
+omega 1.65 1.65
+!omega 1.25 1.25                                                                            
+stop                      

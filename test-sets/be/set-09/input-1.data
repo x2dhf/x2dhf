@@ -1,0 +1,12 @@
+title Be
+!! Be: change of grid (Rinf): 151x211/35 --> 151x211/45 
+method hf
+nuclei 4.0 0.0 2.386
+config 0
+2 sigma end
+grid 151 211 45.0 
+interp 
+orbpot old
+scf 20 10 8 8 3
+omega 1.6 1.6
+stop

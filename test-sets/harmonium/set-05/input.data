@@ -1,0 +1,21 @@
+title Harmonium: 3 lowest pi states
+!! Harmonium: 3 lowest pi states
+method ted 
+pothooke 
+nuclei  2.0 0.0 2.0
+config -4
+ 1 pi + - 
+ 1 pi + -
+ 1 pi + -   end
+grid 169 10.0
+orbpot  hydrogen 0 
+lcao
+  1.0  3 1 1.0   1.0  3 1  1.0    
+  1.0  2 1 1.0  -1.0  2 1  1.0    
+  1.0  2 1 1.0   1.0  2 1  1.0    
+scf  3000 10 8 14  3
+conv 5000
+omega 1.8 1.8
+!order col-wise
+altsweeps
+stop

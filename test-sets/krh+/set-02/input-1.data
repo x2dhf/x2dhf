@@ -1,0 +1,12 @@
+title KrH+
+!! KrH+ : HF starting orbitals : hf/sor : energy threshold=10^-2
+method hf
+nuclei  36.0 1.0 3.779452 
+config  1
+ 1 delta
+ 4 pi    
+ 8 sigma  end
+grid  349 60.0
+orbpot hf
+SCF 1000 10 2 10 3
+stop

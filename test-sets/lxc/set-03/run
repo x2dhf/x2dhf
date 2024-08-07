@@ -1,0 +1,37 @@
+case=$1
+
+done=$(grep -iP "^\s*$case\s+yes" done)
+
+[[ -n $done ]] && exit
+
+if [[ -f reference-$case.lst ]]
+then
+    grep -P 'total energy:\s{6}' reference-$case.lst | tail -1 > reference-$case-result.log
+fi
+
+status=$(grep -iP 'orbpot\s+old' input-$case.data)
+
+if [[ $case == 1 ]]
+then
+    xhf input-$case output-$case  >& current-$case.lst
+fi
+
+if [[ $case == 2 || $case == 3 ]]
+then
+    xhf input-$case output-1 output-2 >& current-$case.lst	
+fi
+
+if [[ $case == 4 ]]
+then
+    xhf input-$case output-$case  >& current-$case.lst
+    exit
+fi
+
+if [[ $case == 5 || $case == 6 || $case == 7 ]]
+then
+    xhf input-$case output-4 output-2 >& current-$case.lst	
+else
+    xhf input-$case output-1 output-2 >& current-$case.lst		
+fi
+
+grep -P 'total energy:\s{6}' current-$case.lst | tail -1 > current-$case-result.log		

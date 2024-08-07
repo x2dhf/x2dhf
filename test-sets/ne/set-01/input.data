@@ -1,0 +1,19 @@
+title Ne: HF with hydrogen orbitals : energy threshold=10^-10 
+!! Ne: HF with hydrogen orbitals : energy threshold=10^-10
+method hf
+nuclei  10.0  0.0  2.0
+config  0
+1 pi
+2 sigma
+1 sigma   end
+grid 169 35.0
+orbpot hydrogen
+lcao
+1.0   2 1   6.0     0.0   1 0 9.0   
+1.0   2 1   8.0     0.0   1 0 9.0
+1.0   2 0   9.0     0.0   1 0 9.0  
+1.0   1 0  10.0     0.0   1 0 9.0   
+scf 1000 10 10 12 3
+conv 2000
+stop
+

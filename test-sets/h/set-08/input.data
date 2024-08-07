@@ -1,0 +1,11 @@
+title H
+!! H: LDA initial orbital 1s orbital : 241x331/35.0 : hf/sor : normalization threshold=10^-8
+method hf
+nuclei  1.0 0.0  2.0
+config 0
+  1 sigma + end
+grid 250  35.0 
+!grid 895 40.0 
+orbpot lda
+scf  1600 10 16 8 3
+stop

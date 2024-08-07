@@ -1,0 +1,12 @@
+title Be
+!! Be: HF/DFT : LDA initial orbitals : xc_lda_x functional
+method hf
+dft XC_LDA_X 
+nuclei 4.0 0.0 2.386
+config 0
+2 sigma end
+grid 269 65.0
+orbpot lda
+scf 1000 10 2 14 3
+
+stop

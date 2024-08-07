@@ -1,0 +1,29 @@
+title Kr
+!! Kr : SCF energy for the xc_gga_c_pbe functional
+method dft
+!dft xc_lda_x 
+!dft xc_gga_x_pbe
+!dft xc_gga_x_b88
+!dft xc_lda_c_vwn
+!dft xc_lda_c_pw
+dft xc_gga_c_pbe
+!dft xc_gga_c_lyp
+!dft xc_lda_x xc_lda_c_vwn
+!dft xc_lda_x xc_lda_c_pw
+!dft xc_lda_x xc_gga_c_pbe
+!dft xc_lda_x xc_gga_c_lyp
+!dft xc_gga_x_pbe xc_lda_c_vwn
+!dft xc_gga_x_pbe xc_lda_c_pw
+!dft xc_gga_x_pbe xc_gga_c_pbe
+!dft xc_gga_x_pbe xc_gga_c_lyp
+nuclei  36.0 0.0 3.779452 
+config  0
+ 1 delta
+ 4 pi    
+ 8 sigma  end
+grid  349 150 ! 60 ! 150.0
+orbpot hf ! lda 0
+scf 13000 10 8 12 3
+conv 2000
+omega 1.85 1.85
+stop

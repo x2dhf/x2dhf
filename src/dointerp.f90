@@ -1,32 +1,23 @@
-! ***************************************************************************
-! *                                                                         *
-! *   Copyright (C) 1996       Leif Laaksonen, Dage Sundholm                *
-! *   Copyright (C) 1996-2010  Jacek Kobus <jkob@fizyka.umk.pl>             *
-! *   Copyright (C) 2018-      Susi Lehtola                                 *
-! *                                                                         *
-! *   This program is free software; you can redistribute it and/or modify  *
-! *   it under the terms of the GNU General Public License version 2 as     *
-! *   published by the Free Software Foundation.                            *
-! *                                                                         *
-! ***************************************************************************
-! ### dointerp ###
-!
-!	Performs interpolations of orbitals and potentials between grids.
-!       Orbitals and potentials are treated separately.
+! SPDX-License-Identifier: GPL-2.0-or-later
+! Copyright (C) 1996-2023  Jacek Kobus 
+! Copyright (C) 2018       Susi Lehtola
 
-module dointerp_m
-  implicit none
+module interpolate
+  use params, only : IPREC, PREC
+  integer (KIND=IPREC) :: iord,iord2,kbeg,kend
 contains
+  ! ### dointerp ###
+  !
+  !     Performs interpolations of orbitals and potentials between grids.
+  !     Orbitals and potentials are treated separately.
+  !
   subroutine dointerp (ic,nmuall_p,nmuall,fbefore,fafter)
     use params
-    use discret
-    use commons8
-    use commons16
-    use dointerp_mu_m
-    use dointerp_nu_m
+    use discrete
+    use commons
 
     implicit none
-    integer :: i,ic,im,imu,imu_bext,in,nmuall,nmuall_p
+    integer (KIND=IPREC) :: i,ic,im,imu,imu_bext,in,nmuall,nmuall_p
 
     real (PREC), dimension(nni_p,nmuall_p)    ::  fbefore
     real (PREC), dimension(nni,nmuall)        ::  fafter
@@ -39,7 +30,7 @@ contains
     logical :: muinterp, nuinterp, usemiddle
 
     ! Relative tolerance for change in bond length or rinf
-    gtol = 1e2*precis
+    gtol = 100.0_PREC*precis
 
     ! Figure out what has changed
     muchange = nmuall .ne. nmuall_p
@@ -161,7 +152,7 @@ contains
           vmuq(i)=vni_p(i)
        end do
 
-       if(usemiddle) then
+       if (usemiddle) then
           call dointerp_nu (nmuall_p,fmiddle,fafter,vmuq)
        else
           call dointerp_nu (nmuall_p,fbefore,fafter,vmuq)
@@ -180,4 +171,397 @@ contains
     end if
 
   end subroutine dointerp
-end module dointerp_m
+
+  ! ### dointerp_mu ###
+  !
+  !     Performs interpolations of functions in mu variable.
+  !
+  subroutine dointerp_mu (nnit,nmuall_p,nmuall,fbefore,fafter,vmuq)
+    use params
+    use discrete
+    use commons
+
+    implicit none
+    integer (KIND=IPREC) :: i,idebug1,idebug2,idebug3,imu,imu_p,k, ini,&
+         nmu_first,nmu_last,nnit,nmuall_p,nmuall
+    real (PREC) :: rerror
+
+    real (PREC16) xmu
+    real (PREC16), dimension(kend) :: coeffq
+    real (PREC16), dimension(kend,kend) :: coeffq2
+    real (PREC), dimension(nnit,nmuall_p) :: fbefore
+    real (PREC), dimension(nnit,nmuall) :: fafter
+    real (PREC16), dimension(maxmu) :: vmuq
+    rerror=2
+    idebug1=0
+    idebug2=0
+    idebug3=0
+
+    do imu=1,nmuall
+       xmu=vmu(imu)
+       do imu_p=1,nmuall_p-1
+          if(vmu_p(imu_p).ge.xmu) exit
+       end do
+
+       ! Handle case at beginning or end of array
+       if(imu_p .lt. iord2+1) then
+          imu_p=iord2+1
+       end if
+       if(imu_p .gt. nmuall_p-iord2) then
+          imu_p=nmuall_p-iord2
+       end if
+
+       do k=1,kend
+          call lpcoeffq(imu_p,k,coeffq,vmuq)
+          do i=1,kend
+             coeffq2(i,k)=coeffq(i)
+          enddo
+       enddo
+
+       do ini=1,nnit
+          fafter(ini,imu)=0.0_PREC
+          do k=1,kend
+             fafter(ini,imu)=fafter(ini,imu)+fbefore(ini,imu_p-iord2-1+k)*vpoly1q(xmu,coeffq2(1,k))
+          enddo
+          if (idebug3.eq.1) then
+             if (abs(fafter(ini,imu)-fbefore(ini,imu_p-iord2+1)).gt. &
+                  abs(fbefore(ini,imu_p-iord2+1))*rerror) then
+                write(*,*) 'inside'
+                write(*,'(2i5,e15.3,4x,5e15.3,2i5)') ini,imu,fafter(ini,imu), &
+                     (fbefore(ini,imu_p-iord2-1+k),k=1,kend),nmu_first,nmu_last
+             endif
+          endif
+       enddo
+    enddo
+  end subroutine dointerp_mu
+
+  ! ### dointerp_nu ###
+  !
+  !     Performs interpolations of functions in ni variable.
+  !
+  subroutine dointerp_nu (nmuall,fbefore,fafter,vmuq)
+    use params
+    use discrete
+    use commons
+
+    implicit none
+    integer (KIND=IPREC) :: i,imu,ini,ini_p,k,nmuall
+
+    real (PREC), dimension(nni_p,nmuall) :: fbefore
+    real (PREC), dimension(nni,nmuall) :: fafter
+    real (PREC16) xni
+    real (PREC16), dimension(kend) :: coeffq
+    real (PREC16), dimension(kend,kend) :: coeffq2
+    real (PREC16), dimension(maxmu) ::  vmuq
+
+    do ini=1,nni
+       xni=vni(ini)
+       do ini_p=1,nni_p-1
+          if(vni_p(ini_p).ge.xni) exit
+       enddo
+
+       ! Handle case at beginning or end of array
+       if(ini_p .lt. iord2+1) then
+          ini_p=iord2+1
+       end if
+       if(ini_p .gt. nni_p-iord2) then
+          ini_p=nni_p-iord2
+       end if
+
+       do k=1,kend
+          call lpcoeffq(ini_p,k,coeffq,vmuq)
+          do i=1,kend
+             coeffq2(i,k)=coeffq(i)
+          enddo
+       enddo
+
+       do imu=1,nmuall
+          fafter(ini,imu)=0.0_PREC
+          do k=1,kend
+             fafter(ini,imu)=fafter(ini,imu)+fbefore(ini_p-iord2-1+k,imu)*vpoly1q(xni,coeffq2(1,k))
+          enddo
+       enddo
+    enddo
+  end subroutine dointerp_nu
+
+  ! ### lpcoeff ###
+  !
+  !     This routine calculates coefficients of the (sub)Lagrange
+  !     polynomial for a grid point k
+  !     \prod_{i=1,i\ne k}^{9} {(r-r_{i}) \over (r_{k}-r_{i})}
+  !
+  !     r_{k}= r(istart+k), k=1,...,iord
+  !
+  subroutine lpcoeff(iord,istart,k,r,coeff)
+    use params
+
+    implicit none
+    integer (KIND=IPREC) :: i,ic1,ic2,iord,istart,j,k
+    real (PREC) :: c1,denom
+    real (PREC), dimension(12) :: a,b
+    real (PREC), dimension(9) :: coeff
+    real (PREC), dimension(*) :: r
+
+    ! calculate denominator product
+    denom=1.0_PREC
+    do i=1,iord
+       if (i.ne.k) denom=denom*(r(istart+k)-r(istart+i))
+    enddo
+
+    do i=1,12
+       a(i)=0.0_PREC
+       b(i)=0.0_PREC
+    enddo
+
+    ! calculate nominator product:
+    ! a(1)+a(2)*r+a(3)*r^2+...+a(9)*r^8
+    ! storing coefficients in a and b
+    a(1)=1.0_PREC
+
+    ! multiply polynomial a by (r+c1), c1=-r(istart+i)
+    ic2=1
+    do i=1,iord
+       if (i.ne.k) then
+          ic2=ic2+1
+          c1=-r(istart+i)
+          b(1)=a(1)*c1
+          do ic1=2,ic2
+             b(ic1)=a(ic1)*c1+a(ic1-1)
+          enddo
+          b(ic2+1)=a(ic2)
+          do j=1,ic2+1
+             a(j)=b(j)
+          enddo
+       endif
+    enddo
+
+    do i=1,iord
+       coeff(i)=a(i)/denom
+    enddo
+
+  end subroutine lpcoeff
+
+  !  ### lpcoeffq ###
+  !
+  !      This routine calculates coefficients of the (sub)Lagrange
+  !      polynomial for a grid point k
+  !      \prod_{i=1,i\ne k}^{9} {(x-x_{i}) \over (x_{k}-x_{i})}
+  !
+  !      x_{k}= vmu(mup-5+k), k=1,...,9
+  !
+  subroutine lpcoeffq (mup,k,coeffq,vmuq)
+    use params
+    implicit none
+    integer (KIND=IPREC) :: i,ib,ic1,ic2,j,k,mup
+    real (PREC16) :: c1,denom
+    real (PREC16), dimension(9) :: coeffq
+    real (PREC16), dimension(12) :: a,b
+    real (PREC16), dimension(maxmu) :: vmuq
+
+    ! calculate denominator product
+    denom=1.0_PREC16
+    ib=mup-(iord/2+1)
+    do i=kbeg,kend
+       if (i.ne.k) denom=denom*(vmuq(ib+k)-vmuq(ib+i))
+    enddo
+
+    do i=1,12
+       a(i)=0.0_PREC16
+       b(i)=0.0_PREC16
+    enddo
+
+    ! calculate nominator product:
+    ! a(1)+a(2)*x+a(3)*x^2+...+a(9)*x^8
+    ! storing coefficients in a and b
+
+    ! if (k.ne.kbeg) then
+    ! a(1)=-vmuq(ib+kbeg)
+    ! else
+    ! a(1)=-vmuq(ib+kbeg+1)
+    ! endif
+    ! a(2)=1.0_PREC
+    a(1)=1.0_PREC16
+
+    ! multiply polynomial a by (x+c1), c1=-vmuq(ib+i)
+    ic2=1
+    do i=kbeg,kend
+       if (i.ne.k) then
+          ic2=ic2+1
+          c1=-vmuq(ib+i)
+          b(1)=a(1)*c1
+          do ic1=2,ic2
+             b(ic1)=a(ic1)*c1+a(ic1-1)
+          enddo
+          b(ic2+1)=a(ic2)
+          do j=1,ic2+1
+             a(j)=b(j)
+          enddo
+       endif
+    enddo
+    !
+    do i=1,iord
+       coeffq(i)=a(i)/denom
+    enddo
+
+  end subroutine lpcoeffq
+  ! ### vpoly1q ###
+  !
+  !     This function uses the Horner scheme to calculate value of the polynomial
+  !     stored in array a at a particular point
+  !
+  function vpoly1q (x,a)
+    use params
+    implicit none
+    integer (KIND=IPREC) :: i
+    real (PREC16) :: vpoly1q
+    real (PREC16) :: x
+    real (PREC16), dimension(kend) :: a
+
+    vpoly1q=0.0_PREC
+    do i=iord,2,-1
+       vpoly1q=(vpoly1q+a(i))*x
+    enddo
+    vpoly1q=vpoly1q+a(1)
+    return
+  end function vpoly1q
+
+  ! ### vpolyq ###
+  !
+  !     This function uses the Horner scheme to calculate value of the polynomial
+  !     stored in array a at a particular point
+  !
+  function vpolyq (mup,a,vmuq)
+    use params
+
+    implicit none
+    integer (KIND=IPREC) :: i,mup
+    real (PREC16) :: vpolyq
+    real (PREC16) :: x
+    real (PREC16), dimension(kend) :: a
+    real (PREC16), dimension(maxmu) :: vmuq
+
+    x=vmuq(mup)
+    vpolyq=0.0_PREC16
+    do i=iord,2,-1
+       vpolyq=(vpolyq+a(i))*x
+    enddo
+    vpolyq=vpolyq+a(1)
+
+  end function vpolyq
+
+  ! ### lpderq ###
+  !
+  !     This routine calculates coefficients of the first and second
+  !     derivative of the polynomial stored in a
+  !
+  subroutine lpderq (a,a1,a2)
+
+    use params
+    use commons
+
+    implicit none
+
+    integer (KIND=IPREC) :: i
+    real (PREC16), dimension(9) :: a,a1,a2
+
+    do i=1,iord-1
+       a1(i)=a(i+1)*dble(i)
+    enddo
+    a1(iord)=0.0_PREC16
+
+    do i=1,iord-2
+       a2(i)=a1(i+1)*dble(i)
+    enddo
+    a2(iord-1)=0.0_PREC16
+    a2(iord)  =0.0_PREC16
+
+  end subroutine lpderq
+
+
+  ! ### flp ###
+
+  !     It is assumed that function f(r) is tabulated at grid points r_i,
+  !     i=1,...,n which are stored in array r and the corresponding values
+  !     f_i are in array f.
+  
+  !     The function fr0 uses the Lagrange polynomial of a given order to
+  !     calculate f(r0). The interpolation employs grid points adjacent to
+  !     r0.
+  
+  !   iord - number of grid point used for interpolation
+  !     n  - dimension of arrys r and f
+  !     r  - array of abscissas
+  !     f  - array of corresponding values of a given function f
+  !     r0 - an abscissa for which f(r0) is calculated via 8th-order
+  !          Lagrange polynomial
+
+  function flp(iorder,n,r,f,r0)
+    use params
+    implicit none
+    integer (KIND=IPREC) :: i,iorder,istart,k,n,nearest
+    real (PREC) :: flp
+    real (PREC) :: r0
+    real (PREC), dimension(9) :: coeff
+    real (PREC), dimension(9,9) :: coeff2
+    real (PREC), dimension(n) :: r,f
+
+    ! iorder value for 2th order (3-point) Lagrange polynomial
+    ! parameter (iorder=3)
+
+    ! iorder value for 8th order (9-point) Lagrange polynomial
+    ! parameter (iorder=9)
+
+    ! find the smallest element of arry r that is greater than
+    ! r0. Whenever possible [iorder/2] points to its left and right are
+    ! used to construct the interpolation polynomial (the start and the
+    ! end of r array are taken care of)
+    do nearest=1,n
+       if (r(nearest).gt.r0) exit
+    enddo
+
+    ! calculate coefficients of iorder Lagrange polynomials (begining with
+    ! istart+1) and store them in coeff2
+    istart=nearest-(iorder/2+1)
+    if (istart.lt.1) istart=0
+    if (istart+iorder.gt.n) istart=n-iorder
+    do k=1,iorder
+       call lpcoeff(iorder,istart,k,r,coeff)
+       do i=1,iorder
+          coeff2(i,k)=coeff(i)
+       enddo
+    enddo
+
+    ! evaluate the value of the Lagrange interpolation polynomial at r0
+    flp=0.0_PREC
+    do k=1,iorder
+       flp=flp+f(istart+k)*vlpcoeff(iorder,r0,coeff2(1,k))
+    enddo
+    return
+  end function flp
+
+  ! ### vlpcoeff ###
+  !
+  !     This function uses the Horner scheme to calculate the value of a
+  !     polynomial defined by coefficients stored in array coeff at a
+  !     point r0
+  !
+  !     vlpcoeff(r0)=coeff(1)+coeff(2)*r0+...+coeff(iorder)*r0**(iorder-1)
+  !
+  function vlpcoeff (iorder,r0,coeff)
+    use params
+    
+    implicit none
+    integer (KIND=IPREC) :: i,iorder
+    real (PREC) :: vlpcoeff
+    real (PREC) :: r0
+    real (PREC), dimension(*) ::coeff
+
+    vlpcoeff=0.0_PREC
+    do i=iorder,2,-1
+       vlpcoeff=(vlpcoeff+coeff(i))*r0
+    enddo
+    vlpcoeff=vlpcoeff+coeff(1)
+
+  end function vlpcoeff
+
+end module interpolate

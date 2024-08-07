@@ -1,0 +1,15 @@
+title  BeF R=1.3610A                                                            
+!! BeF: HF cals cont'ed with F=-0.0001 (incomplete run) 
+method hf                                                                       
+nuclei  9.0 4.0 1.3610 angstroms                                                
+config  0                                                                       
+1 pi                                                                            
+1 sigma +                                                                       
+4 sigma  end                                                                    
+grid 451 200.0                                                                  
+orbpot old
+scf 50 10 16 500 3
+                                                             
+fefield -0.0001                                                                
+!omega 1.96 -1.92                                                                           
+stop                                                                            

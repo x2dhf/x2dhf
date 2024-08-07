@@ -1,0 +1,13 @@
+title Zn
+!! Zn : cont'ed with relaxation of orbitals and potentials : hf/sor : energy threshold=10^-8
+method hf
+nuclei  30.0 0.0 2.0
+config  0
+ 1 delta
+ 3 pi    
+ 7 sigma  end
+grid  349 60.0
+orbpot old
+SCF 5000 10 8 12 3
+conv 2000
+stop

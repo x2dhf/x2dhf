@@ -1,0 +1,16 @@
+title Be
+!! Be: generating HF orbitals on extended grid (initial hydrogenic orbitals)
+method hf
+nuclei 4.0 0.0 2.386
+config 0
+2 sigma end
+grid 151 100.0 
+orbpot hydrogen
+lcao
+ 1.0   2 0 4.0     0.0   1 0 9.0 
+ 1.0   1 0 4.0     0.0   1 0 9.0  
+scf 100 10 6 18 3
+stop
+
+
+

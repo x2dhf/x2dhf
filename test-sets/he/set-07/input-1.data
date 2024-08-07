@@ -1,0 +1,11 @@
+title He
+!! He:  SCF energy for the LDA_X functional 
+method dft
+dft xc_lda_x 
+nuclei  2.0 0.0  2.0 
+config 0
+ 1 sigma  end
+grid  191 65.0
+orbpot hf
+scf  3000 10 12 18 3
+stop 

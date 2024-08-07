@@ -1,0 +1,27 @@
+title He
+!! He: SCF energy for the xc_gga_x_pbe xc_gga_c_lyp functionals
+method dft
+!dft xc_lda_x
+!dft xc_gga_x_pbe
+!dft xc_gga_x_b88
+!dft xc_lda_c_vwn
+!dft xc_lda_c_pw
+!dft xc_gga_c_pbe
+!dft xc_gga_c_lyp
+!dft xc_lda_x xc_lda_c_vwn
+!dft xc_lda_x xc_lda_c_pw
+!dft xc_lda_x xc_gga_c_pbe
+!dft xc_lda_x xc_gga_c_lyp
+!dft xc_gga_x_pbe xc_lda_c_vwn
+!dft xc_gga_x_pbe xc_lda_c_pw
+!dft xc_gga_x_pbe xc_gga_c_pbe
+dft xc_gga_x_pbe xc_gga_c_lyp
+nuclei  2.0 0.0  2.0 
+config 0
+ 1 sigma  end
+grid  191 65.0
+orbpot hf
+scf  3000 10 12 18 3
+conv 3000
+omega 1.65
+stop 

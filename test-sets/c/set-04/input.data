@@ -1,0 +1,14 @@
+title C
+!! C 3P: generating Coulomb and exchange potentials for the fixed initial HF orbitals 
+method hf 
+nuclei  6.0 0.0  2.0 
+config 0
+ 1 pi + . + .
+ 2 sigma  end
+grid  190 40.0
+orbpot hf
+scf  1500 10 6 18 3
+conv 3000
+!omega 1.8
+fixorb
+stop 

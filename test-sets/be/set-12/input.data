@@ -1,0 +1,12 @@
+title Be
+!! Be: continue HF calcs starting from converged orbs & pots : energy threshold 10^-10 : mcsor
+method hf
+nuclei 4.0 0.0 2.386
+config 0
+2 sigma end
+grid 151 181 35.0
+!orbpot lda
+orbpot old
+scf 1000 10 10 12 3
+mcsor 
+stop

@@ -1,0 +1,110 @@
+STOP rheader
+///////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////  FINITE DIFFERENCE 2D HARTREE-FOCK  ////////////////////////////// 
+////////////////////////////             version 3.0             ////////////////////////////// 
+///////////////////////////////////////////////////////////////////////////////////////////////
+ ... start of input data ...
+  title Ne                                                                        
+  method dft                                                                      
+  dft xc_lda_c_pw                                                                 
+  nuclei  10.0  0.0  2.0                                                          
+  config  0                                                                       
+  1 pi                                                                            
+  2 sigma                                                                         
+  1 sigma   end                                                                   
+  grid 410 200.0                                                                  
+  orbpot old                                                                      
+  scf 4500 10 12 14 3                                                             
+  conv 2000                                                                       
+  stop                                                                            
+ ... end of input data  ...
+         
+
+   Atomic/molecular system: 
+
+          Ne( 10.00)      (  0.00)   R =  2.00000 bohr = 1.05835 angstroms
+
+
+      Libxc version = 6.0.0
+               name = lda_c_pw
+               kind = XC_CORRELATION
+             family = LDA
+              nspin = XC_UNPOLARIZED
+       reference(s) = [1] J. P. Perdew and Y. Wang.,  Phys. Rev. B 45, 13244 (1992)
+
+
+   Electronic configuration:
+
+           1  pi         + - + - 
+           3  sigma      + - 
+           2  sigma      + - 
+           1  sigma      + - 
+
+
+          total charge            =  0
+          number of
+              electrons           = 10
+              orbitals            =  4
+              Coulomb potentials  =  4
+              exchange potentials =  0
+
+   Grid:
+          nu (h_nu)  =  391  (0.00806)
+          mu (h_mu)  =  721  (0.00832)
+          R_infty    = 200.00
+
+   SCF: 
+          thresholds
+              scf iterations           =  4500
+              orbital energy           = 1.00E-12
+              orbital norm             = 1.00E-14
+              multipole moments recalc = 1.15E+00
+
+          orbitals are relaxed
+          Coulomb potentials are relaxed
+
+          multipole expansion coefficients =  4
+
+   MT support: OpenMP
+
+   (MC)SOR:
+          SOR method used for relaxing orbitals
+          SOR method used for relaxing Coulomb potentials
+          SOR method used for relaxing exchange potentials
+
+          maximal number of Coulomb+exchange potentials per orbital =  5
+
+          micro and macro SOR iterations for orbitals   =  10  1
+          micro and macro SOR iterations for potentials =  10  1
+
+          ordering: middle
+
+          overrelaxation parameters:   orbitals       potentials 
+                                        1.955       1.988   1.988
+
+   Machine accuracy      =    2.22E-16
+
+   Constants: 
+               pi        =    3.1415926535897931E+00
+               bohr      =    5.2917721067121204E-01 angstroms
+
+
+   Memory usage:
+          text+data                                      0.9 MB 
+          bss (common block contributions)              64.7 MB
+          dynamical allocation                         170.7 MB 
+              orbitals                                   8.6 MB
+              Coulomb potentials                        12.9 MB
+              exchange potentials                       45.9 MB
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+ ... retrieving data from disk ...
+         timestamp: 2023/04/24  15:45:26.96                                                         
+           version: x2dhf-v3       
+             title: Ne                                                                              
+ mismatch in nni: 
+ input=         391  file=         181
+command-line:  /home/jkob/tmp/tests/x2dhf-v3/bin/xhf input-5 output-4 output-2
+      system:  Linux s7-0.fizyka.umk.pl 3.10.0-1160.81.1.el7.x86_64 x86_64 x86_64 GNU/Linux
+         CPU:  Intell(R) Xeon(R) CPU E5-2630 v3 @ 2.40GHz
+////////////////////////////////////////////////////////////////////////////////////////////////

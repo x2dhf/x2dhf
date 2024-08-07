@@ -1,0 +1,14 @@
+!! Al 2P: HF calcs with initial LDA orbitals : grid 241x331/40 : energy threshold 10^-12
+title Al 2S R = 2.0
+method hf
+nuclei  13.0 0.0  2.0
+config  0
+ 1 pi +
+ 1 pi
+ 4 sigma  end
+grid  269 40.0
+orbpot lda 
+scf 5500 10 12 14 3
+
+conv 1500
+STOP

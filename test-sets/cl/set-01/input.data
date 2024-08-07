@@ -1,0 +1,13 @@
+!! Cl 2P: HF calcs starting from atomic HF orbitals : energy threshold 10^-10
+title Cl 2P R = 2.0
+method hf
+nuclei  17.0 0.0  2.0
+config  0
+ 1 pi + - +
+ 1 pi
+ 5 sigma  end
+grid  250 40.0
+orbpot hf
+scf 5500 10 10 12 3
+conv 1500
+STOP

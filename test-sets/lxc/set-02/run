@@ -1,0 +1,16 @@
+case=$1
+
+if [[ -f reference-$case.lst ]]
+then
+    grep -P 'total energy:\s{6}' reference-$case.lst | tail -1 > reference-$case-result.log
+fi
+if [[ $case == 1 ]]
+then
+    xhf input-$case output-$case  2>/dev/null > current-$case.lst
+elif [[ $case == 6 ]]
+then
+    xhf input-$case output-1 output-$case  2>/dev/null > current-$case.lst
+else
+    xhf input-$case output-1 output-$case  2>/dev/null > current-$case.lst	
+fi
+grep -P 'total energy:\s{6}' current-$case.lst | tail -1 > current-$case-result.log		

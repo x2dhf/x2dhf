@@ -1,0 +1,14 @@
+title Zn
+!! Zn : XC_GGA_X_B88 exchange energy with HF density  
+method dft
+dft XC_GGA_X_B88
+nuclei  30.0 0.0 2.0
+config  0
+ 1 delta
+ 3 pi    
+ 7 sigma  end
+grid  349 60.0
+orbpot old
+SCF 0 10 8 12 3
+conv 2000
+stop

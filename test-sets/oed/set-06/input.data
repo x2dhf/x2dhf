@@ -1,0 +1,15 @@
+title OED+potcoul3 (m=0 a=0.0 V=1.0)
+!! H: OED+potcoul3 : 1 sigma orbital (m=0) in the (smoothed, a=0.0) Coulomb potential (Z=1.0)
+method oed
+nuclei  1.0 0.0  0.01 
+potcoul3 0 0.0 1.0
+config 0
+  1 sigma + end
+grid 269 60.0
+orbpot hydrogen
+lcao
+ 1.0 1 0 1.1 0.0 1 0 1.0
+scf  5000 10 12 10 3
+stop
+
+

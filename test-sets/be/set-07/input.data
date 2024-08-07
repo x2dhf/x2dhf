@@ -1,0 +1,13 @@
+title Be
+!! Be: cont'ed from converged HF functions : change of grid : 151x211/35.0 --> 241x331/45.0
+method hf
+nuclei 4.0 0.0 2.386
+config 0
+2 sigma end
+!grid 169 35.0
+grid 269 45.0
+interp 
+!orbpot lda
+orbpot old
+scf 20 10 8 6 3
+stop

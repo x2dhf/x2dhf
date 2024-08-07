@@ -1,0 +1,21 @@
+title CO F=-0.0001
+!! CO: HF cals with F=-0.0001 : grid  355x667/200.0 
+method hf
+nuclei  6.0 8.0  2.132
+config 0
+   1 pi 
+   5 sigma  end
+grid  355 200.0
+fefield -0.0001
+orbpot old ! hydrogen 0
+lcao
+ 0.5   2 1  4.0   0.5   2 1    5.0 
+ 0.5   2 1  4.0   0.5   2 1    5.0 
+ 0.0   2 1  5.0   1.0   2 0    6.0 
+ 0.5   2 0  5.0   0.5   2 0    6.0 
+ 0.0   2 0  6.0   1.0   1 0    8.0 
+ 1.0   1 0  6.0   0.0   1 0    0.0 
+scf 5000 10 15 18 3
+conv 5000
+stop
+

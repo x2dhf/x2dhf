@@ -1,0 +1,13 @@
+title Zn
+!! Zn : LDA starting orbitals : hf/sor : energy threshold=10^-2
+method hf
+nuclei  30.0 0.0 2.0
+config  0
+ 1 delta
+ 3 pi    
+ 7 sigma  end
+grid  349 60.0
+!orbpot gauss
+orbpot lda
+SCF 1000 10 2 10 3
+stop

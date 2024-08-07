@@ -1,0 +1,14 @@
+title Be
+!! Be: HF/DFT : HF initial orbitals : XC_GGA_X_B88 functional : energy threshold=10^-10
+method  dft
+!dft b88 
+dft XC_GGA_X_B88
+nuclei  4.0  0.0  2.386  
+config  0
+        2 sigma  end
+grid 169 35.0
+orbpot old
+scf 1000 10 10 12 3
+
+stop
+

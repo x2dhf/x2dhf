@@ -1,0 +1,21 @@
+!! Al 2S: HF calcs starting from hydrogenic orbitals : energy threshold 10^-10
+title Al 2S R = 2.0
+method hf
+nuclei  13.0 0.0  2.0
+config  0
+ 1 pi
+ 1 sigma +
+ 4 sigma  end
+grid  169 40.0
+orbpot hydrogen
+lcao
+ 1.0   2 1 10.0     0.0   2 1 5.0   
+ 1.0   3 1 10.0    -0.0   2 0 9.0   
+ 1.0   3 0 10.0    -0.0   2 0 9.0   
+ 1.0   2 1 10.0     0.0   2 0 9.0   
+ 1.0   2 0 11.0     0.0   1 0 9.0   
+ 1.0   1 0 12.0    -0.0   1 0 9.0   
+scf 5500 10 10 12 3
+
+conv 1500
+STOP

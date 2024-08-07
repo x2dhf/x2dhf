@@ -1,0 +1,15 @@
+title He F=+0.0
+!! He initial hydrogenic orbitals, F=+0.0 : grid 349x643/200.0
+method hf
+nuclei  2.0 0.0  2.0  ! 3.015  !2.673 angstrom
+config 0
+ 1 sigma  end
+grid 349 200.0
+!fefield -0.0001
+orbpot hf ! hydrogen 0
+lcao
+  1.0   1 0 2.0    0.0   1 0 1.0   0
+scf  6000 10 16 18 3
+conv 2000
+mmoments
+stop

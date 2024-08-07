@@ -1,0 +1,13 @@
+title Kr
+!! Kr : XC_GGA_X_B88 exchange energy with HF density  :  : 
+method dft
+dft xc_gga_x_b88
+nuclei  36.0 0.0 3.779452 
+config  0
+ 1 delta
+ 4 pi    
+ 8 sigma  end
+grid  349 60.0
+orbpot old
+SCF 0 10 8 12 3
+stop

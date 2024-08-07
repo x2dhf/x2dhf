@@ -1,0 +1,13 @@
+title He F=+0.001
+!! He cals with F=+0.001 : grid 349x643/200.0
+method hf
+nuclei  2.0 0.0   2.0  ! 3.015  !2.673 angstrom
+config 0
+ 1 sigma  end
+grid 349 200.0
+fefield +0.001
+orbpot old
+scf  6000 10 16 18 3
+conv 2000
+mmoments
+stop

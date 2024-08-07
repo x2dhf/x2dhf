@@ -1,0 +1,21 @@
+title Ne 
+!! Ne: OED + a model potential due to Green, Sellin and Zachor : energy threshold=10^-8 
+method oed
+nuclei  10.0  0.0  2.0
+config  0
+1 pi
+2 sigma
+1 sigma   end
+grid 169 65.0
+potgsz
+orbpot hydrogen
+lcao
+1.0   2 1   6.0     0.0   1 0 9.0   
+1.0   2 1   8.0     0.0   1 0 9.0
+1.0   2 0   9.0     0.0   1 0 9.0  
+1.0   1 0  10.0     0.0   1 0 9.0   
+scf 4500 10 8 12 3
+conv 2000
+!omega -1.85 -1.87
+stop
+

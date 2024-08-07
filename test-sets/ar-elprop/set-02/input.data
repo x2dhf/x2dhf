@@ -1,0 +1,15 @@
+!! Ar: HF cals with F=-0.001
+title Ar  R = 3.0
+method hf
+nuclei  18.0 0.0  3.0
+config  0
+2 pi
+5 sigma end
+!grid 295 40.0
+grid 349 200.0
+fefield -0.001
+orbpot old
+scf  5000 10 13 15 3
+conv 5000
+stop
+
