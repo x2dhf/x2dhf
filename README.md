@@ -3,28 +3,33 @@ Two-Dimensional Finite Difference Hartree-Fock program for diatomic molecules (v
 
                                                                             
 This program finds virtually exact solutions of the Hartree-Fock and density
-functional theory equations for diatomic molecules and atoms (the quality of a
-solution depends on grid size and arithmetic precision used). The lowest energy
+functional theory equations for diatomic molecules and atoms. The quality of a
+solution depends on grid size and arithmetic precision used. The lowest energy
 eigenstates of a given irreducible representation and spin can be obtained. The DFT
 support is facilitated via the libxc library (see `-l|L` options of the `./x2dhfctl`
-script). `lxcctl` script is provided to help test the support of the `x2dhf` program
+script). The `lxcctl` script is provided to help test the support of the `x2dhf` program
 for the libxc functionals.
 
-The program can also used to obtain the ground and excited states of one-electron
-systems with the (smoothed) Coulomb and Kramers-Hennenberger potentials.
+The program can also used to obtain the ground and excited states of
+one-electron systems with the (smoothed) Coulomb, Green-Sellin-Zachor,
+or Kramers-Hennenberger potentials, as well the superposition of
+atomic potentials.
 
-Single particle two-dimensional numerical functions (orbitals) are used to construct
-an anti-symmetric many-electron wave function of the restricted open-shell
-Hartree-Fock model. The orbitals are obtained by solving the Hartree-Fock equations
-in the form of the coupled two-dimensional second-order (elliptic) partial
-differential equations (PDE). The Coulomb and exchange potentials are obtained as
-solutions of the corresponding Poisson equations. The PDEs are discretized by the
-8th-order central difference stencil on a two-dimensional grid. The resulting large
-and sparse system of linear equations is solved by the (multi-colour) successive
-overrelaxation method ((MC)SOR). The self-consistent-field iterations are interwoven
-with the (MC)SOR ones and orbital energies and normalisation factors are used to
-monitor the convergence. The accuracy of solutions depends mainly on the grid-size and the
-system under consideration.
+Single particle two-dimensional numerical functions (orbitals) are
+used to construct an anti-symmetric many-electron wave function of the
+restricted open-shell Hartree-Fock model. The orbitals are obtained by
+solving the Hartree-Fock equations in the form of the coupled
+two-dimensional second-order (elliptic) partial differential equations
+(PDE). The Coulomb and exchange potentials are obtained as solutions
+of the corresponding Poisson equations. The PDEs are discretized by
+the 8th-order central difference stencil on a two-dimensional grid,
+while a Newton-Cotes quadrature rule is used to evalaute
+integrals. The resulting large and sparse system of linear equations
+is solved by the (multi-colour) successive overrelaxation method
+((MC)SOR). The self-consistent-field iterations are interwoven with
+the (MC)SOR ones and orbital energies and normalisation factors are
+used to monitor the convergence. The accuracy of solutions depends
+mainly on the grid-size and the system under consideration.
 
 See the following articles for the detailed description of the program and examples
 of its usage and accuracy:
