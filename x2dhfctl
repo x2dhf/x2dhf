@@ -77,13 +77,6 @@ log=$PWD/log/$(basename $0).log
 rm -f $log >& /dev/null
 
 LIBXCVERSION=6.2.2
-
-fortranVersion=$(gfortran --version | head -1 | gawk '{print $4}' | cut -d. -f1)
-
-(( $fortranVersion <= 4 )) && optLevel=2
-
-export CMVERSION=3.14.0
-#export CMVERSION=3.26.3
 export VERBOSE=off
 
 . .x2dhfrc
@@ -116,7 +109,10 @@ ${bold}DESCRIPTION${normal}
        This script employs the buildsystem generator CMake to facilitate the
        building of various versions of the x2dhf program. The gfortran or
        ifort compilers can be used. A multi-threaded versions of the program
-       can be build if the OpenMP or pthread support is available.
+       can be build if the OpenMP or pthread support is available. 
+
+       In case CMake can't find a Fortran compiler use the FC variable 
+       to set the path.
 
        The DFT support is facilitated via the libxc library. The lxcctl
        script is provided to help test the support of the x2dhf program for
@@ -549,6 +545,15 @@ then
     LDOPT4="-lxc "
     FFLAGS="$FFLAGS -DLIBXC"
 fi
+
+# In case CMake cannot find gfortran set the full path below
+#FC=/usr/local/bin/gfortran
+
+fortranVersion=$(gfortran --version | head -1 | gawk '{print $4}' | cut -d. -f1)
+(( $fortranVersion <= 4 )) && optLevel=2
+
+export CMVERSION=3.14.0
+#export CMVERSION=3.26.3
 
 export SRC1 SRC2
 export FC FFLAGS
