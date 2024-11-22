@@ -3367,8 +3367,10 @@ contains
 ! print=170: gec-a  gec-b  div
     if (iprint(170).ne.0) then
        write(6,1101)
-01101  format(3x,'orb1    ',6x,'orb2       gec-a  gec-b  div')
+01101  format(3x,'orb1    ',6x,'orb2         gec-a  gec-b  div'/&
+              3x,'------- ',6x,'-------      -----  -----  -----')      
     endif
+
 #endif
     
     isu2=norb*norb
@@ -3425,8 +3427,8 @@ contains
              gec(kk+isu2)=zero
           endif
 #ifdef PRINT
-! print=172: gec(kk),gec(kk+isu2),div(i)
-          if (iprint(172).ne.0) then
+! print=170: gec(kk),gec(kk+isu2),div(i)
+          if (iprint(170).ne.0) then
              write(6,1102)  iorn(i),bond(i),gusym(i),iorn(idiv),bond(idiv),gusym(idiv),gec(kk),gec(kk+isu2),div(i)
 01102        format(i4,1x,a8,a1,i4,1x,a8,a1,3f7.3)
           endif
