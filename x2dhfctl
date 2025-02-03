@@ -109,7 +109,7 @@ ${bold}DESCRIPTION${normal}
        This script employs the buildsystem generator CMake to facilitate the
        building of various versions of the x2dhf program. The gfortran or
        ifort compilers can be used. A multi-threaded versions of the program
-       can be build if the OpenMP or pthread support is available. 
+       can be build if the OpenMP or pthread support is available (e.g.                                                            macOS/Darwin does not implement pthread barriers).       
 
        In case CMake can't find a Fortran compiler use the FC variable 
        to set the path.
@@ -154,7 +154,8 @@ ${bold}USAGE EXAMPLES${normal}
            multi-threaded versions of the coulExchSOR and MCSOR routines. The
            executable x2dhf is copied as x2dhf and x2dhf-pthread to bin/
            directory (tested on systems supporting the Native POSIX Threads
-           Library; the glibc releases 2.17 and 2.35).
+           Library; the glibc releases 2.17 and 2.35). This option is not
+           available on macOS/Darwin.  
 
        x2dhfctl -b -l -o|p
            Clears $BUILD/ directory and builds afresh the x2dhf program with
@@ -393,8 +394,14 @@ shift $((OPTIND-1))
 
 compiler=${1:-gfortran}
 
-maxcpus=$(lscpu |grep 'CPU(s)' |head -1 | gawk '{print $2}')
-#maxcpus=$((maxcpus-4))
+if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+    maxcpu=$(lscpu | grep -E '^CPU\(s\):' | awk '{print $2}')
+elif [[ "$OSTYPE" == "darwin"* ]]; then
+    maxcpu=$(sysctl -n hw.ncpu)
+else
+    echo "Unsupported OS"
+    exit 1
+fi
 
 [[ -d tests ]] || mkdir tests
 [[ -d log ]] || mkdir log
@@ -449,6 +456,10 @@ then
 
     if [[ -n $pthread ]]
     then
+	if [[ "$OSTYPE" == "darwin"* ]]; then
+	    echo "Option -p is not available on macOS/Darwin."  
+	    exit
+	fi
 	FFLAGS="$FFLAGS -DPTHREAD $TRACE"
 	LDOPT1="-lpthread "
     fi

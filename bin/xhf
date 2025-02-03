@@ -196,7 +196,7 @@ ${bold}AUTHOR${normal}
 
 ${bold}COPYRIGHT${normal}
        SPDX-License-Identifier: GPL-2.0-or-later
-       Copyright © 1996-2024 Jacek Kobus
+       Copyright © 1996-2023 Jacek Kobus
 EOF
 }
 
@@ -740,57 +740,61 @@ fi
 
 #/bin/nice -n 19 ./$sepBinary < $system.data
 
-if [[ -z $gprof ]]
+if [[ "$OSTYPE" == "linux-gnu"* ]]
 then
-    if [[ $schedPolicy == batch ]]
+    if [[ -z $gprof ]]
     then
-	chrt -b 0 ./$sepBinary < $system.data
-    elif [[ $schedPolicy == idle ]]
-    then
-	chrt -i 0 ./$sepBinary < $system.data
-    elif [[ $schedPolicy == normal ]]
-    then
-	 chrt -o 0 ./$sepBinary < $system.data
+	if [[ $schedPolicy == batch ]]
+	then
+	    chrt -b 0 ./$sepBinary < $system.data
+	elif [[ $schedPolicy == idle ]]
+	then
+	    chrt -i 0 ./$sepBinary < $system.data
+	elif [[ $schedPolicy == normal ]]
+	then
+	    chrt -o 0 ./$sepBinary < $system.data
+	else
+	    echo "Error: unknown scheduling policy ... quiting ..."
+	    exit 1
+	fi
+	
+	#strace  ./$sepBinary < $system.data
+	#  ./$sepBinary < $system.data  
     else
-	echo "Error: unknown scheduling policy ... quiting ..."
-	exit 1
+	chrt -o 0 gprof ./$sepBinary < $system.data  
     fi
-	 
-    #strace  ./$sepBinary < $system.data
-    #  ./$sepBinary < $system.data  
-else
-    chrt -o 0 gprof ./$sepBinary < $system.data  
-fi
 
-machine=$(cat /proc/cpuinfo | grep 'model name'| gawk -F: '{print $2}' |
-	      sed s/\ Inte/Intel/|head -1 | sed -r  's/^\ //' )
+    machine=$(cat /proc/cpuinfo | grep 'model name'| gawk -F: '{print $2}' |
+		  sed s/\ Inte/Intel/|head -1 | sed -r  's/^\ //' )
 
-nCPU=$(lscpu | grep -iP '^CPU:\s+\d+|^CPU\(s\):\s+\d+' | cut -d: -f2 | sed -s 's/ //g')
-
-libgomp=$(ldd $binary | grep omp.so)
-
-if [[ -z $libgomp ]] 
-then
-cat <<EOF
+    nCPU=$(lscpu | grep -iP '^CPU:\s+\d+|^CPU\(s\):\s+\d+' | cut -d: -f2 | sed -s 's/ //g')
+    
+    libgomp=$(ldd $binary | grep omp.so)
+    
+    if [[ -z $libgomp ]] 
+    then
+	cat <<EOF
 command-line:  $prog
       system:  $(uname -nsrpio)
          CPU:  $machine / CPU(s)=$nCPU
 ////////////////////////////////////////////////////////////////////////////////////////////////
 EOF
 
-else
+    else
+	[[ -z $OMP_THREAD_LIMIT ]] && OMP_THREAD_LIMIT=$nCPU
 
-[[ -z $OMP_THREAD_LIMIT ]] && OMP_THREAD_LIMIT=$nCPU
-
-ompThreadLimit="/ OMP_THREAD_LIMIT=$OMP_THREAD_LIMIT"
+	ompThreadLimit="/ OMP_THREAD_LIMIT=$OMP_THREAD_LIMIT"
     
-cat <<EOF
+	cat <<EOF
 command-line:  $prog
       system:  $(uname -nsrpio)
          CPU:  $machine / CPU(s)=$nCPU $ompThreadLimit
 ////////////////////////////////////////////////////////////////////////////////////////////////
 EOF
-    
+	
+    fi
+else
+    ./$sepBinary < $system.data    
 fi
 
 if [[ $3 == '' ]]; then

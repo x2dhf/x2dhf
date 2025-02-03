@@ -11,11 +11,13 @@ set(CMAKE_Fortran_SOURCE_FILE_EXTENSIONS f90 F90)
 #add_compile_options($ENV{FCOPT1} $ENV{FCOPT2} $ENV{FCOPT3} $ENV{FCOPT4} $ENV{FCOPT5} $ENV{FCOPT6})
 #add_compile_options($ENV{FCOPT7} $ENV{FCOPT8} $ENV{FCOPT9} $ENV{FCOPT10} $ENV{FCOPT11} $ENV{FCOPT12})
 
-link_libraries("$ENV{LDOPT1}$ENV{LDOPT2}$ENV{LDOPT3}$ENV{LDOPT4}-Wl,--start-group \
-$ENV{LIB1} \
-$ENV{LIB2} \
-$ENV{LIB3} \
--Wl,--end-group")
+#link_libraries("$ENV{LDOPT1}$ENV{LDOPT2}$ENV{LDOPT3}$ENV{LDOPT4}-Wl,--start-group \
+#$ENV{LIB1} \
+#$ENV{LIB2} \
+#$ENV{LIB3} \
+#3-Wl,--end-group")
+
+link_libraries("$ENV{LDOPT1}$ENV{LDOPT2}$ENV{LDOPT3}$ENV{LDOPT4}$ENV{LIB1}$ENV{LIB2}$ENV{LIB3}")
 
 include (${CMAKE_CURRENT_SOURCE_DIR}/$ENV{SETTXT})
 
