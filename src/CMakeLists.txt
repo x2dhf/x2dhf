@@ -1,5 +1,6 @@
 set(X2DHF_F_SOURCES
   dgamit.F
+  blas.F90
   card.f90
   checkOrbSym.f90
   coulombExchangePotentials.f90
@@ -10,7 +11,6 @@ set(X2DHF_F_SOURCES
   dointerp.f90
   elocc.f90
   exchContribs.f90
-  libxc_funcs.f90
   memory.f90
   nabla.f90
   orbAsympt.f90
@@ -20,7 +20,6 @@ set(X2DHF_F_SOURCES
   solver.f90
   sort.f90
   utils.f90
-  blas.F90
   commons.F90
   detect.F90
   dftexc.F90
@@ -36,7 +35,6 @@ set(X2DHF_F_SOURCES
   inputInterface.F90
   integrals.F90
   lagrangeMultipliers.F90
-  libxc_master_f90.F90
   machine.F90
   normOrtho.F90
   prepGauss.F90
@@ -53,6 +51,13 @@ set(X2DHF_F_SOURCES
   totalEnergyLXC.F90
   x2dhf.F90
 )
+
+# Add libxc files to list
+if(LIBXC_ENABLED)
+  set(X2DHF_F_SOURCES ${X2DHF_F_SOURCES}
+  libxc_funcs.f90
+  libxc_master_f90.F90)
+endif()
 
 set(X2DHF_PTHREADS_SOURCES
   c/sorpt.c
@@ -80,9 +85,21 @@ else()
   set(X2DHF_SOURCES ${X2DHF_F_SOURCES})
 endif()
 
+if(BLAS_FOUND)
+  add_compile_definitions(-DBLAS)
+else()
+  message("BLAS NOT FOUND")
+endif()
+
 # Main program
 add_executable(x2dhf ${X2DHF_SOURCES})
-target_link_libraries(x2dhf -lxc)
+if(Libxc_FOUND)
+  include_directories(${LIBXC_INCLUDE_DIR})
+  target_link_libraries(x2dhf ${LIBXC_LIBRARY})
+endif()
+if(BLAS)
+  target_link_libraries(x2dhf ${BLAS_LIBRARIES})
+endif()
 
 # Install
 install (TARGETS x2dhf DESTINATION bin)
