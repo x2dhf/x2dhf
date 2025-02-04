@@ -54,19 +54,28 @@ set(X2DHF_F_SOURCES
   x2dhf.F90
 )
 
-set(X2DHF_C_SOURCES
-  c/coulExch_pthread.c
-  c/coulExch_tpool.c
+set(X2DHF_PTHREADS_SOURCES
+  c/sorpt.c
   c/mcsor_pthread.c
-  c/mcsor_single_colour_pthread.c
-  c/mcsor_single_colour_tpool.c
-  c/mcsor_tpool.c
+  c/coulExch_pthread.c
   c/relax_single_pot_pthread.c
+  c/mcsor_single_colour_pthread.c
+)
+
+set(X2DHF_TPOOL_SOURCES
+  c/sorpt.c
+  c/mcsor_tpool.c
+  c/coulExch_tpool.c
   c/relax_single_pot_tpool.c
-  c/sorpt.c)
+  c/mcsor_single_colour_tpool.c
+)
 
 if(ENABLE_PTHREADS)
-  set(X2DHF_SOURCES ${X2DHF_F_SOURCES} ${X2DHF_C_SOURCES})
+  if(USE_PTHREAD)
+    set(X2DHF_SOURCES ${X2DHF_F_SOURCES} ${X2DHF_PTHREADS_SOURCES})
+  else()
+    set(X2DHF_SOURCES ${X2DHF_F_SOURCES} ${X2DHF_TPOOL_SOURCES})
+  endif()
 else()
   set(X2DHF_SOURCES ${X2DHF_F_SOURCES})
 endif()
