@@ -1,4 +1,5 @@
 set(X2DHF_SOURCES
+  dgamit.F
   card.f90
   checkOrbSym.f90
   coulombExchangePotentials.f90
