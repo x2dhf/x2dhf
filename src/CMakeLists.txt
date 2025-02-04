@@ -1,4 +1,4 @@
-set(X2DHF_SOURCES
+set(X2DHF_F_SOURCES
   dgamit.F
   card.f90
   checkOrbSym.f90
@@ -54,17 +54,21 @@ set(X2DHF_SOURCES
   x2dhf.F90
 )
 
-if(USE_PTHREADS)
-  set(X2DHF_SOURCES ${X2DHF_SOURCES}
-    c/coulExch_pthread.c
-    c/coulExch_tpool.c
-    c/mcsor_pthread.c
-    c/mcsor_single_colour_pthread.c
-    c/mcsor_single_colour_tpool.c
-    c/mcsor_tpool.c
-    c/relax_single_pot_pthread.c
-    c/relax_single_pot_tpool.c
-    c/sorpt.c)
+set(X2DHF_C_SOURCES
+  c/coulExch_pthread.c
+  c/coulExch_tpool.c
+  c/mcsor_pthread.c
+  c/mcsor_single_colour_pthread.c
+  c/mcsor_single_colour_tpool.c
+  c/mcsor_tpool.c
+  c/relax_single_pot_pthread.c
+  c/relax_single_pot_tpool.c
+  c/sorpt.c)
+
+if(ENABLE_PTHREADS)
+  set(X2DHF_SOURCES ${X2DHF_F_SOURCES} ${X2DHF_C_SOURCES})
+else()
+  set(X2DHF_SOURCES ${X2DHF_F_SOURCES})
 endif()
 
 # Main program
