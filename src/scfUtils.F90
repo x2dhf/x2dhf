@@ -622,7 +622,7 @@ contains
     use scfshr
     use utils
 
-#ifdef OPENMP    
+#ifdef _OPENMP
     use omp_lib
 #endif
     
@@ -641,7 +641,7 @@ contains
 
     real (PREC), dimension(:), pointer :: psi,f4,wgt2
     
-#ifdef OPENMP
+#ifdef _OPENMP
     real (PREC), dimension(:), allocatable :: wk1,wk2
 #else
     real (PREC), dimension(:), pointer :: wk1,wk2
@@ -665,7 +665,7 @@ contains
     allocate (d7(nni,mxnmu))
     allocate (d8(nni,mxnmu))    
     
-#ifdef OPENMP
+#ifdef _OPENMP
     allocate (wk1(mxsize8))
     allocate (wk2(mxsize8))
     maxThreads=OMP_get_max_threads()
@@ -679,11 +679,11 @@ contains
     !$OMP& PRIVATE(i,ibeg1,ibeg2,idel,iorb1,iorb2,ipc,istart,istop,j,mu,&
     !$OMP&         nthread,ni,xrr,xw,dome,d1,d2,d3,d4,d5,d6,d7,d8,wk1,wk2)
     
-#ifdef OPENMP
+#ifdef _OPENMP
 
     nthread=OMP_get_thread_num()
     nthread=nthread+1
-    !print *,"OPENMP-1",nexchmm,maxThreads,nthread
+    !print *,"_OPENMP-1",nexchmm,maxThreads,nthread
     if (nexchmm<=maxThreads) then
        istart=nthread
        istop=nthread
@@ -700,7 +700,7 @@ contains
        if (i>nexchmm) exit
        
        ! if (i>nexchmm) then
-       !    print *,"OPENMP3-",nexchmm,nthread,istart,istop,i
+       !    print *,"_OPENMP3-",nexchmm,nthread,istart,istop,i
        !    exit
        ! endif
 #else
@@ -711,7 +711,7 @@ contains
        iorb2=iorb2mm(i)    
        ipc=ipcmm(i)
 
-       !print *,"OPENMP2-",nthread,i,ipc
+       !print *,"_OPENMP2-",nthread,i,ipc
        
        ibeg1=i1b (iorb1)
        ibeg2=i1b (iorb2)
@@ -830,7 +830,7 @@ contains
        endif
 #endif
 
-#ifdef OPENMP
+#ifdef _OPENMP
     enddo
 9999 continue    
     deallocate (wk1)
