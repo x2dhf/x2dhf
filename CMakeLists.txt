@@ -17,6 +17,17 @@ if(USE_OPENMP)
 endif()
 if(USE_PTHREADS)
   enable_language(C)
+
+  # Test if pthreads is available on the platform
+  set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
+  try_compile(PTHREADS_WORK
+    SOURCES ${CMAKE_SOURCE_DIR}/src/c/mcsor_single_colour_pthread.c)
+  if(PTHREADS_WORK)
+    set(ENABLE_PTHREADS 1)
+    message("Pthreads support enabled")
+  else()
+    message(FATAL_ERROR "Pthreads support not available on your platform")
+  endif()
 endif()
 
 # Compiler specific flags
