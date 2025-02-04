@@ -1,10 +1,10 @@
 # CMake project file for x2dhf
 cmake_minimum_required (VERSION 3.5)
 project (x2dhf Fortran)
-
 # Include CMake macros
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
+### Input options
 # Optional support for pthreads
 option(USE_PTHREAD "Enable pthreads pool option" OFF)
 option(USE_TPOOL   "Enable pthreads pool option" OFF)
@@ -13,7 +13,16 @@ option(USE_OPENMP "Include support for OpenMP" ON)
 # Support for Libxc
 option(USE_LIBXC "Include support for Libxc" OFF)
 # Support for BLAS
-option(USE_BLAS "Use external blas library" OFF)
+option(USE_BLAS "Use external blas library" ON)
+
+### Parse the options
+# Check for conflicting options
+if((${USE_OPENMP} AND ${USE_TPOOL}) OR (${USE_OPENMP} AND ${USE_PTHREAD}))
+  message(FATAL_ERROR "OpenMP and pthreads support is mutually exclusive")
+endif()
+if(${USE_TPOOL} AND ${USE_PTHREAD})
+  message(FATAL_ERROR "tpool and pthreads support is mutually exclusive")
+endif()
 
 # Detect OpenMP
 if(USE_OPENMP)
