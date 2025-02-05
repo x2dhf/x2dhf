@@ -34,7 +34,7 @@ printCase.F90
 printUtils.f90
 relaxOrbs.F90
 relaxPots.F90
-sapPotential.F90 
+sapPotential.f90 
 scfshr.f90
 scfUtils.F90
 sharedMemory.F90

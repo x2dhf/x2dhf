@@ -101,7 +101,7 @@ ${bold}SYNOPSIS${normal}
        x2dhfctl help|-h|--help
 
        x2dhfctl [-a] [-b] [-g] [-i 8] [-l|L] [-o|p|q|s] [-r 16] [f95|gfortran]
-       x2dhfctl [-a] [-b] [-g] [-i 8] [-l|L] [-m] [-r 16] ifort
+       x2dhfctl [-a] [-b] [-g] [-i 8] [-l|L] [-M] [-r 16] ifort
        x2dhfctl log|showlog
        x2dhfctl bz2
 
@@ -442,9 +442,9 @@ then
 
     if [[ -z $debug ]]
     then 
-	FFLAGS="$FFLAGS -O$optLevel $summary $wall -ffree-line-length-none -fmax-array-constructor=90000 "
+	FFLAGS="$FFLAGS -O$optLevel $summary $wall -ffree-line-length-none "
     else
-	FFLAGS="$FFLAGS -O0 -fbacktrace -fcheck=bounds -g -pg $wall -ffree-line-length-none -fmax-array-constructor=90000"
+	FFLAGS="$FFLAGS -O0 -fbacktrace -fcheck=bounds -g -pg $wall -ffree-line-length-none "
     fi
     
     if [[ -n $openmp ]]
@@ -515,31 +515,16 @@ then
 	LDOPT2="-lblas "
     fi
 
-    
-    #[[ -n $MKL ]] && FFLAGS="$FFLAGS -DMKL"
-
-    if [[ $host == tor7 || $host == polon7 ]]
+    if [[ $host == gateway ]]
     then
-	IFORTDIR=/opt/intel/
-	IFORTVERSION=11.0.074
-	MKLVERSION=10.1.0.015
-	source $IFORTDIR/fc/$IFORTVERSION/bin/ifortvars.sh intel64
-	FC=$IFORTDIR/fc/$IFORTVERSION/bin/intel64/ifort
-
-	[[ -n $openmp ]] && LIB1=$IFORTDIR/fc/$IFORTVERSION/lib/intel64/libiomp5.a
-	[[ -n $MKL ]] && LIB1=$IFORTDIR/mkl/$MKLVERSION/lib/em64t/libiomp5.a
+	IFORTDIR=/opt/intel/oneapi/
+	IFORTVER=$IFORTDIR/compiler/2023.0.0
+	source $IFORTVER/env/vars.sh
+	FC=$IFORTVER/linux/bin/intel64/ifort
+        [[ -n $openmp ]] && LDOPT1="-qopenmp"
+        [[ -n $openmp && -n $MKL ]] && LIB1=$IFORTVER/mkl/2023.0.0/lib/intel64/libmkl_blacs_openmpi_lp64.a
     fi
 
-    if [[ $host == "tc06" ]]; then
-        [[ -n $openmp ]] && FCOPT6="-qopenmp"
-        export IFORTVERSION=2017.2.050
-        MKLVERSION=10.1.0.015
-        export MKLROOT=/home/opt/intel/$IFORTVERSION/compilers_and_libraries/linux/mkl/
-        module add intel/$IFORTVERSION mkl/$IFORTVERSION
-        FC=/home/opt/intel/$IFORTVERSION/bin/ifort
-        [[ -n $openmp && -z $MKL ]] && LDOPT1="-qopenmp "
-        [[ -n $openmp && -n $MKL ]] && LIB1=/opt/intel/mkl/$MKLVERSION/lib/em64t/libiomp5.a
-    fi
 fi
 
 if [[ -n $lxc ]]
