@@ -41,7 +41,7 @@ set(X2DHF_F_SOURCES
   printCase.F90
   relaxOrbs.F90
   relaxPots.F90
-  sapPotential.F90
+  sapPotential.f90
   scfUtils.F90
   sharedMemory.F90
   sormcsor.F90
