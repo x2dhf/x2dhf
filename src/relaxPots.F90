@@ -17,7 +17,7 @@ contains
     use solver
     use utils
 
-#ifdef OPENMP    
+#ifdef _OPENMP
     use omp_lib
 #endif
     implicit none
@@ -26,7 +26,7 @@ contains
     integer (KIND=IPREC),dimension(:), pointer :: cw_sor
     real (PREC), dimension(:), pointer :: psi,excp,bpot,d,e,f3,g
     
-#ifdef OPENMP
+#ifdef _OPENMP
     real (PREC), dimension(:), allocatable :: lhs,rhs,wk2
 #else
     real (PREC), dimension(:), pointer :: lhs,rhs,wk2
@@ -51,13 +51,13 @@ contains
     maxsor2=maxsorpot(2)
     
     !$OMP PARALLEL NUM_THREADS(nexchpots(iorb)) DEFAULT(SHARED) PRIVATE(nexchpot,isym,i,ib1,ib2,in1,in2,ibexp,idel,itr1,lhs,rhs,wk2)
-#ifdef OPENMP
+#ifdef _OPENMP
     i=OMP_get_thread_num()
     nexchpot=i+1
 #else
     do nexchpot=1,nexchpots(iorb)
 #endif
-#ifdef OPENMP
+#ifdef _OPENMP
        allocate(lhs(mxsize))
        allocate(rhs(mxsize))
        allocate(wk2(mxsize8))
@@ -103,7 +103,7 @@ contains
           call putout (nni,mxnmu,excp(ibexp:),wk2)
        enddo
        
-#ifdef OPENMP
+#ifdef _OPENMP
        deallocate(lhs)
        deallocate(rhs)
        deallocate(wk2)
@@ -200,14 +200,14 @@ contains
     use solver
     use commons
     use sharedMemory
-#ifdef OPENMP
+#ifdef _OPENMP
     use sormcsor
 # else
     use sormcsor
 #endif
     use inout
     use utils
-#ifdef OPENMP
+#ifdef _OPENMP
     use omp_lib
 #endif
 
@@ -218,7 +218,7 @@ contains
     integer (KIND=IPREC),dimension(:), pointer :: cw_sor
     real (PREC), dimension(:), pointer :: psi,excp,bpot,d,e,f3,g
 
-#ifdef OPENMP
+#ifdef _OPENMP
     real (PREC), dimension(:), allocatable :: lhs,rhs,wk2
 #else
     real (PREC), dimension(:), pointer :: lhs,rhs,wk2
@@ -244,14 +244,14 @@ contains
     ! call omp_set_num_threads(nexchpots(iorb))
 
     !$OMP PARALLEL NUM_THREADS(nexchpots(iorb)) DEFAULT(SHARED) PRIVATE(nexchpot,isym,i,ib1,ib2,in1,in2,ibexp,idel,itr1,lhs,rhs,wk2)
-#ifdef OPENMP
+#ifdef _OPENMP
     i=OMP_get_thread_num()
     nexchpot=i+1
 #else
     do nexchpot=1,nexchpots(iorb)
 #endif
 
-#ifdef OPENMP
+#ifdef _OPENMP
        allocate(lhs(mxsize))
        allocate(rhs(mxsize))
        allocate(wk2(mxsize8))
@@ -296,7 +296,7 @@ contains
           !wk2=0
           
           call putin (nni,mxnmu,isym,excp(ibexp:),wk2)
-#ifdef OPENMP
+#ifdef _OPENMP
           call mcsor (isym,wk2,lhs,rhs,bpot,d,       &
                cw_sor(iadext(1):),cw_sor(iadnor(1):),&
                cw_sor(iadex1(1):),cw_sor(iadex2(1):),&
@@ -310,7 +310,7 @@ contains
           call putout (nni,mxnmu,excp(ibexp:),wk2)
        enddo
 
-#ifdef OPENMP
+#ifdef _OPENMP
        deallocate(lhs)
        deallocate(rhs)
        deallocate(wk2)

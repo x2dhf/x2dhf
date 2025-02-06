@@ -961,7 +961,7 @@ contains
        if (.not.lfixexch) then
           ! mcsor-ce label present
           if (lpotmcsor) then
-#ifdef OPENMP
+#ifdef _OPENMP
              ! MCSOR can be used by the performance varies
              call coulExchMCSOR (iorb)
 #elif ( defined PTHREAD || defined TPOOL )
@@ -972,7 +972,7 @@ contains
              call coulExchMCSOR (iorb)
 #endif             
           else
-#ifdef OPENMP
+#ifdef _OPENMP
              ! every exchange potential is relaxed in separated thread via OpenMP
              call coulExchSOR (iorb)
 #elif ( defined PTHREAD || defined TPOOL )

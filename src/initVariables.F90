@@ -143,7 +143,7 @@ contains
     ! the following number of threads for MCSOR (mcsor-o and mcsor-ce);
     ! multi-threaded version of coulExchSOR used. 2.8 speedup in relaxation of
     ! orbitals and potentials.
-#ifdef OPENMP
+#ifdef _OPENMP
     openmp=.true.
     nthreads= 8
 #else

@@ -144,7 +144,7 @@ contains
     use params
     use discrete
     use solver
-#ifdef OPENMP
+#ifdef _OPENMP
     use omp_lib
 #endif 
     implicit none
