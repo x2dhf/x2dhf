@@ -97,7 +97,7 @@ if(Libxc_FOUND)
   include_directories(${LIBXC_INCLUDE_DIR})
   target_link_libraries(x2dhf ${LIBXC_LIBRARY})
 endif()
-if(BLAS)
+if(BLAS_FOUND)
   target_link_libraries(x2dhf ${BLAS_LIBRARIES})
 endif()
 
