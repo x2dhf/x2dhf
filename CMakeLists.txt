@@ -42,6 +42,8 @@ if(USE_PTHREADS OR USE_TPOOL)
   if(NOT ENABLE_PTHREADS)
     message(FATAL_ERROR "Pthreads support not available on your platform")
   endif()
+  # Restore try compile target
+  set(CMAKE_TRY_COMPILE_TARGET_TYPE EXECUTABLE)
 endif()
 
 # Detect Libxc
