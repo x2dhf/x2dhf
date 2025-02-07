@@ -48,7 +48,7 @@ endif()
 
 # Detect Libxc
 if(USE_LIBXC)
-  find_package(libxc REQUIRED)
+  find_package(LIBXC REQUIRED)
   if(NOT ${LIBXC_FOUND})
     message(FATAL_ERROR "Did not find Libxc")
   else()
