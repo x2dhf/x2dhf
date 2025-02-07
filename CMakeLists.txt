@@ -11,7 +11,7 @@ option(USE_TPOOL   "Enable pthreads pool option" OFF)
 # Support for OpenMP
 option(USE_OPENMP "Include support for OpenMP" ON)
 # Support for Libxc
-option(USE_LIBXC "Include support for Libxc" OFF)
+option(USE_LIBXC "Include support for Libxc (use environment variable LIBXC_DIR to guide detection)" OFF)
 # Support for BLAS
 option(USE_BLAS "Use external blas library" ON)
 
@@ -48,8 +48,12 @@ endif()
 
 # Detect Libxc
 if(USE_LIBXC)
-  find_package(Libxc REQUIRED)
-  message("Libxc found ${LIBXC_FOUND}: ${LIBXC_LIBRARY}")
+  find_package(libxc REQUIRED)
+  if(NOT ${LIBXC_FOUND})
+    message(FATAL_ERROR "Did not find Libxc")
+  else()
+    message("Libxc include directory ${LIBXC_INCLUDE_DIRS}")
+  endif()
 endif()
 
 # Detect BLAS
