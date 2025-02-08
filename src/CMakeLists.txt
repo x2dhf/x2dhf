@@ -50,8 +50,6 @@ set(X2DHF_F_SOURCES
   totalEnergy.F90
   totalEnergyLXC.F90
   x2dhf.F90
-  $ENV{SRC1}
-  $ENV{SRC2}
 )
 
 # Add libxc files to list
@@ -97,8 +95,6 @@ else()
   message("BLAS NOT FOUND")
 endif()
 
-
-
 # Main program
 add_executable(x2dhf ${X2DHF_SOURCES})
 if(LIBXC_FOUND)
@@ -109,6 +105,4 @@ if(BLAS_FOUND)
 endif()
 
 # Install
-install (TARGETS x2dhf )
-
-
+install (TARGETS x2dhf DESTINATION bin)

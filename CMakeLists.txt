@@ -4,18 +4,16 @@ project (x2dhf Fortran)
 # Include CMake macros
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
-include(CMakePrintHelpers)
-cmake_print_variables(CMAKE_Fortran_FLAGS)
 ### Input options
 # Optional support for pthreads
 option(USE_PTHREAD "Enable pthreads pool option" OFF)
 option(USE_TPOOL   "Enable pthreads pool option" OFF)
 # Support for OpenMP
-option(USE_OPENMP "Include support for OpenMP" OFF)
+option(USE_OPENMP "Include support for OpenMP" ON)
 # Support for Libxc
 option(USE_LIBXC "Include support for Libxc (use environment variable LIBXC_DIR to guide detection)" OFF)
 # Support for BLAS
-option(USE_BLAS "Use external blas library" OFF)
+option(USE_BLAS "Use external blas library" ON)
 
 ### Parse the options
 # Check for conflicting options
@@ -61,14 +59,8 @@ endif()
 # Detect BLAS
 if(USE_BLAS)
   find_package(BLAS REQUIRED)
-#else()
-#  set(BLAS_FOUND 0)
-endif()
-
-# Compiler specific flags
-if(CMAKE_Fortran_COMPILER_ID MATCHES GNU)
-  #set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -fmax-array-constructor=90000")
-  set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS}")
+else()
+  set(BLAS_FOUND 0)
 endif()
 
 # Set the default build type if one was not specified
@@ -81,10 +73,5 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
     "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
 endif()
 
-set(CMAKE_Fortran_FLAGS "$ENV{FFLAGS}")
-#cmake_print_variables(CMAKE_C_FLAGS)
-
-set(CMAKE_INSTALL_PREFIX "$ENV{CMAKE_INSTALL_PREFIX}")
-#cmake_print_variables(CMAKE_INSTALL_PREFIX)
 # Recurse into src
 add_subdirectory(src)
