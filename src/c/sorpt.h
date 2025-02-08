@@ -4,9 +4,8 @@
 #ifndef PTHREADADD
 #define PTHREADADD 
 
-// maxorb must be equal to maxorb parameter (see params.f90)
-// x2dhfctl make sure that this is the case
-#define maxorb 36
+#include ../maxorb.h
+
 #define max_threads4pots 45
 #define max_threads4mcsor 16
 
@@ -61,39 +60,39 @@ struct sor_t {
 
 
 struct commonBlock_1_t {
-    int ins1[2*maxorb][maxorb];
+    int ins1[2*MAXORB][MAXORB];
 };
 extern struct commonBlock_1_t c_interface_1_;
 
 struct commonBlock_2_t {
-    int ins2[2*maxorb][maxorb];
+    int ins2[2*MAXORB][MAXORB];
 };
 extern struct commonBlock_2_t c_interface_2_;
 
 struct commonBlock_3_t {
-    int ibexcpc[2*maxorb][maxorb];
+    int ibexcpc[2*MAXORB][MAXORB];
 };
 extern struct commonBlock_3_t c_interface_3_;
 
 struct commonBlock_4_t {
-    int deltam4potc[2*maxorb][maxorb];
+    int deltam4potc[2*MAXORB][MAXORB];
 };
 extern struct commonBlock_4_t c_interface_4_;
 
 extern struct commonBlock_5_t c_interface_5_;
 
 struct commonBlock_6_t {
-    int isymsc[2*maxorb][maxorb];
+    int isymsc[2*MAXORB][MAXORB];
 };
 extern struct commonBlock_6_t c_interface_6_;
 
 struct commonBlock_7_t {
-    int i1bc[maxorb];
+    int i1bc[MAXORB];
 };
 extern struct commonBlock_7_t c_interface_7_;
 
 struct commonBlock_8_t {
-  int nexchpotsc[maxorb];
+  int nexchpotsc[MAXORB];
   int maxpotsc; 
 };
 extern struct commonBlock_8_t c_interface_8_;
