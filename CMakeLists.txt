@@ -9,11 +9,11 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 option(USE_PTHREAD "Enable pthreads pool option" OFF)
 option(USE_TPOOL   "Enable pthreads pool option" OFF)
 # Support for OpenMP
-option(USE_OPENMP "Include support for OpenMP" ON)
+option(USE_OPENMP "Include support for OpenMP" OFF)
 # Support for Libxc
 option(USE_LIBXC "Include support for Libxc (use environment variable LIBXC_DIR to guide detection)" OFF)
 # Support for BLAS
-option(USE_BLAS "Use external blas library" ON)
+option(USE_BLAS "Use external blas library" OFF)
 
 ### Parse the options
 # Check for conflicting options
@@ -65,9 +65,11 @@ endif()
 
 # Set the default build type if one was not specified
 if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
-  message(STATUS "Setting build type to 'RelWithDebInfo' as none was specified.")
-  set(CMAKE_BUILD_TYPE "RelWithDebInfo" CACHE
-      STRING "Choose the type of build." FORCE)
+#  message(STATUS "Setting build type to 'RelWithDebInfo' as none was
+#  specified.")
+  message(STATUS "Setting build type to 'Release' as none was specified.")
+  #  set(CMAKE_BUILD_TYPE "RelWithDebInfo" CACHE
+  set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Choose the type of build." FORCE)
   # Set the possible values of build type for cmake-gui
   set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS
     "Debug" "Release" "MinSizeRel" "RelWithDebInfo")

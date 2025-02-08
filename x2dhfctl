@@ -430,9 +430,12 @@ fi
 if [[ $BLAS == on ]]
 then
     # Using the internal blas requires turning off the use of an external blas library
-    BLAS="-DUSE_BLAS=OFF"
-else
-    BLAS="-DUSE_BLAS=ON"
+    #BLAS="-DUSE_BLAS=OFF"
+
+    # If USE_BLAS=ON -B option does nothing. If USE_BLAS=OFF -B option
+    # turns on BLAS support
+    status=$(grep -P 'option\(USE_BLAS.*ON\)' CMakeLists.txt)
+    [[ -z $status ]] && BLAS="-DUSE_BLAS=ON"
 fi
 
 
@@ -553,7 +556,7 @@ else
         loglevel=""
     fi
 
-    cmake_opts="-B $BUILD $loglevel $LIBXC $threading $BLAS"
+    cmake_opts="-B $BUILD $build $loglevel $LIBXC $threading $BLAS"
 
     mkdir $BUILD
     if [[ $VERBOSE == "off" ]]
