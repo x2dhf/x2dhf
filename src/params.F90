@@ -2,6 +2,8 @@
 
 ! Copyright (C) 1996-2024  Jacek Kobus 
 
+#include "maxorb.h"
+
 module params
   integer, parameter :: IPREC = 4
   integer, parameter :: IPREC8 = 8
