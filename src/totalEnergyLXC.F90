@@ -27,7 +27,7 @@ contains
     use utils
 #ifdef LIBXC
     use, intrinsic :: iso_c_binding
-    use xc_f90_lib_m
+    use xc_f03_lib_m
     use libxc_funcs_m
 #endif
 
@@ -43,8 +43,8 @@ contains
          w10(:),w11(:),w12(:),w13(:),w16(:)
 
 #ifdef LIBXC
-    type(xc_f90_func_info_t) :: xc_info
-    type(xc_f90_func_t) :: xc_func
+    type(xc_f03_func_info_t) :: xc_info
+    type(xc_f03_func_t) :: xc_func
     integer(c_int) :: vmajor, vminor, vmicro, family_id, func_id, kind_id, err
     character(len=120) :: name, kind1, family, ref
     integer(c_size_t) :: size
@@ -209,24 +209,24 @@ contains
 
        
        do n=1,lxcFuncs
-          call xc_f90_func_init(xc_func, lxcFuncs2use(n), XC_POLARIZED, err)
+          call xc_f03_func_init(xc_func, lxcFuncs2use(n), XC_POLARIZED, err)
 
-          ! It turns out that for all the functionals used xc_f90_func_init returns err=0
+          ! It turns out that for all the functionals used xc_f03_func_init returns err=0
           ! so the following piece of code is redundant
           ! if (err>0) then
-          !    write(*,'("Error: xc_f90_func_init failed with err=",i5)') err
+          !    write(*,'("Error: xc_f03_func_init failed with err=",i5)') err
           !    stop "etotalLXC"
           ! endif
 
-          xc_info=xc_f90_func_get_info(xc_func)
+          xc_info=xc_f03_func_get_info(xc_func)
 
-          select case (xc_f90_func_info_get_family(xc_info))
+          select case (xc_f03_func_info_get_family(xc_info))
           case(XC_FAMILY_LDA)
-             call xc_f90_lda_exc(xc_func, size, w0(1), wk12(1:))
+             call xc_f03_lda_exc(xc_func, size, w0(1), wk12(1:))
              if (ldetectNaN) then
                 nan=detectNaN(mxsize,wk12)
                 if (nan>0) then
-                   write(*,'("Error: NaN detected in (XC_FAMILY_LDA) xc_f90_lda_exc at",i5)') nan
+                   write(*,'("Error: NaN detected in (XC_FAMILY_LDA) xc_f03_lda_exc at",i5)') nan
                 endif
              endif
              if (lfixNaN) then          
@@ -234,11 +234,11 @@ contains
              endif
 
           case(XC_FAMILY_HYB_LDA)
-             call xc_f90_lda_exc(xc_func, size, w0(1), wk12(1:))
+             call xc_f03_lda_exc(xc_func, size, w0(1), wk12(1:))
              if (ldetectNaN) then
                 nan=detectNaN(mxsize,wk12)
                 if (nan>0) then
-                   write(*,'("Error: NaN detected in (XC_FAMILY_LDA) xc_f90_lda_exc at",i5)') nan
+                   write(*,'("Error: NaN detected in (XC_FAMILY_LDA) xc_f03_lda_exc at",i5)') nan
                 endif
              endif
              if (lfixNaN) then          
@@ -262,12 +262,12 @@ contains
                 w1(3*i  )=grhotdown(i)
              enddo
              
-             call xc_f90_gga_exc(xc_func, size, w0(1), w1(1), wk12(1:))
+             call xc_f03_gga_exc(xc_func, size, w0(1), w1(1), wk12(1:))
              
              if (ldetectNaN) then
                 nan=detectNaN(mxsize,wk12)
                 if (nan>0) then
-                   write(*,'("Error: NaN detected in (XC_FAMILY_LDA) xc_f90_lda_exc at",i5)') nan
+                   write(*,'("Error: NaN detected in (XC_FAMILY_LDA) xc_f03_lda_exc at",i5)') nan
                 endif
              endif
              if (lfixNaN) then          
@@ -317,7 +317,7 @@ contains
                 w13(2*i  )=grhotdown(i)
              enddo
              
-             call xc_f90_mgga_exc(xc_func, size, w0, w1, w16, w13, wk12(1:))
+             call xc_f03_mgga_exc(xc_func, size, w0, w1, w16, w13, wk12(1:))
 
           case(XC_FAMILY_HYB_GGA)
              print *,'HYB_GGA are not supported for open-shell cases'
@@ -326,7 +326,7 @@ contains
              write(*,'("Error! Unsupported family of libxc functionals.")')
              stop 'etotalLXC'
           end select
-          call xc_f90_func_end(xc_func)
+          call xc_f03_func_end(xc_func)
           
           call add (mxsize,wk12,wk13)
        enddo
@@ -358,20 +358,20 @@ contains
        enddo
 
        do n=1,lxcFuncs
-          call xc_f90_func_init(xc_func, lxcFuncs2use(n), XC_UNPOLARIZED, err)
+          call xc_f03_func_init(xc_func, lxcFuncs2use(n), XC_UNPOLARIZED, err)
           
-          ! xc_f90_func_init returns err=0 so the following piece of code is redundant
+          ! xc_f03_func_init returns err=0 so the following piece of code is redundant
           ! if (err>0) then
-          !    write(*,'("Error: xc_f90_func_init failed with err=",i5)') err
+          !    write(*,'("Error: xc_f03_func_init failed with err=",i5)') err
           !    stop "etotalLXHybC"
           ! endif
 
-          xc_info=xc_f90_func_get_info(xc_func)
-          select case (xc_f90_func_info_get_family(xc_info))
+          xc_info=xc_f03_func_get_info(xc_func)
+          select case (xc_f03_func_info_get_family(xc_info))
           case(XC_FAMILY_LDA)
-             call xc_f90_lda_exc(xc_func, size, rhot(1:), wk12(1:))
+             call xc_f03_lda_exc(xc_func, size, rhot(1:), wk12(1:))
           case(XC_FAMILY_HYB_LDA)
-             call xc_f90_lda_exc(xc_func, size, rhot(1:), wk12(1:))
+             call xc_f03_lda_exc(xc_func, size, rhot(1:), wk12(1:))
           case(XC_FAMILY_GGA)
              ! calculate nabla rho nabla rho 
              call nfng (rhot,rhot,wk0,wk1,wk2,wk3,rhotup,rhotdown,grhotdown,grhotup)
@@ -383,9 +383,9 @@ contains
              !    stop "etotalLXC"
              ! endif
 
-             call xc_f90_gga_exc(xc_func, size, rhot(1:), grhotup(1:), wk12(1:))
+             call xc_f03_gga_exc(xc_func, size, rhot(1:), grhotup(1:), wk12(1:))
 
-             ! xc_f90_gga_exc returns values without NaNs, and therefore
+             ! xc_f03_gga_exc returns values without NaNs, and therefore
              ! the following piece of code is redundant
              ! nan=detectNaN(mxsize,wk12)
              ! if (nan>0) then
@@ -409,9 +409,9 @@ contains
              call tau(psi,w3,w4,w5,w6,w7,w8,w9,w10,w11,w12,w13)
              call dscal (mxsize,half,w13,ione)
              
-             call xc_f90_mgga_exc(xc_func, size, rhot(1:), grhotup(1:), w6, w13, wk12(1:))
+             call xc_f03_mgga_exc(xc_func, size, rhot(1:), grhotup(1:), w6, w13, wk12(1:))
 
-             ! It turns out that for all the functionals used xc_f90_gga_exc returns
+             ! It turns out that for all the functionals used xc_f03_gga_exc returns
              ! proper values, i.e. without NaNs, and therefore the following piece of
              ! code is redundant
              ! nan=detectNaN(mxsize,wk12)
@@ -422,12 +422,12 @@ contains
              
           case(XC_FAMILY_HYB_GGA)
              call nfng (rhot,rhot,wk0,wk1,wk2,wk3,rhotup,rhotdown,grhotdown,grhotup)
-             call xc_f90_gga_exc(xc_func, size, rhot(1:), grhotup(1:), wk12(1:))
+             call xc_f03_gga_exc(xc_func, size, rhot(1:), grhotup(1:), wk12(1:))
           case default
              write(*,'("Error! Unsupported family of libxc functionals.")')             
              stop 'etotalLXC'
           end select
-          call xc_f90_func_end(xc_func)
+          call xc_f03_func_end(xc_func)
           
           call add (mxsize,wk12,wk13)
        enddo

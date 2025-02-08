@@ -381,7 +381,7 @@ contains
 
 #ifdef LIBXC
     use, intrinsic :: iso_c_binding
-    use xc_f90_lib_m
+    use xc_f03_lib_m
 #endif
     
     implicit none
@@ -392,12 +392,12 @@ contains
     real (PREC) ::  heta,hxibeg,hxiend,omb,rinfig
 
 #ifdef LIBXC
-    type(xc_f90_func_info_t) :: xc_info
-    type(xc_f90_func_t) :: xc_func
+    type(xc_f03_func_info_t) :: xc_info
+    type(xc_f03_func_t) :: xc_func
     integer(c_int) :: vmajor, vminor, vmicro, family_id, func_id, kind_id, number, err, refnumber
     character(len=120) :: name, kind1, family, ref
     character(len=14) :: nspin
-    type(xc_f90_func_reference_t) :: reference 
+    type(xc_f03_func_reference_t) :: reference 
 #endif
     
     ! calculate the total length of working arrays (in bytes)
@@ -440,26 +440,26 @@ contains
 #ifdef LIBXC
     If (LXC) then
        write(iout6,'(3x,"Method: DFT     ")')
-       call xc_f90_version(vmajor, vminor, vmicro)
+       call xc_f03_version(vmajor, vminor, vmicro)
        do i=1,lxcFuncs
           if (lxcPolar) then
              nspin="XC_POLARIZED"
-             call xc_f90_func_init(xc_func, lxcFuncs2use(i), XC_POLARIZED, err)
+             call xc_f03_func_init(xc_func, lxcFuncs2use(i), XC_POLARIZED, err)
           else
              nspin="XC_UNPOLARIZED"
-             call xc_f90_func_init(xc_func, lxcFuncs2use(i), XC_UNPOLARIZED, err)
+             call xc_f03_func_init(xc_func, lxcFuncs2use(i), XC_UNPOLARIZED, err)
           endif
-          ! It turns out that for all the functionals used xc_f90_func_init returns err=0
+          ! It turns out that for all the functionals used xc_f03_func_init returns err=0
           ! so the following piece of code is redundant
           ! if (err>0) then
-          !    write(*,'("Error: xc_f90_func_init failed with err=",i5)') err
+          !    write(*,'("Error: xc_f03_func_init failed with err=",i5)') err
           !    stop "printCase"
           ! endif
           
-          xc_info=xc_f90_func_get_info(xc_func)
-          family_id=xc_f90_func_info_get_family(xc_info)
-          kind_id=xc_f90_func_info_get_kind(xc_info)
-          name=xc_f90_functional_get_name(lxcFuncs2use(i))
+          xc_info=xc_f03_func_get_info(xc_func)
+          family_id=xc_f03_func_info_get_family(xc_info)
+          kind_id=xc_f03_func_info_get_kind(xc_info)
+          name=xc_f03_functional_get_name(lxcFuncs2use(i))
           
           select case(kind_id)
           case (XC_EXCHANGE)
@@ -479,7 +479,7 @@ contains
              write(family,'(a)') "LDA"
           case (XC_FAMILY_HYB_LDA);
              write(family,'(a)') "Hybrid LDA"
-             alphaflxc=xc_f90_hyb_exx_coef(xc_func)
+             alphaflxc=xc_f03_hyb_exx_coef(xc_func)
              if (alphaflxc>zero) then
                 write(*,"(3x,'           alpha = ',f7.5,&
                      ' (from xc_hyb_exx_coef)')") alphaflxc
@@ -492,7 +492,7 @@ contains
              
           case (XC_FAMILY_HYB_GGA);
              write(family,'(a)') "Hybrid GGA"
-             alphaflxc=xc_f90_hyb_exx_coef(xc_func)
+             alphaflxc=xc_f03_hyb_exx_coef(xc_func)
              if (alphaflxc>zero) then
                 write(*,"(3x,'           alpha = ',f7.5,&
                      ' (from xc_hyb_exx_coef)')") alphaflxc
@@ -519,8 +519,8 @@ contains
           number=0
           refnumber=0
           do while (number<=4)
-             reference=xc_f90_func_info_get_references(xc_info, number)
-             ref=xc_f90_func_reference_get_ref(reference)
+             reference=xc_f03_func_info_get_references(xc_info, number)
+             ref=xc_f03_func_reference_get_ref(reference)
              refnumber=refnumber+1
              if     (number==-1) then
                 if (refnumber==1) then
@@ -537,7 +537,7 @@ contains
                 endif
              endif
           end do
-          call xc_f90_func_end(xc_func)             
+          call xc_f03_func_end(xc_func)             
           write (*,*)
        enddo
     endif

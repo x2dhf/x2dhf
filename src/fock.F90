@@ -346,7 +346,7 @@ contains
     use utils
 
     use, intrinsic :: iso_c_binding
-    use xc_f90_lib_m
+    use xc_f03_lib_m
     use libxc_funcs_m    
     
     implicit none
@@ -360,9 +360,9 @@ contains
 
     real (PREC), dimension(:), pointer :: rhoup,rhodown,rho,sigma,vrho,vsigma
 
-    type(xc_f90_func_info_t) :: xc_info
-    type(xc_f90_func_t) :: xc_func
-    type(xc_f90_func_info_t) :: info
+    type(xc_f03_func_info_t) :: xc_info
+    type(xc_f03_func_t) :: xc_func
+    type(xc_f03_func_info_t) :: info
     integer(c_int) :: vmajor, vminor, vmicro, family_id, func_id, kind_id, err
     integer(c_size_t) :: size 
     character(len=120) :: name, kind1, family, ref
@@ -419,16 +419,16 @@ contains
     ! choose a given functional from libxc library     
     ! XC_UNPOLARIZED version
     do n=1,lxcFuncs
-       call xc_f90_func_init(xc_func, lxcFuncs2use(n), XC_UNPOLARIZED,  err)
-       call xc_f90_func_set_dens_threshold(xc_func, dens_threshold)
+       call xc_f03_func_init(xc_func, lxcFuncs2use(n), XC_UNPOLARIZED,  err)
+       call xc_f03_func_set_dens_threshold(xc_func, dens_threshold)
        
-       info=xc_f90_func_get_info(xc_func)
+       info=xc_f03_func_get_info(xc_func)
        
-       select case (xc_f90_func_info_get_family(info))
+       select case (xc_f03_func_info_get_family(info))
        case(XC_FAMILY_LDA)
-          call xc_f90_lda_vxc(xc_func, size, rho, vrho)
+          call xc_f03_lda_vxc(xc_func, size, rho, vrho)
        case(XC_FAMILY_HYB_LDA)
-          call xc_f90_lda_vxc(xc_func, size, rho, vrho)
+          call xc_f03_lda_vxc(xc_func, size, rho, vrho)
        case(XC_FAMILY_GGA)
           ! calculate nabla rho nabla rho
           
@@ -441,9 +441,9 @@ contains
           ! volume in terms of sigma
           call nfng (rho,rho,wk3,wk4,wk5,wk6,wk7,wk8,wk9,sigma)
           
-          call xc_f90_gga_vxc(xc_func, size, rho, sigma, vrho, vsigma )
+          call xc_f03_gga_vxc(xc_func, size, rho, sigma, vrho, vsigma )
 
-          ! It turns out that for for some GGA functionals xc_f90_gga_exc
+          ! It turns out that for for some GGA functionals xc_f03_gga_exc
           ! return NaN(s) value(s), and therefore the following piece of
           ! code must be used to detect them and fix via interpolation
           if (ldetectNaN) then
@@ -476,7 +476,7 @@ contains
           
        case(XC_FAMILY_HYB_GGA)
           call nfng (rho,rho,wk3,wk4,wk5,wk6,wk7,wk8,wk9,sigma)
-          call xc_f90_gga_vxc(xc_func, size, rho, sigma, vrho, vsigma )
+          call xc_f03_gga_vxc(xc_func, size, rho, sigma, vrho, vsigma )
 
           ! v_xc=vrho - 2 (nabla vsigma  nabla n + vsigma nabla^2 rho)
           ! vrho==wk12
@@ -511,10 +511,10 @@ contains
           ! volume in terms of sigma
           call nfng (rho,rho,wk3,wk4,wk5,wk6,wk7,wk8,wk9,sigma)
           
-          !call xc_f90_gga_vxc(xc_func, size, rho, sigma, wk12, wk3 )
-          !call xc_f90_gga_vxc(xc_func, size, rho, sigma, vrho, vsigma )
+          !call xc_f03_gga_vxc(xc_func, size, rho, sigma, wk12, wk3 )
+          !call xc_f03_gga_vxc(xc_func, size, rho, sigma, vrho, vsigma )
           
-          ! call xc_f90_mgga_vxc(xc_func, size, rho,  sigma,  lapl,  tau,&
+          ! call xc_f03_mgga_vxc(xc_func, size, rho,  sigma,  lapl,  tau,&
           !                                    vrho, vsigma, vlapl, vtau )
           
           ! return NaN(s) value(s), and therefore the following piece of
@@ -552,7 +552,7 @@ contains
           write(*,'("Error! Unsupported family of libxc functionals.")')
           stop 'fockLXC'
        end select
-       call xc_f90_func_end(xc_func)
+       call xc_f03_func_end(xc_func)
        
        call add (mxsize,vrho,fock1)
     enddo
@@ -678,7 +678,7 @@ contains
     use utils
 
     use, intrinsic :: iso_c_binding
-    use xc_f90_lib_m
+    use xc_f03_lib_m
     use libxc_funcs_m    
     
     implicit none
@@ -692,9 +692,9 @@ contains
 
     real (PREC), dimension(:), pointer :: rhoup,rhodown,rho,sigma,vrho,vsigma
 
-    type(xc_f90_func_info_t) :: xc_info
-    type(xc_f90_func_t) :: xc_func
-    type(xc_f90_func_info_t) :: info
+    type(xc_f03_func_info_t) :: xc_info
+    type(xc_f03_func_t) :: xc_func
+    type(xc_f03_func_info_t) :: info
     integer(c_int) :: vmajor, vminor, vmicro, family_id, func_id, kind_id, err
     integer(c_size_t) :: size 
     character(len=120) :: name, kind1, family, ref
@@ -781,20 +781,20 @@ contains
     enddo
     
     do n=1,lxcFuncs
-       call xc_f90_func_init(xc_func, lxcFuncs2use(n), XC_POLARIZED, err)
-       call xc_f90_func_set_dens_threshold(xc_func, dens_threshold)
+       call xc_f03_func_init(xc_func, lxcFuncs2use(n), XC_POLARIZED, err)
+       call xc_f03_func_set_dens_threshold(xc_func, dens_threshold)
 
-       info=xc_f90_func_get_info(xc_func)
+       info=xc_f03_func_get_info(xc_func)
        
-       select case (xc_f90_func_info_get_family(info))
+       select case (xc_f03_func_info_get_family(info))
        case(XC_FAMILY_LDA)
-          call xc_f90_lda_vxc(xc_func, size, rho, vrho)
+          call xc_f03_lda_vxc(xc_func, size, rho, vrho)
           do i=1,mxsize
              wk13(i)=vrho(2*i-1)
           enddo
           call dcopy (mxsize,wk13,ione,fock1,ione)
        case(XC_FAMILY_HYB_LDA)
-          call xc_f90_lda_vxc(xc_func, size, rho, vrho)
+          call xc_f03_lda_vxc(xc_func, size, rho, vrho)
           do i=1,mxsize
              wk13(i)=vrho(2*i-1)
           enddo
@@ -811,15 +811,15 @@ contains
           ! volume in terms of sigma
           ! wk10=sigma[1]
           !call nfng (rho,rho,wk3,wk4,wk5,wk6,wk7,wk8,wk9,sigma)          
-          call xc_f90_gga_vxc(xc_func, size, rho, sigma, vrho, vsigma )
+          call xc_f03_gga_vxc(xc_func, size, rho, sigma, vrho, vsigma )
           
-          ! It turns out that for for some GGA functionals xc_f90_gga_exc
+          ! It turns out that for for some GGA functionals xc_f03_gga_exc
           ! return NaN(s) value(s), and therefore the following piece of
           ! code must be used to detect them and fix via interpolation
           if (ldetectNaN) then
              nan=detectNaN(mxsize,wk3)
              if (nan>0) then
-                write(*,'("Error: NaN detected in (XC_FAMILY_GGA) xc_f90_gga_vxc at",i5)') nan
+                write(*,'("Error: NaN detected in (XC_FAMILY_GGA) xc_f03_gga_vxc at",i5)') nan
              endif
           endif
           if (lfixNaN) then          
@@ -876,7 +876,7 @@ contains
 
        case(XC_FAMILY_HYB_GGA)
           call nfng (rho,rho,wk3,wk4,wk5,wk6,wk7,wk8,wk9,sigma)
-          call xc_f90_gga_vxc(xc_func, size, rho, sigma, vrho, vsigma )
+          call xc_f03_gga_vxc(xc_func, size, rho, sigma, vrho, vsigma )
 
           ! v_xc=vrho - 2 (nabla vsigma  nabla n + vsigma nabla^2 rho)
           ! vrho==wk12
@@ -903,7 +903,7 @@ contains
           write(*,'("Error! Unsupported family of libxc functionals.")')
           stop 'fockLXC'
        end select
-       call xc_f90_func_end(xc_func)
+       call xc_f03_func_end(xc_func)
     enddo
 
     ! take care of F4 factor (r\xi/2) which transforms the potential into \tilde form

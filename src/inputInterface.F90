@@ -1209,16 +1209,16 @@ contains
     use data4II
 #ifdef LIBXC
     use, intrinsic :: iso_c_binding
-    use xc_f90_lib_m
+    use xc_f03_lib_m
     use libxc_funcs_m    
 #endif
  
     implicit none
 
 #ifdef LIBXC    
-    type(xc_f90_func_info_t) :: xc_info
-    type(xc_f90_func_t) :: xc_func
-    type(xc_f90_func_info_t) :: info
+    type(xc_f03_func_info_t) :: xc_info
+    type(xc_f03_func_t) :: xc_func
+    type(xc_f03_func_info_t) :: info
     integer(c_int) :: vmajor, vminor, vmicro, family_id, func_id, kind_id, err
     character(len=120) :: name, kind1, family, ref
 #endif
@@ -1288,20 +1288,20 @@ contains
        lxcFuncs=0
        do j1=1,2
           lxcFuncs=lxcFuncs+1
-          lxcFuncs2use(lxcFuncs)=xc_f90_functional_get_number(trim(char30))
+          lxcFuncs2use(lxcFuncs)=xc_f03_functional_get_number(trim(char30))
           if (lxcFuncs2use(lxcFuncs)<=0) then
              write(iout6,'(/2x,"Error! ",a20,": no such libxc functional found.")') trim(char30)
              stop "read_dft"
           endif
           if (lxcPolar) then
-             call xc_f90_func_init(xc_func, lxcFuncs2use(lxcFuncs), XC_POLARIZED, err)
+             call xc_f03_func_init(xc_func, lxcFuncs2use(lxcFuncs), XC_POLARIZED, err)
           else
-             call xc_f90_func_init(xc_func, lxcFuncs2use(lxcFuncs), XC_UNPOLARIZED, err)
+             call xc_f03_func_init(xc_func, lxcFuncs2use(lxcFuncs), XC_UNPOLARIZED, err)
           endif
           
-          info=xc_f90_func_get_info(xc_func)
+          info=xc_f03_func_get_info(xc_func)
 
-          select case (xc_f90_func_info_get_family(info))
+          select case (xc_f03_func_info_get_family(info))
           case(XC_FAMILY_LDA, XC_FAMILY_GGA, XC_FAMILY_MGGA, XC_FAMILY_HYB_LDA, XC_FAMILY_HYB_GGA)
              call inStr4lxc(char30)
              if (trim(char30).eq."") exit
@@ -1310,7 +1310,7 @@ contains
              stop 'read_dft'
           end select
        enddo
-       call xc_f90_func_end(xc_func)
+       call xc_f03_func_end(xc_func)
        if (lxcFuncs>0) then
           LXC=.true.
           DFT=.false.
