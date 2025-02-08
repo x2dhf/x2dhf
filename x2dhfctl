@@ -67,14 +67,14 @@ tpool=
 # ok wall="$wall -fcheck=bounds
 # ok wall="-fcheck=mem -fcheck=pointer"
 
-export INSTALLPREFIX=$PWD
 BIN=bin
 BUILD=build
 SRC=src
 host=$(hostname -s)
 log=$PWD/log/$(basename $0).log
 
-rm -f $log >& /dev/null
+export INSTALLPREFIX=$PWD
+export DESTDIR=$PWD
 
 LIBXCVERSION=6.2.2
 export VERBOSE=off
@@ -84,10 +84,7 @@ export VERBOSE=off
 function cleanBUILD {
 
     [[ -d build ]] || return
-    cd build
-    rm -rf CMakeCache.txt  CMakeFiles  cmake_install.cmake install_manifest.txt  Makefile *.mod >& /dev/null
-    cd - >& /dev/null
-    
+    rm -rf build >& /dev/null
 }
 
 function help {
@@ -329,16 +326,18 @@ EOF
     
     if [[ $VERBOSE == on ]] 
     then
-	./configure CFLAGS=-std=gnu99 --prefix=$INSTALLPREFIX/libxc
+	./configure CFLAGS=-std=gnu99 --prefix=/libxc
 	make -j $maxcpus VERBOSE=0
 	make install
     else
-	>& $log ./configure CFLAGS=-std=gnu99 --prefix=$INSTALLPREFIX/libxc
+	>& $log ./configure CFLAGS=-std=gnu99 --prefix=/libxc
 	2>&1 >> $log make -j $maxcpus VERBOSE=0
-	    2>&1 >> $log make install
+	2>&1 >> $log make install
     fi
     cd - >& /dev/null
-
+    mv $DESTDIR/libxc .
+    cp libxc/include/xc_f90_lib_m.mod src/
+    cp libxc/include/libxc_funcs_m.mod src/
     cat <<EOF
 
     libxc is ready
@@ -354,6 +353,8 @@ EOF
 [[ $1 == "help" || $1 == "-h" || $1 == "--help" ]] && help && exit
 
 [[ $1 == log || $1 == showlog ]] && cat $log && exit
+
+rm -f $log >& /dev/null
 
 FFLAGS=
 MUTEX=
@@ -395,9 +396,9 @@ shift $((OPTIND-1))
 compiler=${1:-gfortran}
 
 if [[ "$OSTYPE" == "linux-gnu"* ]]; then
-    maxcpu=$(lscpu | grep -E '^CPU\(s\):' | awk '{print $2}')
+    maxcpus=$(lscpu | grep -E '^CPU\(s\):' | awk '{print $2}')
 elif [[ "$OSTYPE" == "darwin"* ]]; then
-    maxcpu=$(sysctl -n hw.ncpu)
+    maxcpus=$(sysctl -n hw.ncpu)
 else
     echo "Unsupported OS"
     exit 1
@@ -406,6 +407,7 @@ fi
 [[ -d tests ]] || mkdir tests
 [[ -d log ]] || mkdir log
 
+rm -f bin/x2dhf* 
 
 FC=
 LDOPT1=
@@ -421,6 +423,20 @@ SRC2=
 [[ $trace == 1 ]] && TRACE="$TRACE -DTRACE -DTRACE1"
 [[ $trace == 2 ]] && TRACE="$TRACE -DTRACE -DTRACE1 -DTRACE2"
 [[ $trace == 3 ]] && TRACE="$TRACE -DTRACE -DTRACE1 -DTRACE2 -DTRACE3"
+
+status=$(grep -P 'option\(USE_PTHREAD.*ON\)' CMakeLists.txt) 
+[[ -n $status ]] && pthread=on
+
+status=$(grep -P 'option\(USE_TPOOL.*ON\)' CMakeLists.txt) 
+[[ -n $status ]] && tpool=on
+
+status=$(grep -P 'option\(USE_OPENMP.*ON\)' CMakeLists.txt) 
+[[ -n $status ]] && openmp=on
+
+status=$(grep -P 'option\(USE_BLAS.*ON\)' CMakeLists.txt) 
+[[ -n $status ]] && BLAS=on
+
+export CMAKE_INSTALL_PREFIX=""
 
 if [[ $LXC == on ]] 
 then 
@@ -442,11 +458,11 @@ then
 
     if [[ -z $debug ]]
     then 
-	FFLAGS="$FFLAGS -O$optLevel $summary $wall -ffree-line-length-none "
+	FFLAGS="$FFLAGS -O$optLevel -ffree-line-length-none $summary $wall "
     else
-	FFLAGS="$FFLAGS -O0 -fbacktrace -fcheck=bounds -g -pg $wall -ffree-line-length-none "
+	FFLAGS="$FFLAGS -O0 -g -pg -fbacktrace -fcheck=bounds -ffree-line-length-none $wall "
     fi
-    
+
     if [[ -n $openmp ]]
     then
 	#FCOPT5=-omp_lib
@@ -556,6 +572,8 @@ export FC FFLAGS
 export LDOPT1 LDOPT2 LDOPT3 LDOPT4
 export LIB1 LIB2 LIB3
 
+
+
 # FIXME
 if [[ $compiler == lapack ]]; then
 
@@ -582,69 +600,70 @@ fi
 
 if [[ -n $pthread || -n $tpool ]]
 then
-    # maxorb in src/c/sorpt.h must be equal to maxorb parameter (see params.f90)
-    maxorb=$(grep -iP "parameter\s+::\s+maxorb" src/params.f90 |gawk '{print $NF}')
-    perl -pi -e "s/maxorb \d+/maxorb $maxorb/" src/c/sorpt.h 
-    
-    mkdir -p $BUILD/CMakeFiles/x2dhf.dir/
-
-    [[ -n $pthread ]] && cfiles="coulExch_pthread relax_single_pot_pthread mcsor_pthread mcsor_single_colour_pthread sorpt "
-
-    #[[ -n $tpool ]] && cfiles="exchsorptdrv1 exchsorsingle1 mcsorptdrv1 mcsorpt_pthread sorpt "
-    [[ -n $tpool ]] && cfiles="coulExch_tpool relax_single_pot_tpool mcsor_tpool mcsor_single_colour_tpool sorpt "
-    
-    [[ -n $pthread || -n $tpool ]] && cfiles="$cfiles"
-    libopt=
-    for cfile in $cfiles
-    do
-	libopt="$libopt CMakeFiles\/x2dhf.dir\/${cfile}.o"
-    done
-
-    if [[ -z $LIB1 ]]
-    then
-	LIB1="$libopt"
-    else
-	LIB1="$libopt $LIB1"
-    fi
-    
-    cfilesall="coulExch relax_single_pot mcsor* sorpt "    
-    for cfile in $cfilesall
-    do
-	rm -f $BUILD/x2dhf $BUILD/CMakeFiles/x2dhf.dir/${cfile}*.o
-    done
-
     directive=
     [[ -n $pthread ]] && directive="-DPTHREAD"    
     [[ -n $tpool ]] && directive="-DTPOOL"
+    
+     # maxorb in src/c/sorpt.h must be equal to maxorb parameter (see params.f90)
+     maxorb=$(grep -iP "parameter\s+::\s+maxorb" src/params.f90 |gawk '{print $NF}')
+     perl -pi -e "s/maxorb \d+/maxorb $maxorb/" src/c/sorpt.h 
+    
+     mkdir -p $BUILD/src/CMakeFiles/x2dhf.dir/
+
+     [[ -n $pthread ]] && cfiles="coulExch_pthread relax_single_pot_pthread mcsor_pthread mcsor_single_colour_pthread sorpt "
+
+     #[[ -n $tpool ]] && cfiles="exchsorptdrv1 exchsorsingle1 mcsorptdrv1 mcsorpt_pthread sorpt "
+     [[ -n $tpool ]] && cfiles="coulExch_tpool relax_single_pot_tpool mcsor_tpool mcsor_single_colour_tpool sorpt "
+    
+     [[ -n $pthread || -n $tpool ]] && cfiles="$cfiles"
+     libopt=
+     for cfile in $cfiles
+     do
+     	libopt="$libopt CMakeFiles\/x2dhf.dir\/${cfile}.o"
+     done
+
+     if [[ -z $LIB1 ]]
+     then
+     	LIB1="$libopt"
+     else
+     	LIB1="$libopt $LIB1"
+     fi
+    
+     cfilesall="coulExch relax_single_pot mcsor* sorpt "    
+     for cfile in $cfilesall
+     do
+     	rm -f $BUILD/src/x2dhf $BUILD/src/CMakeFiles/x2dhf.dir/${cfile}*.o
+     done
+
 
     directive=$(echo $directive $TRACE)
     
-    cd $BUILD/CMakeFiles/x2dhf.dir/
-    if [[ -n $debug ]]
-    then
-	cflags="-g -O0 -Wall "
-    else
-	cflags="-O2"
-    fi
+     cd $BUILD/src/CMakeFiles/x2dhf.dir/
+     if [[ -n $debug ]]
+     then
+     	cflags="-g -O0 -Wall "
+     else
+     	cflags="-O2"
+     fi
 
-    if [[ -n $pthread ]]
-    then
-	gcc -c $cflags $directive \
-	    $INSTALLPREFIX/$SRC/c/coulExch_pthread.c \
-	    $INSTALLPREFIX/$SRC/c/relax_single_pot_pthread.c\
-	    $INSTALLPREFIX/$SRC/c/mcsor_pthread.c \
-	    $INSTALLPREFIX/$SRC/c/mcsor_single_colour_pthread.c \
-	    $INSTALLPREFIX/$SRC/c/sorpt.c
-    fi
+     if [[ -n $pthread ]]
+     then
+     	gcc -c $cflags $directive \
+     	    $INSTALLPREFIX/$SRC/c/coulExch_pthread.c \
+     	    $INSTALLPREFIX/$SRC/c/relax_single_pot_pthread.c\
+     	    $INSTALLPREFIX/$SRC/c/mcsor_pthread.c \
+     	    $INSTALLPREFIX/$SRC/c/mcsor_single_colour_pthread.c \
+     	    $INSTALLPREFIX/$SRC/c/sorpt.c
+     fi
     
-    if [[ -n $tpool ]]
-    then
-	gcc -c $cflags $directive $INSTALLPREFIX/$SRC/c/coulExch_tpool.c \
-	    $INSTALLPREFIX/$SRC/c/relax_single_pot_tpool.c \
-	    $INSTALLPREFIX/$SRC/c/mcsor_tpool.c \
-	    $INSTALLPREFIX/$SRC/c/mcsor_single_colour_tpool.c \
-	    $INSTALLPREFIX/$SRC/c/sorpt.c
-    fi
+     if [[ -n $tpool ]]
+     then
+     	gcc -c $cflags $directive $INSTALLPREFIX/$SRC/c/coulExch_tpool.c \
+     	    $INSTALLPREFIX/$SRC/c/relax_single_pot_tpool.c \
+     	    $INSTALLPREFIX/$SRC/c/mcsor_tpool.c \
+     	    $INSTALLPREFIX/$SRC/c/mcsor_single_colour_tpool.c \
+     	    $INSTALLPREFIX/$SRC/c/sorpt.c
+     fi
 
     cd - >& /dev/null
 fi
@@ -652,32 +671,72 @@ export FFLAGS
 
 #echo FFLAGS=$FFLAGS
 
-[[ -d $BUILD ]] || mkdir $BUILD
 [[ -d $BIN ]] || mkdir $BIN
 
-cd $BUILD
-2>&1 >> $log cmake -S ../$SRC
-[[ $? > 0 ]] && cat $log && exit
+if [[ -d $BUILD ]]
+then
+    cd $BUILD/src
+    if [[ $VERBOSE == "off" ]]
+    then
+	2>&1 >> $log  make -j$maxcpus
+    else
+	make -j$maxcpus
+    fi
+    cd ../ >& /dev/null
+else
+    mkdir $BUILD
+    if [[ $VERBOSE == "off" ]]
+    then
+	if [[ -n $trace ]]
+	then
+	    2>&1 >> $log cmake  -B $BUILD --log-level=TRACE    #DEBUG # VERBOSE
+	else
+	    2>&1 >> $log cmake  -B $BUILD 
+	fi
+	
+	[[ $? > 0 ]] && cat $log && exit
+	
+	cd $BUILD
+	perl -pi -e 's/-O2\s+-g\s+(-DNDEBUG)?//' src/CMakeFiles/x2dhf.dir/flags.make
+	perl -pi -e 's/-O2\s+-g\s+(-DNDEBUG)?//' src/CMakeFiles/x2dhf.dir/link.txt
+	LIB3=$(echo $LIB3| sed -e "sq/q\\\\/qg")
+	perl -pi -e "s/(\/usr\/bin\/.*?)\-o x2dhf/\1 $libopt $LDOPT2 $LDOPT3 $LDOPT4 $LIB3 \-o x2dhf/" src/CMakeFiles/x2dhf.dir/link.txt
+	2>&1 >> $log  make -j$maxcpus 
+	[[ $? > 0 ]] && cat $log && exit
+    else
+	if [[ -n $trace ]]
+	then
+	    cmake  -B $BUILD --log-level=TRACE    #DEBUG # VERBOSE
+	else
+	    cmake  -B $BUILD
+	fi
+	
+	cd $BUILD
+	perl -pi -e 's/-O2\s+-g\s+(-DNDEBUG)?//' src/CMakeFiles/x2dhf.dir/flags.make
+	perl -pi -e 's/-O2\s+-g\s+(-DNDEBUG)?//' src/CMakeFiles/x2dhf.dir/link.txt
+	LIB3=$(echo $LIB3| sed -e "sq/q\\\\/qg")
+	perl -pi -e "s/(\/usr\/bin\/.*?)\-o x2dhf/\1 $libopt $LDOPT2 $LDOPT3 $LDOPT4 $LIB3 \-o x2dhf/" src/CMakeFiles/x2dhf.dir/link.txt
+	make -j$maxcpus
+    fi
+fi
 
-2>&1 >> $log  make -j$maxcpus  install
-[[ $? > 0 ]] && cat $log && exit
+#[[ $VERBOSE == on ]] && cat $log 
 
-[[ $VERBOSE == on ]] && cat $log 
+cp src/x2dhf ../bin/x2dhf
 
-cp x2dhf ../bin/x2dhf
-[[ -z $pthread && -z $openmp && -z $tpool ]] && cp x2dhf ../bin/x2dhf-s
+[[ -z $pthread && -z $openmp && -z $tpool ]] && cp src/x2dhf ../bin/x2dhf-s
 
 if [[ -z $lxc ]]
 then
-    [[ -n $openmp ]]                             && cp x2dhf ../bin/x2dhf-openmp
-    [[ -n $pthread ]]                            && cp x2dhf ../bin/x2dhf-pthread
-    [[ -n $tpool ]]                              && cp x2dhf ../bin/x2dhf-tpool
-    [[ -z $openmp && -z $pthread && -z $tpool ]] && cp x2dhf ../bin/x2dhf-s    
+    [[ -n $openmp ]]                             && cp src/x2dhf ../bin/x2dhf-openmp
+    [[ -n $pthread ]]                            && cp src/x2dhf ../bin/x2dhf-pthread
+    [[ -n $tpool ]]                              && cp src/x2dhf ../bin/x2dhf-tpool
+    [[ -z $openmp && -z $pthread && -z $tpool ]] && cp src/x2dhf ../bin/x2dhf-s    
 else
-    [[ -n $openmp ]]                             && cp x2dhf ../bin/x2dhf-openmp-lxc 
-    [[ -n $pthread && -z $tpool ]]               && cp x2dhf ../bin/x2dhf-pthread-lxc
-    [[ -n $tpool ]]                              && cp x2dhf ../bin/x2dhf-tpool-lxc
-    [[ -z $openmp && -z $pthread && -z $tpool ]] && cp x2dhf ../bin/x2dhf-s-lxc
+    [[ -n $openmp ]]                             && cp src/x2dhf ../bin/x2dhf-openmp-lxc 
+    [[ -n $pthread && -z $tpool ]]               && cp src/x2dhf ../bin/x2dhf-pthread-lxc
+    [[ -n $tpool ]]                              && cp src/x2dhf ../bin/x2dhf-tpool-lxc
+    [[ -z $openmp && -z $pthread && -z $tpool ]] && cp src/x2dhf ../bin/x2dhf-s-lxc
 fi
     
 cd ..
