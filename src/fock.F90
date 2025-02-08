@@ -347,7 +347,7 @@ contains
 
     use, intrinsic :: iso_c_binding
     use xc_f03_lib_m
-    use libxc_funcs_m    
+    use xc_f03_funcs_m
     
     implicit none
     integer (KIND=IPREC) :: i,ii,iborb,iborb1,ibpot,ibpot1,iorb,iorb1,isiorb1
@@ -679,7 +679,7 @@ contains
 
     use, intrinsic :: iso_c_binding
     use xc_f03_lib_m
-    use libxc_funcs_m    
+    use xc_f03_funcs_m
     
     implicit none
     integer (KIND=IPREC) :: i,ii,iborb,iborb1,ibpot,ibpot1,iorb,iorb1,isiorb1

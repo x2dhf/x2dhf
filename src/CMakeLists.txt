@@ -55,8 +55,8 @@ set(X2DHF_F_SOURCES
 # Add libxc files to list
 if(LIBXC_FOUND)
   set(X2DHF_F_SOURCES ${X2DHF_F_SOURCES}
-  libxc_funcs.f90
-  libxc_master_f90.F90)
+    libxc_funcs.F90
+    libxc_master.F90)
   include_directories(${LIBXC_INCLUDE_DIR})
   add_compile_definitions(-DLIBXC)
 endif()

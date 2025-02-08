@@ -28,7 +28,7 @@ contains
 #ifdef LIBXC
     use, intrinsic :: iso_c_binding
     use xc_f03_lib_m
-    use libxc_funcs_m
+    use xc_f03_funcs_m
 #endif
 
     implicit none
