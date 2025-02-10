@@ -14,7 +14,7 @@ set(X2DHF_F_SOURCES
   memory.f90
   nabla.f90
   orbAsympt.f90
-  params.F90
+  params.f90
   printUtils.f90
   scfshr.f90
   solver.f90
