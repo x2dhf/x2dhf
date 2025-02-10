@@ -411,7 +411,7 @@ rm -f bin/x2dhf*
 FC=
 
 # adjust MAXORB for C files
-maxorb=$(grep "parameter :: maxorb" src/params.F90 | cut -d= -f3)
+maxorb=$(grep "parameter :: maxorb" src/params.f90 | cut -d= -f3)
 perl -pi -e "s/^(#define MAXORB)\s+\d+/\1 $maxorb/" src/c/sorpt.h
 
 [[ $trace == 0 ]] && TRACE="$TRACE -DTRACE"
