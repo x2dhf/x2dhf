@@ -491,11 +491,11 @@ then
         threading="-DUSE_OPENMP=OFF -DUSE_PTHREAD=OFF -DUSE_TPOOL=ON"
     fi
 
-    perl -pi -e 's/IPREC = \d/IPREC = 4/' src/params.F90
+    perl -pi -e 's/IPREC = \d/IPREC = 4/' src/params.f90
     if [[ $intprec == 8 ]]
     then
 	FFLAGS="$FFLAGS -fdefault-integer-8"
-	perl -pi -e 's/IPREC = \d/IPREC = 8/' src/params.F90
+	perl -pi -e 's/IPREC = \d/IPREC = 8/' src/params.f90
     fi
 
     if [[ $realprec == 16 ]]
