@@ -4,8 +4,7 @@
 #ifndef PTHREADADD
 #define PTHREADADD 
 
-#include ../maxorb.h
-
+#define MAXORB  36
 #define max_threads4pots 45
 #define max_threads4mcsor 16
 

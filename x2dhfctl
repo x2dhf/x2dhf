@@ -259,6 +259,7 @@ ${bold}OPTIONS${normal}
 
        -X
            Set pragma MUTEX (used in some C routines).
+
        -v
            Turns on the verbose mode during compilation and linking.
 
@@ -348,8 +349,6 @@ EOF
 
 [[ $1 == bz2 ]] && makeArchive && exit
 
-[[ $host == tc06 ]] && module add cmake/$CMVERSION
-
 [[ $1 == "help" || $1 == "-h" || $1 == "--help" ]] && help && exit
 
 [[ $1 == log || $1 == showlog ]] && cat $log && exit
@@ -411,6 +410,9 @@ rm -f bin/x2dhf*
 
 FC=
 
+# adjust MAXORB for C files
+maxorb=$(grep "parameter :: maxorb" src/params.F90 | cut -d= -f3)
+perl -pi -e "s/^(#define MAXORB)\s+\d+/\1 $maxorb/" src/c/sorpt.h
 
 [[ $trace == 0 ]] && TRACE="$TRACE -DTRACE"
 [[ $trace == 1 ]] && TRACE="$TRACE -DTRACE -DTRACE1"
@@ -518,22 +520,19 @@ else
 fi
 
 # In case CMake cannot find gfortran set the full path below
-#FC=/usr/local/bin/gfortran
+# FC=/usr/local/bin/gfortran
 
 fortranVersion=$(gfortran --version | head -1 | gawk '{print $4}' | cut -d. -f1)
 (( $fortranVersion <= 4 )) && optLevel=2
 
-export CMVERSION=3.14.0
-#export CMVERSION=3.26.3
-export FC FFLAGS
+CMVERSION=$(cmake --version | head -1 |cut -d' ' -f3)
+export FC FFLAGS CMVERSION
 
 # FIXME
 if [[ $compiler == lapack ]]; then
     [[ $intprec == 8 ]] && INTPREC="-fdefault-integer-8"
     [[ $realprec == 16 ]] && REALPREC="-freal-8-real-16"
 fi
-
-#echo FFLAGS=$FFLAGS
 
 [[ -d $BIN ]] || mkdir $BIN
 

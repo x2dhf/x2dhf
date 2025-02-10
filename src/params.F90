@@ -2,8 +2,6 @@
 
 ! Copyright (C) 1996-2024  Jacek Kobus 
 
-#include "maxorb.h"
-
 module params
   integer, parameter :: IPREC = 4
   integer, parameter :: IPREC8 = 8
@@ -31,7 +29,7 @@ module params
   ! sorpt.h to adjust maxorb and  max_threads4mcsor variables for C routines as
   ! well.
   integer (kind=IPREC), parameter :: maxgrids = 1
-  integer (kind=IPREC), parameter :: maxorb   = MAXORB
+  integer (kind=IPREC), parameter :: maxorb   = 36
   integer (kind=IPREC), parameter :: maxmpole = 8
   integer (kind=IPREC), parameter :: maxthreads4mcsor = 16
   
