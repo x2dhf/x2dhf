@@ -92,9 +92,12 @@ else()
 endif()
 
 if(BLAS_FOUND)
+  # BLAS_FOUND signals external BLAS library found
   add_compile_definitions(-DBLAS)
-else()
   message("Using external BLAS")
+else()
+  # Use the internal library
+  message("Using internal BLAS")
 endif()
 
 # Main program

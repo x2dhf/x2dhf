@@ -60,6 +60,7 @@ endif()
 if(USE_BLAS)
   find_package(BLAS REQUIRED)
 else()
+  # Set BLAS flag not found
   set(BLAS_FOUND 0)
 endif()
 
