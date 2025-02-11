@@ -78,6 +78,8 @@ set(X2DHF_TPOOL_SOURCES
 )
 
 if(ENABLE_PTHREADS)
+  # Include the present directory in the search path
+  include_directories(${CMAKE_CURRENT_SOURCE_DIR})
   if(USE_PTHREAD)
     set(X2DHF_SOURCES ${X2DHF_F_SOURCES} ${X2DHF_PTHREADS_SOURCES})
     add_compile_definitions(-DPTHREAD)
