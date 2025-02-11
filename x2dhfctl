@@ -410,10 +410,6 @@ rm -f bin/x2dhf*
 
 FC=
 
-# adjust MAXORB for C files
-maxorb=$(grep "parameter :: maxorb" src/params.f90 | cut -d= -f3)
-perl -pi -e "s/^(#define MAXORB)\s+\d+/\1 $maxorb/" src/c/sorpt.h
-
 [[ $trace == 0 ]] && TRACE="$TRACE -DTRACE"
 [[ $trace == 1 ]] && TRACE="$TRACE -DTRACE -DTRACE1"
 [[ $trace == 2 ]] && TRACE="$TRACE -DTRACE -DTRACE1 -DTRACE2"
@@ -491,11 +487,11 @@ then
         threading="-DUSE_OPENMP=OFF -DUSE_PTHREAD=OFF -DUSE_TPOOL=ON"
     fi
 
-    perl -pi -e 's/IPREC = \d/IPREC = 4/' src/params.f90
+    perl -pi -e 's/IPREC = \d/IPREC = 4/' src/params.F90
     if [[ $intprec == 8 ]]
     then
 	FFLAGS="$FFLAGS -fdefault-integer-8"
-	perl -pi -e 's/IPREC = \d/IPREC = 8/' src/params.f90
+	perl -pi -e 's/IPREC = \d/IPREC = 8/' src/params.F90
     fi
 
     if [[ $realprec == 16 ]]
