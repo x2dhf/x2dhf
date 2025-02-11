@@ -14,7 +14,7 @@ set(X2DHF_F_SOURCES
   memory.f90
   nabla.f90
   orbAsympt.f90
-  params.f90
+  params.F90
   printUtils.f90
   scfshr.f90
   solver.f90
@@ -94,7 +94,7 @@ endif()
 if(BLAS_FOUND)
   add_compile_definitions(-DBLAS)
 else()
-  message("BLAS NOT FOUND")
+  message("Using external BLAS")
 endif()
 
 # Main program

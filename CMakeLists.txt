@@ -36,13 +36,11 @@ endif()
 # Detect pthreads
 if(USE_PTHREADS OR USE_TPOOL)
   enable_language(C)
-
   # Test if pthreads is available on the platform
   set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
-  try_compile(ENABLE_PTHREADS
-    SOURCES ${CMAKE_SOURCE_DIR}/src/c/mcsor_single_colour_pthread.c)
-  if(NOT ENABLE_PTHREADS)
-    message(FATAL_ERROR "Pthreads support not available on your platform")
+  try_compile(PTHREADS_OK ${CMAKE_CURRENT_BINARY_DIR} CMAKE_FLAGS "-DINCLUDE_DIRECTORIES=${CMAKE_CURRENT_SOURCE_DIR}/src" SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/c/mcsor_single_colour_pthread.c)
+  if(NOT ${PTHREADS_OK})
+  message(FATAL_ERROR "Pthread/tpool support not available on your platform")
   endif()
   # Restore try compile target
   set(CMAKE_TRY_COMPILE_TARGET_TYPE EXECUTABLE)
