@@ -77,17 +77,22 @@ set(X2DHF_TPOOL_SOURCES
   c/mcsor_single_colour_tpool.c
 )
 
-if(ENABLE_PTHREADS)
+if(USE_PTHREAD)
+  message("Using USE_PTHREAD")
   # Include the present directory in the search path
   include_directories(${CMAKE_CURRENT_SOURCE_DIR})
-  if(USE_PTHREAD)
-    set(X2DHF_SOURCES ${X2DHF_F_SOURCES} ${X2DHF_PTHREADS_SOURCES})
-    add_compile_definitions(-DPTHREAD)
-  else()
-    set(X2DHF_SOURCES ${X2DHF_F_SOURCES} ${X2DHF_TPOOL_SOURCES})
-    add_compile_definitions(-DTPOOL)
-  endif()
-else()
+  set(X2DHF_SOURCES ${X2DHF_F_SOURCES} ${X2DHF_PTHREADS_SOURCES})
+  add_compile_definitions(-DPTHREAD)
+endif()
+
+if(USE_PTOOL)
+  message("Using USE_PTOOL")
+  include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+  set(X2DHF_SOURCES ${X2DHF_F_SOURCES} ${X2DHF_TPOOL_SOURCES})
+  add_compile_definitions(-DTPOOL)
+endif()
+
+if( NOT USE_PTOOL AND NOT USE_PTHREAD)
   set(X2DHF_SOURCES ${X2DHF_F_SOURCES})
 endif()
 

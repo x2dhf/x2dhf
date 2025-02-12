@@ -8,10 +8,10 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 ### Input options
 # Optional support for pthreads
-option(USE_PTHREAD "Enable pthreads pool option" OFF)
-option(USE_TPOOL   "Enable pthreads pool option" OFF)
+option(USE_PTHREAD "Enable pthreads option" OFF)
+option(USE_TPOOL   "Enable pthreads pool option" ON)
 # Support for OpenMP
-option(USE_OPENMP "Include support for OpenMP" ON)
+option(USE_OPENMP "Include support for OpenMP" OFF)
 # Support for Libxc
 option(USE_LIBXC "Include support for Libxc (use environment variable LIBXC_DIR to guide detection)" OFF)
 # Support for BLAS
@@ -34,7 +34,8 @@ if(USE_OPENMP)
 endif()
 
 # Detect pthreads
-if(USE_PTHREADS OR USE_TPOOL)
+if(USE_PTHREAD OR USE_TPOOL)
+  message("enabling language C")
   enable_language(C)
   # Test if pthreads is available on the platform
   set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
