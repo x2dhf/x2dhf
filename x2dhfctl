@@ -177,8 +177,8 @@ ${bold}OPTIONS${normal}
        -b
            Starts a new build of the program by creating/cleaning $BUILD/ directory.
 
-       -B
-           Toggles compilation of the internal BLAS interface (see blas.F90).
+       -B                                                                                                                    
+           The BLAS library support is added (see blas.F90). 
 
        -D
            Include additional print statements via DEBUG pragma. Use 'xhf -D'
@@ -338,7 +338,6 @@ EOF
 	2>&1 >> $log make install
     fi
     cd - >& /dev/null
-    mv $DESTDIR/libxc .
     cat <<EOF
 
     libxc is ready
@@ -428,11 +427,8 @@ fi
 if [[ $BLAS == on ]]
 then
     # Using the internal blas requires turning off the use of an external blas library
-    BLASARG="-DUSE_BLAS=OFF"
-else
     BLASARG="-DUSE_BLAS=ON"
 fi
-
 
 status=$(grep 'q0' src/dgamit.F)
 [[ -n $status ]] && perl -pi -e 's/q0/d0/g' src/dgamit.F
@@ -509,7 +505,8 @@ then
     export LIBXC_DIR="$PWD/libxc"
     export LIBXC="-DUSE_LIBXC=ON"
 else
-    export LIBXC="-DUSE_LIBXC=OFF"
+    status=$(grep 'USE_LIBXC .* ON' CMakeLists.txt)
+    [[ -n $status ]] && lxc=on
 fi
 
 # In case CMake cannot find gfortran set the full path below
@@ -540,7 +537,6 @@ then
     fi
     cd ../ >& /dev/null
 else
-
     if [[ -n $trace ]]
     then
         loglevel="--log-level=TRACE"
@@ -562,15 +558,21 @@ else
 	[[ $? > 0 ]] && cat $log && exit
     else
         cmake $cmake_opts
-
 	cd $BUILD
 	make -j$maxcpus
     fi
 fi
 
-#[[ $VERBOSE == on ]] && cat $log
-
 cp src/x2dhf ../bin/x2dhf
+
+status=$(grep 'USE_PTHREAD "Enable pthreads option" ON' ../CMakeLists.txt)
+[[ -n $status ]] && pthread=on
+
+status=$(grep 'USE_TPOOL   "Enable pthreads pool option" ON' ../CMakeLists.txt)
+[[ -n $status ]] && tpool=on
+
+status=$(grep 'USE_OPENMP "Include support for OpenMP" ON' ../CMakeLists.txt)
+[[ -n $status ]] && openmp=on
 
 [[ -z $pthread && -z $openmp && -z $tpool ]] && cp src/x2dhf ../bin/x2dhf-s
 
