@@ -2,7 +2,7 @@
 
 ! Copyright (C) 1996-2024  Jacek Kobus 
 
-#include "maxorb.h"
+#include "params.h"
 
 module params
   integer, parameter :: IPREC = 4
@@ -27,13 +27,14 @@ module params
   integer (kind=IPREC), parameter :: maxbasis = 650
 
   ! The following values should be left unchanged, since the code still has
-  ! the values hardcoded in some routines! In case of any changes see also
-  ! sorpt.h to adjust maxorb and  max_threads4mcsor variables for C routines as
-  ! well.
+  ! the values hardcoded in some routines!
   integer (kind=IPREC), parameter :: maxgrids = 1
-  integer (kind=IPREC), parameter :: maxorb   = MAXORB
   integer (kind=IPREC), parameter :: maxmpole = 8
-  integer (kind=IPREC), parameter :: maxthreads4mcsor = 16
+  ! maxorb and maxthreads4mcsor are also needed in the C routines,
+  ! which is why these parameters are defined in params.h which is
+  ! inherited here and in the C code
+  integer (kind=IPREC), parameter :: maxorb   = MAXORB
+  integer (kind=IPREC), parameter :: maxthreads4mcsor = MAXTHREADS4MCSOR
   
   character*10 :: formint,formfp,formfp64,formfp128
   data formint /'(10i15)  '/

@@ -5,9 +5,7 @@
 #define PTHREADADD 
 
 #include "maxorb.h"
-
 #define max_threads4pots 45
-#define max_threads4mcsor 16
 
 struct exchsor_t {
   int threadsNum;
@@ -98,42 +96,42 @@ struct commonBlock_8_t {
 extern struct commonBlock_8_t c_interface_8_;
 
 struct commonBlock_9_t {
-    int nstartc[5*max_threads4mcsor];
+    int nstartc[5*MAXTHREADS4MCSOR];
 };
 extern struct commonBlock_9_t c_interface_9_;
 
 struct commonBlock_10_t {
-    int nstopc[5*max_threads4mcsor];
+    int nstopc[5*MAXTHREADS4MCSOR];
 };
 extern struct commonBlock_10_t c_interface_10_;
 
 struct commonBlock_11_t {
-    int nstart6ac[5*max_threads4mcsor];
+    int nstart6ac[5*MAXTHREADS4MCSOR];
 };
 extern struct commonBlock_11_t c_interface_11_;
 
 struct commonBlock_12_t {
-    int nstop6ac[5*max_threads4mcsor];
+    int nstop6ac[5*MAXTHREADS4MCSOR];
 };
 extern struct commonBlock_12_t c_interface_12_;
 
 struct commonBlock_13_t {
-    int nstart6bc[5*max_threads4mcsor];
+    int nstart6bc[5*MAXTHREADS4MCSOR];
 };
 extern struct commonBlock_13_t c_interface_13_;
 
 struct commonBlock_14_t {
-    int nstop6bc[5*max_threads4mcsor];
+    int nstop6bc[5*MAXTHREADS4MCSOR];
 };
 extern struct commonBlock_14_t c_interface_14_;
 
 struct commonBlock_15_t {
-    int nstart7c[5*max_threads4mcsor];
+    int nstart7c[5*MAXTHREADS4MCSOR];
 };
 extern struct commonBlock_15_t c_interface_15_;
 
 struct commonBlock_16_t {
-    int nstop7c[5*max_threads4mcsor];
+    int nstop7c[5*MAXTHREADS4MCSOR];
 };
 extern struct commonBlock_16_t c_interface_16_;
 
