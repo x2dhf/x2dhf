@@ -112,18 +112,5 @@ if(BLAS_FOUND)
   target_link_libraries(x2dhf ${BLAS_LIBRARIES})
 endif()
 
-# Detect Libxc
-if(USE_LIBXC)
-  message("Libxc 1")
-  find_package(LIBXC REQUIRED)
-  if(NOT ${LIBXC_FOUND})
-    message("Libxc 2")
-    message(FATAL_ERROR "Did not find Libxc")
-  else()
-    message("Libxc 3")
-    message("Libxc include directory ${LIBXC_INCLUDE_DIRS}")
-  endif()
-endif()
-
 # Install
 install (TARGETS x2dhf DESTINATION bin)
