@@ -177,8 +177,8 @@ ${bold}OPTIONS${normal}
        -b
            Starts a new build of the program by creating/cleaning $BUILD/ directory.
 
-       -B                                                                                                                    
-           The BLAS library support is added (see blas.F90). 
+       -B
+           Use the internal BLAS implementation (see blas.F90) instead of an optimized external library.
 
        -D
            Include additional print statements via DEBUG pragma. Use 'xhf -D'
@@ -427,6 +427,9 @@ fi
 if [[ $BLAS == on ]]
 then
     # Using the internal blas requires turning off the use of an external blas library
+    BLASARG="-DUSE_BLAS=OFF"
+else
+    # Otherwise we use an external library
     BLASARG="-DUSE_BLAS=ON"
 fi
 
@@ -505,8 +508,7 @@ then
     export LIBXC_DIR="$PWD/libxc"
     export LIBXC="-DUSE_LIBXC=ON"
 else
-    status=$(grep 'USE_LIBXC .* ON' CMakeLists.txt)
-    [[ -n $status ]] && lxc=on
+    export LIBXC="-DUSE_LIBXC=OFF"
 fi
 
 # In case CMake cannot find gfortran set the full path below
@@ -526,41 +528,34 @@ fi
 
 [[ -d $BIN ]] || mkdir $BIN
 
-if [[ -d $BUILD ]]
+if [[ ! -d $BUILD ]]
 then
-    cd $BUILD/src
-    if [[ $VERBOSE == "off" ]]
-    then
-	2>&1 >> $log  make -j$maxcpus
-    else
-	make -j$maxcpus
-    fi
-    cd ../ >& /dev/null
+        mkdir $BUILD
+fi
+
+if [[ -n $trace ]]
+then
+    loglevel="--log-level=TRACE"
 else
-    if [[ -n $trace ]]
-    then
-        loglevel="--log-level=TRACE"
-    else
-        loglevel=""
-    fi
+    loglevel=""
+fi
 
-    cmake_opts="-B $BUILD $build $loglevel $LIBXC $threading $BLASARG"
+# Always rerun CMake so that build options are consistent to what has been set in x2dhfctl!
+cmake_opts="-B $BUILD $build $loglevel $LIBXC $threading $BLASARG"
 
-    mkdir $BUILD
-    if [[ $VERBOSE == "off" ]]
-    then
-        2>&1 >> $log cmake $cmake_opts
+if [[ $VERBOSE == "off" ]]
+then
+    2>&1 >> $log cmake $cmake_opts
 
-	[[ $? > 0 ]] && cat $log && exit
+    [[ $? > 0 ]] && cat $log && exit
 
-	cd $BUILD
-	2>&1 >> $log  make -j$maxcpus
-	[[ $? > 0 ]] && cat $log && exit
-    else
-        cmake $cmake_opts
-	cd $BUILD
-	make -j$maxcpus
-    fi
+    cd $BUILD
+    2>&1 >> $log  make -j$maxcpus
+    [[ $? > 0 ]] && cat $log && exit
+else
+    cmake $cmake_opts
+    cd $BUILD
+    make -j$maxcpus
 fi
 
 cp src/x2dhf ../bin/x2dhf
