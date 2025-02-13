@@ -328,12 +328,12 @@ EOF
     if [[ $VERBOSE == on ]]
     then
         # x2dhf only needs first derivatives, so we can turn off second and higher derivatives
-	./configure CFLAGS=-std=gnu99 --prefix=/libxc --enable-vxc --disable-fxc --disable-kxc --disable-lxc
+	./configure CFLAGS=-std=c99 --prefix=/libxc --enable-vxc --disable-fxc --disable-kxc --disable-lxc --enable-fortran
 	make -j $maxcpus VERBOSE=0
 	make install
     else
         # x2dhf only needs first derivatives, so we can turn off second and higher derivatives
-	>& $log ./configure CFLAGS=-std=gnu99 --prefix=/libxc --enable-vxc --disable-fxc --disable-kxc --disable-lxc
+	>& $log ./configure CFLAGS=-std=c99 --prefix=/libxc --enable-vxc --disable-fxc --disable-kxc --disable-lxc --enable-fortran
 	2>&1 >> $log make -j $maxcpus VERBOSE=0
 	2>&1 >> $log make install
     fi

@@ -54,10 +54,8 @@ set(X2DHF_F_SOURCES
 
 # Add libxc files to list
 if(LIBXC_FOUND)
-  set(X2DHF_F_SOURCES ${X2DHF_F_SOURCES}
-    libxc_funcs.F90
-    libxc_master.F90)
   include_directories(${LIBXC_INCLUDE_DIR})
+  include_directories(${LIBXCF03_INCLUDE_DIR})
   add_compile_definitions(-DLIBXC)
 endif()
 
@@ -108,7 +106,7 @@ endif()
 # Main program
 add_executable(x2dhf ${X2DHF_SOURCES})
 if(LIBXC_FOUND)
-  target_link_libraries(x2dhf ${LIBXC_LIBRARY})
+  target_link_libraries(x2dhf ${LIBXCF03_LIBRARY} ${LIBXC_LIBRARY})
 endif()
 if(BLAS_FOUND)
   target_link_libraries(x2dhf ${BLAS_LIBRARIES})
