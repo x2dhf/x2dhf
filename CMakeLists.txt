@@ -56,7 +56,7 @@ if(USE_LIBXC)
     message(FATAL_ERROR "Did not find Libxc")
   else()
 #    message("Libxc 3")
-    message("Libxc include directory ${LIBXC_INCLUDE_DIRS}")
+    message("Libxc include directory ${LIBXC_INCLUDE_DIR}")
   endif()
 endif()
 
