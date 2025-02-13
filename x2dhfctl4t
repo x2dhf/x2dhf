@@ -83,9 +83,8 @@ export VERBOSE=off
 
 function cleanBUILD {
 
-    [[ -d $BUILD ]] || return
+    [[ -d build ]] || return
     rm -rf build >& /dev/null
-    mkdir $BUILD
 }
 
 function help {
@@ -178,8 +177,8 @@ ${bold}OPTIONS${normal}
        -b
            Starts a new build of the program by creating/cleaning $BUILD/ directory.
 
-       -B
-           Toggles compilation of the internal BLAS interface (see blas.F90).
+       -B                                                                                                                    
+           The BLAS library support is added (see blas.F90). 
 
        -D
            Include additional print statements via DEBUG pragma. Use 'xhf -D'
@@ -329,17 +328,16 @@ EOF
     if [[ $VERBOSE == on ]]
     then
         # x2dhf only needs first derivatives, so we can turn off second and higher derivatives
-	./configure CFLAGS=-std=gnu99 --prefix=/libxc --enable-vxc --disable-fxc --disable-kxc --disable-lxc
+	./configure CFLAGS=-std=c99 --prefix=/libxc --enable-vxc --disable-fxc --disable-kxc --disable-lxc --enable-fortran
 	make -j $maxcpus VERBOSE=0
 	make install
     else
         # x2dhf only needs first derivatives, so we can turn off second and higher derivatives
-	>& $log ./configure CFLAGS=-std=gnu99 --prefix=/libxc --enable-vxc --disable-fxc --disable-kxc --disable-lxc
+	>& $log ./configure CFLAGS=-std=c99 --prefix=/libxc --enable-vxc --disable-fxc --disable-kxc --disable-lxc --enable-fortran
 	2>&1 >> $log make -j $maxcpus VERBOSE=0
 	2>&1 >> $log make install
     fi
     cd - >& /dev/null
-    mv $DESTDIR/libxc .
     cat <<EOF
 
     libxc is ready
@@ -408,8 +406,6 @@ fi
 [[ -d log ]] || mkdir log
 
 rm -f bin/x2dhf*
-[[ -d $BUILD ]] || mkdir $BUILD
-[[ -d $BIN ]] || mkdir $BIN
 
 FC=
 
@@ -419,12 +415,6 @@ FC=
 [[ $trace == 3 ]] && TRACE="$TRACE -DTRACE -DTRACE1 -DTRACE2 -DTRACE3"
 
 export CMAKE_INSTALL_PREFIX=""
-
-status=$(grep -P 'option\(USE_PTHREAD.*ON\)' CMakeLists.txt) 
-[[ -n $status ]] && pthread=on
-
-status=$(grep -P 'option\(USE_TPOOL.*ON\)' CMakeLists.txt) 
-[[ -n $status ]] && tpool=on
 
 if [[ $LXC == on ]]
 then
@@ -437,14 +427,8 @@ fi
 if [[ $BLAS == on ]]
 then
     # Using the internal blas requires turning off the use of an external blas library
-    #BLAS="-DUSE_BLAS=OFF"
-
-    # If USE_BLAS=ON -B option does nothing. If USE_BLAS=OFF -B option
-    # turns on BLAS support
-    status=$(grep -P 'option\(USE_BLAS.*ON\)' CMakeLists.txt)
-    [[ -z $status ]] && BLAS="-DUSE_BLAS=ON"
+    BLASARG="-DUSE_BLAS=ON"
 fi
-
 
 status=$(grep 'q0' src/dgamit.F)
 [[ -n $status ]] && perl -pi -e 's/q0/d0/g' src/dgamit.F
@@ -454,6 +438,8 @@ then
     # debug is false, build with -O3
     build="-DCMAKE_BUILD_TYPE=Release"
 else
+    # this builds the code with -O2 -g
+    #build="-DCMAKE_BUILD_TYPE=RelWithDebInfo"
     # this builds the code with -O0 -g
     build="-DCMAKE_BUILD_TYPE=Debug"
 fi
@@ -483,7 +469,6 @@ then
 	    exit
 	fi
         threading="-DUSE_OPENMP=OFF -DUSE_PTHREAD=ON -DUSE_TPOOL=OFF"
-	FFLAGS="$FFLAGS -DPTHREAD $TRACE"
     fi
 
     if [[ -n $tpool ]]
@@ -492,11 +477,9 @@ then
 	    echo "Option -p is not available on macOS/Darwin."
 	    exit
 	fi
-        threading="-DUSE_OPENMP=OFF -DUSE_PTHREAD=OFF -DUSE_PTOOL=ON"
-	FFLAGS="$FFLAGS -DTPOOL $TRACE"
+        threading="-DUSE_OPENMP=OFF -DUSE_PTHREAD=OFF -DUSE_TPOOL=ON"
     fi
 
-    
     perl -pi -e 's/IPREC = \d/IPREC = 4/' src/params.F90
     if [[ $intprec == 8 ]]
     then
@@ -522,7 +505,8 @@ then
     export LIBXC_DIR="$PWD/libxc"
     export LIBXC="-DUSE_LIBXC=ON"
 else
-    export LIBXC="-DUSE_LIBXC=OFF"
+    status=$(grep 'USE_LIBXC .* ON' CMakeLists.txt)
+    [[ -n $status ]] && lxc=on
 fi
 
 # In case CMake cannot find gfortran set the full path below
@@ -532,6 +516,7 @@ fortranVersion=$(gfortran --version | head -1 | gawk '{print $4}' | cut -d. -f1)
 (( $fortranVersion <= 4 )) && optLevel=2
 
 CMVERSION=$(cmake --version | head -1 |cut -d' ' -f3)
+export FC FFLAGS CMVERSION
 
 # FIXME
 if [[ $compiler == lapack ]]; then
@@ -539,27 +524,55 @@ if [[ $compiler == lapack ]]; then
     [[ $realprec == 16 ]] && REALPREC="-freal-8-real-16"
 fi
 
-export FC FFLAGS CMVERSION
+[[ -d $BIN ]] || mkdir $BIN
 
-cmake_opts="-S . -B $BUILD $build $loglevel $LIBXC $threading $BLAS"
-
-if [[ $VERBOSE == "off" ]]
+if [[ -d $BUILD ]]
 then
-    2>&1 >> $log cmake $cmake_opts
-    
-    [[ $? > 0 ]] && cat $log && exit
-    
-    cd $BUILD
-    2>&1 >> $log  make -j$maxcpus
-    [[ $? > 0 ]] && cat $log && exit
+    cd $BUILD/src
+    if [[ $VERBOSE == "off" ]]
+    then
+	2>&1 >> $log  make -j$maxcpus
+    else
+	make -j$maxcpus
+    fi
+    cd ../ >& /dev/null
 else
-    cmake $cmake_opts
-    cd $BUILD
-    head src/CMakeFiles/x2dhf.dir/link.txt
-    make -j$maxcpus
+    if [[ -n $trace ]]
+    then
+        loglevel="--log-level=TRACE"
+    else
+        loglevel=""
+    fi
+
+    cmake_opts="-B $BUILD $build $loglevel $LIBXC $threading $BLASARG"
+
+    mkdir $BUILD
+    if [[ $VERBOSE == "off" ]]
+    then
+        2>&1 >> $log cmake $cmake_opts
+
+	[[ $? > 0 ]] && cat $log && exit
+
+	cd $BUILD
+	2>&1 >> $log  make -j$maxcpus
+	[[ $? > 0 ]] && cat $log && exit
+    else
+        cmake $cmake_opts
+	cd $BUILD
+	make -j$maxcpus
+    fi
 fi
 
 cp src/x2dhf ../bin/x2dhf
+
+status=$(grep 'USE_PTHREAD "Enable pthreads option" ON' ../CMakeLists.txt)
+[[ -n $status ]] && pthread=on
+
+status=$(grep 'USE_TPOOL   "Enable pthreads pool option" ON' ../CMakeLists.txt)
+[[ -n $status ]] && tpool=on
+
+status=$(grep 'USE_OPENMP "Include support for OpenMP" ON' ../CMakeLists.txt)
+[[ -n $status ]] && openmp=on
 
 [[ -z $pthread && -z $openmp && -z $tpool ]] && cp src/x2dhf ../bin/x2dhf-s
 

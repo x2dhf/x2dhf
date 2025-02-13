@@ -15,7 +15,7 @@ option(USE_OPENMP "Include support for OpenMP" ON)
 # Support for Libxc
 option(USE_LIBXC "Include support for Libxc (use environment variable LIBXC_DIR to guide detection)" OFF)
 # Support for BLAS
-option(USE_BLAS "Use external blas library" OFF)
+option(USE_BLAS "Use external blas library" ON)
 
 ### Parse the options
 # Check for conflicting options
@@ -49,10 +49,13 @@ endif()
 
 # Detect Libxc
 if(USE_LIBXC)
+#  message("Libxc 1")
   find_package(LIBXC REQUIRED)
   if(NOT ${LIBXC_FOUND})
+#    message("Libxc 2")
     message(FATAL_ERROR "Did not find Libxc")
   else()
+#    message("Libxc 3")
     message("Libxc include directory ${LIBXC_INCLUDE_DIRS}")
   endif()
 endif()

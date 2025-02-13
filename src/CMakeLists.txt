@@ -83,14 +83,14 @@ if(USE_PTHREAD)
   add_compile_definitions(-DPTHREAD)
 endif()
 
-if(USE_PTOOL)
-  message("Using USE_PTOOL")
+if(USE_TPOOL)
+  message("Using USE_TPOOL")
   include_directories(${CMAKE_CURRENT_SOURCE_DIR})
   set(X2DHF_SOURCES ${X2DHF_F_SOURCES} ${X2DHF_TPOOL_SOURCES})
   add_compile_definitions(-DTPOOL)
 endif()
 
-if( NOT USE_PTOOL AND NOT USE_PTHREAD)
+if( NOT USE_TPOOL AND NOT USE_PTHREAD)
   set(X2DHF_SOURCES ${X2DHF_F_SOURCES})
 endif()
 
@@ -110,6 +110,19 @@ if(LIBXC_FOUND)
 endif()
 if(BLAS_FOUND)
   target_link_libraries(x2dhf ${BLAS_LIBRARIES})
+endif()
+
+# Detect Libxc
+if(USE_LIBXC)
+  message("Libxc 1")
+  find_package(LIBXC REQUIRED)
+  if(NOT ${LIBXC_FOUND})
+    message("Libxc 2")
+    message(FATAL_ERROR "Did not find Libxc")
+  else()
+    message("Libxc 3")
+    message("Libxc include directory ${LIBXC_INCLUDE_DIRS}")
+  endif()
 endif()
 
 # Install
