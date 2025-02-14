@@ -428,9 +428,9 @@ if [[ $BLAS == on ]]
 then
     # Use an external BLAS library
     BLASARG="-DUSE_BLAS=ON"
-else
-    # Use the internal BLAS implementation in blas.f90
-    BLASARG="-DUSE_BLAS=OFF"
+#else
+#    # Use the internal BLAS implementation in blas.f90
+#    BLASARG="-DUSE_BLAS=OFF"
 fi
 
 status=$(grep 'q0' src/dgamit.F)
