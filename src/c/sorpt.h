@@ -4,8 +4,9 @@
 #ifndef PTHREADADD
 #define PTHREADADD 
 
-#include "maxorb.h"
+#include "params.h"
 #define max_threads4pots 45
+#define max_threads4mcsor 16
 
 struct exchsor_t {
   int threadsNum;
